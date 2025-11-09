@@ -3,7 +3,7 @@
 
 const API_CONFIG = {
   // Production API Base URL
-  BASE_URL: 'https://sportsplatform-be.onrender.com/api/v1',
+  BASE_URL: 'https://tf1-backend.onrender.com/api/v1',
 
   // Request timeout (10 seconds)
   TIMEOUT: 10000,

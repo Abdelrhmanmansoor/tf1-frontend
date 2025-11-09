@@ -65,7 +65,7 @@ export function RecentJobs() {
       try {
         setLoading(true)
         const response = await fetch(
-          'https://sportsplatform-be.onrender.com/api/v1/search/jobs/recent?limit=3'
+          'https://tf1-backend.onrender.com/api/v1/search/jobs/recent?limit=3'
         )
 
         if (!response.ok) {

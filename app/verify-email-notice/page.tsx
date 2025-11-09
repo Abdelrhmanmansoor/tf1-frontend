@@ -41,7 +41,7 @@ function VerifyEmailNoticeContent() {
 
     try {
       const response = await fetch(
-        `https://sportsplatform-be.onrender.com/api/v1/auth/resend-verification`,
+        `https://tf1-backend.onrender.com/api/v1/auth/resend-verification`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -252,7 +252,7 @@ Sports-Platform/
 ### Deployment
 
 - **Frontend**: Vercel (recommended) or any Node.js hosting
-- **Backend**: https://sportsplatform-be.onrender.com
+- **Backend**: https://tf1-backend.onrender.com
 - **Database**: MongoDB Atlas
 - **CDN**: Cloudinary for media
 
@@ -337,7 +337,7 @@ npm install
 Create `.env.local` file in the root:
 
 ```env
-NEXT_PUBLIC_API_URL=https://sportsplatform-be.onrender.com
+NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com
 NODE_ENV=development
 ```
 
@@ -382,7 +382,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
    - Vercel auto-detects Next.js
 
 3. **Configure Environment Variables**
-   - Add `NEXT_PUBLIC_API_URL=https://sportsplatform-be.onrender.com`
+   - Add `NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com`
    - Add `NODE_ENV=production`
 
 4. **Deploy**
@@ -464,7 +464,7 @@ See `DEPLOYMENT.md` for detailed instructions for:
 
 ### Backend URL
 
-**Production:** `https://sportsplatform-be.onrender.com`
+**Production:** `https://tf1-backend.onrender.com`
 
 ### How API Calls Work
 
@@ -1044,7 +1044,7 @@ HazemSalama108@gmail.com
 
 ```env
 # API Configuration
-NEXT_PUBLIC_API_URL=https://sportsplatform-be.onrender.com
+NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com
 
 # Environment
 NODE_ENV=production  # or development
