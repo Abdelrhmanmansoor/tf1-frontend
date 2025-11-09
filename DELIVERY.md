@@ -3,7 +3,7 @@
 **Welcome!** This document will guide you through everything you need to know about the SportX Platform. Whether you're the client, a developer taking over, or just curious about how everything works - you're in the right place!
 
 ---
-
+-
 ## 👋 Hello from the Developer
 
 **Name:** Hazem Salama
