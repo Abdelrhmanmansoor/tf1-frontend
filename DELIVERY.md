@@ -252,7 +252,7 @@ Sports-Platform/
 ### Deployment
 
 - **Frontend**: Vercel (recommended) or any Node.js hosting
-- **Backend**: https://tf1-backend.onrender.com
+- **Backend**: https://tf1-backend.onrender.com/api/v1
 - **Database**: MongoDB Atlas
 - **CDN**: Cloudinary for media
 
@@ -337,7 +337,7 @@ npm install
 Create `.env.local` file in the root:
 
 ```env
-NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com
+NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com/api/v1
 NODE_ENV=development
 ```
 

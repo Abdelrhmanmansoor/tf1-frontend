@@ -43,7 +43,7 @@ function VerifyEmailContent() {
 
     // ✅ Single API call - NO RETRIES
     fetch(
-      `https://tf1-backend.onrender.com/auth/verify-email?token=${token}`,
+      `https://tf1-backend.onrender.com/api/v1/auth/verify-email?token=${token}`,
       {
         method: 'GET',
         headers: {
