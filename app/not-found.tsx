@@ -12,7 +12,6 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center px-6">
       <div className="max-w-2xl mx-auto text-center">
-        {/* Animated 404 */}
         <motion.div
           className="mb-8"
           initial={{ scale: 0.5, opacity: 0 }}
@@ -24,7 +23,6 @@ export default function NotFound() {
               404
             </h1>
 
-            {/* Animated Football */}
             <motion.div
               className="absolute -top-4 right-8 text-4xl"
               animate={{
@@ -41,7 +39,6 @@ export default function NotFound() {
           </div>
         </motion.div>
 
-        {/* Error Message */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 30 }}
@@ -65,7 +62,6 @@ export default function NotFound() {
           </p>
         </motion.div>
 
-        {/* Action Buttons */}
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           initial={{ opacity: 0, y: 30 }}
@@ -107,7 +103,6 @@ export default function NotFound() {
           </motion.div>
         </motion.div>
 
-        {/* Search Suggestion */}
         <motion.div
           className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200"
           initial={{ opacity: 0, y: 30 }}
@@ -140,33 +135,6 @@ export default function NotFound() {
             ))}
           </div>
         </motion.div>
-
-        {/* Floating Sports Icons */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {['🏀', '🏈', '🎾', '🏐', '🏓', '⚾'].map((emoji, index) => (
-            <motion.div
-              key={index}
-              className="absolute text-3xl opacity-10"
-              style={{
-                left: `${10 + index * 15}%`,
-                top: `${20 + (index % 3) * 30}%`,
-              }}
-              animate={{
-                y: [0, -40, 0],
-                rotate: [0, 180, 360],
-                opacity: [0.05, 0.2, 0.05],
-              }}
-              transition={{
-                duration: 4 + index * 0.5,
-                repeat: Infinity,
-                delay: index * 1.2,
-                ease: 'easeInOut',
-              }}
-            >
-              {emoji}
-            </motion.div>
-          ))}
-        </div>
       </div>
     </div>
   )

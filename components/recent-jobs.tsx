@@ -185,14 +185,14 @@ export function RecentJobs() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {jobs.map((job, index) => (
-        <motion.div
-          key={job._id}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: index * 0.1 }}
-          viewport={{ once: true }}
-          className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-blue-200 transition-all duration-300 group"
-        >
+        <Link key={job._id} href={`/jobs/${job._id}`}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-blue-200 transition-all duration-300 group cursor-pointer"
+          >
           {/* Club Logo and Info */}
           <div className="flex items-start gap-4 mb-4">
             {job.club.logo ? (
@@ -232,9 +232,13 @@ export function RecentJobs() {
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
               <span className="truncate">
-                {language === 'ar'
-                  ? `${job.location.cityAr || job.location.city}, ${job.location.countryAr || job.location.country}`
-                  : `${job.location.city}, ${job.location.country}`}
+                {job.location ? (
+                  language === 'ar'
+                    ? `${job.location.cityAr || job.location.city}, ${job.location.countryAr || job.location.country}`
+                    : `${job.location.city}, ${job.location.country}`
+                ) : (
+                  language === 'ar' ? 'الموقع غير متاح' : 'Location not available'
+                )}
               </span>
             </div>
 
@@ -267,11 +271,12 @@ export function RecentJobs() {
             </div>
           </div>
 
-          {/* Apply Button */}
+          {/* View Details Button */}
           <Button className="w-full bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg">
-            {language === 'ar' ? 'التقديم الآن' : 'Apply Now'}
+            {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
           </Button>
         </motion.div>
+        </Link>
       ))}
     </div>
   )

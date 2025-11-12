@@ -403,11 +403,10 @@ export default function FeaturesPage() {
               {language === 'ar' ? 'مميزات استثنائية' : 'Exceptional Features'}
             </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-15">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6">
               <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar' ? 'تقنيات متطورة لمستقبل الرياضة ' : 'Advanced Technology for Sports Future'}
+                {language === 'ar' ? 'تقنيات متطورة لمستقبل الرياضة' : 'Advanced Technology for Sports Future'}
               </span>
-             
             </h1>
 
             <p className="text-lg sm:text-xl text-white mb-12 max-w-4xl mx-auto leading-relaxed mt-10">
@@ -425,7 +424,7 @@ export default function FeaturesPage() {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-700"
+              className="bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-700"
             >
               <div
                 className={`w-16 h-16 bg-gradient-to-r ${featuresShowcase[activeFeature].gradient} rounded-2xl flex items-center justify-center mb-6`}
@@ -714,7 +713,7 @@ export default function FeaturesPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {technicalSpecs.map((spec, index) => (
               <motion.div
                 key={index}
@@ -788,9 +787,9 @@ export default function FeaturesPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
                 SportX
@@ -833,12 +832,31 @@ export default function FeaturesPage() {
               <h4 className="text-lg font-semibold mb-4">
                 {language === 'ar' ? 'الدعم' : 'Support'}
               </h4>
-              <div className="space-y-2 text-gray-400">
-                <p>{language === 'ar' ? 'مركز المساعدة' : 'Help Center'}</p>
-                <p>{language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}</p>
-                <p>
+              <div className="space-y-2">
+                <Link
+                  href="/help-center"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'مركز المساعدة' : 'Help Center'}
+                </Link>
+                <Link
+                  href="/faq"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
+                </Link>
+                <Link
+                  href="/terms"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   {language === 'ar' ? 'الشروط والأحكام' : 'Terms of Service'}
-                </p>
+                </Link>
+                <Link
+                  href="/privacy"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
+                </Link>
               </div>
             </div>
 

@@ -260,14 +260,14 @@ export default function ContactPage() {
             </p>
 
             {/* Response Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {responseStats.map((stat, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+                  className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
                 >
                   <stat.icon className={`w-8 h-8 ${stat.color} mx-auto mb-3`} />
                   <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
@@ -300,7 +300,7 @@ export default function ContactPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {contactMethods.map((method, index) => (
               <motion.div
                 key={index}
@@ -351,7 +351,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl"
+              className="bg-white rounded-3xl p-6 sm:p-8 lg:p-12 shadow-xl"
             >
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
                 {language === 'ar' ? 'أرسل رسالة' : 'Send us a Message'}
@@ -648,7 +648,7 @@ export default function ContactPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-6 sm:gap-8">
             {[
               {
                 q:
@@ -736,9 +736,9 @@ export default function ContactPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
                 SportX
@@ -781,12 +781,31 @@ export default function ContactPage() {
               <h4 className="text-lg font-semibold mb-4">
                 {language === 'ar' ? 'الدعم' : 'Support'}
               </h4>
-              <div className="space-y-2 text-gray-400">
-                <p>{language === 'ar' ? 'مركز المساعدة' : 'Help Center'}</p>
-                <p>{language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}</p>
-                <p>
+              <div className="space-y-2">
+                <Link
+                  href="/help-center"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'مركز المساعدة' : 'Help Center'}
+                </Link>
+                <Link
+                  href="/faq"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
+                </Link>
+                <Link
+                  href="/terms"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
                   {language === 'ar' ? 'الشروط والأحكام' : 'Terms of Service'}
-                </p>
+                </Link>
+                <Link
+                  href="/privacy"
+                  className="block text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  {language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
+                </Link>
               </div>
             </div>
 

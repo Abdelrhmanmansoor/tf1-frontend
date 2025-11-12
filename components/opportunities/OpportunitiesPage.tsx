@@ -101,7 +101,7 @@ const OpportunitiesPage = () => {
         {/* Breadcrumb */}
         <div className="mb-6">
           <Link
-            href={`/dashboard/${user?.role}`}
+            href="/dashboard"
             className="text-sm text-gray-600 hover:text-blue-600 flex items-center gap-1"
           >
             <ChevronLeft className="w-4 h-4" />

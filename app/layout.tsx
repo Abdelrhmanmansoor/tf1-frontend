@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="font-sans">
-        <MSWProvider />
+        {/* <MSWProvider /> */}
         <LanguageProvider>
           <AuthProvider>
             <SmoothScrollProvider>{children}</SmoothScrollProvider>
