@@ -361,6 +361,13 @@ export interface JobApplication {
     rating?: number
     [key: string]: any
   }
+  coverLetter?: string
+  attachments?: Array<{
+    type: 'resume' | 'cv' | 'certificate' | 'portfolio' | 'video' | 'other'
+    name: string
+    url: string
+    uploadedAt: string
+  }>
   interview?: {
     isScheduled: boolean
     scheduledDate?: string

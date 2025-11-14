@@ -17,6 +17,8 @@ import {
   Briefcase,
   Mail,
   Phone,
+  FileText,
+  Download,
 } from 'lucide-react'
 import Link from 'next/link'
 import clubService from '@/services/club'
@@ -206,7 +208,29 @@ const ClubApplicationsPage = () => {
                         {new Date(application.createdAt).toLocaleDateString()}
                       </span>
                     </div>
+                    {application.attachments && application.attachments.length > 0 && (
+                      <a
+                        href={application.attachments.find(a => a.type === 'resume')?.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>{language === 'ar' ? 'عرض السيرة الذاتية' : 'View Resume'}</span>
+                        <Download className="w-3 h-3" />
+                      </a>
+                    )}
                   </div>
+                  {application.coverLetter && (
+                    <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'خطاب التقديم:' : 'Cover Letter:'}
+                      </p>
+                      <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                        {application.coverLetter}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   {application.status === 'new' && (

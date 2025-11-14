@@ -68,18 +68,23 @@ export const getOpportunityById = async (
   return response.data.job
 }
 
-// Apply to an opportunity
+// Apply to an opportunity (accepts FormData for file upload)
 export const applyToOpportunity = async (
   opportunityId: string,
-  applicationData: {
+  applicationData: FormData | {
     coverLetter?: string
     resume?: string
     customQuestions?: Record<string, any>
   }
 ) => {
+  const config = applicationData instanceof FormData
+    ? { headers: { 'Content-Type': 'multipart/form-data' } }
+    : {}
+
   const response = await api.post(
     `/jobs/${opportunityId}/apply`,
-    applicationData
+    applicationData,
+    config
   )
   return response.data
 }
