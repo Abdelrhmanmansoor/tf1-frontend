@@ -295,7 +295,7 @@ export default function AboutPage() {
               className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6"
             >
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
-                {language === 'ar' ? 'نحن' : 'We are'} SportX
+                {language === 'ar' ? 'نحن' : 'We are'} TF1
               </span>
             </motion.h1>
 
@@ -304,8 +304,8 @@ export default function AboutPage() {
               className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
             >
               {language === 'ar'
-                ? 'منصة تجمع بين الشغف والتكنولوجيا لتغيير مستقبل الرياضة وخلق فرص لا محدودة للمواهب حول العالم'
-                : 'A platform combining passion and technology to change the future of sports and create unlimited opportunities for talents worldwide'}
+                ? 'منصة توظّف التقنية لتطوير الرياضة وتمكين المواهب في المملكة'
+                : 'A smart sports platform unlocking unlimited opportunities for talent.'}
             </motion.p>
 
             <motion.div
@@ -422,8 +422,8 @@ export default function AboutPage() {
             </h2>
             <p className="text-xl text-white max-w-3xl mx-auto">
               {language === 'ar'
-                ? 'من حلم بسيط إلى منصة عالمية تغير حياة الملايين'
-                : 'From a simple dream to a global platform changing millions of lives'}
+                ? 'من فكرة بسيطة إلى منصة تصنع فرص الرياضة في المملكة.'
+                : 'From a simple idea to a platform creating sports opportunities in the Kingdom.'}
             </p>
           </motion.div>
 
