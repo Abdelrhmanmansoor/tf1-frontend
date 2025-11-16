@@ -35,13 +35,13 @@ const translations = {
 
     // Hero Section
     heroTitleApplication: 'فرصتك تبدأ من هنا',
-    heroTitleRecruitment: ' نمكّن مواهبك ونوصّل فرصك',
+    heroTitleRecruitment: 'نمكّن مواهبك ونوصّل فرصك',
     searchJobsPlaceholder: 'ابحث عن فرص العمل...',
     searchTalentsPlaceholder: 'ابحث عن المواهب الرياضية...',
     joinNow: 'انضم الآن',
     exploreOpportunities: 'استكشف الفرص',
     attractTalents: 'إضافة وظيفة',
-    ContractWithUs: 'تعاقد معنا ',
+    contractWithUs: 'تعاقد معنا',
 
     // Categories
     targetCategories: 'الفئات المستهدفة',
@@ -71,17 +71,18 @@ const translations = {
     startJourneyToday: 'ابدأ رحلتك الرياضية اليوم!',
 
     // Footer
-    quickLinks: 'رابطة سريعة',
+    quickLinks: 'روابط سريعة',
     termsConditions: 'الشروط والأحكام',
     copyright: '© 2025 منصتك الرياضية. جميع الحقوق محفوظة',
   },
+
   en: {
     // Navigation
     home: 'Home',
     jobs: 'Jobs',
     about: 'About',
     features: 'Features',
-    blog:'blog',
+    blog: 'Blog',
     contact: 'Contact Us',
     register: 'Register',
     login: 'Login',
@@ -99,7 +100,7 @@ const translations = {
     joinNow: 'Join Now',
     exploreOpportunities: 'Explore Opportunities',
     attractTalents: 'Attract Talents',
-    Contract With Us: 'contract With Us',
+    contractWithUs: 'Contract With Us',
 
     // Categories
     targetCategories: 'Target Categories',
