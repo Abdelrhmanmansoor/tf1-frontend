@@ -505,10 +505,23 @@ export default function RegisterPage() {
   }
 
   return (
+
+    
     <div
       className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
+    {/* Back Button */}
+<div className="absolute top-6 left-6 z-50">
+  <a
+    href="/"
+    className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3b82f6] text-white font-semibold shadow-lg hover:bg-blue-500 transition-all duration-300"
+  >
+    <span className="text-xl group-hover:-translate-x-1 transition-transform">⟵</span>
+    <span className="hidden sm:block">الرئيسية</span>
+  </a>
+</div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Large Gradient Orbs */}
