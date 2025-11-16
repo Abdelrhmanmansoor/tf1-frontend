@@ -41,7 +41,7 @@ const translations = {
     joinNow: 'انضم الآن',
     exploreOpportunities: 'استكشف الفرص',
     attractTalents: 'إضافة وظيفة',
-    evaluateTeam: 'تعاقد معنا ',
+    Contract With Us: 'تعاقد معنا ',
 
     // Categories
     targetCategories: 'الفئات المستهدفة',
@@ -99,7 +99,7 @@ const translations = {
     joinNow: 'Join Now',
     exploreOpportunities: 'Explore Opportunities',
     attractTalents: 'Attract Talents',
-    evaluateTeam: 'Evaluate Team',
+    heroButton2: 'Contract With Us',
 
     // Categories
     targetCategories: 'Target Categories',
