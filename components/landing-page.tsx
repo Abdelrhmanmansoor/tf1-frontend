@@ -275,7 +275,7 @@ export function LandingPage() {
           ? 'ابحث عن المواهب الرياضية...'
           : 'Search for sports talents...',
       heroButton1: language === 'ar' ? 'استقطب المواهب' : 'Recruit Talents',
-      heroButton2: language === 'ar' ? 'قيّم الفريق' : 'Evaluate Team',
+      heroButton2: language === 'ar' ? 'تعاقد معنا' : 'Contract With Us',
       opportunitiesTitle:
         language === 'ar' ? 'المواهب المتميزة' : 'Outstanding Talents',
       opportunitiesSubtitle:
