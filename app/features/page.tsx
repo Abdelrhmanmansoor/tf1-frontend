@@ -820,6 +820,7 @@ export default function FeaturesPage() {
                             About: 'عنا',
                             Features: 'المميزات',
                             Contact: 'تواصل',
+                            blog: 'المدونة',
                           }[link]
                         : link}
                     </Link>
