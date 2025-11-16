@@ -608,8 +608,8 @@ export default function JobsPage() {
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   {language === 'ar'
-                    ? 'لماذا تختار SportX؟'
-                    : 'Why Choose SportX?'}
+                    ? 'لماذا تختار TF1؟'
+                    : 'Why Choose TF1?'}
                 </span>
               </h2>
             </motion.div>
@@ -757,7 +757,7 @@ export default function JobsPage() {
             {/* Brand */}
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
-                SportX
+                TF1
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'

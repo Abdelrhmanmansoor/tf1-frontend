@@ -601,8 +601,8 @@ export default function RegisterPage() {
             </h1>
             <p className="text-gray-600 text-lg">
               {language === 'ar'
-                ? 'انضم إلى SportX اليوم'
-                : 'Join SportX Platform today'}
+                ? 'انضم إلى TF1 اليوم'
+                : 'Join TF1 Platform today'}
             </p>
           </div>
 

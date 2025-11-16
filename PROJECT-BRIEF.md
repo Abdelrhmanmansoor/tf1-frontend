@@ -1,13 +1,13 @@
-# SportX Platform - Project Brief & Production Plan
+# TF1 Platform - Project Brief & Production Plan
 
-## منصة SportX - ملف المشروع وخطة الإنتاج
+## منصة TF1 - ملف المشروع وخطة الإنتاج
 
 ---
 
 ## 📋 Executive Summary | الملخص التنفيذي
 
-**Platform Name:** SportX Platform
-**اسم المنصة:** منصة SportX الرياضية
+**Platform Name:** TF1 Platform
+**اسم المنصة:** منصة TF1 الرياضية
 
 **Vision:** Create the first comprehensive sports networking platform in Egypt and the Middle East - a LinkedIn for sports that connects players, coaches, clubs, and specialists.
 
@@ -1627,7 +1627,7 @@ The platform operates as a **free connection service** similar to LinkedIn:
 
 ## 🏁 Conclusion | الخاتمة
 
-SportX Platform aims to revolutionize the sports industry in Egypt and the Middle East by creating a professional, comprehensive networking platform that connects all stakeholders in the sports ecosystem.
+TF1 Platform aims to revolutionize the sports industry in Egypt and the Middle East by creating a professional, comprehensive networking platform that connects all stakeholders in the sports ecosystem.
 
 **Key Differentiators:**
 
@@ -1665,7 +1665,7 @@ SportX Platform aims to revolutionize the sports industry in Egypt and the Middl
 - Project Repository: [GitHub URL]
 - Documentation: [Docs URL]
 - Issue Tracker: [GitHub Issues]
-- Email: support@sportx.com (placeholder)
+- Email: support@TF1.com (placeholder)
 
 ---
 

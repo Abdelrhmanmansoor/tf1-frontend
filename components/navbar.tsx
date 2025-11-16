@@ -42,7 +42,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           <div className="flex items-center justify-center">
             <Image 
               src="/logo.png"
-              alt="SportX Logo"
+              alt="TF1 Logo"
               width={60}     // 🔥 مقاس أكبر وواضح
               height={60}
             />
@@ -158,7 +158,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                 <div className="flex items-center justify-center">
                   <Image 
                     src="/logo.png"
-                    alt="SportX Logo"
+                    alt="TF1 Logo"
                     width={48}
                     height={48}
                   />

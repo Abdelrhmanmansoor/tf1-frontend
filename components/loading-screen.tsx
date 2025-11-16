@@ -17,7 +17,7 @@ export function LoadingScreen() {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-8 py-4 rounded-2xl text-2xl font-bold shadow-lg">
-            SportX
+            TF1
           </div>
         </motion.div>
 

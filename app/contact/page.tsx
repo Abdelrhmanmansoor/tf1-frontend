@@ -93,8 +93,8 @@ export default function ContactPage() {
       title: language === 'ar' ? 'راسلنا' : 'Email Us',
       description:
         language === 'ar' ? 'نرد خلال ساعتين' : 'We reply within 2 hours',
-      value: 'support@sportx.com',
-      action: 'mailto:support@sportx.com',
+      value: 'support@TF1.com',
+      action: 'mailto:support@TF1.com',
       color: 'from-blue-500 to-cyan-600',
       available: language === 'ar' ? 'رد سريع' : 'Quick Response',
     },
@@ -129,7 +129,7 @@ export default function ContactPage() {
       timezone: 'EST',
       hours: '9:00 AM - 6:00 PM',
       phone: '+1 (555) 123-4567',
-      email: 'ny@sportx.com',
+      email: 'ny@TF1.com',
     },
     {
       city: language === 'ar' ? 'لندن' : 'London',
@@ -137,7 +137,7 @@ export default function ContactPage() {
       timezone: 'GMT',
       hours: '9:00 AM - 5:30 PM',
       phone: '+44 20 1234 5678',
-      email: 'london@sportx.com',
+      email: 'london@TF1.com',
     },
     {
       city: language === 'ar' ? 'دبي' : 'Dubai',
@@ -145,7 +145,7 @@ export default function ContactPage() {
       timezone: 'GST',
       hours: '8:00 AM - 5:00 PM',
       phone: '+971 4 123 4567',
-      email: 'dubai@sportx.com',
+      email: 'dubai@TF1.com',
     },
   ]
 
@@ -741,7 +741,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
-                SportX
+                TF1
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
@@ -820,7 +820,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span className="text-sm">support@sportx.com</span>
+                  <span className="text-sm">support@TF1.com</span>
                 </div>
               </div>
             </div>
@@ -829,8 +829,8 @@ export default function ContactPage() {
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
               {language === 'ar'
-                ? '© 2025 منصة SportX. جميع الحقوق محفوظة'
-                : '© 2025 SportX Platform. All rights reserved'}
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
+                : '© 2025 TF1 Platform. All rights reserved'}
             </p>
           </div>
         </div>

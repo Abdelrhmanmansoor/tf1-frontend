@@ -743,7 +743,7 @@ export default function AboutPage() {
             {/* Brand */}
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
-                SportX
+                TF1
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
@@ -884,8 +884,8 @@ export default function AboutPage() {
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
               {language === 'ar'
-                ? '© 2025 منصة SportX. جميع الحقوق محفوظة'
-                : '© 2025 SportX Platform. All rights reserved'}
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
+                : '© 2025 TF1 Platform. All rights reserved'}
             </p>
           </div>
         </div>

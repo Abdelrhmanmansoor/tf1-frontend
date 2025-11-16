@@ -376,7 +376,7 @@ export default function FAQPage() {
               </Link>
 
               <a
-                href="mailto:support@sportx.com"
+                href="mailto:support@TF1.com"
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300"
               >
                 <Mail className="w-8 h-8 text-white mx-auto mb-3" />

@@ -1,6 +1,6 @@
-# 🎉 SportX Platform - Project Delivery Document
+# 🎉 TF1 Platform - Project Delivery Document
 
-**Welcome!** This document will guide you through everything you need to know about the SportX Platform. Whether you're the client, a developer taking over, or just curious about how everything works - you're in the right place!
+**Welcome!** This document will guide you through everything you need to know about the TF1 Platform. Whether you're the client, a developer taking over, or just curious about how everything works - you're in the right place!
 
 ---
 -
@@ -16,7 +16,7 @@ I've built this platform with care and attention to detail. This document will h
 
 ## 📚 Table of Contents
 
-1. [What is SportX Platform?](#what-is-sportx-platform)
+1. [What is TF1 Platform?](#what-is-TF1-platform)
 2. [What's Been Delivered](#whats-been-delivered)
 3. [Project Structure](#project-structure)
 4. [Technology Stack](#technology-stack)
@@ -33,9 +33,9 @@ I've built this platform with care and attention to detail. This document will h
 
 ---
 
-## 🏆 What is SportX Platform?
+## 🏆 What is TF1 Platform?
 
-SportX is **the first comprehensive sports networking platform in Egypt and the Middle East** - think of it as "LinkedIn for Sports"!
+TF1 is **the first comprehensive sports networking platform in Egypt and the Middle East** - think of it as "LinkedIn for Sports"!
 
 ### The Vision
 
@@ -392,7 +392,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 5. **Custom Domain (Optional)**
    - Go to Project Settings → Domains
-   - Add your domain (e.g., sportx.com)
+   - Add your domain (e.g., TF1.com)
    - Update DNS records as instructed
 
 **That's it!** Every git push to main branch auto-deploys.
@@ -1026,7 +1026,7 @@ For anyone taking over this project, here's your day-one checklist:
 
 ## 🎉 Thank You!
 
-Thank you for choosing me to build the SportX Platform! I've poured my heart into creating a solid, scalable, and beautiful application. I hope it serves you well and helps connect the sports community across Egypt and the Middle East.
+Thank you for choosing me to build the TF1 Platform! I've poured my heart into creating a solid, scalable, and beautiful application. I hope it serves you well and helps connect the sports community across Egypt and the Middle East.
 
 If you have any questions, need help, or just want to share how the platform is doing - please don't hesitate to reach out!
 
@@ -1105,7 +1105,7 @@ Chore: Maintenance tasks
 **Document Version:** 1.0
 **Date:** October 12, 2025
 **Author:** Hazem Salama
-**Project:** SportX Platform
+**Project:** TF1 Platform
 **Status:** ✅ Production Ready
 
 **End of Delivery Document**

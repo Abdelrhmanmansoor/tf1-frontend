@@ -411,8 +411,8 @@ export default function FeaturesPage() {
 
             <p className="text-lg sm:text-xl text-white mb-12 max-w-4xl mx-auto leading-relaxed mt-10">
               {language === 'ar'
-                ? 'اكتشف مجموعة شاملة من الأدوات والتقنيات المتطورة التي تجعل SportX المنصة الأولى عالمياً للتوظيف الرياضي'
-                : "Discover a comprehensive suite of advanced tools and technologies that make SportX the world's #1 sports recruitment platform"}
+                ? 'اكتشف مجموعة شاملة من الأدوات والتقنيات المتطورة التي تجعل TF1 المنصة الأولى عالمياً للتوظيف الرياضي'
+                : "Discover a comprehensive suite of advanced tools and technologies that make TF1 the world's #1 sports recruitment platform"}
             </p>
           </motion.div>
 
@@ -755,8 +755,8 @@ export default function FeaturesPage() {
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               {language === 'ar'
-                ? 'انضم إلى آلاف المحترفين الذين اختاروا SportX لتطوير مسيرتهم المهنية'
-                : 'Join thousands of professionals who chose SportX to advance their careers'}
+                ? 'انضم إلى آلاف المحترفين الذين اختاروا TF1 لتطوير مسيرتهم المهنية'
+                : 'Join thousands of professionals who chose TF1 to advance their careers'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -792,7 +792,7 @@ export default function FeaturesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
-                SportX
+                TF1
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
@@ -872,7 +872,7 @@ export default function FeaturesPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span className="text-sm">hello@sportx.com</span>
+                  <span className="text-sm">hello@TF1.com</span>
                 </div>
               </div>
             </div>
@@ -881,8 +881,8 @@ export default function FeaturesPage() {
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
               {language === 'ar'
-                ? '© 2025 منصة SportX. جميع الحقوق محفوظة'
-                : '© 2025 SportX Platform. All rights reserved'}
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
+                : '© 2025 TF1 Platform. All rights reserved'}
             </p>
           </div>
         </div>

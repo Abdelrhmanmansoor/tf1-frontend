@@ -179,8 +179,8 @@ export default function RegisterSuccessPage() {
           >
             <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4">
               {language === 'ar'
-                ? 'مرحباً بك في SportX!'
-                : 'Welcome to SportX!'}
+                ? 'مرحباً بك في TF1!'
+                : 'Welcome to TF1!'}
             </h1>
 
             <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-white/90 mb-6">
