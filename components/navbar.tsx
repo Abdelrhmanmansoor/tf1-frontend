@@ -37,12 +37,13 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
-          <div className="bg-gradient-to-r from-blue-600 to-green-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center justify-center">
+          {/* لوجو بدون خلفية */}
+          <div className="flex items-center justify-center">
             <Image 
               src="/logo.png"
               alt="SportX Logo"
-              width={32}
-              height={32}
+              width={60}     // 🔥 مقاس أكبر وواضح
+              height={60}
             />
           </div>
         </motion.div>
@@ -79,7 +80,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           </div>
         </nav>
 
-        {/* Right side actions */}
+        {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
           <LanguageSelector />
 
@@ -111,7 +112,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           </motion.div>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile Menu Button */}
         <div className="lg:hidden">
           <Button
             variant="ghost"
@@ -124,12 +125,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </Button>
         </div>
@@ -148,7 +144,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               className="fixed inset-0 bg-black/50 z-50 lg:hidden"
             />
 
-            {/* Menu Panel */}
+            {/* Panel */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -156,26 +152,22 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 bottom-0 w-3/4 max-w-sm bg-white shadow-2xl z-50 lg:hidden"
             >
-              {/* Close Button */}
+              {/* Close + Logo */}
               <div className="flex items-center justify-between p-4 border-b">
-                <div className="bg-gradient-to-r from-blue-600 to-green-500 px-3 py-1.5 rounded-lg flex items-center justify-center">
+                <div className="flex items-center justify-center">
                   <Image 
                     src="/logo.png"
                     alt="SportX Logo"
-                    width={28}
-                    height={28}
+                    width={48}
+                    height={48}
                   />
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(false)}>
                   <X className="w-5 h-5" />
                 </Button>
               </div>
 
-              {/* Navigation Links */}
+              {/* Mobile Navigation */}
               <nav className="p-4 space-y-2">
                 {navItems.map((item) => (
                   <Link
@@ -201,10 +193,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               {/* Action Buttons */}
               <div className="p-4 space-y-3 border-t mt-auto absolute bottom-0 left-0 right-0">
                 <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                  >
+                  <Button variant="outline" className="w-full border-gray-200 hover:border-gray-300 hover:bg-gray-50">
                     {t('register')}
                   </Button>
                 </Link>
