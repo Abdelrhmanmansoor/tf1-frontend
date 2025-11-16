@@ -25,6 +25,7 @@ const translations = {
     about: 'عن المنصة',
     features: 'المزايا',
     contact: 'تواصل معنا',
+    blog: 'المدونة',
     register: 'إنشاء حساب',
     login: 'تسجيل الدخول',
 
