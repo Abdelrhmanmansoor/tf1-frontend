@@ -335,8 +335,8 @@ export default function JobsPage() {
 
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 {language === 'ar'
-                  ? 'انضم إلى أكبر منصة للوظائف الرياضية في العالم. اكتشف آلاف الفرص مع أفضل الأندية والمؤسسات الرياضية العالمية.'
-                  : "Join the world's largest sports job platform. Discover thousands of opportunities with top sports clubs and organizations globally."}
+                  ? 'ابدأ رحلتك المهنية عبر منصة تجمع وظائف الرياضة في المملكة تماشيًا مع رؤية 2030'
+                  : "Start your professional journey through a platform that brings together sports-related jobs in the Kingdom, in line with Vision 2030."}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
