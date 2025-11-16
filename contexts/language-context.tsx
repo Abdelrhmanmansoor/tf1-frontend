@@ -33,13 +33,13 @@ const translations = {
     recruitment: 'التوظيف',
 
     // Hero Section
-    heroTitleApplication: 'منصتك الرياضية لتصنع فرصتك',
+    heroTitleApplication: 'فرصتك تبدأ من هنا',
     heroTitleRecruitment: 'اكتشف المواهب وانشر فرصك بسهولة',
     searchJobsPlaceholder: 'ابحث عن فرص العمل...',
     searchTalentsPlaceholder: 'ابحث عن المواهب الرياضية...',
     joinNow: 'انضم الآن',
     exploreOpportunities: 'استكشف الفرص',
-    attractTalents: 'استقطب المواهب',
+    attractTalents: 'إضافة وظيفة',
     evaluateTeam: 'قيّم الفريق',
 
     // Categories
@@ -89,7 +89,7 @@ const translations = {
     recruitment: 'Recruitment',
 
     // Hero Section
-    heroTitleApplication: 'Your Sports Platform to Create Your Opportunity',
+    heroTitleApplication: 'Your gateway to new opportunities',
     heroTitleRecruitment:
       'Discover Talents and Post Your Opportunities with Ease',
     searchJobsPlaceholder: 'Search for job opportunities...',
