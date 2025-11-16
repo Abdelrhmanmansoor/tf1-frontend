@@ -34,7 +34,7 @@ const translations = {
 
     // Hero Section
     heroTitleApplication: 'فرصتك تبدأ من هنا',
-    heroTitleRecruitment: 'اكتشف المواهب وانشر فرصك بسهولة',
+    heroTitleRecruitment: ' نمكّن مواهبك ونوصّل فرصك',
     searchJobsPlaceholder: 'ابحث عن فرص العمل...',
     searchTalentsPlaceholder: 'ابحث عن المواهب الرياضية...',
     joinNow: 'انضم الآن',
