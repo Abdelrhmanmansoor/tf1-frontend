@@ -35,13 +35,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
-          <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center justify-center">
-  <Image 
-    src="/logo.png" 
-    alt="SportX Logo" 
-    width={28} 
-    height={28} 
-  />
+        <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold">
+  SportX
+</div>
+
 </div>
 
         </motion.div>
