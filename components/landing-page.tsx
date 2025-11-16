@@ -141,61 +141,99 @@ export function LandingPage() {
         language === 'ar'
           ? 'ابدأ رحلتك الرياضية اليوم!'
           : 'Start Your Sports Journey Today!',
-      ctaButton: language === 'ar' ? 'انضم الآن' : 'Join Now',
-      gradientClass: 'bg-gradient-to-r from-blue-600 to-green-500',
-      testimonialsTitle:
-        language === 'ar' ? 'ماذا يقول المستخدمون' : 'What Our User’s Say',
-      testimonialsSubtitle:
-        language === 'ar'
-          ? 'تجارب حقيقية من محترفين وجدوا وظائفهم المثالية'
-          : 'Real Experiences From Professionals Who Found Their Perfect Jobs',
-      featuresTitle:
-        language === 'ar' ? 'لماذا تختار SportX؟' : 'Why choose SportX?',
-      featuresSubtitle:
-        language === 'ar'
-          ? 'منصة شاملة تربطك بفرص العمل في المجال الرياضي'
-          : 'A Comprehensive Platform Connecting You To Sports Career Opportunities',
-      testimonials: [
-        {
-          name: language === 'ar' ? 'أحمد محمد' : 'Ahmed Mohammed',
-          role: language === 'ar' ? 'مدرب كرة قدم' : 'Football Coach',
-          company: language === 'ar' ? 'نادي الهلال' : 'Al Hilal Club',
-          content:
-            language === 'ar'
-              ? 'وجدت وظيفة أحلامي كمدرب في النادي خلال أسبوعين فقط. المنصة سهلة الاستخدام ومليئة بالفرص المناسبة.'
-              : 'I Found My Dream Job As A Coach At The Club In Just Two Weeks. The Platform Is Easy To Use And Full Of Suitable Opportunities.',
-          rating: 5,
-        },
-        {
-          name: language === 'ar' ? 'سارة أحمد' : 'Sarah Ahmed',
-          role:
-            language === 'ar' ? 'أخصائية تغذية رياضية' : 'Sports Nutritionist',
-          company:
-            language === 'ar'
-              ? 'مركز اللياقة الشامل'
-              : 'Comprehensive Fitness Center',
-          content:
-            language === 'ar'
-              ? 'SportX ربطني بأفضل أصحاب العمل في مجال التغذية الرياضية. الآن أعمل مع فريقي المفضل!'
-              : 'SportX Connected Me With The Best Employers In Sports Nutrition. Now I Work With My Favorite Team!',
-          rating: 5,
-        },
-        {
-          name: language === 'ar' ? 'محمد علي' : 'Mohammed Ali',
-          role: language === 'ar' ? 'مدرب سباحة' : 'Swimming Coach',
-          company:
-            language === 'ar'
-              ? 'أكاديمية السباحة المتقدمة'
-              : 'Advanced Swimming Academy',
-          content:
-            language === 'ar'
-              ? 'المنصة وفرت لي عدة خيارات وظيفية ممتازة. التواصل مع أصحاب العمل كان سهلاً وسريعاً.'
-              : 'The Platform Provided Me With Several Excellent Job Options. Communication With Employers Was Easy And Fast.',
-          rating: 4,
-        },
-      ],
-      features: [
-        {
+     ctaButton: language === 'ar' ? 'ابدأ الآن' : 'Get Started',
+gradientClass: 'bg-gradient-to-r from-blue-600 to-green-500',
+
+testimonialsTitle:
+  language === 'ar' ? 'آراء المستخدمين' : 'User Feedback',
+
+testimonialsSubtitle:
+  language === 'ar'
+    ? 'تجارب مختصرة من مستخدمين استفادوا من خدمات المنصة'
+    : 'Short experiences from users who benefited from the platform',
+
+testimonials: [
+  {
+    name: language === 'ar' ? 'مستخدم TF1' : 'TF1 User',
+    role: language === 'ar' ? 'باحث عن عمل' : 'Job Seeker',
+    company: '',
+    content:
+      language === 'ar'
+        ? 'قدرت ألقى فرص مناسبة بسهولة، والمنصة كانت واضحة وسريعة في الاستخدام.'
+        : 'I found suitable opportunities easily, and the platform was clear and fast to use.',
+    rating: 5,
+  },
+  {
+    name: language === 'ar' ? 'جهة رياضية' : 'Sports Organization',
+    role: language === 'ar' ? 'صاحب وظيفة' : 'Employer',
+    company: '',
+    content:
+      language === 'ar'
+        ? 'ساعدتنا المنصة في الوصول لعدد جيد من المتقدمين بشكل أسرع.'
+        : 'The platform helped us reach qualified applicants faster.',
+    rating: 5,
+  },
+  {
+    name: language === 'ar' ? 'مستخدم جديد' : 'New User',
+    role: language === 'ar' ? 'باحث عن فرصة' : 'Candidate',
+    company: '',
+    content:
+      language === 'ar'
+        ? 'تجربة التسجيل والتقديم كانت بسيطة، وهذا شجعني أستخدم المنصة أكثر.'
+        : 'The registration and application experience was simple and encouraging.',
+    rating: 4,
+  },
+],
+
+featuresTitle:
+  language === 'ar' ? 'لماذا تختار TF1؟' : 'Why choose TF1?',
+
+featuresSubtitle:
+  language === 'ar'
+    ? 'حل موحد يجمع الفرص الرياضية ويسهّل وصول الباحثين للجهات الرياضية'
+    : 'A unified platform that connects candidates with sports organizations',
+
+features: [
+  {
+    icon: '🎯',
+    title: language === 'ar' ? 'فرص دقيقة' : 'Relevant Opportunities',
+    description:
+      language === 'ar'
+        ? 'نعرض وظائف متخصصة تناسب مجالات الرياضة المختلفة'
+        : 'We list accurate job opportunities across sports fields',
+  },
+  {
+    icon: '⚡',
+    title: language === 'ar' ? 'تقديم سهل' : 'Easy Apply',
+    description:
+      language === 'ar'
+        ? 'خطوات بسيطة للتقديم بدون تعقيد'
+        : 'Simple and fast application steps',
+  },
+  {
+    icon: '🤝',
+    title:
+      language === 'ar'
+        ? 'ربط الجهات بالمتقدمين'
+        : 'Connecting Employers',
+    description:
+      language === 'ar'
+        ? 'نساعد الجهات الرياضية في الوصول للمتقدمين بسرعة'
+        : 'Helps sports organizations reach candidates quickly',
+  },
+  {
+    icon: '📈',
+    title:
+      language === 'ar'
+        ? 'دعم التطور المهني'
+        : 'Career Development',
+    description:
+      language === 'ar'
+        ? 'أدوات تساعدك على تحسين تجربتك في البحث عن وظيفة'
+        : 'Tools that support your career improvement',
+  },
+],
+
           icon: '🎯',
           title: language === 'ar' ? 'وظائف مخصصة' : 'Personalized Jobs',
           description:
