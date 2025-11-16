@@ -100,7 +100,7 @@ const translations = {
     joinNow: 'Join Now',
     exploreOpportunities: 'Explore Opportunities',
     attractTalents: 'Attract Talents',
-    contractWithUs: 'Contract With Us',
+    contractWithUs: 'ContractWithUs',
 
     // Categories
     targetCategories: 'Target Categories',
