@@ -20,12 +20,28 @@ export default function ContractPage() {
   const submitForm = async (e: any) => {
     e.preventDefault()
 
-    const res = await fetch('/api/contract', {
-      method: 'POST',
-      body: JSON.stringify(form),
-    })
+    try {
+      const res = await fetch(
+        'https://api.sheetbest.com/sheets/dfce37d6-ea59-4c7f-a9d6-d2e79552669b',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form),
+        }
+      )
 
-    if (res.ok) setSent(true)
+      if (res.ok) {
+        setSent(true) // ← يظهر تم الإرسال
+      } else {
+        console.error('Request failed:', res.status)
+        alert('حدث خطأ أثناء إرسال الطلب')
+      }
+    } catch (error) {
+      console.error('Network error:', error)
+      alert('حدث خطأ في الاتصال بالسيرفر')
+    }
   }
 
   return (
