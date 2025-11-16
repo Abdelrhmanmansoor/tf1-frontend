@@ -40,7 +40,7 @@ const translations = {
     joinNow: 'انضم الآن',
     exploreOpportunities: 'استكشف الفرص',
     attractTalents: 'إضافة وظيفة',
-    evaluateTeam: 'قيّم الفريق',
+    evaluateTeam: 'ابدأ استقطابك',
 
     // Categories
     targetCategories: 'الفئات المستهدفة',
