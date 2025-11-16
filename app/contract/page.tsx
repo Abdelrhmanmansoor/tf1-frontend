@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
 import { useLanguage } from '@/contexts/language-context'
 import { motion } from 'framer-motion'
 
@@ -62,14 +60,34 @@ export default function ContractPage() {
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
 
-              <div className="border rounded-lg p-1">
-                <PhoneInput
-                  country={'sa'}
-                  inputClass="!w-full !py-6"
-                  containerClass="!w-full"
-                  onChange={(phone) => setForm({ ...form, phone })}
+              {/* --- Phone Input Replacement --- */}
+              <div className="flex gap-3 border rounded-lg p-3 bg-white">
+                <select
+                  className="border-r pr-2 text-gray-700"
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      phone: e.target.value + form.phone,
+                    })
+                  }
+                >
+                  <option value="+966">🇸🇦 +966</option>
+                  <option value="+971">🇦🇪 +971</option>
+                  <option value="+20">🇪🇬 +20</option>
+                  <option value="+965">🇰🇼 +965</option>
+                  <option value="+974">🇶🇦 +974</option>
+                </select>
+
+                <input
+                  type="tel"
+                  className="flex-1 outline-none"
+                  placeholder={language === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
+                  onChange={(e) =>
+                    setForm({ ...form, phone: e.target.value })
+                  }
                 />
               </div>
+              {/* --- End Phone Input Replacement --- */}
 
               <input
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
