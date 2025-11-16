@@ -761,21 +761,25 @@ export default function JobsPage() {
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
-                  ? 'منصة الرياضة الأولى عالمياً لربط المواهب بالفرص'
-                  : "The world's #1 sports platform connecting talent with opportunities"}
+                  ? 'منصة الرياضة الأولى في المملكة لربط الجهات الرياضية بموظفين مؤهلين'
+                  : "Saudi Arabia’s leading sports jobs platform"}
               </p>
               <div className="flex gap-4">
                 <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-300"
-                >
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </a>
-                <a
+  href="https://www.snapchat.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-10 h-10 bg-gray-800 hover:bg-yellow-400 rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-300"
+>
+  <svg
+    className="w-6 h-6 text-white"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 0c-1.9 0-3.5 1.5-3.5 3.5v.2c-.1.1-.3.1-.4.1-1.3.3-2.3 1.4-2.5 2.7-.2 1.3.3 2.5 1.3 3.3.3.2.4.6.3.9-.4 1.1-1.3 1.8-2.4 1.9-.4 0-.7.3-.7.7v.2c0 .4.3.7.7.8 1.2.3 2.2 1.1 2.7 2.2.1.2.3.4.6.5.8.4 1.6.6 2.5.7.3 0 .6.2.7.4.8 1.2 2.1 2 3.6 2s2.8-.8 3.6-2c.2-.2.4-.4.7-.4.9 0 1.7-.2 2.5-.7.2-.1.5-.3.6-.5.5-1.1 1.5-1.9 2.7-2.2.4-.1.7-.4.7-.8v-.2c0-.4-.3-.7-.7-.7-1.1-.1-2-.8-2.4-1.9-.1-.3 0-.7.3-.9 1-.8 1.5-2 1.3-3.3-.2-1.3-1.2-2.4-2.5-2.7-.1 0-.3-.1-.4-.1v-.2C15.5 1.5 13.9 0 12 0z" />
+  </svg>
+</a>
+
                   href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -827,6 +831,7 @@ export default function JobsPage() {
                             Jobs: 'الوظائف',
                             About: 'عنا',
                             Features: 'المزايا',
+                            blog: 'المدونة',
                             Contact: 'تواصل',
                           }[link]
                         : link}
@@ -877,15 +882,15 @@ export default function JobsPage() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5" />
-                  <span className="text-sm">123 Sports Avenue, Tech City</span>
+                  <span className="text-sm">Kingdom of Saudi Arabia</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5" />
-                  <span className="text-sm">+1 (555) 123-4567</span>
+                  <span className="text-sm">+966539847559</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span className="text-sm">hello@sportx.com</span>
+                  <span className="text-sm">support@tf1one.com</span>
                 </div>
               </div>
             </div>
@@ -894,8 +899,8 @@ export default function JobsPage() {
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
               {language === 'ar'
-                ? '© 2025 منصة SportX. جميع الحقوق محفوظة'
-                : '© 2025 SportX Platform. All rights reserved'}
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة.'
+                : '© 2025 TF1 Platform. All rights reserved.'}
             </p>
           </div>
         </div>
