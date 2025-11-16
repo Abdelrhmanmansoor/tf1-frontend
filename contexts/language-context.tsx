@@ -81,6 +81,7 @@ const translations = {
     jobs: 'Jobs',
     about: 'About',
     features: 'Features',
+    blog:'blog',
     contact: 'Contact Us',
     register: 'Register',
     login: 'Login',
