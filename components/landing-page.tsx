@@ -296,7 +296,7 @@ export function LandingPage() {
           : 'Successful companies that found the best sports talents with us',
       featuresTitle:
         language === 'ar'
-          ? 'لماذا SportX للتوظيف؟'
+          ? 'لماذا مصر للتوظيف؟'
           : 'Why SportX for recruitment?',
       featuresSubtitle:
         language === 'ar'
