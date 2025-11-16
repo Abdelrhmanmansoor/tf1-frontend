@@ -39,8 +39,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   SportX
 </div>
 
-</div>
-
         </motion.div>
 
         {/* Centered Navigation */}
