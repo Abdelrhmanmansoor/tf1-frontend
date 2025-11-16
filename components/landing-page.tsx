@@ -694,7 +694,7 @@ export function LandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent mb-3 sm:mb-4">
                 {language === 'ar'
-                  ? 'أفضل اللاعبين تقييماً'
+                  ? ' أفضل الكوادر تقييماً'
                   : 'Top Rated Players'}
               </h2>
               <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
