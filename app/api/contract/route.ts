@@ -16,22 +16,30 @@ export default function ContractPage() {
   })
 
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const submitForm = async (e: any) => {
     e.preventDefault()
+    setLoading(true)
 
-    const res = await fetch('/api/contract', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',   // ← أهم تعديل
-      },
-      body: JSON.stringify(form),
-    })
+    try {
+      const res = await fetch('/api/contract', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      })
 
-    if (res.ok) {
-      setSent(true)
-    } else {
-      console.log('Request failed:', res.status)
+      if (res.ok) {
+        setSent(true)
+      } else {
+        console.error('Request failed:', res.status, await res.text())
+      }
+    } catch (err) {
+      console.error('Network error:', err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -39,7 +47,7 @@ export default function ContractPage() {
     <div
       className="min-h-screen bg-gray-100 py-12 px-4 flex justify-center"
       dir={language === 'ar' ? 'rtl' : 'ltr'}
-    
+    >
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,9 +122,16 @@ export default function ContractPage() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:opacity-90"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:opacity-90 disabled:opacity-60"
               >
-                {language === 'ar' ? 'إرسال الطلب' : 'Submit Request'}
+                {loading
+                  ? language === 'ar'
+                    ? 'جاري الإرسال...'
+                    : 'Sending...'
+                  : language === 'ar'
+                  ? 'إرسال الطلب'
+                  : 'Submit Request'}
               </button>
             </form>
           </>
