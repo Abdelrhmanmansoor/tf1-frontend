@@ -268,8 +268,8 @@ export function LandingPage() {
     recruitment: {
       heroTitle:
         language === 'ar'
-          ? 'اكتشف المواهب وانشر فرصك بسهولة'
-          : 'Discover Talents & Opportunities Easily',
+          ? 'نمكّن مواهبك ونوصّل فرصك'
+          : 'Empower talents. Connect opportunities',
       heroSearchPlaceholder:
         language === 'ar'
           ? 'ابحث عن المواهب الرياضية...'
