@@ -90,7 +90,7 @@ export function LandingPage() {
       id: 6,
       name: t('Sports physicans'),
       icon: '🩺',
-      nameAr: 'اطباء الطب الرياضي',
+      nameAr: 'أطباء الطب الرياضي',
       nameEn: 'Sports physicans',
     },
     {
@@ -114,7 +114,7 @@ export function LandingPage() {
       nameAr: 'التعليم الرياضي',
       nameEn: 'Sports Education',
     },
-    { id: 10, name: t('club'), icon: '🏟️', nameAr: 'الاندية', nameEn: 'Clubs' },
+    { id: 10, name: t('Facility Operations'), icon: '🪤', nameAr: 'تشغيل وإدارة المنشآت', nameEn: 'Facility Operations' },
   ]
 
   const content = {
