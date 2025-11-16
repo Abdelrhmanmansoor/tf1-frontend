@@ -328,8 +328,8 @@ export default function JobsPage() {
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
                   {language === 'ar'
-                    ? 'ابحث عن وظيفة أحلامك في عالم الرياضة'
-                    : 'Find Your Dream Job in Sports'}
+                    ? 'ابحث عن وظيفة أحلامك '
+                    : 'Find Your Dream Job'}
                 </span>
               </h1>
 
