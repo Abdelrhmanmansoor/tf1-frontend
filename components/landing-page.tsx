@@ -506,21 +506,24 @@ export function LandingPage() {
                   </Link>
                 </motion.div>
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
-                  >
-                    <FootballWipeText transitionKey={mode}>
-                      {mode === 'application'
-                        ? t('exploreOpportunities')
-                        : t('evaluateTeam')}
-                    </FootballWipeText>
-                  </Button>
-                </motion.div>
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+>
+  <Link href={mode === 'application' ? '/jobs' : '/contract'}>
+    <Button
+      variant="outline"
+      size="lg"
+      className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+    >
+      <FootballWipeText transitionKey={mode}>
+        {mode === 'application'
+          ? t('exploreOpportunities')
+          : t('heroButton2')}
+      </FootballWipeText>
+    </Button>
+  </Link>
+</motion.div>
+
               </motion.div>
             </motion.div>
           </div>
