@@ -41,7 +41,7 @@ const translations = {
     joinNow: 'انضم الآن',
     exploreOpportunities: 'استكشف الفرص',
     attractTalents: 'إضافة وظيفة',
-    Contract With Us: 'تعاقد معنا ',
+    ContractWithUs: 'تعاقد معنا ',
 
     // Categories
     targetCategories: 'الفئات المستهدفة',
