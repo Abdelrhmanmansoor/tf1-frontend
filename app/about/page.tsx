@@ -113,57 +113,57 @@ export default function AboutPage() {
   ]
 
   const journeySteps = [
-    {
-      year: '2020',
-      title: language === 'ar' ? 'الحلم يبدأ' : 'The Dream Begins',
-      description:
-        language === 'ar'
-          ? 'فكرة بسيطة لتغيير عالم التوظيف الرياضي'
-          : 'A simple idea to change sports recruitment',
-      icon: Lightbulb,
-      position: 'left',
-    },
-    {
-      year: '2021',
-      title: language === 'ar' ? 'أول خطوة' : 'First Step',
-      description:
-        language === 'ar'
-          ? 'إطلاق النسخة التجريبية وأول 1000 مستخدم'
-          : 'Beta launch with first 1000 users',
-      icon: Rocket,
-      position: 'right',
-    },
-    {
-      year: '2022',
-      title: language === 'ar' ? 'النمو السريع' : 'Rapid Growth',
-      description:
-        language === 'ar'
-          ? 'توسع في 25 دولة و 100,000 مستخدم'
-          : 'Expansion to 25 countries & 100k users',
-      icon: TrendingUp,
-      position: 'left',
-    },
-    {
-      year: '2023',
-      title: language === 'ar' ? 'الشراكات الكبرى' : 'Major Partnerships',
-      description:
-        language === 'ar'
-          ? 'شراكات مع أكبر الأندية والمؤسسات'
-          : 'Partnerships with major clubs & organizations',
-      icon: Building,
-      position: 'right',
-    },
-    {
-      year: '2024',
-      title: language === 'ar' ? 'القيادة العالمية' : 'Global Leadership',
-      description:
-        language === 'ar'
-          ? 'أصبحنا المنصة الأولى عالمياً'
-          : "Became the world's #1 platform",
-      icon: Trophy,
-      position: 'left',
-    },
-  ]
+  {
+    year: '2024',
+    title: language === 'ar' ? 'البداية' : 'The Beginning',
+    description:
+      language === 'ar'
+        ? 'انطلقت فكرة TF1 لإنشاء منصة تجمع وظائف الرياضة في المملكة'
+        : 'TF1 began as an idea to unify sports job opportunities in Saudi Arabia',
+    icon: Lightbulb,
+    position: 'left',
+  },
+  {
+    year: '2024',
+    title: language === 'ar' ? 'تطوير المنصة' : 'Platform Development',
+    description:
+      language === 'ar'
+        ? 'بدء بناء المنصة وتحسين التجربة لتناسب احتياجات الباحثين والجهات الرياضية'
+        : 'Started building the platform and refining it for talents and sports entities',
+    icon: Rocket,
+    position: 'right',
+  },
+  {
+    year: '2025',
+    title: language === 'ar' ? 'الإطلاق الأول' : 'First Launch',
+    description:
+      language === 'ar'
+        ? 'إطلاق الإصدار الأول من TF1 وبدء استقبال الطلبات والوظائف'
+        : 'Released the first version of TF1 and started receiving jobs and applications',
+    icon: TrendingUp,
+    position: 'left',
+  },
+  {
+    year: '2025',
+    title: language === 'ar' ? 'دعم رؤية 2030' : 'Supporting Vision 2030',
+    description:
+      language === 'ar'
+        ? 'مواءمة خدمات المنصة مع أهداف تنمية القطاع الرياضي ضمن رؤية السعودية 2030'
+        : 'Aligned the platform with Saudi Vision 2030 sports sector development goals',
+    icon: Building,
+    position: 'right',
+  },
+  {
+    year: '2025',
+    title: language === 'ar' ? 'صناعة الفرص' : 'Creating Opportunities',
+    description:
+      language === 'ar'
+        ? 'العمل على ربط المواهب بالفرص وتسهيل التوظيف الرياضي في المملكة'
+        : 'Working on connecting talents with opportunities across the Kingdom',
+    icon: Trophy,
+    position: 'left',
+  },
+]
 
   const coreValues = [
     {
@@ -208,40 +208,63 @@ export default function AboutPage() {
     },
   ]
 
-  const leadership = [
-    {
-      name: language === 'ar' ? 'أحمد الرياضي' : 'Ahmed Al-Riadi',
-      role: language === 'ar' ? 'الرئيس التنفيذي' : 'Chief Executive Officer',
-      bio:
-        language === 'ar'
-          ? 'رائد أعمال رياضي بخبرة 15 عامً في التكنولوجيا والرياضة'
-          : 'Sports entrepreneur with 15 years in technology and sports',
-      achievements:
-        language === 'ar' ? '3 شركات ناشئة ناجحة' : '3 successful startups',
-      gradient: 'from-blue-500 to-purple-600',
-    },
-    {
-      name: language === 'ar' ? 'سارة التقنية' : 'Sarah Tech',
-      role: language === 'ar' ? 'مديرة التطوير' : 'Chief Technology Officer',
-      bio:
-        language === 'ar'
-          ? 'عبقرية تقنية متخصصة في الذكاء الاصطناعي والبيانات الضخمة'
-          : 'Tech genius specializing in AI and big data',
-      achievements:
-        language === 'ar' ? '20+ براءة اختراع' : '20+ patents filed',
-      gradient: 'from-green-500 to-teal-600',
-    },
-    {
-      name: language === 'ar' ? 'محمد المبدع' : 'Mohamed Creative',
-      role: language === 'ar' ? 'مدير الإبداع' : 'Chief Creative Officer',
-      bio:
-        language === 'ar'
-          ? 'مصمم مبدع يحول الأفكار إلى تجارب استثنائية'
-          : 'Creative designer turning ideas into exceptional experiences',
-      achievements: language === 'ar' ? '50+ جائزة تصميم' : '50+ design awards',
-      gradient: 'from-orange-500 to-red-600',
-    },
-  ]
+ const leadership = [
+  {
+    name: language === 'ar' ? 'تمكين المواهب' : 'Empowering Talent',
+    role:
+      language === 'ar'
+        ? 'هدفنا الأول'
+        : 'Primary Goal',
+    bio:
+      language === 'ar'
+        ? 'نساعد الشباب الرياضي في المملكة على الوصول لفرص حقيقية في قطاع الرياضة.'
+        : 'We help Saudi sports talents access real opportunities in the industry.',
+    achievements:
+      language === 'ar'
+        ? 'آلاف الفرص المستقبلية'
+        : 'Thousands of future opportunities',
+    gradient: 'from-blue-500 to-purple-600',
+  },
+  {
+    name:
+      language === 'ar'
+        ? 'ربط الأندية بالكوادر'
+        : 'Connecting Clubs & Talent',
+    role:
+      language === 'ar'
+        ? 'هدفنا الثاني'
+        : 'Secondary Goal',
+    bio:
+      language === 'ar'
+        ? 'نوفّر منصة تجمع الأندية والجهات الرياضية مع أفضل الكفاءات بسهولة.'
+        : 'A platform that connects sports entities with top talent effortlessly.',
+    achievements:
+      language === 'ar'
+        ? 'نمو سريع في عدد الجهات'
+        : 'Rapid growth in registered sports entities',
+    gradient: 'from-green-500 to-teal-600',
+  },
+  {
+    name:
+      language === 'ar'
+        ? 'دعم رؤية 2030'
+        : 'Supporting Vision 2030',
+    role:
+      language === 'ar'
+        ? 'هدفنا الثالث'
+        : 'Strategic Goal',
+    bio:
+      language === 'ar'
+        ? 'نعمل على تطوير قطاع الرياضة بما يتماشى مع خطط المملكة للتحول الوطني.'
+        : 'We support the development of the sports sector aligned with Vision 2030.',
+    achievements:
+      language === 'ar'
+        ? 'مواءمة كاملة مع مستهدفات الرياضة'
+        : 'Aligned with national sports transformation goals',
+    gradient: 'from-orange-500 to-red-600',
+  },
+]
+
 
   return (
     <div
