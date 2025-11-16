@@ -1030,15 +1030,15 @@ export function LandingPage() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5" />
-                  <span className="text-sm">123 Sports Avenue, Tech City</span>
+                  <span className="text-sm">Kingdom of Saudi Arabia</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5" />
-                  <span className="text-sm">+1 (555) 123-4567</span>
+                  <span className="text-sm">+966 53 984 7559</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span className="text-sm">hello@sportx.com</span>
+                  <span className="text-sm">support@tf1one.com</span>
                 </div>
               </div>
             </div>
