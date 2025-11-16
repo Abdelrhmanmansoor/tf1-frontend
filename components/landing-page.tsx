@@ -913,12 +913,12 @@ export function LandingPage() {
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
-                  ? 'منصة الرياضة الأولى عالمياً لربط المواهب بالفرص'
-                  : "The world's #1 sports platform connecting talent with opportunities"}
+                  ? 'منصة التوظيف الرياضية الأولى في المملكة'
+                  : "Saudi Arabia’s #1 platform for sports jobs"}
               </p>
               <div className="flex gap-4">
                 <a
-                  href="https://facebook.com"
+                  href="https://www.snapchat.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-300"
@@ -979,6 +979,7 @@ export function LandingPage() {
                             Jobs: 'الوظائف',
                             About: 'عنا',
                             Features: 'المزايا',
+                            blog: 'المدونة',
                             Contact: 'تواصل',
                           }[link]
                         : link}
@@ -1046,8 +1047,8 @@ export function LandingPage() {
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
               {language === 'ar'
-                ? '© 2025 منصة SportX. جميع الحقوق محفوظة'
-                : '© 2025 SportX Platform. All rights reserved'}
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
+                : '© 2025 TF1 Platform. All rights reserved'}
             </p>
           </div>
         </div>
