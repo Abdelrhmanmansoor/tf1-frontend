@@ -292,16 +292,16 @@ export function LandingPage() {
         language === 'ar' ? 'ماذا يقول أصحاب العمل' : 'What Our User’s Say',
       testimonialsSubtitle:
         language === 'ar'
-          ? 'شركات ناجحة وجدت أفضل المواهب الرياضية معنا'
-          : 'Successful companies that found the best sports talents with us',
+          ? ' جهات وظيفية اعتمدت علينا لاختيار أفضل الكوادر'
+          : 'Businesses connecting with top sports talent via TF1',
       featuresTitle:
         language === 'ar'
           ? 'لماذا TF1 للتوظيف؟'
           : 'Why SportX for recruitment?',
       featuresSubtitle:
         language === 'ar'
-          ? 'منصة متقدمة لاكتشاف وتوظيف أفضل المواهب الرياضية'
-          : 'Advanced Platform for Discovering & Recruiting the Best Sports Talents',
+          ? 'منصة متقدمة لاكتشاف وتوظيف أفضل الكوادر '
+          : 'Advanced Platform for Discovering & Recruiting the Best ',
       testimonials: [
         {
           name: language === 'ar' ? 'خالد السعيد' : 'Khalid Al-Saeed',
@@ -309,12 +309,12 @@ export function LandingPage() {
             language === 'ar'
               ? 'مدير الموارد البشرية'
               : 'Human Resources Manager',
-          company: language === 'ar' ? 'نادي النصر' : 'Al Nassr Club',
+          company: language === 'ar' ? 'نادي الصقور' : 'Falcons Club',
           content:
             language === 'ar'
-              ? 'وجدنا أفضل المدربين والمختصين من خلال SportX. المنصة وفرت علينا الكثير من الوقت والجهد.'
-              : 'We Found the Best Coaches & Specialists Through SportX. The Platform Saved Us A Lot Of Time & Effort.',
-          rating: 5,
+              ? 'المنصة وفّرت علينا وقت كبير وربطتنا بأفضل الكفاءات.'
+              : 'The platform saved us a lot of time and connected us with top talent.',
+          rating: 4,
         },
         {
           name: language === 'ar' ? 'نورا عبدالله' : 'Nora Abdullah',
@@ -326,11 +326,11 @@ export function LandingPage() {
           content:
             language === 'ar'
               ? 'جودة المرشحين ممتازة والأدوات سهلة الاستخدام. وظفنا 15 موظف في شهر واحد!'
-              : 'The Quality of Candidates Is Excellent & The Tools Are Easy To Use. We Hired 15 Employees In One Month!',
+              : 'The Quality of Candidates Is Excellent & The Tools Are Easy To Use',
           rating: 5,
         },
         {
-          name: language === 'ar' ? 'عبدالرحمن محمد' : 'Abdulrahman Mohammed',
+          name: language === 'ar' ? 'عبدالرحمن منصور' : 'Abdulrahman mansour',
           role: language === 'ar' ? 'مؤسس' : 'Founder',
           company:
             language === 'ar'
@@ -338,8 +338,8 @@ export function LandingPage() {
               : 'Advanced Sports Academy',
           content:
             language === 'ar'
-              ? 'المنصة ساعدتنا في بناء فريق عمل متميز من المختصين في جميع المجالات الرياضية.'
-              : 'The Platform Saved Us A Lot Of Time & Effort. We Built An Outstanding Team Of Specialists In All Sports Fields.',
+              ? 'المنصة ساعدتنا في بناء فريق عمل متميز.'
+              : ' We Built An Outstanding Team Of Specialists In All Sports Fields.',
           rating: 4,
         },
       ],
@@ -518,7 +518,7 @@ export function LandingPage() {
       <FootballWipeText transitionKey={mode}>
         {mode === 'application'
           ? t('exploreOpportunities')
-          : t('heroButton2')}
+          : t('contractWithUs')}
       </FootballWipeText>
     </Button>
   </Link>
