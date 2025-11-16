@@ -545,13 +545,13 @@ export default function AboutPage() {
           >
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar' ? 'قادة الرؤية' : 'Visionary Leaders'}
+                {language === 'ar' ? 'أهداف المنصة' : 'Platform Goals'}
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               {language === 'ar'
-                ? 'الأشخاص الذين يقودون التغيير ويشكلون مستقبل الرياضة'
-                : 'The people driving change and shaping the future of sports'}
+                ? 'بناء مستقبل الرياضة عبر تمكين المواهب وتوسيع الفرص'
+                : 'Empowering talents to build the future of sports'}
             </p>
           </motion.div>
 
@@ -638,7 +638,7 @@ export default function AboutPage() {
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="font-semibold">+1 (555) 123-4567</p>
+                  <p className="font-semibold">+966 53 984 7559</p>
                   <p className="text-white/80 text-sm">
                     {language === 'ar' ? 'متاح 24/7' : 'Available 24/7'}
                   </p>
@@ -650,7 +650,7 @@ export default function AboutPage() {
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="font-semibold">hello@sportx.com</p>
+                  <p className="font-semibold">Support@tf1one.com</p>
                   <p className="text-white/80 text-sm">
                     {language === 'ar' ? 'نرد في دقائق' : 'We reply in minutes'}
                   </p>
@@ -704,8 +704,8 @@ export default function AboutPage() {
               <div className="text-center pt-4">
                 <p className="text-gray-500 text-sm">
                   {language === 'ar'
-                    ? 'انضم لأكثر من 500,000 مستخدم حول العالم'
-                    : 'Join 500,000+ users worldwide'}
+                    ? 'انضم لأكثر من 2,000 مستخدم حول المملكة'
+                    : 'Join over 2,000 users across the Kingdom'}
                 </p>
               </div>
             </div>
@@ -724,19 +724,22 @@ export default function AboutPage() {
               </div>
               <p className="text-gray-400 leading-relaxed mb-6">
                 {language === 'ar'
-                  ? 'منصة الرياضة الأولى عالمياً لربط المواهب بالفرص'
-                  : "The world's #1 sports platform connecting talent with opportunities"}
+                  ? 'منصة الرياضة الأولى في المملكة لربط المواهب بالفرص'
+                  : "The Kingdom’s leading sports platform connecting talent to opportunities"}
               </p>
               <div className="flex gap-4">
                 <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-300"
-                >
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
+                  href="https://www.snapchat.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-10 h-10 bg-gray-800 hover:bg-yellow-400 rounded-lg flex items-center justify-center cursor-pointer transition-colors duration-300"
+>
+  <svg
+    className="w-6 h-6 text-white"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
                 </a>
                 <a
                   href="https://twitter.com"
@@ -790,6 +793,7 @@ export default function AboutPage() {
                             Jobs: 'الوظائف',
                             About: 'عنا',
                             Features: 'المزايا',
+                            blog: 'المدونة',
                             Contact: 'تواصل',
                           }[link]
                         : link}
@@ -840,15 +844,15 @@ export default function AboutPage() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5" />
-                  <span className="text-sm">123 Sports Avenue, Tech City</span>
+                  <span className="text-sm">Kingdom of Saudi Arabia</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5" />
-                  <span className="text-sm">+1 (555) 123-4567</span>
+                  <span className="text-sm">+966 53 984 7559</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span className="text-sm">hello@sportx.com</span>
+                  <span className="text-sm">support@tf1one.com</span>
                 </div>
               </div>
             </div>
