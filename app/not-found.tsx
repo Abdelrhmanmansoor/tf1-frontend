@@ -12,6 +12,8 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center px-6">
       <div className="max-w-2xl mx-auto text-center">
+
+        {/* 404 Number + Animation */}
         <motion.div
           className="mb-8"
           initial={{ scale: 0.5, opacity: 0 }}
@@ -23,6 +25,7 @@ export default function NotFound() {
               404
             </h1>
 
+            {/* Floating Ball Animation */}
             <motion.div
               className="absolute -top-4 right-8 text-4xl"
               animate={{
@@ -39,6 +42,7 @@ export default function NotFound() {
           </div>
         </motion.div>
 
+        {/* Headline + Description */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 30 }}
@@ -47,27 +51,31 @@ export default function NotFound() {
         >
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             {language === 'ar'
-              ? 'عذراً، الصفحة غير موجودة!'
+              ? 'عذراً، الصفحة غير متاحة!'
               : 'Oops! Page Not Found'}
           </h2>
+
           <p className="text-gray-600 text-lg mb-2">
             {language === 'ar'
-              ? 'الصفحة التي تبحث عنها قد تكون محذوفة أو غير متاحة حالياً'
-              : 'The page you are looking for might have been removed or is temporarily unavailable'}
+              ? 'يبدو أن الصفحة التي تبحث عنها غير متوفرة حالياً'
+              : 'The page you are looking for might be unavailable right now'}
           </p>
+
           <p className="text-gray-500">
             {language === 'ar'
-              ? 'دعنا نعيدك إلى ملعبك الرئيسي!'
-              : "Let's get you back to your home field!"}
+              ? 'خلّنا نرجّعك للواجهة الرئيسية'
+              : "Let's get you back to the main field!"}
           </p>
         </motion.div>
 
+        {/* Buttons Section */}
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
+          {/* Back to Home */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               asChild
@@ -76,11 +84,12 @@ export default function NotFound() {
             >
               <Link href="/">
                 <Home className="w-5 h-5 mr-2" />
-                {language === 'ar' ? 'العودة للرئيسية' : 'Back to Home'}
+                {language === 'ar' ? 'الرئيسية' : 'Back to Home'}
               </Link>
             </Button>
           </motion.div>
 
+          {/* Go Back */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
@@ -91,7 +100,7 @@ export default function NotFound() {
               {language === 'ar' ? (
                 <>
                   <ArrowRight className="w-5 h-5 mr-2" />
-                  العودة للخلف
+                  رجوع
                 </>
               ) : (
                 <>
@@ -103,6 +112,7 @@ export default function NotFound() {
           </motion.div>
         </motion.div>
 
+        {/* Suggestions Box */}
         <motion.div
           className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200"
           initial={{ opacity: 0, y: 30 }}
@@ -113,10 +123,11 @@ export default function NotFound() {
             <Search className="w-6 h-6 text-gray-400 mr-3" />
             <h3 className="text-lg font-semibold text-gray-800">
               {language === 'ar'
-                ? 'ماذا تبحث عنه؟'
-                : 'What are you looking for?'}
+                ? 'قد تبحث عن:'
+                : 'You may be looking for:'}
             </h3>
           </div>
+
           <div className="flex flex-wrap gap-2 justify-center">
             {[
               { ar: 'الوظائف', en: 'Jobs' },
