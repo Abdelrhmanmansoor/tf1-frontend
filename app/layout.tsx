@@ -6,8 +6,8 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 
 export const metadata: Metadata = {
-  title: 'SportX - Sports Platform',
-  description: 'Connect players, coaches, clubs, and specialists',
+  title: ' TF1 JOPS ',
+  description: 'منصة تربط الباحثين عن وظائف رياضية بالأندية والجهات في المملكة',
 }
 
 export default function RootLayout({

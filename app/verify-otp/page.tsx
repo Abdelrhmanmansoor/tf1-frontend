@@ -280,7 +280,7 @@ export default function VerifyOTPPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              {language === 'ar' ? 'مرحباً بك في SportX' : 'Welcome to SportX'}
+              {language === 'ar' ? 'مرحباً بك في TF1' : 'Welcome to TF1'}
             </motion.p>
 
             <motion.div
