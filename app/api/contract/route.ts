@@ -39,7 +39,7 @@ export default function ContractPage() {
     <div
       className="min-h-screen bg-gray-100 py-12 px-4 flex justify-center"
       dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
+    
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
