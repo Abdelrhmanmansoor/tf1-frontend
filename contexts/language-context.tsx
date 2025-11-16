@@ -99,7 +99,7 @@ const translations = {
     joinNow: 'Join Now',
     exploreOpportunities: 'Explore Opportunities',
     attractTalents: 'Attract Talents',
-    Contract With Us: 'herobutton2',
+    Contract With Us: 'contract With Us',
 
     // Categories
     targetCategories: 'Target Categories',
