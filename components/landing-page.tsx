@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -55,6 +55,8 @@ export function LandingPage() {
   const [mode, setMode] = useState<SwitcherMode>('application')
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
+  const autoScrollIntervalRef = useRef<number | null>(null)
+  const isPausedRef = useRef(false)
 
   const categories = [
     {
@@ -114,7 +116,13 @@ export function LandingPage() {
       nameAr: 'التعليم الرياضي',
       nameEn: 'Sports Education',
     },
-    { id: 10, name: t('Facility Operations'), icon: '🪤', nameAr: 'تشغيل وإدارة المنشآت', nameEn: 'Facility Operations' },
+    {
+      id: 10,
+      name: t('Facility Operations'),
+      icon: '🪤',
+      nameAr: 'تشغيل وإدارة المنشآت',
+      nameEn: 'Facility Operations',
+    },
   ]
 
   const content = {
@@ -141,131 +149,100 @@ export function LandingPage() {
         language === 'ar'
           ? 'ابدأ رحلتك الرياضية اليوم!'
           : 'Start Your Sports Journey Today!',
-     ctaButton: language === 'ar' ? 'ابدأ الآن' : 'Get Started',
-gradientClass: 'bg-gradient-to-r from-blue-600 to-green-500',
+      ctaButton: language === 'ar' ? 'ابدأ الآن' : 'Get Started',
+      // refined gradient (softer, matches site palette)
+      gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-400 to-green-500',
 
-testimonialsTitle:
-  language === 'ar' ? 'آراء المستخدمين' : 'User Feedback',
+      testimonialsTitle:
+        language === 'ar' ? 'آراء المستخدمين' : 'User Feedback',
 
-testimonialsSubtitle:
-  language === 'ar'
-    ? 'تجارب مختصرة من مستخدمين استفادوا من خدمات المنصة'
-    : 'Short experiences from users who benefited from the platform',
+      testimonialsSubtitle:
+        language === 'ar'
+          ? 'تجارب مختصرة من مستخدمين استفادوا من خدمات المنصة'
+          : 'Short experiences from users who benefited from the platform',
 
-testimonials: [
-  {
-    name: language === 'ar' ? 'مستخدم TF1' : 'TF1 User',
-    role: language === 'ar' ? 'باحث عن عمل' : 'Job Seeker',
-    company: '',
-    content:
-      language === 'ar'
-        ? 'قدرت ألقى فرص مناسبة بسهولة، والمنصة كانت واضحة وسريعة في الاستخدام.'
-        : 'I found suitable opportunities easily, and the platform was clear and fast to use.',
-    rating: 5,
-  },
-  {
-    name: language === 'ar' ? 'جهة رياضية' : 'Sports Organization',
-    role: language === 'ar' ? 'صاحب وظيفة' : 'Employer',
-    company: '',
-    content:
-      language === 'ar'
-        ? 'ساعدتنا المنصة في الوصول لعدد جيد من المتقدمين بشكل أسرع.'
-        : 'The platform helped us reach qualified applicants faster.',
-    rating: 5,
-  },
-  {
-    name: language === 'ar' ? 'مستخدم جديد' : 'New User',
-    role: language === 'ar' ? 'باحث عن فرصة' : 'Candidate',
-    company: '',
-    content:
-      language === 'ar'
-        ? 'تجربة التسجيل والتقديم كانت بسيطة، وهذا شجعني أستخدم المنصة أكثر.'
-        : 'The registration and application experience was simple and encouraging.',
-    rating: 4,
-  },
-],
+      testimonials: [
+        {
+          name: language === 'ar' ? 'مستخدم TF1' : 'TF1 User',
+          role: language === 'ar' ? 'باحث عن عمل' : 'Job Seeker',
+          company: '',
+          content:
+            language === 'ar'
+              ? 'قدرت ألقى فرص مناسبة بسهولة، والمنصة كانت واضحة وسريعة في الاستخدام.'
+              : 'I found suitable opportunities easily, and the platform was clear and fast to use.',
+          rating: 5,
+        },
+        {
+          name: language === 'ar' ? 'جهة رياضية' : 'Sports Organization',
+          role: language === 'ar' ? 'صاحب وظيفة' : 'Employer',
+          company: '',
+          content:
+            language === 'ar'
+              ? 'ساعدتنا المنصة في الوصول لعدد جيد من المتقدمين بشكل أسرع.'
+              : 'The platform helped us reach qualified applicants faster.',
+          rating: 5,
+        },
+        {
+          name: language === 'ar' ? 'مستخدم جديد' : 'New User',
+          role: language === 'ar' ? 'باحث عن فرصة' : 'Candidate',
+          company: '',
+          content:
+            language === 'ar'
+              ? 'تجربة التسجيل والتقديم كانت بسيطة، وهذا شجعني أستخدم المنصة أكثر.'
+              : 'The registration and application experience was simple and encouraging.',
+          rating: 4,
+        },
+      ],
 
-featuresTitle:
-  language === 'ar' ? 'لماذا تختار TF1؟' : 'Why choose TF1?',
+      featuresTitle:
+        language === 'ar' ? 'لماذا تختار TF1؟' : 'Why choose TF1?',
 
-featuresSubtitle:
-  language === 'ar'
-    ? 'حل موحد يجمع الفرص الرياضية ويسهّل وصول الباحثين للجهات الرياضية'
-    : 'A unified platform that connects candidates with sports organizations',
+      featuresSubtitle:
+        language === 'ar'
+          ? 'حل موحد يجمع الفرص الرياضية ويسهّل وصول الباحثين للجهات الرياضية'
+          : 'A unified platform that connects candidates with sports organizations',
 
-features: [
-  {
-    icon: '🎯',
-    title: language === 'ar' ? 'فرص دقيقة' : 'Relevant Opportunities',
-    description:
-      language === 'ar'
-        ? 'نعرض وظائف متخصصة تناسب مجالات الرياضة المختلفة'
-        : 'We list accurate job opportunities across sports fields',
-  },
-  {
-    icon: '⚡',
-    title: language === 'ar' ? 'تقديم سهل' : 'Easy Apply',
-    description:
-      language === 'ar'
-        ? 'خطوات بسيطة للتقديم بدون تعقيد'
-        : 'Simple and fast application steps',
-  },
-  {
-    icon: '🤝',
-    title:
-      language === 'ar'
-        ? 'ربط الجهات بالمتقدمين'
-        : 'Connecting Employers',
-    description:
-      language === 'ar'
-        ? 'نساعد الجهات الرياضية في الوصول للمتقدمين بسرعة'
-        : 'Helps sports organizations reach candidates quickly',
-  },
-  {
-    icon: '📈',
-    title:
-      language === 'ar'
-        ? 'دعم التطور المهني'
-        : 'Career Development',
-    description:
-      language === 'ar'
-        ? 'أدوات تساعدك على تحسين تجربتك في البحث عن وظيفة'
-        : 'Tools that support your career improvement',
-  },
-],
-
+      features: [
+        {
           icon: '🎯',
-          title: language === 'ar' ? 'وظائف مخصصة' : 'Personalized Jobs',
+          title: language === 'ar' ? 'فرص دقيقة' : 'Relevant Opportunities',
           description:
             language === 'ar'
-              ? 'خوارزمية ذكية تقترح عليك الوظائف المناسبة لمهاراتك وخبرتك'
-              : 'Smart Algorithm Suggests Suitable Jobs For Your Skills And Experience',
+              ? 'نعرض وظائف متخصصة تناسب مجالات الرياضة المختلفة'
+              : 'We list accurate job opportunities across sports fields',
         },
         {
           icon: '⚡',
-          title: language === 'ar' ? 'تقديم سريع' : 'Quick Apply',
+          title: language === 'ar' ? 'تقديم سهل' : 'Easy Apply',
           description:
             language === 'ar'
-              ? 'قدم على الوظائف بنقرة واحدة مع ملفك الشخصي المحدث'
-              : 'Apply To Jobs With One Click Using Your Updated Profile',
+              ? 'خطوات بسيطة للتقديم بدون تعقيد'
+              : 'Simple and fast application steps',
         },
         {
-          icon: '🔒',
-          title: language === 'ar' ? 'أمان وثقة' : 'Security & Trust',
+          icon: '🤝',
+          title:
+            language === 'ar'
+              ? 'ربط الجهات بالمتقدمين'
+              : 'Connecting Employers',
           description:
             language === 'ar'
-              ? 'جميع الشركات والوظائف محققة لضمان تجربة آمنة وموثوقة'
-              : 'All Companies & Jobs Are Verified To Ensure A Safe And Trusted Experience',
+              ? 'نساعد الجهات الرياضية في الوصول للمتقدمين بسرعة'
+              : 'Helps sports organizations reach candidates quickly',
         },
         {
           icon: '📈',
-          title: language === 'ar' ? 'تطوير مهني' : 'Career Development',
+          title:
+            language === 'ar'
+              ? 'دعم التطور المهني'
+              : 'Career Development',
           description:
             language === 'ar'
-              ? 'موارد وأدوات لتطوير مهاراتك والتقدم في مسيرتك المهنية'
-              : 'Resources & Tools To Develop Your Skills And Advance Your Career',
+              ? 'أدوات تساعدك على تحسين تجربتك في البحث عن وظيفة'
+              : 'Tools that support your career improvement',
         },
       ],
+
       opportunities: [
         {
           title: language === 'ar' ? 'مدرب كرة قدم' : 'Football Coach',
@@ -463,6 +440,57 @@ features: [
     },
   }
 
+  /**
+   * AUTO SCROLL (slow & smooth) — recommended behavior:
+   * - slow & soft auto scroll (A)
+   * - pause on user interaction (hover/touch)
+   * - responsive: scroll distance based on container width
+   */
+  useEffect(() => {
+    const startAutoScroll = () => {
+      // clear existing
+      if (autoScrollIntervalRef.current) {
+        window.clearInterval(autoScrollIntervalRef.current)
+        autoScrollIntervalRef.current = null
+      }
+
+      autoScrollIntervalRef.current = window.setInterval(() => {
+        if (!carouselRef.current || isPausedRef.current) return
+
+        const el = carouselRef.current
+        // distance: ~ 70% of visible width (gives nice movement)
+        const distance = Math.round(el.clientWidth * 0.7)
+
+        // if reached end, go back to start smoothly
+        const maxScrollLeft = el.scrollWidth - el.clientWidth
+        if (el.scrollLeft + distance >= maxScrollLeft - 10) {
+          // smooth jump back to start
+          el.scrollTo({ left: 0, behavior: 'smooth' })
+        } else {
+          el.scrollBy({ left: distance, behavior: 'smooth' })
+        }
+      }, 3000) // every 3s (slow & premium feel)
+    }
+
+    startAutoScroll()
+
+    // cleanup
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        window.clearInterval(autoScrollIntervalRef.current)
+        autoScrollIntervalRef.current = null
+      }
+    }
+  }, [])
+
+  // pause/resume handlers
+  const handlePause = () => {
+    isPausedRef.current = true
+  }
+  const handleResume = () => {
+    isPausedRef.current = false
+  }
+
   return (
     <div
       className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
@@ -543,32 +571,28 @@ features: [
                     </Button>
                   </Link>
                 </motion.div>
-                <motion.div
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
->
-  <Link href={mode === 'application' ? '/jobs' : '/contract'}>
-    <Button
-      variant="outline"
-      size="lg"
-      className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
-    >
-      <FootballWipeText transitionKey={mode}>
-        {mode === 'application'
-          ? t('exploreOpportunities')
-          : t('contractWithUs')}
-      </FootballWipeText>
-    </Button>
-  </Link>
-</motion.div>
-
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link href={mode === 'application' ? '/jobs' : '/contract'}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                    >
+                      <FootballWipeText transitionKey={mode}>
+                        {mode === 'application'
+                          ? t('exploreOpportunities')
+                          : t('contractWithUs')}
+                      </FootballWipeText>
+                    </Button>
+                  </Link>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
         </div>
       </motion.section>
 
-      {/* Categories Section */}
+      {/* Categories Section (REFINED: Glassmorphism + Auto Scroll + Pause on Interaction) */}
       <section
         className={`py-12 sm:py-16 ${content[mode].gradientClass} overflow-hidden`}
       >
@@ -587,72 +611,105 @@ features: [
           >
             {t('targetCategories')}
           </motion.h2>
+
           {/* Carousel wrapper */}
           <div className="relative">
             {/* Scrollable container */}
             <div
               ref={carouselRef}
+              onMouseEnter={handlePause}
+              onMouseLeave={handleResume}
+              onTouchStart={handlePause}
+              onTouchEnd={handleResume}
               className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory py-8 px-4"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch',
+              }}
             >
+              {/*
+                Responsive card widths chosen to match "A" option:
+                - mobile: roughly 2 visible (w-64)
+                - tablet: 3 visible (sm:w-80)
+                - desktop: 4 visible (we rely on container max-width)
+              */}
               {categories.map((category, index) => (
                 <motion.div
                   key={category.id}
-                  className="bg-white rounded-xl p-6 sm:p-8 text-center shadow-lg relative overflow-hidden flex-shrink-0 w-64 sm:w-80 snap-start"
-                  initial={{ opacity: 0, y: 50, rotateY: -15 }}
+                  className={`
+                    bg-white/85 backdrop-blur-sm
+                    rounded-3xl
+                    p-6 sm:p-8
+                    text-center
+                    shadow-[0_10px_25px_rgba(8,15,52,0.08)]
+                    hover:shadow-[0_20px_45px_rgba(8,15,52,0.12)]
+                    transition-all duration-300
+                    relative overflow-hidden flex-shrink-0
+                    w-56 sm:w-72 md:w-80 snap-start
+                    border border-white/30
+                  `}
+                  initial={{ opacity: 0, y: 50, rotateY: -12 }}
                   whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
                   transition={{
-                    duration: 0.6,
-                    delay: index * 0.1,
+                    duration: 0.7,
+                    delay: index * 0.08,
                     type: 'spring',
-                    stiffness: 100,
+                    stiffness: 90,
                   }}
                   viewport={{ once: true, margin: '-50px' }}
                   whileHover={{
-                    scale: 1.08,
-                    rotateY: 5,
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                    transition: { duration: 0.3 },
+                    scale: 1.06,
+                    rotateY: 4,
+                    boxShadow: '0 24px 50px rgba(3,10,34,0.14)',
+                    transition: { duration: 0.28 },
                   }}
                 >
-                  {/* Hover Background Effect */}
+                  {/* Soft hover glow */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-0"
+                    className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/0 to-white/5 opacity-0"
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                   />
+
                   <motion.div
-                    className="text-4xl sm:text-5xl mb-4 sm:mb-6 relative z-10"
+                    className="text-4xl sm:text-5xl mb-3 sm:mb-4 relative z-10"
                     whileHover={{
-                      scale: 1.2,
-                      rotate: [0, -10, 10, -10, 0],
+                      scale: 1.15,
+                      rotate: [0, -8, 8, -8, 0],
                       transition: { duration: 0.6 },
                     }}
                   >
                     {category.icon}
                   </motion.div>
-                  <div className="text-sm sm:text-base font-medium text-gray-700 relative z-10">
+
+                  <div className="text-sm sm:text-base font-semibold text-gray-800 relative z-10">
                     {language === 'ar' ? category.nameAr : category.nameEn}
                   </div>
-                  {/* Decorative Elements */}
+
+                  {/* subtle decorative dot */}
                   <motion.div
-                    className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-br from-blue-400 to-green-400 rounded-full opacity-0"
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-br from-blue-400 to-green-400 rounded-full opacity-0"
                     whileHover={{
                       opacity: 1,
-                      scale: [1, 1.5, 1],
-                      transition: { duration: 0.5 },
+                      scale: [1, 1.6, 1],
+                      transition: { duration: 0.45 },
                     }}
                   />
                 </motion.div>
               ))}
             </div>
-            {/* Navigation buttons */}
+
+            {/* Navigation buttons — keep but smaller & semi-transparent */}
             <button
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors z-10"
+              aria-label="prev categories"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white z-10"
+              onMouseEnter={handlePause}
+              onMouseLeave={handleResume}
               onClick={() => {
                 if (carouselRef.current) {
                   carouselRef.current.scrollBy({
-                    left: -200,
+                    left: -Math.round((carouselRef.current.clientWidth * 0.6)),
                     behavior: 'smooth',
                   })
                 }
@@ -661,11 +718,14 @@ features: [
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
             <button
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors z-10"
+              aria-label="next categories"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white z-10"
+              onMouseEnter={handlePause}
+              onMouseLeave={handleResume}
               onClick={() => {
                 if (carouselRef.current) {
                   carouselRef.current.scrollBy({
-                    left: 200,
+                    left: Math.round((carouselRef.current.clientWidth * 0.6)),
                     behavior: 'smooth',
                   })
                 }
@@ -955,6 +1015,7 @@ features: [
                   : "Saudi Arabia’s #1 platform for sports jobs"}
               </p>
               <div className="flex gap-4">
+                {/* social icons... kept same */}
                 <a
                   href="https://www.snapchat.com/"
                   target="_blank"
