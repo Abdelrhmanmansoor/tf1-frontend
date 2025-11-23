@@ -64,7 +64,8 @@ function FootballWipeText({
 export function LandingPage() {
   const [mode, setMode] = useState<SwitcherMode>('application')
   const [isDragging, setIsDragging] = useState(false)
-  const [currentIndex, setCurrentIndex] = useState(10)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isResetting, setIsResetting] = useState(false)
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoScrollIntervalRef = useRef<number | null>(null)
@@ -530,16 +531,14 @@ export function LandingPage() {
 
   // Seamless infinite loop reset
   useEffect(() => {
-    if (currentIndex >= categories.length * 3) {
-      // Jump back to middle set (second iteration)
-      setTimeout(() => {
-        setCurrentIndex(categories.length)
-      }, 800) // After animation completes
-    } else if (currentIndex < categories.length) {
-      // Jump forward to middle set (second iteration)  
-      setTimeout(() => {
-        setCurrentIndex(categories.length * 2)
-      }, 800) // After animation completes
+    if (currentIndex >= categories.length) {
+      // Jump back to start instantly after animation completes
+      const timer = setTimeout(() => {
+        setIsResetting(true)
+        setCurrentIndex(0)
+        setTimeout(() => setIsResetting(false), 50)
+      }, 800)
+      return () => clearTimeout(timer)
     }
   }, [currentIndex, categories.length])
 
@@ -731,13 +730,13 @@ export function LandingPage() {
                   x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
                 }}
                 transition={{
-                  duration: 0.8,
+                  duration: isResetting ? 0 : 0.8,
                   ease: 'easeInOut',
                 }}
                 style={{ pointerEvents: 'auto', userSelect: 'none' }}
               >
-                {/* Render categories 5 times for seamless infinite loop */}
-                {[...categories, ...categories, ...categories, ...categories, ...categories].map((category, index) => {
+                {/* Render categories 2 times for seamless infinite loop */}
+                {[...categories, ...categories].map((category, index) => {
                   const IconComponent = category.Icon
                   return (
                     <div
