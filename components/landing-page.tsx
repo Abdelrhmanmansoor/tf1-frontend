@@ -694,21 +694,13 @@ export function LandingPage() {
 
           {/* Carousel wrapper */}
           <div className="relative">
-            {/* Scrollable container - Manual Navigation */}
+            {/* Scrollable container with smooth scrolling */}
             <div 
               ref={carouselRef}
-              className="relative overflow-hidden"
+              className="overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <motion.div
-                className="flex gap-4 sm:gap-5 pb-6"
-                animate={{
-                  x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: [0.32, 0.72, 0, 1],
-                }}
-              >
+              <div className="flex gap-4 sm:gap-5 pb-6">
                 {categories.map((category, index) => {
                   const IconComponent = category.Icon
                   return (
@@ -726,17 +718,18 @@ export function LandingPage() {
                     </div>
                   )
                 })}
-              </motion.div>
+              </div>
             </div>
 
-            {/* Navigation arrows - Clean & Modern */}
+            {/* Navigation arrows - Scroll based */}
             <button
               aria-label="prev categories"
-              className={`absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={currentIndex === 0}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10`}
               onClick={() => {
-                if (currentIndex > 0) {
-                  setCurrentIndex((prev) => prev - 1)
+                const container = carouselRef.current
+                if (container) {
+                  const scrollAmount = typeof window !== 'undefined' && window.innerWidth >= 640 ? 520 : 448
+                  container.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
                 }
               }}
             >
@@ -744,32 +737,17 @@ export function LandingPage() {
             </button>
             <button
               aria-label="next categories"
-              className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 ${currentIndex === categories.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={currentIndex === categories.length - 1}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10`}
               onClick={() => {
-                if (currentIndex < categories.length - 1) {
-                  setCurrentIndex((prev) => prev + 1)
+                const container = carouselRef.current
+                if (container) {
+                  const scrollAmount = typeof window !== 'undefined' && window.innerWidth >= 640 ? 520 : 448
+                  container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
                 }
               }}
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
-
-            {/* Dots Navigation */}
-            <div className="flex justify-center gap-2 mt-6">
-              {categories.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`transition-all duration-300 rounded-full ${
-                    index === currentIndex
-                      ? 'w-8 h-3 bg-blue-500'
-                      : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to category ${index + 1}`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>
