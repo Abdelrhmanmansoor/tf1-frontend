@@ -63,6 +63,7 @@ function FootballWipeText({
 
 export function LandingPage() {
   const [mode, setMode] = useState<SwitcherMode>('application')
+  const [isDragging, setIsDragging] = useState(false)
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoScrollIntervalRef = useRef<number | null>(null)
@@ -616,20 +617,43 @@ export function LandingPage() {
           </motion.h2>
 
           {/* Carousel wrapper */}
-          <div className="relative">
+          <motion.div 
+            className="relative"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
             {/* Scrollable container */}
-            <div
+            <motion.div
               ref={carouselRef}
-              onMouseEnter={handlePause}
-              onMouseLeave={handleResume}
-              onTouchStart={handlePause}
-              onTouchEnd={handleResume}
+              onMouseEnter={() => {
+                handlePause()
+                setIsDragging(false)
+              }}
+              onMouseLeave={() => {
+                handleResume()
+                setIsDragging(false)
+              }}
+              onTouchStart={() => {
+                handlePause()
+                setIsDragging(true)
+              }}
+              onTouchEnd={() => {
+                handleResume()
+                setIsDragging(false)
+              }}
               className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-6"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
                 WebkitOverflowScrolling: 'touch',
+                scrollBehavior: 'smooth',
               }}
+              animate={{ 
+                opacity: isDragging ? 0.95 : 1,
+              }}
+              transition={{ duration: 0.2 }}
             >
               {categories.map((category, index) => {
                 const IconComponent = category.Icon
@@ -655,7 +679,7 @@ export function LandingPage() {
                   </motion.div>
                 )
               })}
-            </div>
+            </motion.div>
 
             {/* Navigation arrows - Clean & Modern */}
             <button
@@ -690,7 +714,7 @@ export function LandingPage() {
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
