@@ -64,10 +64,12 @@ function FootballWipeText({
 export function LandingPage() {
   const [mode, setMode] = useState<SwitcherMode>('application')
   const [isDragging, setIsDragging] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoScrollIntervalRef = useRef<number | null>(null)
   const isPausedRef = useRef(false)
+  const touchStartX = useRef(0)
 
   const categories = [
     {
@@ -452,47 +454,36 @@ export function LandingPage() {
   }
 
   /**
-   * AUTO SCROLL (slow & smooth) — recommended behavior:
-   * - slow & soft auto scroll (A)
-   * - pause on user interaction (hover/touch)
-   * - responsive: scroll distance based on container width
+   * AUTO SCROLL - Smooth & Premium Animation
+   * Categories auto-rotate every 4 seconds
    */
   useEffect(() => {
     const startAutoScroll = () => {
-      // clear existing
       if (autoScrollIntervalRef.current) {
         window.clearInterval(autoScrollIntervalRef.current)
         autoScrollIntervalRef.current = null
       }
 
       autoScrollIntervalRef.current = window.setInterval(() => {
-        if (!carouselRef.current || isPausedRef.current) return
-
-        const el = carouselRef.current
-        // distance: ~ 70% of visible width (gives nice movement)
-        const distance = Math.round(el.clientWidth * 0.7)
-
-        // if reached end, go back to start smoothly
-        const maxScrollLeft = el.scrollWidth - el.clientWidth
-        if (el.scrollLeft + distance >= maxScrollLeft - 10) {
-          // smooth jump back to start
-          el.scrollTo({ left: 0, behavior: 'smooth' })
-        } else {
-          el.scrollBy({ left: distance, behavior: 'smooth' })
-        }
-      }, 3000) // every 3s (slow & premium feel)
+        if (isPausedRef.current) return
+        
+        setCurrentIndex((prev) => {
+          // Total categories: 10, show ~3 at a time, so max index is ~7
+          const maxIndex = Math.max(0, categories.length - 3)
+          return prev >= maxIndex ? 0 : prev + 1
+        })
+      }, 4000) // every 4 seconds - smooth & premium
     }
 
     startAutoScroll()
 
-    // cleanup
     return () => {
       if (autoScrollIntervalRef.current) {
         window.clearInterval(autoScrollIntervalRef.current)
         autoScrollIntervalRef.current = null
       }
     }
-  }, [])
+  }, [categories.length])
 
   // pause/resume handlers
   const handlePause = () => {
@@ -603,6 +594,109 @@ export function LandingPage() {
         </div>
       </motion.section>
 
+      {/* Premium Banners Section - Auto Rotating */}
+      <section className="relative py-8 sm:py-12 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="relative h-40 sm:h-48 rounded-2xl overflow-hidden shadow-2xl">
+            {/* Auto-rotating banners */}
+            <motion.div
+              className="flex h-full"
+              animate={{
+                x: [0, -100 / 3 + '%', -200 / 3 + '%', 0],
+              }}
+              transition={{
+                duration: 12,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+            >
+              {/* Banner 1 - Blue Gradient */}
+              <div className="min-w-full h-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.5, 0.3],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                  }}
+                />
+                <div className="relative z-10 text-center">
+                  <motion.h3
+                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    {language === 'ar' ? '🎯 انضم لآلاف الرياضيين' : '🎯 Join Thousands of Athletes'}
+                  </motion.h3>
+                  <p className="text-sm sm:text-lg text-white/90">
+                    {language === 'ar' ? 'ابدأ رحلتك المهنية اليوم' : 'Start Your Career Journey Today'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Banner 2 - Purple Gradient */}
+              <div className="min-w-full h-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_60%)]"
+                  animate={{
+                    x: ['0%', '100%', '0%'],
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                  }}
+                />
+                <div className="relative z-10 text-center">
+                  <motion.h3
+                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    {language === 'ar' ? '⚡ فرص وظيفية حصرية' : '⚡ Exclusive Job Opportunities'}
+                  </motion.h3>
+                  <p className="text-sm sm:text-lg text-white/90">
+                    {language === 'ar' ? 'اكتشف الوظائف الأنسب لك' : 'Discover Jobs That Match Your Skills'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Banner 3 - Green Gradient */}
+              <div className="min-w-full h-full bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.15),transparent_60%)]"
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                  }}
+                />
+                <div className="relative z-10 text-center">
+                  <motion.h3
+                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    {language === 'ar' ? '🌟 طور مهاراتك الرياضية' : '🌟 Develop Your Sports Skills'}
+                  </motion.h3>
+                  <p className="text-sm sm:text-lg text-white/90">
+                    {language === 'ar' ? 'تواصل مع أفضل المدربين' : 'Connect With Top Coaches'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Categories Section - Clean & Modern Design */}
       <section className="py-16 sm:py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -633,62 +727,66 @@ export function LandingPage() {
               }}
               transition={{ duration: 0.4 }}
             />
-            {/* Scrollable container */}
-            <motion.div
+            {/* Scrollable container - Fixed & Auto-Scroll */}
+            <div 
               ref={carouselRef}
-              onMouseEnter={() => {
-                handlePause()
-                setIsDragging(false)
-              }}
-              onMouseLeave={() => {
-                handleResume()
-                setIsDragging(false)
-              }}
-              onTouchStart={() => {
-                handlePause()
-                setIsDragging(true)
-              }}
-              onTouchEnd={() => {
-                handleResume()
-                setIsDragging(false)
-              }}
-              className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-6"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch',
-                scrollBehavior: 'smooth',
-              }}
-              animate={{ 
-                opacity: isDragging ? 0.95 : 1,
-              }}
-              transition={{ duration: 0.2 }}
+              className="relative overflow-hidden"
+              onMouseEnter={() => handlePause()}
+              onMouseLeave={() => handleResume()}
             >
-              {categories.map((category, index) => {
-                const IconComponent = category.Icon
-                return (
-                  <motion.div
-                    key={category.id}
-                    className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 snap-start transition-all duration-300 hover:border-blue-500 cursor-pointer"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: index * 0.05,
-                    }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-all duration-300">
-                      <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-500" strokeWidth={1.5} />
-                    </div>
-                    
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-800">
-                      {language === 'ar' ? category.nameAr : category.nameEn}
-                    </h3>
-                  </motion.div>
-                )
-              })}
-            </motion.div>
+              <motion.div
+                className="flex gap-4 sm:gap-5 pb-6"
+                animate={{
+                  x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
+                }}
+                transition={{
+                  duration: 0.8,
+                  ease: 'easeInOut',
+                }}
+              >
+                {categories.map((category, index) => {
+                  const IconComponent = category.Icon
+                  return (
+                    <motion.div
+                      key={category.id}
+                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-300 hover:border-blue-500 cursor-pointer relative"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        boxShadow: '0 20px 40px rgba(59, 130, 246, 0.15)',
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.05,
+                      }}
+                      viewport={{ once: true }}
+                    >
+                      {/* Premium Shimmer Effect */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/30 to-transparent"
+                        animate={{
+                          x: ['-200%', '200%'],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          repeatDelay: 2,
+                        }}
+                      />
+                      
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center transition-all duration-300 group-hover:from-blue-50 group-hover:to-blue-100">
+                        <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-500 group-hover:scale-110" strokeWidth={1.5} />
+                      </div>
+                      
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800 relative z-10">
+                        {language === 'ar' ? category.nameAr : category.nameEn}
+                      </h3>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
+            </div>
 
             {/* Navigation arrows - Clean & Modern */}
             <button
@@ -697,13 +795,9 @@ export function LandingPage() {
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                if (carouselRef.current) {
-                  carouselRef.current.scrollBy({
-                    left: -Math.round(carouselRef.current.clientWidth * 0.5),
-                    behavior: 'smooth',
-                  })
-                }
+                setCurrentIndex((prev) => Math.max(0, prev - 1))
               }}
+              disabled={currentIndex === 0}
             >
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
@@ -713,13 +807,10 @@ export function LandingPage() {
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                if (carouselRef.current) {
-                  carouselRef.current.scrollBy({
-                    left: Math.round(carouselRef.current.clientWidth * 0.5),
-                    behavior: 'smooth',
-                  })
-                }
+                const maxIndex = Math.max(0, categories.length - 3)
+                setCurrentIndex((prev) => Math.min(maxIndex, prev + 1))
               }}
+              disabled={currentIndex >= Math.max(0, categories.length - 3)}
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
