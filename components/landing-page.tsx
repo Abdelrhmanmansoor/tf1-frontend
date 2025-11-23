@@ -489,9 +489,8 @@ export function LandingPage() {
         if (isPausedRef.current) return
         
         setCurrentIndex((prev) => {
-          // Total categories: 10, show ~3 at a time, so max index is ~7
-          const maxIndex = Math.max(0, categories.length - 3)
-          return prev >= maxIndex ? 0 : prev + 1
+          // Infinite loop - always go to next, wrap around
+          return (prev + 1) % categories.length
         })
       }, 4000) // every 4 seconds - smooth & premium
     }
@@ -709,12 +708,13 @@ export function LandingPage() {
             {/* Scrollable container - Fixed & Auto-Scroll */}
             <div 
               ref={carouselRef}
-              className="relative overflow-hidden"
+              className="relative overflow-hidden select-none"
               onMouseEnter={() => handlePause()}
               onMouseLeave={() => handleResume()}
+              style={{ touchAction: 'pan-y' }}
             >
               <motion.div
-                className="flex gap-4 sm:gap-5 pb-6"
+                className="flex gap-4 sm:gap-5 pb-6 cursor-default"
                 animate={{
                   x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
                 }}
@@ -722,6 +722,7 @@ export function LandingPage() {
                   duration: 0.8,
                   ease: 'easeInOut',
                 }}
+                style={{ pointerEvents: 'auto', userSelect: 'none' }}
               >
                 {categories.map((category, index) => {
                   const IconComponent = category.Icon
@@ -746,26 +747,23 @@ export function LandingPage() {
             {/* Navigation arrows - Clean & Modern */}
             <button
               aria-label="prev categories"
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 disabled:opacity-50"
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10"
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                setCurrentIndex((prev) => Math.max(0, prev - 1))
+                setCurrentIndex((prev) => (prev - 1 + categories.length) % categories.length)
               }}
-              disabled={currentIndex === 0}
             >
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
             <button
               aria-label="next categories"
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 disabled:opacity-50"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10"
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                const maxIndex = Math.max(0, categories.length - 3)
-                setCurrentIndex((prev) => Math.min(maxIndex, prev + 1))
+                setCurrentIndex((prev) => (prev + 1) % categories.length)
               }}
-              disabled={currentIndex >= Math.max(0, categories.length - 3)}
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
