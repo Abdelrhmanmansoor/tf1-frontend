@@ -200,7 +200,7 @@ export function LandingPage() {
         {
           name: language === 'ar' ? 'عبدالله الغامدي' : 'Abdullah Al-Ghamdi',
           role: language === 'ar' ? 'لاعب كرة قدم' : 'Football Player',
-          company: language === 'ar' ? 'نادي الاتحاد' : 'Al-Ittihad Club',
+          company: language === 'ar' ? 'أكاديمية الساحل الرياضية' : 'Al-Sahel Sports Academy',
           location: language === 'ar' ? 'جدة' : 'Jeddah',
           content:
             language === 'ar'
@@ -212,7 +212,7 @@ export function LandingPage() {
         {
           name: language === 'ar' ? 'نورة السبيعي' : 'Noura Al-Subai',
           role: language === 'ar' ? 'مدربة لياقة بدنية' : 'Fitness Coach',
-          company: language === 'ar' ? 'أكاديمية الرياض للياقة' : 'Riyadh Fitness Academy',
+          company: language === 'ar' ? 'مركز الرياض للياقة البدنية' : 'Riyadh Fitness Center',
           location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
@@ -224,7 +224,7 @@ export function LandingPage() {
         {
           name: language === 'ar' ? 'خالد القحطاني' : 'Khalid Al-Qahtani',
           role: language === 'ar' ? 'مدير رياضي' : 'Sports Manager',
-          company: language === 'ar' ? 'نادي الشباب' : 'Al-Shabab Club',
+          company: language === 'ar' ? 'مركز التميز الرياضي' : 'Sports Excellence Center',
           location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
@@ -365,7 +365,7 @@ export function LandingPage() {
             language === 'ar'
               ? 'مدير الموارد البشرية'
               : 'Human Resources Manager',
-          company: language === 'ar' ? 'نادي الصقور' : 'Falcons Club',
+          company: language === 'ar' ? 'أكاديمية النخبة الرياضية' : 'Elite Sports Academy',
           location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
