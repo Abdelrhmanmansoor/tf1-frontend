@@ -4,6 +4,7 @@ import { MSWProvider } from './mocks'
 import { LanguageProvider } from '@/contexts/language-context'
 import { AuthProvider } from '@/contexts/auth-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
+import { ScrollToTop } from '@/components/scroll-to-top'
 
 export const metadata: Metadata = {
   title: ' TF1 JOPS ',
@@ -29,6 +30,7 @@ export default function RootLayout({
         <LanguageProvider>
           <AuthProvider>
             <SmoothScrollProvider>{children}</SmoothScrollProvider>
+            <ScrollToTop />
           </AuthProvider>
         </LanguageProvider>
       </body>
