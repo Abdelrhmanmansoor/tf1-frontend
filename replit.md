@@ -15,6 +15,9 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 - Simplified smooth-scroll-provider to basic passthrough component for cleaner UX
 - Added clean ScrollToTop button component that appears after 300px scroll with smooth animations
 - Removed all animated navigation elements that appeared during gestures
+- Fixed categories slider animation conflicts by removing drag functionality
+- Improved categories slider to work smoothly with arrow navigation and dots only
+- Added disabled states to navigation arrows at start/end positions
 
 ### November 23, 2025 - Banner Carousel Update
 - Replaced gradient text banners with customizable image carousel

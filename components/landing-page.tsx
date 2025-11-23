@@ -682,33 +682,19 @@ export function LandingPage() {
 
           {/* Carousel wrapper */}
           <div className="relative">
-            {/* Scrollable container - Manual Navigation with Drag */}
+            {/* Scrollable container - Manual Navigation */}
             <div 
               ref={carouselRef}
               className="relative overflow-hidden"
             >
               <motion.div
                 className="flex gap-4 sm:gap-5 pb-6"
-                drag="x"
-                dragConstraints={{ left: -((categories.length - 3) * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)), right: 0 }}
-                dragElastic={0.1}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = offset.x
-                  const cardWidth = typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224
-                  if (Math.abs(swipe) > 50) {
-                    if (swipe > 0) {
-                      setCurrentIndex(Math.max(0, currentIndex - 1))
-                    } else {
-                      setCurrentIndex(Math.min(categories.length - 1, currentIndex + 1))
-                    }
-                  }
-                }}
                 animate={{
                   x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
                 }}
                 transition={{
                   duration: 0.5,
-                  ease: 'easeOut',
+                  ease: [0.32, 0.72, 0, 1],
                 }}
               >
                 {categories.map((category, index) => {
@@ -734,22 +720,24 @@ export function LandingPage() {
             {/* Navigation arrows - Clean & Modern */}
             <button
               aria-label="prev categories"
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10"
-              onMouseEnter={handlePause}
-              onMouseLeave={handleResume}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={currentIndex === 0}
               onClick={() => {
-                setCurrentIndex((prev) => prev - 1)
+                if (currentIndex > 0) {
+                  setCurrentIndex((prev) => prev - 1)
+                }
               }}
             >
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
             <button
               aria-label="next categories"
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10"
-              onMouseEnter={handlePause}
-              onMouseLeave={handleResume}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 ${currentIndex === categories.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={currentIndex === categories.length - 1}
               onClick={() => {
-                setCurrentIndex((prev) => prev + 1)
+                if (currentIndex < categories.length - 1) {
+                  setCurrentIndex((prev) => prev + 1)
+                }
               }}
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
