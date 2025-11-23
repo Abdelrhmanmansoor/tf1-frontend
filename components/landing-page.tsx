@@ -624,6 +624,15 @@ export function LandingPage() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
+            {/* Premium Glow Effect - Corner Animation */}
+            <motion.div
+              className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-blue-400 to-transparent rounded-full blur-3xl pointer-events-none"
+              animate={{
+                opacity: isDragging ? 0.4 : 0.15,
+                scale: isDragging ? 1.2 : 1,
+              }}
+              transition={{ duration: 0.4 }}
+            />
             {/* Scrollable container */}
             <motion.div
               ref={carouselRef}
