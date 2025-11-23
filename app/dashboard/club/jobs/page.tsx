@@ -391,10 +391,12 @@ const ClubJobsPage = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="gap-1">
-                    <Eye className="w-4 h-4" />
-                    {language === 'ar' ? 'عرض' : 'View'}
-                  </Button>
+                  <Link href={`/dashboard/club/opportunities/view/${job._id}`}>
+                    <Button size="sm" variant="outline" className="gap-1">
+                      <Eye className="w-4 h-4" />
+                      {language === 'ar' ? 'عرض' : 'View'}
+                    </Button>
+                  </Link>
                   {job.status === 'active' && (
                     <Button
                       size="sm"

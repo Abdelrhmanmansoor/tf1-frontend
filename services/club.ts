@@ -506,6 +506,21 @@ class ClubService {
   }
 
   /**
+   * 16a. Get Job Posting by ID
+   * GET /clubs/jobs/:jobId
+   */
+  async getJobById(jobId: string): Promise<JobPosting> {
+    try {
+      const response = await api.get<JobResponse>(
+        `${this.BASE_PATH}/jobs/${jobId}`
+      )
+      return response.data.job
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
    * 17. Update Job Posting
    * PUT /clubs/jobs/:jobId
    */
