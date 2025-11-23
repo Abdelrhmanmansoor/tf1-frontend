@@ -476,32 +476,9 @@ export function LandingPage() {
   }
 
   /**
-   * AUTO SCROLL - Smooth & Premium Animation
-   * Categories auto-rotate every 4 seconds
+   * AUTO SCROLL - DISABLED (Manual navigation only)
    */
-  useEffect(() => {
-    const startAutoScroll = () => {
-      if (autoScrollIntervalRef.current) {
-        window.clearInterval(autoScrollIntervalRef.current)
-        autoScrollIntervalRef.current = null
-      }
-
-      autoScrollIntervalRef.current = window.setInterval(() => {
-        if (isPausedRef.current) return
-        
-        setCurrentIndex((prev) => prev + 1)
-      }, 4000) // every 4 seconds - smooth & premium
-    }
-
-    startAutoScroll()
-
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        window.clearInterval(autoScrollIntervalRef.current)
-        autoScrollIntervalRef.current = null
-      }
-    }
-  }, [categories.length])
+  // Auto-scroll disabled - users navigate manually with arrows
 
   useEffect(() => {
     const startBannerAutoScroll = () => {
@@ -529,18 +506,7 @@ export function LandingPage() {
     }
   }, [bannerImages.length, isBannerPaused])
 
-  // Seamless infinite loop reset
-  useEffect(() => {
-    if (currentIndex >= categories.length) {
-      // Jump back to start instantly after animation completes
-      const timer = setTimeout(() => {
-        setIsResetting(true)
-        setCurrentIndex(0)
-        setTimeout(() => setIsResetting(false), 50)
-      }, 800)
-      return () => clearTimeout(timer)
-    }
-  }, [currentIndex, categories.length])
+  // No auto-reset needed - manual navigation only
 
   // pause/resume handlers
   const handlePause = () => {
