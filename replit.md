@@ -10,6 +10,15 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 23, 2025 - Banner Carousel Update
+- Replaced gradient text banners with customizable image carousel
+- Increased banner height to be more prominent (h-64 sm:h-80 md:h-96)
+- Removed shadow effect for cleaner look
+- Added dots navigation below carousel for manual slide control
+- Implemented auto-scroll every 5 seconds with pause on hover
+- Made banner images easily customizable via bannerImages array
+- Uses Unsplash stock sports images by default
+
 ### November 23, 2025 - Replit Setup
 - Configured Next.js to run on port 5000 with host 0.0.0.0 for Replit compatibility
 - Updated next.config.js with webpack polling for file watching in cloud environment
