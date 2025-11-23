@@ -705,22 +705,7 @@ export function LandingPage() {
           </motion.h2>
 
           {/* Carousel wrapper */}
-          <motion.div 
-            className="relative"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            {/* Premium Glow Effect - Corner Animation */}
-            <motion.div
-              className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-blue-400 to-transparent rounded-full blur-3xl pointer-events-none"
-              animate={{
-                opacity: isDragging ? 0.4 : 0.15,
-                scale: isDragging ? 1.2 : 1,
-              }}
-              transition={{ duration: 0.4 }}
-            />
+          <div className="relative">
             {/* Scrollable container - Fixed & Auto-Scroll */}
             <div 
               ref={carouselRef}
@@ -741,38 +726,18 @@ export function LandingPage() {
                 {categories.map((category, index) => {
                   const IconComponent = category.Icon
                   return (
-                    <motion.div
+                    <div
                       key={category.id}
-                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-300 hover:border-blue-500 hover:shadow-lg cursor-pointer relative"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: index * 0.05,
-                      }}
-                      viewport={{ once: true }}
+                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-200 hover:border-blue-400 hover:shadow-md cursor-pointer"
                     >
-                      {/* Premium Shimmer Effect */}
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/30 to-transparent"
-                        animate={{
-                          x: ['-200%', '200%'],
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          repeatDelay: 2,
-                        }}
-                      />
-                      
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center transition-all duration-300 group-hover:from-blue-50 group-hover:to-blue-100">
-                        <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-500 group-hover:scale-110" strokeWidth={1.5} />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-50">
+                        <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-200 group-hover:text-blue-500" strokeWidth={1.5} />
                       </div>
                       
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-800 relative z-10">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">
                         {language === 'ar' ? category.nameAr : category.nameEn}
                       </h3>
-                    </motion.div>
+                    </div>
                   )
                 })}
               </motion.div>
@@ -804,7 +769,7 @@ export function LandingPage() {
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
