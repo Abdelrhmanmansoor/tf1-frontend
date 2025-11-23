@@ -743,13 +743,9 @@ export function LandingPage() {
                   return (
                     <motion.div
                       key={category.id}
-                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-300 hover:border-blue-500 cursor-pointer relative"
+                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-300 hover:border-blue-500 hover:shadow-lg cursor-pointer relative"
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
-                      whileHover={{ 
-                        scale: 1.05,
-                        boxShadow: '0 20px 40px rgba(59, 130, 246, 0.15)',
-                      }}
                       transition={{
                         duration: 0.5,
                         delay: index * 0.05,
