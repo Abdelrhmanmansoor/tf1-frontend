@@ -880,25 +880,135 @@ export function LandingPage() {
             </FootballWipeText>
           </motion.div>
 
-          {/* Testimonial Cards */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {content[mode].testimonials.map((testimonial, index) => (
+          {/* Testimonial Cards - Mobile: Carousel, Desktop: Grid */}
+          <div className="relative">
+            {/* Mobile Carousel */}
+            <div className="sm:hidden overflow-hidden px-4">
               <motion.div
-                key={index}
-                className="group bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden border border-gray-100"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                  ease: [0.25, 0.4, 0.25, 1]
+                className="flex"
+                animate={{
+                  x: `-${currentIndex * 100}%`,
                 }}
-                viewport={{ once: true }}
-                whileHover={{
-                  y: -8,
-                  transition: { duration: 0.3 }
+                transition={{
+                  duration: 0.5,
+                  ease: [0.32, 0.72, 0, 1],
                 }}
               >
+                {content[mode].testimonials.map((testimonial, index) => (
+                  <div
+                    key={index}
+                    className="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-500 relative overflow-hidden border border-gray-100 min-w-full flex-shrink-0"
+                  >
+                    {/* Gradient Border Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+
+                    {/* Icon Badge */}
+                    <div className="relative mb-6">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center text-3xl shadow-lg">
+                        {testimonial.image}
+                      </div>
+                    </div>
+
+                    {/* Rating Stars */}
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+
+                    {/* Content */}
+                    <p className="text-gray-700 text-base leading-relaxed mb-6 relative z-10">
+                      "{testimonial.content}"
+                    </p>
+
+                    {/* User Info */}
+                    <div className="flex items-start gap-4 relative z-10 border-t border-gray-100 pt-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-md">
+                        {testimonial.name.charAt(0)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 text-base mb-1">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-1">
+                          {testimonial.role}
+                        </p>
+                        <p className="text-sm text-blue-600 font-medium flex items-center gap-1">
+                          <span>{testimonial.company}</span>
+                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-500">{testimonial.location}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Quote Mark */}
+                    <div className="absolute top-6 right-6 text-7xl text-blue-100 leading-none opacity-40 font-serif">
+                      "
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Navigation Arrows - Mobile */}
+              <button
+                onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+                disabled={currentIndex === 0}
+                className={`absolute left-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 ${currentIndex === 0 ? 'opacity-50' : 'opacity-100'}`}
+                aria-label="Previous testimonial"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <button
+                onClick={() => setCurrentIndex(Math.min(content[mode].testimonials.length - 1, currentIndex + 1))}
+                disabled={currentIndex === content[mode].testimonials.length - 1}
+                className={`absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 ${currentIndex === content[mode].testimonials.length - 1 ? 'opacity-50' : 'opacity-100'}`}
+                aria-label="Next testimonial"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-700" />
+              </button>
+
+              {/* Dots Navigation - Mobile */}
+              <div className="flex justify-center gap-2 mt-6">
+                {content[mode].testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`transition-all duration-300 rounded-full ${
+                      index === currentIndex
+                        ? 'w-8 h-3 bg-blue-500'
+                        : 'w-3 h-3 bg-gray-300'
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Grid */}
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {content[mode].testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  className="group bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden border border-gray-100"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: [0.25, 0.4, 0.25, 1]
+                  }}
+                  viewport={{ once: true }}
+                  whileHover={{
+                    y: -8,
+                    transition: { duration: 0.3 }
+                  }}
+                >
                 {/* Gradient Border Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
 
@@ -955,6 +1065,7 @@ export function LandingPage() {
             ))}
           </div>
         </div>
+          </div>
       </section>
 
       {/* Features Section */}
