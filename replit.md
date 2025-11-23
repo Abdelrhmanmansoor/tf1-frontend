@@ -10,6 +10,12 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Clean UI Enhancement
+- Completely removed smooth-scroll-provider distracting elements (floating emojis, scroll indicators, circular progress, velocity indicators)
+- Simplified smooth-scroll-provider to basic passthrough component for cleaner UX
+- Added clean ScrollToTop button component that appears after 300px scroll with smooth animations
+- Removed all animated navigation elements that appeared during gestures
+
 ### November 23, 2025 - Banner Carousel Update
 - Replaced gradient text banners with customizable image carousel
 - Increased banner height to be more prominent (h-64 sm:h-80 md:h-96)
