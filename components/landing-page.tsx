@@ -68,8 +68,29 @@ export function LandingPage() {
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoScrollIntervalRef = useRef<number | null>(null)
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
+  const [isBannerPaused, setIsBannerPaused] = useState(false)
+  const bannerAutoScrollRef = useRef<number | null>(null)
   const isPausedRef = useRef(false)
   const touchStartX = useRef(0)
+
+  const bannerImages = [
+    {
+      id: 1,
+      url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=400&fit=crop',
+      alt: language === 'ar' ? 'رياضة 1' : 'Sports 1',
+    },
+    {
+      id: 2,
+      url: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&h=400&fit=crop',
+      alt: language === 'ar' ? 'رياضة 2' : 'Sports 2',
+    },
+    {
+      id: 3,
+      url: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&h=400&fit=crop',
+      alt: language === 'ar' ? 'رياضة 3' : 'Sports 3',
+    },
+  ]
 
   const categories = [
     {
@@ -485,6 +506,32 @@ export function LandingPage() {
     }
   }, [categories.length])
 
+  useEffect(() => {
+    const startBannerAutoScroll = () => {
+      if (bannerAutoScrollRef.current) {
+        window.clearInterval(bannerAutoScrollRef.current)
+        bannerAutoScrollRef.current = null
+      }
+
+      bannerAutoScrollRef.current = window.setInterval(() => {
+        if (isBannerPaused) return
+        
+        setCurrentBannerIndex((prev) => {
+          return (prev + 1) % bannerImages.length
+        })
+      }, 5000)
+    }
+
+    startBannerAutoScroll()
+
+    return () => {
+      if (bannerAutoScrollRef.current) {
+        window.clearInterval(bannerAutoScrollRef.current)
+        bannerAutoScrollRef.current = null
+      }
+    }
+  }, [bannerImages.length, isBannerPaused])
+
   // pause/resume handlers
   const handlePause = () => {
     isPausedRef.current = true
@@ -594,105 +641,52 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Premium Banners Section - Auto Rotating */}
-      <section className="relative py-8 sm:py-12 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+      {/* Premium Image Carousel - Customizable Banners */}
+      <section className="relative py-8 sm:py-12 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="relative h-40 sm:h-48 rounded-2xl overflow-hidden shadow-2xl">
-            {/* Auto-rotating banners */}
+          <div 
+            className="relative h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden"
+            onMouseEnter={() => setIsBannerPaused(true)}
+            onMouseLeave={() => setIsBannerPaused(false)}
+          >
+            {/* Images Container */}
             <motion.div
               className="flex h-full"
               animate={{
-                x: [0, -100 / 3 + '%', -200 / 3 + '%', 0],
+                x: `-${currentBannerIndex * 100}%`,
               }}
               transition={{
-                duration: 12,
-                repeat: Infinity,
-                ease: 'linear',
+                duration: 0.7,
+                ease: 'easeInOut',
               }}
             >
-              {/* Banner 1 - Blue Gradient */}
-              <div className="min-w-full h-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
-                <motion.div
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.3, 0.5, 0.3],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                  }}
-                />
-                <div className="relative z-10 text-center">
-                  <motion.h3
-                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    {language === 'ar' ? '🎯 انضم لآلاف الرياضيين' : '🎯 Join Thousands of Athletes'}
-                  </motion.h3>
-                  <p className="text-sm sm:text-lg text-white/90">
-                    {language === 'ar' ? 'ابدأ رحلتك المهنية اليوم' : 'Start Your Career Journey Today'}
-                  </p>
+              {bannerImages.map((banner) => (
+                <div key={banner.id} className="min-w-full h-full relative">
+                  <img
+                    src={banner.url}
+                    alt={banner.alt}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
-              </div>
-
-              {/* Banner 2 - Purple Gradient */}
-              <div className="min-w-full h-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
-                <motion.div
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_60%)]"
-                  animate={{
-                    x: ['0%', '100%', '0%'],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                  }}
-                />
-                <div className="relative z-10 text-center">
-                  <motion.h3
-                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    {language === 'ar' ? '⚡ فرص وظيفية حصرية' : '⚡ Exclusive Job Opportunities'}
-                  </motion.h3>
-                  <p className="text-sm sm:text-lg text-white/90">
-                    {language === 'ar' ? 'اكتشف الوظائف الأنسب لك' : 'Discover Jobs That Match Your Skills'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Banner 3 - Green Gradient */}
-              <div className="min-w-full h-full bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 flex items-center justify-center px-8 sm:px-16 relative overflow-hidden">
-                <motion.div
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.15),transparent_60%)]"
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    rotate: [0, 180, 360],
-                  }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                  }}
-                />
-                <div className="relative z-10 text-center">
-                  <motion.h3
-                    className="text-2xl sm:text-4xl font-bold text-white mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    {language === 'ar' ? '🌟 طور مهاراتك الرياضية' : '🌟 Develop Your Sports Skills'}
-                  </motion.h3>
-                  <p className="text-sm sm:text-lg text-white/90">
-                    {language === 'ar' ? 'تواصل مع أفضل المدربين' : 'Connect With Top Coaches'}
-                  </p>
-                </div>
-              </div>
+              ))}
             </motion.div>
+
+            {/* Dots Navigation */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {bannerImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBannerIndex(index)}
+                  className={`transition-all duration-300 rounded-full ${
+                    index === currentBannerIndex
+                      ? 'w-8 h-3 bg-white'
+                      : 'w-3 h-3 bg-white/50 hover:bg-white/70'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
