@@ -189,43 +189,49 @@ export function LandingPage() {
       gradientClass: 'bg-gradient-to-r from-blue-500 via-cyan-400 to-green-500',
 
       testimonialsTitle:
-        language === 'ar' ? 'آراء المستخدمين' : 'User Feedback',
+        language === 'ar' ? 'قصص نجاح سعودية' : 'Saudi Success Stories',
 
       testimonialsSubtitle:
         language === 'ar'
-          ? 'تجارب مختصرة من مستخدمين استفادوا من خدمات المنصة'
-          : 'Short experiences from users who benefited from the platform',
+          ? 'مواهب سعودية حققت طموحاتها من خلال منصتنا'
+          : 'Saudi talents who achieved their ambitions through our platform',
 
       testimonials: [
         {
-          name: language === 'ar' ? 'مستخدم TF1' : 'TF1 User',
-          role: language === 'ar' ? 'باحث عن عمل' : 'Job Seeker',
-          company: '',
+          name: language === 'ar' ? 'عبدالله الغامدي' : 'Abdullah Al-Ghamdi',
+          role: language === 'ar' ? 'لاعب كرة قدم' : 'Football Player',
+          company: language === 'ar' ? 'نادي الاتحاد' : 'Al-Ittihad Club',
+          location: language === 'ar' ? 'جدة' : 'Jeddah',
           content:
             language === 'ar'
-              ? 'قدرت ألقى فرص مناسبة بسهولة، والمنصة كانت واضحة وسريعة في الاستخدام.'
-              : 'I found suitable opportunities easily, and the platform was clear and fast to use.',
+              ? 'حققت حلمي بالانضمام لفريق الدرجة الأولى بفضل TF1. المنصة ربطتني بالمدرب المناسب وفتحت لي أبواب كانت مستحيلة.'
+              : 'I achieved my dream of joining a first division team thanks to TF1. The platform connected me with the right coach and opened doors that seemed impossible.',
           rating: 5,
+          image: '⚽',
         },
         {
-          name: language === 'ar' ? 'جهة رياضية' : 'Sports Organization',
-          role: language === 'ar' ? 'صاحب وظيفة' : 'Employer',
-          company: '',
+          name: language === 'ar' ? 'نورة السبيعي' : 'Noura Al-Subai',
+          role: language === 'ar' ? 'مدربة لياقة بدنية' : 'Fitness Coach',
+          company: language === 'ar' ? 'أكاديمية الرياض للياقة' : 'Riyadh Fitness Academy',
+          location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
-              ? 'ساعدتنا المنصة في الوصول لعدد جيد من المتقدمين بشكل أسرع.'
-              : 'The platform helped us reach qualified applicants faster.',
+              ? 'من خلال المنصة، وصلت لعملاء جدد وبنيت سمعة قوية. دلوقتي عندي أكثر من 40 متدرب من مختلف مناطق المملكة.'
+              : 'Through the platform, I reached new clients and built a strong reputation. Now I have over 40 trainees from different regions of Saudi Arabia.',
           rating: 5,
+          image: '💪',
         },
         {
-          name: language === 'ar' ? 'مستخدم جديد' : 'New User',
-          role: language === 'ar' ? 'باحث عن فرصة' : 'Candidate',
-          company: '',
+          name: language === 'ar' ? 'خالد القحطاني' : 'Khalid Al-Qahtani',
+          role: language === 'ar' ? 'مدير رياضي' : 'Sports Manager',
+          company: language === 'ar' ? 'نادي الشباب' : 'Al-Shabab Club',
+          location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
-              ? 'تجربة التسجيل والتقديم كانت بسيطة، وهذا شجعني أستخدم المنصة أكثر.'
-              : 'The registration and application experience was simple and encouraging.',
-          rating: 4,
+              ? 'وظفنا 12 موظف في شهر واحد! المنصة سهلت علينا الوصول للكفاءات السعودية المتميزة بسرعة وبجودة عالية.'
+              : 'We hired 12 employees in one month! The platform made it easy to reach distinguished Saudi talents quickly and with high quality.',
+          rating: 5,
+          image: '🏆',
         },
       ],
 
@@ -338,12 +344,6 @@ export function LandingPage() {
           : 'Start recruiting today!',
       ctaButton: language === 'ar' ? 'استقطب المواهب' : 'Recruit Talents',
       gradientClass: 'bg-gradient-to-r from-green-500 to-blue-600',
-      testimonialsTitle:
-        language === 'ar' ? 'ماذا يقول أصحاب العمل' : 'What Our User’s Say',
-      testimonialsSubtitle:
-        language === 'ar'
-          ? ' جهات وظيفية اعتمدت علينا لاختيار أفضل الكوادر'
-          : 'Businesses connecting with top sports talent via TF1',
       featuresTitle:
         language === 'ar'
           ? 'لماذا TF1 للتوظيف؟'
@@ -352,6 +352,12 @@ export function LandingPage() {
         language === 'ar'
           ? 'منصة متقدمة لاكتشاف وتوظيف أفضل الكوادر '
           : 'Advanced Platform for Discovering & Recruiting the Best ',
+      testimonialsTitle:
+        language === 'ar' ? 'شركاء النجاح' : 'Success Partners',
+      testimonialsSubtitle:
+        language === 'ar'
+          ? 'جهات سعودية رائدة تثق في منصتنا'
+          : 'Leading Saudi organizations that trust our platform',
       testimonials: [
         {
           name: language === 'ar' ? 'خالد السعيد' : 'Khalid Al-Saeed',
@@ -360,11 +366,13 @@ export function LandingPage() {
               ? 'مدير الموارد البشرية'
               : 'Human Resources Manager',
           company: language === 'ar' ? 'نادي الصقور' : 'Falcons Club',
+          location: language === 'ar' ? 'الرياض' : 'Riyadh',
           content:
             language === 'ar'
-              ? 'المنصة وفّرت علينا وقت كبير وربطتنا بأفضل الكفاءات.'
-              : 'The platform saved us a lot of time and connected us with top talent.',
-          rating: 4,
+              ? 'المنصة وفّرت علينا وقت كبير وربطتنا بأفضل الكفاءات السعودية المتخصصة في المجال الرياضي.'
+              : 'The platform saved us a lot of time and connected us with top Saudi talent specialized in sports.',
+          rating: 5,
+          image: '🎯',
         },
         {
           name: language === 'ar' ? 'نورا عبدالله' : 'Nora Abdullah',
@@ -373,24 +381,28 @@ export function LandingPage() {
             language === 'ar'
               ? 'مجمع اللياقة الرياضية'
               : 'Sports Fitness Complex',
+          location: language === 'ar' ? 'جدة' : 'Jeddah',
           content:
             language === 'ar'
-              ? 'جودة المرشحين ممتازة والأدوات سهلة الاستخدام. وظفنا 15 موظف في شهر واحد!'
-              : 'The Quality of Candidates Is Excellent & The Tools Are Easy To Use',
+              ? 'جودة المرشحين ممتازة والأدوات سهلة الاستخدام. وظفنا 15 موظف سعودي في شهر واحد فقط!'
+              : 'The quality of candidates is excellent & the tools are easy to use. We hired 15 Saudi employees in just one month!',
           rating: 5,
+          image: '⭐',
         },
         {
-          name: language === 'ar' ? 'عبدالرحمن منصور' : 'Abdulrahman mansour',
+          name: language === 'ar' ? 'عبدالرحمن منصور' : 'Abdulrahman Mansour',
           role: language === 'ar' ? 'مؤسس' : 'Founder',
           company:
             language === 'ar'
               ? 'أكاديمية الرياضة المتطورة'
               : 'Advanced Sports Academy',
+          location: language === 'ar' ? 'الدمام' : 'Dammam',
           content:
             language === 'ar'
-              ? 'المنصة ساعدتنا في بناء فريق عمل متميز.'
-              : ' We Built An Outstanding Team Of Specialists In All Sports Fields.',
-          rating: 4,
+              ? 'المنصة ساعدتنا في بناء فريق عمل سعودي متميز من مختلف التخصصات الرياضية.'
+              : 'The platform helped us build an outstanding Saudi team of specialists across all sports fields.',
+          rating: 5,
+          image: '🏅',
         },
       ],
       features: [
@@ -835,97 +847,109 @@ export function LandingPage() {
         </section>
       )}
 
-      {/* Testimonials Section */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gradient-to-br from-gray-900 to-blue-900">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12">
-            <FootballWipeText
-              transitionKey={mode}
-              className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4"
-            >
-              <h2 className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {content[mode].testimonialsTitle}
+      {/* Testimonials Section - World-Class Design */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-50 via-blue-50 to-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, #3b82f6 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Section Header */}
+          <motion.div 
+            className="text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <FootballWipeText transitionKey={mode}>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
+                <span className="bg-gradient-to-r from-blue-600 via-green-600 to-blue-600 bg-clip-text text-transparent">
+                  {content[mode].testimonialsTitle}
+                </span>
               </h2>
             </FootballWipeText>
-            <FootballWipeText
-              transitionKey={mode}
-              className="text-white text-base sm:text-lg"
-            >
-              <p>{content[mode].testimonialsSubtitle}</p>
+            <FootballWipeText transitionKey={mode}>
+              <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto">
+                {content[mode].testimonialsSubtitle}
+              </p>
             </FootballWipeText>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          </motion.div>
+
+          {/* Testimonial Cards */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {content[mode].testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
-                className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm relative overflow-hidden"
-                initial={{ opacity: 0, y: 50, rotateX: -15, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                className="group bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden border border-gray-100"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.7,
-                  delay: index * 0.15,
-                  type: 'spring',
-                  stiffness: 100,
-                  damping: 15,
+                  duration: 0.6,
+                  delay: index * 0.1,
+                  ease: [0.25, 0.4, 0.25, 1]
                 }}
-                viewport={{ once: true, margin: '-50px' }}
+                viewport={{ once: true }}
                 whileHover={{
-                  y: -5,
-                  scale: 1.02,
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                  transition: { duration: 0.3 },
+                  y: -8,
+                  transition: { duration: 0.3 }
                 }}
               >
-                <div className="flex text-yellow-500 mb-3 sm:mb-4 text-sm sm:text-base">
+                {/* Gradient Border Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+
+                {/* Icon Badge */}
+                <div className="relative mb-6">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center text-3xl shadow-lg">
+                    {testimonial.image}
+                  </div>
+                </div>
+
+                {/* Rating Stars */}
+                <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <motion.span
+                    <svg
                       key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        duration: 0.3,
-                        delay: i * 0.1 + index * 0.2,
-                      }}
-                      viewport={{ once: true }}
-                      whileHover={{
-                        scale: 1.3,
-                        rotate: 360,
-                        transition: { duration: 0.3 },
-                      }}
+                      className="w-5 h-5 text-yellow-400 fill-current"
+                      viewBox="0 0 20 20"
                     >
-                      ★
-                    </motion.span>
+                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                    </svg>
                   ))}
                 </div>
 
-                {/* Quote decoration */}
-                <motion.div
-                  className="absolute top-2 left-2 text-6xl text-blue-100 opacity-50 leading-none"
-                  initial={{ opacity: 0, rotate: -15 }}
-                  whileInView={{ opacity: 0.3, rotate: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  “
-                </motion.div>
-                <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
-                  &ldquo;{testimonial.content}&rdquo;
+                {/* Content */}
+                <p className="text-gray-700 text-base leading-relaxed mb-6 relative z-10">
+                  "{testimonial.content}"
                 </p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base mr-3 sm:mr-4">
+
+                {/* User Info */}
+                <div className="flex items-start gap-4 relative z-10 border-t border-gray-100 pt-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-md">
                     {testimonial.name.charAt(0)}
                   </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-gray-900 text-base mb-1">
                       {testimonial.name}
-                    </div>
-                    <div className="text-xs sm:text-sm text-gray-500">
+                    </h4>
+                    <p className="text-sm text-gray-600 mb-1">
                       {testimonial.role}
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {testimonial.company}
-                    </div>
+                    </p>
+                    <p className="text-sm text-blue-600 font-medium flex items-center gap-1">
+                      <span>{testimonial.company}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-500">{testimonial.location}</span>
+                    </p>
                   </div>
+                </div>
+
+                {/* Quote Mark */}
+                <div className="absolute top-6 right-6 text-7xl text-blue-100 leading-none opacity-40 font-serif">
+                  "
                 </div>
               </motion.div>
             ))}
