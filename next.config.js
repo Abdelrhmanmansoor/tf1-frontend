@@ -17,6 +17,21 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
+  // Allow all hosts for Replit proxy compatibility
+  async rewrites() {
+    return []
+  },
+  // Disable host check for development
+  ...(process.env.NODE_ENV === 'development' && {
+    webpack: (config) => {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        ignored: /node_modules/,
+      }
+      return config
+    },
+  }),
   // Security headers for production
   async headers() {
     return [
