@@ -682,27 +682,36 @@ export function LandingPage() {
 
           {/* Carousel wrapper */}
           <div className="relative">
-            {/* Scrollable container - Fixed & Auto-Scroll */}
+            {/* Scrollable container - Manual Navigation with Drag */}
             <div 
               ref={carouselRef}
-              className="relative overflow-hidden select-none"
-              onMouseEnter={() => handlePause()}
-              onMouseLeave={() => handleResume()}
-              style={{ touchAction: 'pan-y' }}
+              className="relative overflow-hidden"
             >
               <motion.div
-                className="flex gap-4 sm:gap-5 pb-6 cursor-default"
+                className="flex gap-4 sm:gap-5 pb-6"
+                drag="x"
+                dragConstraints={{ left: -((categories.length - 3) * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)), right: 0 }}
+                dragElastic={0.1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = offset.x
+                  const cardWidth = typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224
+                  if (Math.abs(swipe) > 50) {
+                    if (swipe > 0) {
+                      setCurrentIndex(Math.max(0, currentIndex - 1))
+                    } else {
+                      setCurrentIndex(Math.min(categories.length - 1, currentIndex + 1))
+                    }
+                  }
+                }}
                 animate={{
                   x: `-${currentIndex * (typeof window !== 'undefined' && window.innerWidth >= 640 ? 260 : 224)}px`,
                 }}
                 transition={{
-                  duration: isResetting ? 0 : 0.8,
-                  ease: 'easeInOut',
+                  duration: 0.5,
+                  ease: 'easeOut',
                 }}
-                style={{ pointerEvents: 'auto', userSelect: 'none' }}
               >
-                {/* Render categories 2 times for seamless infinite loop */}
-                {[...categories, ...categories].map((category, index) => {
+                {categories.map((category, index) => {
                   const IconComponent = category.Icon
                   return (
                     <div
@@ -745,6 +754,22 @@ export function LandingPage() {
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
+
+            {/* Dots Navigation */}
+            <div className="flex justify-center gap-2 mt-6">
+              {categories.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`transition-all duration-300 rounded-full ${
+                    index === currentIndex
+                      ? 'w-8 h-3 bg-blue-500'
+                      : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to category ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
