@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import { ChevronDown, Search, MessageCircle, Mail, Phone } from 'lucide-react'
 import Link from 'next/link'
 
@@ -401,16 +402,7 @@ export default function FAQPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400">
-            {language === 'ar'
-              ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
-              : '© 2025 TF1 Platform. All rights reserved'}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

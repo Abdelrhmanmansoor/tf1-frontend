@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import {
   Phone,
@@ -735,106 +736,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div>
-              <div className="bg-gradient-to-r from-blue-600 to-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold inline-block mb-4">
-                TF1
-              </div>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                {language === 'ar'
-                  ? 'منصة الرياضة الأولى عالمياً لربط المواهب بالفرص'
-                  : "The world's #1 sports platform connecting talent with opportunities"}
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">
-                {language === 'ar' ? 'روابط سريعة' : 'Quick Links'}
-              </h4>
-              <div className="space-y-2">
-                {['Home', 'Jobs', 'About', 'Features', 'Contact'].map(
-                  (link) => (
-                    <Link
-                      key={link}
-                      href={link === 'Home' ? '/' : `/${link.toLowerCase()}`}
-                      className="block text-gray-400 hover:text-white transition-colors duration-200"
-                    >
-                      {language === 'ar'
-                        ? {
-                            Home: 'الرئيسية',
-                            Jobs: 'الوظائف',
-                            About: 'عنا',
-                            Features: 'المميزات',
-                            Contact: 'تواصل',
-                          }[link]
-                        : link}
-                    </Link>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">
-                {language === 'ar' ? 'الدعم' : 'Support'}
-              </h4>
-              <div className="space-y-2">
-                <Link
-                  href="/help-center"
-                  className="block text-gray-400 hover:text-white transition-colors duration-200"
-                >
-                  {language === 'ar' ? 'مركز المساعدة' : 'Help Center'}
-                </Link>
-                <Link
-                  href="/faq"
-                  className="block text-gray-400 hover:text-white transition-colors duration-200"
-                >
-                  {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
-                </Link>
-                <Link
-                  href="/terms"
-                  className="block text-gray-400 hover:text-white transition-colors duration-200"
-                >
-                  {language === 'ar' ? 'الشروط والأحكام' : 'Terms of Service'}
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="block text-gray-400 hover:text-white transition-colors duration-200"
-                >
-                  {language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">
-                {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
-              </h4>
-              <div className="space-y-3 text-gray-400">
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5" />
-                  <span className="text-sm">+1 (555) 123-4567</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5" />
-                  <span className="text-sm">support@TF1.com</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-gray-400">
-              {language === 'ar'
-                ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
-                : '© 2025 TF1 Platform. All rights reserved'}
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

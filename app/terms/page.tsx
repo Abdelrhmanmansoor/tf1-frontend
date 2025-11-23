@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import { Shield, FileText, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -343,30 +344,7 @@ export default function TermsOfServicePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex flex-wrap justify-center gap-6 mb-6">
-            <Link href="/terms" className="text-gray-400 hover:text-white">
-              {language === 'ar' ? 'شروط الخدمة' : 'Terms of Service'}
-            </Link>
-            <Link href="/privacy" className="text-gray-400 hover:text-white">
-              {language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
-            </Link>
-            <Link href="/faq" className="text-gray-400 hover:text-white">
-              {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
-            </Link>
-            <Link href="/help-center" className="text-gray-400 hover:text-white">
-              {language === 'ar' ? 'مركز المساعدة' : 'Help Center'}
-            </Link>
-          </div>
-          <p className="text-gray-400">
-            {language === 'ar'
-              ? '© 2025 منصة TF1. جميع الحقوق محفوظة'
-              : '© 2025 TF1 Platform. All rights reserved'}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -10,6 +10,18 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Footer Redesign & Logo Fix
+- Made logo in navbar clickable - clicking returns to home page
+- Completely redesigned footer with premium modern look
+- Added government logos: Ministry of Commerce, Business Center (Maroof), Vision 2030
+- Replaced text logo with actual TF1 image logo in footer
+- Fixed Snapchat icon (was using Facebook icon by mistake)
+- Unified phone number across all pages: +966 50 123 4567
+- Fixed phone number direction issue in Arabic (added dir="ltr")
+- Applied new footer to all pages: landing, about, contact, features, help-center, faq, terms
+- Footer now includes: brand section with logo, quick links, legal links, contact info, government logos
+- Consistent contact information across entire platform
+
 ### November 24, 2025 - Testimonials Section Redesign
 - Redesigned testimonials section with world-class modern design
 - Changed content to authentic Saudi success stories (عبدالله الغامدي، نورة السبيعي، خالد القحطاني)
