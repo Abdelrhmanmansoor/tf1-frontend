@@ -636,7 +636,7 @@ export function LandingPage() {
                 return (
                   <motion.div
                     key={category.id}
-                    className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 snap-start transition-all duration-300 hover:border-gray-300 hover:shadow-lg cursor-pointer"
+                    className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 snap-start transition-all duration-300 hover:border-blue-500 cursor-pointer"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{
@@ -645,11 +645,11 @@ export function LandingPage() {
                     }}
                     viewport={{ once: true }}
                   >
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-all duration-300 group-hover:bg-blue-50">
-                      <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-600" strokeWidth={1.5} />
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-all duration-300">
+                      <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-500" strokeWidth={1.5} />
                     </div>
                     
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 transition-colors duration-300 group-hover:text-gray-900">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-800">
                       {language === 'ar' ? category.nameAr : category.nameEn}
                     </h3>
                   </motion.div>
