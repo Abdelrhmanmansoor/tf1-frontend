@@ -10,17 +10,23 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
-### November 24, 2025 - Footer Redesign & Logo Fix
+### November 24, 2025 - Footer Redesign & Logo Fix (Updated)
 - Made logo in navbar clickable - clicking returns to home page
 - Completely redesigned footer with premium modern look
-- Added government logos: Ministry of Commerce, Business Center (Maroof), Vision 2030
+- **Added real government logos with white background boxes:**
+  - Ministry of Commerce (وزارة التجارة)
+  - Saudi Business Center (مركز الأعمال السعودي)
+  - Vision 2030 (رؤية المملكة 2030)
+- Government logos have unified white rounded backgrounds with hover effects
 - Replaced text logo with actual TF1 image logo in footer
-- Fixed Snapchat icon (was using Facebook icon by mistake)
+- Fixed Snapchat icon and link (now points to tf1sports)
+- **Unified email across platform: contact@tf1one.com**
 - Unified phone number across all pages: +966 50 123 4567
 - Fixed phone number direction issue in Arabic (added dir="ltr")
-- Applied new footer to all pages: landing, about, contact, features, help-center, faq, terms
+- **Added favicon (logo in browser tab)**
+- Applied new unified Footer component to all pages: landing, about, contact, features, help-center, faq, terms
 - Footer now includes: brand section with logo, quick links, legal links, contact info, government logos
-- Consistent contact information across entire platform
+- Consistent contact information and branding across entire platform
 
 ### November 24, 2025 - Testimonials Section Redesign
 - Redesigned testimonials section with world-class modern design
