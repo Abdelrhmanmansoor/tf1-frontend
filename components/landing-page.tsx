@@ -8,6 +8,16 @@ import {
   Phone,
   Mail,
   ArrowRight,
+  Users,
+  GraduationCap,
+  Building2,
+  Briefcase,
+  Stethoscope,
+  Heart,
+  FolderKanban,
+  Mic,
+  BookOpen,
+  Settings,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -62,64 +72,64 @@ export function LandingPage() {
     {
       id: 1,
       name: t('player'),
-      icon: '🏃',
+      Icon: Users,
       nameAr: 'اللاعبين',
       nameEn: 'Players',
     },
     {
       id: 2,
       name: t('coach'),
-      icon: '👨‍🏫',
+      Icon: GraduationCap,
       nameAr: 'المدربين',
       nameEn: 'Coaches',
     },
-    { id: 3, name: t('club'), icon: '🏟️', nameAr: 'الاندية', nameEn: 'Clubs' },
+    { id: 3, name: t('club'), Icon: Building2, nameAr: 'الاندية', nameEn: 'Clubs' },
     {
       id: 4,
       name: t('Support Roles'),
-      icon: '💪',
+      Icon: Briefcase,
       nameAr: 'الوظائف المساندة ',
       nameEn: 'Support Roles',
     },
     {
       id: 5,
       name: t('naturalField'),
-      icon: '🩼',
+      Icon: Heart,
       nameAr: 'أخصائين العلاج الطبيعي ',
       nameEn: 'Physical Therapists',
     },
     {
       id: 6,
       name: t('Sports physicans'),
-      icon: '🩺',
+      Icon: Stethoscope,
       nameAr: 'أطباء الطب الرياضي',
       nameEn: 'Sports physicans',
     },
     {
       id: 7,
       name: t('Sports Management'),
-      icon: '🧰',
+      Icon: FolderKanban,
       nameAr: 'الإدارة الرياضية',
       nameEn: 'Sports Management',
     },
     {
       id: 8,
       name: t('ports Media'),
-      icon: '🎤',
+      Icon: Mic,
       nameAr: 'الإعلام',
       nameEn: 'ports Media',
     },
     {
       id: 9,
       name: t('Sports Education'),
-      icon: '👨‍🏫',
+      Icon: BookOpen,
       nameAr: 'التعليم الرياضي',
       nameEn: 'Sports Education',
     },
     {
       id: 10,
       name: t('Facility Operations'),
-      icon: '🪤',
+      Icon: Settings,
       nameAr: 'تشغيل وإدارة المنشآت',
       nameEn: 'Facility Operations',
     },
@@ -592,22 +602,15 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Categories Section (REFINED: Glassmorphism + Auto Scroll + Pause on Interaction) */}
-      <section
-        className={`py-12 sm:py-16 ${content[mode].gradientClass} overflow-hidden`}
-      >
-        <div className="w-full px-4 sm:px-6 relative">
+      {/* Categories Section - Clean & Modern Design */}
+      <section className="py-16 sm:py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.h2
-            className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12"
-            initial={{ opacity: 0, y: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{
-              duration: 0.8,
-              type: 'spring',
-              stiffness: 100,
-              damping: 15,
-            }}
-            viewport={{ once: true, margin: '-100px' }}
+            className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
           >
             {t('targetCategories')}
           </motion.h2>
@@ -621,117 +624,71 @@ export function LandingPage() {
               onMouseLeave={handleResume}
               onTouchStart={handlePause}
               onTouchEnd={handleResume}
-              className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory py-8 px-4"
+              className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-6"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
                 WebkitOverflowScrolling: 'touch',
               }}
             >
-              {/*
-                Responsive card widths chosen to match "A" option:
-                - mobile: roughly 2 visible (w-64)
-                - tablet: 3 visible (sm:w-80)
-                - desktop: 4 visible (we rely on container max-width)
-              */}
-              {categories.map((category, index) => (
-                <motion.div
-                  key={category.id}
-                  className={`
-                    bg-white/85 backdrop-blur-sm
-                    rounded-3xl
-                    p-6 sm:p-8
-                    text-center
-                    shadow-[0_10px_25px_rgba(8,15,52,0.08)]
-                    hover:shadow-[0_20px_45px_rgba(8,15,52,0.12)]
-                    transition-all duration-300
-                    relative overflow-hidden flex-shrink-0
-                    w-56 sm:w-72 md:w-80 snap-start
-                    border border-white/30
-                  `}
-                  initial={{ opacity: 0, y: 50, rotateY: -12 }}
-                  whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
-                  transition={{
-                    duration: 0.7,
-                    delay: index * 0.08,
-                    type: 'spring',
-                    stiffness: 90,
-                  }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  whileHover={{
-                    scale: 1.06,
-                    rotateY: 4,
-                    boxShadow: '0 24px 50px rgba(3,10,34,0.14)',
-                    transition: { duration: 0.28 },
-                  }}
-                >
-                  {/* Soft hover glow */}
+              {categories.map((category, index) => {
+                const IconComponent = category.Icon
+                return (
                   <motion.div
-                    className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/0 to-white/5 opacity-0"
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  <motion.div
-                    className="text-4xl sm:text-5xl mb-3 sm:mb-4 relative z-10"
-                    whileHover={{
-                      scale: 1.15,
-                      rotate: [0, -8, 8, -8, 0],
-                      transition: { duration: 0.6 },
+                    key={category.id}
+                    className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 snap-start transition-all duration-300 hover:border-gray-300 hover:shadow-lg cursor-pointer"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.05,
                     }}
+                    viewport={{ once: true }}
                   >
-                    {category.icon}
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-all duration-300 group-hover:bg-blue-50">
+                      <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-300 group-hover:text-blue-600" strokeWidth={1.5} />
+                    </div>
+                    
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 transition-colors duration-300 group-hover:text-gray-900">
+                      {language === 'ar' ? category.nameAr : category.nameEn}
+                    </h3>
                   </motion.div>
-
-                  <div className="text-sm sm:text-base font-semibold text-gray-800 relative z-10">
-                    {language === 'ar' ? category.nameAr : category.nameEn}
-                  </div>
-
-                  {/* subtle decorative dot */}
-                  <motion.div
-                    className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-br from-blue-400 to-green-400 rounded-full opacity-0"
-                    whileHover={{
-                      opacity: 1,
-                      scale: [1, 1.6, 1],
-                      transition: { duration: 0.45 },
-                    }}
-                  />
-                </motion.div>
-              ))}
+                )
+              })}
             </div>
 
-            {/* Navigation buttons — keep but smaller & semi-transparent */}
+            {/* Navigation arrows - Clean & Modern */}
             <button
               aria-label="prev categories"
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white z-10"
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 disabled:opacity-50"
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
                 if (carouselRef.current) {
                   carouselRef.current.scrollBy({
-                    left: -Math.round((carouselRef.current.clientWidth * 0.6)),
+                    left: -Math.round(carouselRef.current.clientWidth * 0.5),
                     behavior: 'smooth',
                   })
                 }
               }}
             >
-              <ChevronLeft className="w-5 h-5 text-gray-700" />
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
             <button
               aria-label="next categories"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow-md hover:bg-white z-10"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10 disabled:opacity-50"
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
                 if (carouselRef.current) {
                   carouselRef.current.scrollBy({
-                    left: Math.round((carouselRef.current.clientWidth * 0.6)),
+                    left: Math.round(carouselRef.current.clientWidth * 0.5),
                     behavior: 'smooth',
                   })
                 }
               }}
             >
-              <ChevronRight className="w-5 h-5 text-gray-700" />
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
             </button>
           </div>
         </div>
