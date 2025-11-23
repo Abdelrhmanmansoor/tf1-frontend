@@ -489,8 +489,13 @@ export function LandingPage() {
         if (isPausedRef.current) return
         
         setCurrentIndex((prev) => {
-          // Infinite loop - always go to next, wrap around
-          return (prev + 1) % categories.length
+          // Infinite loop - increment continuously
+          const next = prev + 1
+          // When we reach the end of first set, jump back to start seamlessly
+          if (next >= categories.length * 2) {
+            return categories.length // Jump to second set to maintain seamlessness
+          }
+          return next
         })
       }, 4000) // every 4 seconds - smooth & premium
     }
@@ -530,6 +535,20 @@ export function LandingPage() {
       }
     }
   }, [bannerImages.length, isBannerPaused])
+
+  // Seamless infinite loop reset
+  useEffect(() => {
+    if (currentIndex >= categories.length * 2) {
+      // Instantly jump back to middle set without animation
+      setTimeout(() => {
+        setCurrentIndex(categories.length)
+      }, 0)
+    } else if (currentIndex < 0) {
+      setTimeout(() => {
+        setCurrentIndex(categories.length - 1)
+      }, 0)
+    }
+  }, [currentIndex, categories.length])
 
   // pause/resume handlers
   const handlePause = () => {
@@ -722,13 +741,20 @@ export function LandingPage() {
                   duration: 0.8,
                   ease: 'easeInOut',
                 }}
+                onAnimationComplete={() => {
+                  // Reset to start when we complete a full loop
+                  if (currentIndex >= categories.length) {
+                    setCurrentIndex(0)
+                  }
+                }}
                 style={{ pointerEvents: 'auto', userSelect: 'none' }}
               >
-                {categories.map((category, index) => {
+                {/* Render categories 3 times for infinite loop effect */}
+                {[...categories, ...categories, ...categories].map((category, index) => {
                   const IconComponent = category.Icon
                   return (
                     <div
-                      key={category.id}
+                      key={`${category.id}-${index}`}
                       className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-200 hover:border-blue-400 hover:shadow-md cursor-pointer"
                     >
                       <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-50">
@@ -751,7 +777,12 @@ export function LandingPage() {
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                setCurrentIndex((prev) => (prev - 1 + categories.length) % categories.length)
+                setCurrentIndex((prev) => {
+                  if (prev <= 0) {
+                    return categories.length - 1
+                  }
+                  return prev - 1
+                })
               }}
             >
               <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
@@ -762,7 +793,13 @@ export function LandingPage() {
               onMouseEnter={handlePause}
               onMouseLeave={handleResume}
               onClick={() => {
-                setCurrentIndex((prev) => (prev + 1) % categories.length)
+                setCurrentIndex((prev) => {
+                  const next = prev + 1
+                  if (next >= categories.length * 2) {
+                    return categories.length
+                  }
+                  return next
+                })
               }}
             >
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
