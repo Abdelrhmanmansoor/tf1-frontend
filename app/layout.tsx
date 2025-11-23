@@ -9,6 +9,10 @@ import { ScrollToTop } from '@/components/scroll-to-top'
 export const metadata: Metadata = {
   title: ' TF1 JOPS ',
   description: 'منصة تربط الباحثين عن وظائف رياضية بالأندية والجهات في المملكة',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 export const viewport: Viewport = {

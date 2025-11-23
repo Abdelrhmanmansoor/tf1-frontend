@@ -18,7 +18,7 @@ export function Footer() {
 
   const contactInfo = {
     phone: '+966 50 123 4567',
-    email: 'info@tf1.sa',
+    email: 'contact@tf1one.com',
     address: language === 'ar' 
       ? 'الرياض، المملكة العربية السعودية' 
       : 'Riyadh, Saudi Arabia'
@@ -56,7 +56,7 @@ export function Footer() {
           <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3 0 .73-.149 1.065-.301.517-.232 1.013-.357 1.423-.357.96 0 1.64.563 1.64 1.354 0 .52-.31.987-.664 1.288-.552.463-1.248.819-1.844 1.058-.213.09-.331.21-.331.423 0 .071.03.158.104.298.21.4.594 1.127 1.164 1.742.681.733 1.952 1.308 3.008 1.308.257 0 .492-.05.712-.127l.04-.012c.23-.078.405-.112.525-.112.42 0 .748.338.748.748 0 .076-.014.151-.037.225-.415 1.341-2.22 2.104-2.999 2.104-.163 0-.298-.03-.413-.063-.12-.035-.24-.078-.376-.125-.457-.159-1.082-.376-2.046-.376-.721 0-1.391.15-1.94.301-.329.09-.637.196-.915.284-.475.149-.898.284-1.291.284-.49 0-.945-.107-1.425-.33-1.139-.53-2.165-1.417-3.127-2.255-.554-.485-1.079-.944-1.585-1.332-.636-.488-1.039-.73-1.415-.922l-.015-.008c-.33-.166-.586-.294-.836-.51-.238-.206-.397-.48-.397-.816 0-.527.42-.957.957-.957.15 0 .297.032.435.09.12.051.238.108.352.168.18.09.349.174.504.233.078.03.151.045.22.045.303 0 .533-.263.533-.564 0-.206-.12-.42-.349-.629-.345-.314-.706-.555-1.094-.766-.776-.421-1.641-.632-2.573-.632-.75 0-1.447.165-2.07.49-.657.344-1.222.84-1.675 1.47-.524.728-.818 1.59-.818 2.486 0 1.06.36 2.04 1.012 2.757.645.71 1.545 1.13 2.531 1.13.424 0 .83-.074 1.207-.218.315-.12.586-.27.81-.448.18-.143.33-.3.457-.479.024-.035.048-.067.075-.104.12-.164.24-.328.39-.478.24-.238.57-.358.93-.358.675 0 1.223.547 1.223 1.223 0 .313-.12.604-.316.84-.21.255-.525.479-.93.664-.99.45-2.145.675-3.435.675-1.918 0-3.632-.63-4.815-1.774C.96 16.976.24 15.455.24 13.648c0-1.29.405-2.52 1.137-3.555.735-1.035 1.785-1.86 3.027-2.385C5.65 7.213 7.1 6.948 8.604 6.948c.825 0 1.59.105 2.273.315.684.21 1.29.517 1.801.915l.015.012c.165.126.315.266.45.42l.09-.015c-.12-1.894-.165-4.044.42-5.426C15.6 1.274 18.435.793 19.77.793c.766 0 1.38.286 1.877.875.495.585.766 1.39.766 2.324 0 .63-.15 1.29-.45 1.968-.3.675-.75 1.335-1.335 1.963-.585.63-1.29 1.177-2.1 1.635-.405.228-.855.42-1.335.57l-.015.006c-.48.15-.975.226-1.485.226-.36 0-.705-.045-1.035-.135l-.045-.015c-.494-.135-.945-.375-1.335-.705-.195-.165-.375-.36-.525-.585-.075-.113-.135-.24-.18-.375-.09-.27-.135-.57-.135-.885 0-.72.3-1.41.84-1.935.54-.525 1.29-.81 2.1-.81.51 0 .99.12 1.41.345z"/>
         </svg>
       ),
-      url: 'https://www.snapchat.com/add/tf1sa',
+      url: 'https://www.snapchat.com/add/tf1sports',
       color: 'hover:bg-[#FFFC00] hover:text-black'
     }
   ]
@@ -191,19 +191,23 @@ export function Footer() {
 
         {/* Government Logos Section */}
         <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-12">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8">
             {/* Ministry of Commerce Logo */}
             <a 
               href="https://mc.gov.sa" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+              className="group"
             >
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Ministry_of_Commerce_Logo.svg/200px-Ministry_of_Commerce_Logo.svg.png"
-                alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
-                className="h-12 sm:h-14 md:h-16 w-auto object-contain"
-              />
+              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+                <Image 
+                  src="/ministry-commerce.png"
+                  alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
+                  width={120}
+                  height={120}
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </a>
 
             {/* Business Center Logo */}
@@ -211,13 +215,17 @@ export function Footer() {
               href="https://maroof.sa" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+              className="group"
             >
-              <img 
-                src="https://maroof.sa/static/images/logo.svg"
-                alt={language === 'ar' ? 'مركز الأعمال' : 'Business Center'}
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
-              />
+              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+                <Image 
+                  src="/business-center.png"
+                  alt={language === 'ar' ? 'مركز الأعمال السعودي' : 'Saudi Business Center'}
+                  width={120}
+                  height={120}
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </a>
 
             {/* Vision 2030 Logo */}
@@ -225,13 +233,17 @@ export function Footer() {
               href="https://www.vision2030.gov.sa" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+              className="group"
             >
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Saudi_Vision_2030_logo.svg/300px-Saudi_Vision_2030_logo.svg.png"
-                alt={language === 'ar' ? 'رؤية 2030' : 'Vision 2030'}
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
-              />
+              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+                <Image 
+                  src="/vision-2030.png"
+                  alt={language === 'ar' ? 'رؤية المملكة 2030' : 'Saudi Vision 2030'}
+                  width={120}
+                  height={120}
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </a>
           </div>
         </div>
