@@ -10,15 +10,14 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
-### November 24, 2025 - Success Stats Section Added
-- Added stunning "Our Success in Numbers" statistics section below banner
-- 6 key metrics with animated cards: 50K+ users, 2.5K+ jobs, 800+ clubs, 95% satisfaction, 13 cities, 4.8/5 rating
-- Each stat has unique gradient color (blue, green, purple, orange, cyan, pink)
-- Smooth animations on scroll with staggered delays
-- Hover effects: cards lift up and scale slightly
-- Gradient background (gray-50 to blue-50 to green-50)
-- Icon-based design with Lucide icons in colored background circles
-- Saudi-focused messaging at bottom
+### November 24, 2025 - Partners Marquee Section Added
+- Added animated partners logo carousel below banner section  
+- Smooth infinite auto-scrolling animation (30s loop, pauses on hover)
+- 13 partner logos: sports clubs (Hilal, Nassr, Ahli, Shabab, Taawon, Khulood, Diriyah, Fateh, Qadisiya, Orouba, Fayha, Damak) and Fitness Time
+- Logos displayed in grayscale, colored on hover for professional look
+- Section title: "شركاؤنا المحتملون" / "Our Potential Partners" with gradient text (blue to green)
+- All logos uniformly sized (28-36px cards) with consistent spacing
+- Gradient background matching new design system (gray-50 to blue-50 to green-50)
 
 ### November 24, 2025 - Snapchat Logo Fixed
 - Fixed incorrect Snapchat icon in footer - now shows correct ghost icon
