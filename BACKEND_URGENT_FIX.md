@@ -2,8 +2,13 @@
 
 ## Current Status
 - ✅ Frontend admin dashboard is **READY** at `/admin`
+- ✅ Frontend configured with environment variable: `NEXT_PUBLIC_API_URL`
 - ❌ Backend endpoints return **404 "Route not found"**
 - ❌ CORS is blocking requests from frontend
+
+## Environment Configuration
+Frontend uses: `NEXT_PUBLIC_API_URL=https://tf1-backend.onrender.com/api/v1`
+To change backend URL, update this environment variable in Replit.
 
 ## Test Results
 ```bash

@@ -66,10 +66,11 @@ export default function AdminDashboard() {
   const loadData = async () => {
     setLoading(true)
     
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'
+    
     try {
       // Try to fetch stats
-      const statsRes = await axios.get('/api/v1/admin/dashboard', {
-        baseURL: 'https://tf1-backend.onrender.com',
+      const statsRes = await axios.get(`${API_URL}/admin/dashboard`, {
         timeout: 3000,
       }).catch(() => null)
       
@@ -96,8 +97,7 @@ export default function AdminDashboard() {
 
     try {
       // Try to fetch users
-      const usersRes = await axios.get('/api/v1/admin/users', {
-        baseURL: 'https://tf1-backend.onrender.com',
+      const usersRes = await axios.get(`${API_URL}/admin/users`, {
         timeout: 3000,
       }).catch(() => null)
       
@@ -146,11 +146,11 @@ export default function AdminDashboard() {
   }
 
   const handleBlockUser = async (userId: string) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'
+    
     try {
-      await axios.patch(`/api/v1/admin/users/${userId}/block`, {
+      await axios.patch(`${API_URL}/admin/users/${userId}/block`, {
         reason: blockReason,
-      }, {
-        baseURL: 'https://tf1-backend.onrender.com',
       })
       loadData()
       setBlockReason('')
@@ -161,10 +161,10 @@ export default function AdminDashboard() {
   }
 
   const handleUpdateSettings = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'
+    
     try {
-      await axios.patch('/api/v1/admin/settings', settings, {
-        baseURL: 'https://tf1-backend.onrender.com',
-      })
+      await axios.patch(`${API_URL}/admin/settings`, settings)
       alert(language === 'ar' ? 'تم التحديث بنجاح' : 'Updated successfully')
     } catch (error) {
       alert('Error updating settings')

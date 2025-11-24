@@ -38,14 +38,19 @@ localPort = 39879
 externalPort = 3000
 
 [[ports]]
-localPort = 44267
-externalPort = 3001
+localPort = 41367
+externalPort = 3002
 
 [[ports]]
-localPort = 45369
-externalPort = 3002
+localPort = 44267
+externalPort = 3001
 
 [deployment]
 deploymentTarget = "autoscale"
 run = ["npm", "run", "start"]
 build = ["npm", "run", "build"]
+
+[userenv]
+
+[userenv.shared]
+NEXT_PUBLIC_API_URL = "https://tf1-backend.onrender.com/api/v1"

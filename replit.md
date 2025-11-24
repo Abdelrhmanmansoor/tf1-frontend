@@ -82,10 +82,15 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 - **Animations**: Framer Motion
 
 ### Backend Integration
-- **Backend API URL**: `https://tf1-backend.onrender.com/api/v1`
+- **Backend API URL**: Configurable via `NEXT_PUBLIC_API_URL` environment variable
+- **Default URL**: `https://tf1-backend.onrender.com/api/v1`
 - **Authentication**: JWT tokens
 - **Admin Endpoints**: 13+ endpoints for admin dashboard
 - **No backend code in this repository** (frontend only)
+
+### Environment Variables
+- `NEXT_PUBLIC_API_URL`: Backend API base URL (default: https://tf1-backend.onrender.com/api/v1)
+- See `.env.example` for all available variables
 
 ### Key Features
 1. **Multi-Role System**: Players, Coaches, Clubs, Specialists
@@ -271,9 +276,11 @@ None at this time.
 
 ## Files Reference
 
+- `SETUP_GUIDE.md` - **START HERE**: Complete setup and deployment guide
 - `BACKEND_URGENT_FIX.md` - **CRITICAL**: Quick guide for backend team to enable admin dashboard
 - `ADMIN_BACKEND_COMMANDS.md` - Complete backend API implementation guide
 - `BLOG_PUBLISHING_GUIDE.md` - Blog system API guide
+- `.env.example` - Environment variables template
 - `app/admin/page.tsx` - Admin dashboard frontend (primary)
 - `app/control/page.tsx` - Redirect to /admin
 - `app/dashboard/admin/page.tsx` - Redirect to /admin
