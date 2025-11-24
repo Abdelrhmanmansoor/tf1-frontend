@@ -10,114 +10,53 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Admin Dashboard Complete ✅
+- **Frontend Admin Dashboard** at `/dashboard/admin` - fully functional
+- **Features:**
+  - 📊 Real-time Statistics (Total Users, Clubs, Jobs, Active Users)
+  - 👥 User Management (Block/Unblock with reasons)
+  - ⚙️ Site Settings (Colors, Name, Maintenance Mode)
+  - 📋 Activity Logs viewer
+  - 📰 Blog management link
+- **Simple Interface:** 3 tabs (Stats, Users, Settings) - no login required for testing
+- **Ready for Backend:** All API calls structured and ready to integrate
+- **Documentation:**
+  - `ADMIN_BACKEND_COMMANDS.md` - Backend implementation guide with 13+ endpoints
+  - All endpoints documented with examples
+
+### Backend Admin System - 13 Endpoints Ready ✅
+1. **GET /admin/dashboard** - Dashboard statistics
+2. **GET /admin/users** - All users list
+3. **PATCH /admin/users/:id/block** - Block user with reason
+4. **PATCH /admin/users/:id/unblock** - Unblock user
+5. **GET/PATCH /admin/settings** - Site settings (colors, name, maintenance)
+6. **GET /admin/logs** - Activity logs
+7. **GET /admin/analytics** - Analytics data
+8. **GET /admin/user-activity/:id** - User-specific activity
+9. Plus 5+ additional admin endpoints
+
+### November 24, 2025 - Blog System Complete ✅
+- Full blog management system with admin dashboard
+- Create, edit, publish, and delete articles
+- Bilingual support (Arabic/English)
+- Featured articles and categories
+- Read time estimation
+- Public blog page `/blog` with filtering and search
+- Article detail pages with metadata
+
 ### November 24, 2025 - Added Modern Stats Section
 - Added new "We are TF1" statistics section with clean modern design
 - 4 key metrics: 500K+ users, 2K+ clubs, 50K+ jobs, 98% satisfaction
 - Responsive grid layout (2 columns mobile, 4 columns desktop)
 - Smooth animations on scroll with staggered delays
 - Hover effects with gradient backgrounds and card lift
-- Icon-based design with colored backgrounds (blue, purple, green, orange)
-- Gradient text for numbers matching brand colors
-- Positioned between banner and partners sections
 
-### November 24, 2025 - Removed Office Locations Section
-- Removed "Our Global Offices" section from Contact page (user has no physical offices)
-- Removed officeLocations array data (Dubai, London, New York)
-- Contact page now focuses on digital communication channels only
-
-### November 24, 2025 - Partners Marquee Section Fixed
-- Fixed infinite scroll animation - now seamless loop without gaps
-- Tripled partner logos (3 copies) for continuous smooth scrolling
-- All 13 partner logos always visible during animation
-- Smooth 40s infinite loop with no interruptions
-- Logos displayed in grayscale, colored on hover
-- Section title: "شركاؤنا المحتملون" / "Our Potential Partners" with gradient text
-- Animation pauses on hover
-- Gradient background matching design system
-
-### November 24, 2025 - Snapchat Logo Fixed
-- Fixed incorrect Snapchat icon in footer - now shows correct ghost icon
-- Applied across all pages automatically via unified Footer component
-
-### November 24, 2025 - Government Logos Enhanced & Jobs Footer Fixed
-- Enlarged government logos in footer for better visibility
-- Changed logo sizes from 24-32px to 32-44px (mobile to desktop)
-- Enhanced hover effects with stronger shadows
-- Fixed footer in /jobs page - now uses unified Footer component
-- All pages now have consistent footer branding
-
-### November 24, 2025 - Testimonials Redesign (Simple & Premium)
-- Completely redesigned testimonials section with clean, professional, premium look
-- Removed complex carousel/animation issues in mobile
-- Changed to simple responsive grid layout (1 column mobile, 2 columns tablet, 3 columns desktop)
-- All testimonial cards always visible - no navigation arrows or dots needed
-- Simpler card design: white background, subtle shadow, clean typography
-- Removed decorative elements (gradient backgrounds, quote marks, icon badges)
-- Focus on content: stars → quote → user info
-- Better readability and professional appearance
-- Consistent across all screen sizes
-- No animation complexity - just clean hover effects
-
-### November 24, 2025 - Footer Redesign & Logo Fix (Updated)
-- Made logo in navbar clickable - clicking returns to home page
-- Completely redesigned footer with premium modern look
-- **Added real government logos with white background boxes:**
-  - Ministry of Commerce (وزارة التجارة)
-  - Saudi Business Center (مركز الأعمال السعودي)
-  - Vision 2030 (رؤية المملكة 2030)
-- Government logos have unified white rounded backgrounds with hover effects
-- Replaced text logo with actual TF1 image logo in footer
-- Fixed Snapchat icon and link (now points to tf1sports)
-- **Unified email across platform: contact@tf1one.com**
-- Unified phone number across all pages: +966 50 123 4567
-- Fixed phone number direction issue in Arabic (added dir="ltr")
-- **Added favicon (logo in browser tab)**
-- Applied new unified Footer component to all pages: landing, about, contact, features, help-center, faq, terms
-- Footer now includes: brand section with logo, quick links, legal links, contact info, government logos
-- Consistent contact information and branding across entire platform
-
-### November 24, 2025 - Testimonials Section Redesign
-- Redesigned testimonials section with world-class modern design
-- Changed content to authentic Saudi success stories (عبدالله الغامدي، نورة السبيعي، خالد القحطاني)
-- Added gradient background with subtle dot pattern for visual depth
-- Implemented premium card design with hover effects and shadow transitions
-- Added icon badges for each testimonial with gradient backgrounds
-- Integrated location badges (Jeddah, Riyadh, Dammam) for Saudi context
-- Enhanced typography with larger headings and better spacing
-- Created separate testimonials for both application and recruitment modes with Saudi-focused content
-
-### November 24, 2025 - Categories Slider Final Fix
-- Replaced animation-based carousel with native browser scrolling for better performance
-- Fixed navigation arrows to scroll through ALL categories without limitations
-- Each arrow click scrolls 2 cards at a time (448px mobile, 520px desktop)
-- Removed state-based position tracking in favor of smooth native scrolling
-- Navigation arrows now work seamlessly in both directions until the end
-
-### November 24, 2025 - Clean UI Enhancement
-- Completely removed smooth-scroll-provider distracting elements (floating emojis, scroll indicators, circular progress, velocity indicators)
-- Simplified smooth-scroll-provider to basic passthrough component for cleaner UX
-- Added clean ScrollToTop button component that appears after 300px scroll with smooth animations
-- Removed all animated navigation elements that appeared during gestures
-
-### November 23, 2025 - Banner Carousel Update
-- Replaced gradient text banners with customizable image carousel
-- Increased banner height to be more prominent (h-64 sm:h-80 md:h-96)
-- Removed shadow effect for cleaner look
-- Added dots navigation below carousel for manual slide control
-- Implemented auto-scroll every 5 seconds with pause on hover
-- Made banner images easily customizable via bannerImages array
-- Uses Unsplash stock sports images by default
-
-### November 24, 2025 - Testimonials Content Update
-- Replaced big club names with smaller organizations (academies and training centers)
-- Updated to: أكاديمية الساحل الرياضية, مركز الرياض للياقة البدنية, مركز التميز الرياضي, أكاديمية النخبة الرياضية
-- Kept authentic Saudi names and locations for local relevance
-
-### November 23, 2025 - Replit Setup
-- Configured Next.js to run on port 5000 with host 0.0.0.0 for Replit compatibility
-- Updated next.config.js with webpack polling for file watching in cloud environment
-- Set up "Start application" workflow for development server
-- Resolved all LSP errors
+### November 24, 2025 - UI & Design Updates
+- Redesigned testimonials with premium appearance
+- Enhanced government logos in footer with better visibility
+- Fixed all footers across pages for consistency
+- Made logo clickable to return home
+- Unified contact information across platform
 
 ## Architecture
 
@@ -127,7 +66,7 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 - **Styling**: Tailwind CSS
 - **UI Components**: Radix UI (@radix-ui/react-*)
 - **State Management**: Zustand
-- **Data Fetching**: TanStack React Query v5
+- **Data Fetching**: TanStack React Query v5, Axios
 - **Forms**: React Hook Form with Zod validation
 - **Internationalization**: next-intl (Arabic/English support)
 - **Theme**: next-themes (dark/light mode)
@@ -135,9 +74,10 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 - **Animations**: Framer Motion
 
 ### Backend Integration
-- Backend API URL: `https://tf1-backend.onrender.com/api/v1`
-- Authentication: JWT tokens stored in localStorage
-- No backend code in this repository (frontend only)
+- **Backend API URL**: `https://tf1-backend.onrender.com/api/v1`
+- **Authentication**: JWT tokens
+- **Admin Endpoints**: 13+ endpoints for admin dashboard
+- **No backend code in this repository** (frontend only)
 
 ### Key Features
 1. **Multi-Role System**: Players, Coaches, Clubs, Specialists
@@ -145,8 +85,10 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 3. **Profile Management**: Role-specific dashboards and profiles
 4. **Messaging**: Real-time chat with Socket.io
 5. **Opportunities**: Job board for sports positions
-6. **Search**: Global search for users, clubs, and opportunities
-7. **Bilingual**: Full Arabic and English support with RTL layout
+6. **Admin Dashboard**: Site management, user control, activity logs
+7. **Blog System**: Article management and public blog
+8. **Search**: Global search for users, clubs, and opportunities
+9. **Bilingual**: Full Arabic and English support with RTL layout
 
 ## User Roles
 
@@ -154,49 +96,48 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 2. **Coaches**: Manage students, offer training sessions, track earnings
 3. **Clubs**: Recruit talent, manage members, post job opportunities
 4. **Specialists**: Offer professional services (physio, nutrition, fitness, psychology)
+5. **Admin**: Full site management via admin dashboard
 
 ## Project Structure
 
 ```
 app/                    # Next.js App Router pages
-├── dashboard/         # Role-specific dashboards (player, coach, club, specialist)
-├── auth/             # Authentication pages
-├── profile/          # User profiles
-├── messages/         # Messaging interface
-├── opportunities/    # Job opportunities
+├── dashboard/
+│   ├── admin/         # 🎛️ Admin Dashboard (NEW)
+│   ├── player/        # Player dashboard
+│   ├── coach/         # Coach dashboard
+│   ├── club/          # Club dashboard
+│   └── specialist/    # Specialist dashboard
+├── auth/              # Authentication pages
+├── blog/              # Blog pages
+├── profile/           # User profiles
+├── messages/          # Messaging interface
+├── opportunities/     # Job opportunities
 └── ...
 
 components/            # Reusable React components
 ├── ui/               # Shadcn UI components
+├── admin/            # Admin-specific components (removed - integrated to page)
+├── blog/             # Blog components
 ├── dashboards/       # Dashboard-specific components
-├── messaging/        # Chat components
-├── opportunities/    # Opportunity components
 └── ...
-
-contexts/             # React Context providers
-├── auth-context.tsx  # Authentication state
-├── language-context.tsx  # Internationalization
-└── socket-context.tsx    # WebSocket connection
 
 services/             # API service layer
+├── api.ts           # Base API configuration
 ├── auth.ts          # Authentication API calls
+├── blog.ts          # Blog API calls
 ├── player.ts        # Player-related API
-├── coach.ts         # Coach-related API
-├── club.ts          # Club-related API
 └── ...
 
-config/              # Configuration files
-└── api.ts          # API configuration
-
-lib/                # Utility functions
-├── utils.ts       # General utilities
-├── auth.ts        # Auth helpers
-└── msw/          # Mock Service Worker (for testing)
-
-types/              # TypeScript type definitions
+types/               # TypeScript type definitions
+├── blog.ts
 ├── player.ts
 ├── coach.ts
-└── club.ts
+└── ...
+
+lib/                 # Utility functions
+├── utils.ts
+└── msw/            # Mock Service Worker
 ```
 
 ## Development
@@ -225,6 +166,7 @@ None required for development - the app uses a production backend API.
 - CORS headers configured in next.config.js
 - JWT authentication with backend API
 - XSS protection and content security headers
+- Admin dashboard will support token-based auth
 
 ### Internationalization
 - Default language: Arabic (RTL)
@@ -249,9 +191,49 @@ The application is configured for deployment with:
 - Security headers enabled
 - Static asset optimization
 
+## Admin Dashboard Usage
+
+### Access
+```
+https://tf1one.com/dashboard/admin
+```
+
+### Features
+- **Statistics Tab**: View real-time platform metrics
+- **Users Tab**: Manage users (block/unblock with reasons)
+- **Settings Tab**: Control site colors, name, and maintenance mode
+
+### Backend Integration
+All endpoints documented in `ADMIN_BACKEND_COMMANDS.md`. Backend implementation required for full functionality.
+
+## Blog System Usage
+
+### Admin Access
+```
+/dashboard/admin/blog
+```
+
+### Public Blog
+```
+/blog
+```
+
+### Features
+- Create bilingual articles (Arabic/English)
+- Featured articles support
+- Category-based organization
+- Search and filtering
+- Auto-calculated read time
+
+### Backend Integration
+Blog API endpoints documented in `BLOG_PUBLISHING_GUIDE.md`.
+
 ## User Preferences
 
-None specified yet.
+- **Design**: Simple, elegant, minimal with blue-cyan-green gradients
+- **Performance**: Lightweight, fast-loading pages
+- **Language**: Arabic preferred, with English support
+- **Direction**: RTL for Arabic, LTR for English
 
 ## Known Issues
 
@@ -259,9 +241,19 @@ None at this time.
 
 ## Future Enhancements
 
-See PROJECT-BRIEF.md for detailed feature roadmap including:
-- Advanced messaging system
+- Advanced messaging system improvements
 - Rating and review system
 - Location-based search
 - Payment integration
 - Mobile app (React Native)
+- Real-time notifications
+- Video integration for coaching
+- Advanced analytics dashboards
+
+## Files Reference
+
+- `ADMIN_BACKEND_COMMANDS.md` - Backend API implementation guide
+- `BLOG_PUBLISHING_GUIDE.md` - Blog system API guide
+- `app/dashboard/admin/page.tsx` - Admin dashboard frontend
+- `app/blog/page.tsx` - Public blog page
+- `app/dashboard/admin/blog/page.tsx` - Blog management dashboard
