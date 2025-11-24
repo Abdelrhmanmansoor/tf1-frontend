@@ -423,7 +423,7 @@ export default function ViewJobPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Job Stats */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-24">
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 {language === 'ar' ? 'إحصائيات الوظيفة' : 'Job Statistics'}
               </h3>
