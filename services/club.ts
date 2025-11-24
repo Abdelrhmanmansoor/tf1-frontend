@@ -689,6 +689,25 @@ class ClubService {
     }
   }
 
+  /**
+   * 26. Update Application Status
+   * PATCH /clubs/applications/:applicationId/status
+   */
+  async updateApplicationStatus(
+    applicationId: string,
+    status: 'new' | 'under_review' | 'interviewed' | 'offered' | 'hired' | 'rejected'
+  ): Promise<JobApplication> {
+    try {
+      const response = await api.patch<ApplicationResponse>(
+        `${this.BASE_PATH}/applications/${applicationId}/status`,
+        { status }
+      )
+      return response.data.application
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
   // ============================================================================
   // TEAM MANAGEMENT
   // ============================================================================

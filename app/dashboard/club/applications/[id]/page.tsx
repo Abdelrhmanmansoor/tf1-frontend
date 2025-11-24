@@ -18,6 +18,7 @@ import {
   Calendar as CalendarIcon,
   CheckCircle,
   AlertCircle,
+  Save,
 } from 'lucide-react'
 import Link from 'next/link'
 import clubService from '@/services/club'
@@ -30,10 +31,18 @@ const ApplicationDetailPage = () => {
   const [application, setApplication] = useState<JobApplication | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [statusLoading, setStatusLoading] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<string>('')
 
   useEffect(() => {
     fetchApplication()
   }, [applicationId])
+
+  useEffect(() => {
+    if (application) {
+      setSelectedStatus(application.status)
+    }
+  }, [application])
 
   const fetchApplication = async () => {
     try {
@@ -74,6 +83,37 @@ const ApplicationDetailPage = () => {
         return 'bg-red-100 text-red-700 border-red-200'
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200'
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    const statusLabels: Record<string, { ar: string; en: string }> = {
+      new: { ar: 'جديد', en: 'New' },
+      under_review: { ar: 'قيد المراجعة', en: 'Under Review' },
+      interviewed: { ar: 'تمت المقابلة', en: 'Interviewed' },
+      offered: { ar: 'عرض مقدم', en: 'Offered' },
+      hired: { ar: 'تم التوظيف', en: 'Hired' },
+      rejected: { ar: 'مرفوض', en: 'Rejected' },
+    }
+    return statusLabels[status] || { ar: status, en: status }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!application) return
+    
+    try {
+      setStatusLoading(true)
+      const updatedApp = await clubService.updateApplicationStatus(
+        application._id,
+        newStatus as any
+      )
+      setApplication(updatedApp)
+      setSelectedStatus(newStatus)
+    } catch (err: any) {
+      console.error('Error updating status:', err)
+      alert(err.message || (language === 'ar' ? 'خطأ في تحديث الحالة' : 'Error updating status'))
+    } finally {
+      setStatusLoading(false)
     }
   }
 
@@ -153,6 +193,49 @@ const ApplicationDetailPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8"
         >
+          {/* Status Update Section */}
+          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
+              {language === 'ar' ? 'تحديث حالة التطبيق' : 'Update Application Status'}
+            </h3>
+            <div className="flex items-end gap-4 flex-col sm:flex-row">
+              <div className="flex-1 w-full">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {language === 'ar' ? 'الحالة الجديدة' : 'New Status'}
+                </label>
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  disabled={statusLoading}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  <option value="new">{getStatusLabel('new')[language]}</option>
+                  <option value="under_review">{getStatusLabel('under_review')[language]}</option>
+                  <option value="interviewed">{getStatusLabel('interviewed')[language]}</option>
+                  <option value="offered">{getStatusLabel('offered')[language]}</option>
+                  <option value="hired">{getStatusLabel('hired')[language]}</option>
+                  <option value="rejected">{getStatusLabel('rejected')[language]}</option>
+                </select>
+              </div>
+              <Button
+                onClick={() => handleStatusChange(selectedStatus)}
+                disabled={statusLoading || selectedStatus === application?.status}
+                className="gap-2 w-full sm:w-auto"
+              >
+                {statusLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {language === 'ar' ? 'جاري...' : 'Updating...'}
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    {language === 'ar' ? 'تحديث' : 'Update'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
           {/* Applicant Header */}
           <div className="flex items-start gap-6 pb-8 border-b border-gray-200">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
