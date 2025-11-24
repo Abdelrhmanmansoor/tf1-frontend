@@ -20,6 +20,18 @@ interface TypingUser {
   conversationId: string
 }
 
+export interface JobNotification {
+  _id: string
+  type: 'application_reviewed' | 'application_rejected' | 'application_accepted' | 'new_application'
+  applicationId: string
+  jobId: string
+  jobTitle: string
+  status: 'pending' | 'read' | 'archived'
+  message: string
+  createdAt: string
+  userId: string
+}
+
 interface SocketContextType {
   socket: Socket | null
   isConnected: boolean
@@ -34,6 +46,7 @@ interface SocketContextType {
   ) => void
   onUserOnline: (callback: (userId: string) => void) => void
   onUserOffline: (callback: (userId: string) => void) => void
+  onJobNotification: (callback: (notification: JobNotification) => void) => void
   sendTyping: (conversationId: string) => void
   stopTyping: (conversationId: string) => void
   joinConversation: (conversationId: string) => void
@@ -163,6 +176,15 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const onJobNotification = useCallback(
+    (callback: (notification: JobNotification) => void) => {
+      if (socketRef.current) {
+        socketRef.current.on('job:notification', callback)
+      }
+    },
+    []
+  )
+
   const value: SocketContextType = {
     socket,
     isConnected,
@@ -173,6 +195,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     onStopTyping,
     onUserOnline,
     onUserOffline,
+    onJobNotification,
     sendTyping,
     stopTyping,
     joinConversation,
