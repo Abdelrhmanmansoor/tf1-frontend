@@ -573,18 +573,7 @@ export function LandingPage() {
               </FootballWipeText>
 
               <motion.div
-                className="mb-6 sm:mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                <FootballWipeText transitionKey={mode}>
-                  <div className="relative group"></div>
-                </FootballWipeText>
-              </motion.div>
-
-              <motion.div
-                className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
+                className="flex flex-col gap-3 sm:gap-4 justify-center w-full sm:w-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
@@ -592,11 +581,12 @@ export function LandingPage() {
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="w-full sm:w-auto"
                 >
-                  <Link href="/register">
+                  <Link href="/register" className="w-full block">
                     <Button
                       size="lg"
-                      className={`px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl ${
+                      className={`w-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl ${
                         mode === 'application'
                           ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
                           : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
@@ -610,17 +600,17 @@ export function LandingPage() {
                     </Button>
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link href={mode === 'application' ? '/jobs' : '/contract'}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+                  <Link href={mode === 'application' ? '/jobs' : '/contract'} className="w-full block">
                     <Button
                       variant="outline"
                       size="lg"
-                      className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                      className="w-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
                     >
                       <FootballWipeText transitionKey={mode}>
                         {mode === 'application'
                           ? t('exploreOpportunities')
-                          : t('contractWithUs')}
+                          : language === 'ar' ? 'للشركات' : 'For Companies'}
                       </FootballWipeText>
                     </Button>
                   </Link>
