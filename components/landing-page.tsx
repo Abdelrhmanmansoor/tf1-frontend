@@ -118,6 +118,57 @@ export function LandingPage() {
     },
   ]
 
+  const sportSpecializations = [
+    {
+      id: 1,
+      nameAr: 'كرة القدم',
+      nameEn: 'Football',
+      icon: '⚽',
+      jobs: 2400,
+      gradient: 'from-emerald-400 to-green-600',
+    },
+    {
+      id: 2,
+      nameAr: 'كرة السلة',
+      nameEn: 'Basketball',
+      icon: '🏀',
+      jobs: 1800,
+      gradient: 'from-orange-400 to-red-600',
+    },
+    {
+      id: 3,
+      nameAr: 'التنس',
+      nameEn: 'Tennis',
+      icon: '🎾',
+      jobs: 950,
+      gradient: 'from-yellow-400 to-orange-500',
+    },
+    {
+      id: 4,
+      nameAr: 'ألعاب القوى',
+      nameEn: 'Athletics',
+      icon: '🏃',
+      jobs: 890,
+      gradient: 'from-pink-400 to-red-500',
+    },
+    {
+      id: 5,
+      nameAr: 'اللياقة البدنية',
+      nameEn: 'Fitness',
+      icon: '🏋️',
+      jobs: 1200,
+      gradient: 'from-purple-400 to-blue-600',
+    },
+    {
+      id: 6,
+      nameAr: 'السباحة',
+      nameEn: 'Swimming',
+      icon: '🏊',
+      jobs: 720,
+      gradient: 'from-cyan-400 to-blue-500',
+    },
+  ]
+
   const categories = [
     {
       id: 1,
@@ -726,75 +777,142 @@ export function LandingPage() {
       {/* Partners Marquee Section */}
       <PartnersMarquee />
 
-      {/* Categories Section - Clean & Modern Design */}
-      <section className="py-16 sm:py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.h2
-            className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-12 sm:mb-16"
-            initial={{ opacity: 0, y: 20 }}
+      {/* Sports Specializations Section - Premium Design */}
+      <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 lg:mb-24"
           >
-            {t('targetCategories')}
-          </motion.h2>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6">
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {language === 'ar' ? 'اكتشف الفرص في تخصصك' : 'Discover Opportunities in Your Field'}
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-semibold">
+              {language === 'ar'
+                ? 'تصفح آلاف الوظائف في مختلف الرياضات والتخصصات'
+                : 'Browse thousands of jobs across various sports and specializations'}
+            </p>
+          </motion.div>
 
-          {/* Carousel wrapper */}
-          <div className="relative">
-            {/* Scrollable container with smooth scrolling */}
-            <div 
-              ref={carouselRef}
-              className="overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          {/* Sports Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
+            {sportSpecializations.map((sport, index) => (
+              <motion.div
+                key={sport.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05, translateY: -10 }}
+                className={`group relative bg-gradient-to-br ${sport.gradient} rounded-3xl p-8 sm:p-10 cursor-pointer overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 min-h-64 flex flex-col justify-between`}
+              >
+                {/* Background Effect */}
+                <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <div className="text-6xl sm:text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                    {sport.icon}
+                  </div>
+
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                    {language === 'ar' ? sport.nameAr : sport.nameEn}
+                  </h3>
+                </div>
+
+                {/* Job Count - Bottom */}
+                <div className="relative z-10 pt-6 border-t border-white/30">
+                  <div className="text-4xl sm:text-5xl font-black text-white mb-2">
+                    +{sport.jobs.toLocaleString()}
+                  </div>
+                  <p className="text-white/90 font-bold text-sm sm:text-base">
+                    {language === 'ar' ? 'فرصة متاحة' : 'Opportunities Available'}
+                  </p>
+                </div>
+
+                {/* Hover Button */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                  <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-bold text-lg hover:scale-110 transition-transform">
+                    {language === 'ar' ? 'استكشف' : 'Explore'}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Categories Section Below */}
+          <div className="mt-20 pt-20 border-t border-gray-200">
+            <motion.h3
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-12"
             >
-              <div className="flex gap-4 sm:gap-5 pb-6">
-                {categories.map((category, index) => {
-                  const IconComponent = category.Icon
-                  return (
-                    <div
-                      key={`${category.id}-${index}`}
-                      className="group bg-white rounded-lg border border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-52 sm:w-60 transition-all duration-200 hover:border-blue-400 hover:shadow-md cursor-pointer"
-                    >
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-gray-50 flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-50">
-                        <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-gray-600 transition-colors duration-200 group-hover:text-blue-500" strokeWidth={1.5} />
-                      </div>
-                      
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">
-                        {language === 'ar' ? category.nameAr : category.nameEn}
-                      </h3>
-                    </div>
-                  )
-                })}
+              {t('targetCategories')}
+            </motion.h3>
+
+            {/* Carousel wrapper */}
+            <div className="relative">
+              {/* Scrollable container with smooth scrolling */}
+              <div 
+                ref={carouselRef}
+                className="overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                <div className="flex gap-4 sm:gap-5 pb-6">
+                  {categories.map((category, index) => {
+                    const IconComponent = category.Icon
+                    return (
+                      <motion.div
+                        key={`${category.id}-${index}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ scale: 1.08 }}
+                        className="group bg-white rounded-2xl border-2 border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-56 sm:w-64 transition-all duration-300 hover:border-blue-400 hover:shadow-xl cursor-pointer"
+                      >
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center transition-all duration-300 group-hover:from-blue-100 group-hover:to-cyan-100 group-hover:scale-110 shadow-md">
+                          <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 group-hover:text-blue-700" strokeWidth={1.5} />
+                        </div>
+                        
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                          {language === 'ar' ? category.nameAr : category.nameEn}
+                        </h3>
+                      </motion.div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
 
-            {/* Navigation arrows - Scroll based */}
-            <button
-              aria-label="prev categories"
-              className={`absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10`}
-              onClick={() => {
-                const container = carouselRef.current
-                if (container) {
-                  const scrollAmount = typeof window !== 'undefined' && window.innerWidth >= 640 ? 520 : 448
-                  container.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
-                }
-              }}
-            >
-              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
-            </button>
-            <button
-              aria-label="next categories"
-              className={`absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 sm:p-3 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 z-10`}
-              onClick={() => {
-                const container = carouselRef.current
-                if (container) {
-                  const scrollAmount = typeof window !== 'undefined' && window.innerWidth >= 640 ? 520 : 448
-                  container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
-                }
-              }}
-            >
-              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={2} />
-            </button>
+              {/* Navigation arrows */}
+              <button
+                aria-label="prev categories"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+                onClick={() => {
+                  const container = carouselRef.current
+                  if (container) {
+                    container.scrollBy({ left: -400, behavior: 'smooth' })
+                  }
+                }}
+              >
+                <ChevronLeft className="w-6 h-6 text-gray-700" strokeWidth={2} />
+              </button>
+              <button
+                aria-label="next categories"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+                onClick={() => {
+                  const container = carouselRef.current
+                  if (container) {
+                    container.scrollBy({ left: 400, behavior: 'smooth' })
+                  }
+                }}
+              >
+                <ChevronRight className="w-6 h-6 text-gray-700" strokeWidth={2} />
+              </button>
+            </div>
           </div>
         </div>
       </section>
