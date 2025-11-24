@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
+import { Footer } from '@/components/footer'
 import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react'
 
 export default function LoginPage() {
@@ -73,7 +74,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden pb-96 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Animated Background - Same as Register */}
@@ -122,6 +123,18 @@ export default function LoginPage() {
       <div className="fixed top-6 right-6 z-50">
         <LanguageSelector />
       </div>
+
+      {/* Back to Home Button - Mobile friendly */}
+      <Link href="/" className="fixed top-6 left-6 z-50">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md text-white font-semibold shadow-lg hover:bg-white/20 transition-all duration-300 border border-white/20"
+        >
+          <span className="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+          <span className="hidden sm:inline">{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+        </motion.button>
+      </Link>
 
       <motion.div
         className="w-full max-w-md relative z-10"
@@ -289,6 +302,11 @@ export default function LoginPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 z-10">
+        <Footer />
+      </div>
     </div>
   )
 }

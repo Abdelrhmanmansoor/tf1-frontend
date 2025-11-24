@@ -269,7 +269,7 @@ export default function AboutPage() {
 
   return (
     <div
-      className={`min-h-screen bg-white relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+      className={`min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <Navbar activeMode="application" activePage="about" />
@@ -294,7 +294,7 @@ export default function AboutPage() {
 
       {/* Hero Section with Unique Layout */}
       <section
-        className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 section-marker"
+        className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 section-marker pt-20"
         data-section="0"
       >
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

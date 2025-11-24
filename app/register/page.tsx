@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
+import { Footer } from '@/components/footer'
 import {
   Mail,
   Lock,
@@ -508,19 +509,20 @@ export default function RegisterPage() {
 
     
     <div
-      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden pb-96 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
     {/* Back Button */}
-<div className="absolute top-6 left-6 z-50">
-  <a
-    href="/"
-    className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3b82f6] text-white font-semibold shadow-lg hover:bg-blue-500 transition-all duration-300"
+<Link href="/" className="fixed top-6 left-6 z-50">
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md text-white font-semibold shadow-lg hover:bg-white/20 transition-all duration-300 border border-white/20"
   >
-    <span className="text-xl group-hover:-translate-x-1 transition-transform">⟵</span>
-    <span className="hidden sm:block">الرئيسية</span>
-  </a>
-</div>
+    <span className="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+    <span className="hidden sm:inline">{language === 'ar' ? 'الرئيسية' : 'Home'}</span>
+  </motion.button>
+</Link>
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -1410,6 +1412,11 @@ export default function RegisterPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 z-10">
+        <Footer />
+      </div>
     </div>
   )
 }
