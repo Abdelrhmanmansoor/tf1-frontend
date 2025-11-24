@@ -10,6 +10,10 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Snapchat Logo Fixed
+- Fixed incorrect Snapchat icon in footer - now shows correct ghost icon
+- Applied across all pages automatically via unified Footer component
+
 ### November 24, 2025 - Government Logos Enhanced & Jobs Footer Fixed
 - Enlarged government logos in footer for better visibility
 - Changed logo sizes from 24-32px to 32-44px (mobile to desktop)
