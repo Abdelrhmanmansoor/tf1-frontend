@@ -18,25 +18,19 @@ export default function JobNotifications({ compact = false, userId }: JobNotific
   const [notifications, setNotifications] = useState<JobNotification[]>([])
   const [isOpen, setIsOpen] = useState(false)
   
-  // Safe socket hook - won't throw if not available
-  let socket = null
-  try {
-    const socketContext = useSocket()
-    socket = socketContext
-  } catch (e) {
-    // Socket not available, component will show empty state
-  }
-  
+  // Get socket safely
+  const socketContext = useSocket()
   const unreadCount = notifications.filter(n => n.status === 'pending').length
 
   useEffect(() => {
-    if (!socket) return
-    socket.onJobNotification((notification) => {
+    if (!socketContext) return
+    const handleNotification = (notification: JobNotification) => {
       if (notification.userId === userId) {
         setNotifications(prev => [notification, ...prev])
       }
-    })
-  }, [socket, userId])
+    }
+    socketContext.onJobNotification(handleNotification)
+  }, [socketContext, userId])
 
   const handleDismiss = useCallback((notificationId: string) => {
     setNotifications(prev => prev.filter(n => n._id !== notificationId))
