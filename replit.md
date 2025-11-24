@@ -10,6 +10,16 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Added Modern Stats Section
+- Added new "We are TF1" statistics section with clean modern design
+- 4 key metrics: 500K+ users, 2K+ clubs, 50K+ jobs, 98% satisfaction
+- Responsive grid layout (2 columns mobile, 4 columns desktop)
+- Smooth animations on scroll with staggered delays
+- Hover effects with gradient backgrounds and card lift
+- Icon-based design with colored backgrounds (blue, purple, green, orange)
+- Gradient text for numbers matching brand colors
+- Positioned between banner and partners sections
+
 ### November 24, 2025 - Removed Office Locations Section
 - Removed "Our Global Offices" section from Contact page (user has no physical offices)
 - Removed officeLocations array data (Dubai, London, New York)

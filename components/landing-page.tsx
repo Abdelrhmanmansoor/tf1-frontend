@@ -28,6 +28,7 @@ import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
 import { TopRatedPlayers } from './rating/TopRatedPlayers'
 import { PartnersMarquee } from './partners-marquee'
+import { StatsSection } from './stats-section'
 import { useLanguage } from '@/contexts/language-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -679,6 +680,9 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Stats Section */}
+      <StatsSection />
 
       {/* Partners Marquee Section */}
       <PartnersMarquee />
