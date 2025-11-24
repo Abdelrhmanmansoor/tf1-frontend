@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   CheckCircle,
   Building2,
+  Briefcase,
 } from 'lucide-react'
 
 export default function ContractPage() {
@@ -281,7 +282,7 @@ export default function ContractPage() {
                 {/* Section 2: Job Details */}
                 <div className="mb-10 pb-10 border-b border-gray-200">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <FileText className="w-6 h-6 text-purple-600" />
+                    <Briefcase className="w-6 h-6 text-purple-600" />
                     {language === 'ar' ? 'تفاصيل الوظيفة' : 'Job Details'}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -363,7 +364,7 @@ export default function ContractPage() {
                 {/* Terms & Security */}
                 <div className="mb-8 pb-8 border-b border-gray-200">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <Shield className="w-6 h-6 text-purple-600" />
+                    <CheckCircle className="w-6 h-6 text-purple-600" />
                     {language === 'ar' ? 'الشروط والحماية' : 'Terms & Protection'}
                   </h2>
 
@@ -396,7 +397,7 @@ export default function ContractPage() {
 
                 {/* Security Badge */}
                 <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200 flex items-center gap-3">
-                  <Lock className="w-6 h-6 text-green-600 flex-shrink-0" />
+                  <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-green-900 text-sm">
                       {language === 'ar' ? '🔒 حماية من الدرجة العسكرية' : '🔒 Military-Grade Protection'}

@@ -77,6 +77,25 @@ export function LandingPage() {
   const bannerAutoScrollRef = useRef<number | null>(null)
   const isPausedRef = useRef(false)
   const touchStartX = useRef(0)
+  const [newsIndex, setNewsIndex] = useState(0)
+  const newsMessages = [
+    language === 'ar'
+      ? { title: '✓ ابدأ رحلتك الرياضية اليوم!', desc: 'انضم إلى آلاف المحترفين الذين وثقوا بنا' }
+      : { title: '✓ Start Your Sports Journey Today!', desc: 'Join thousands of professionals who trust us' },
+    language === 'ar'
+      ? { title: '🏆 اكتشف أفضل الفرص', desc: 'وظائف رياضية في أفضل الأكاديميات والأندية' }
+      : { title: '🏆 Discover Best Opportunities', desc: 'Sports jobs in top academies and clubs' },
+    language === 'ar'
+      ? { title: '🚀 اتصل بأفضل المواهب', desc: 'نساعد الشركات في إيجاد أفضل كفاءات المجال الرياضي' }
+      : { title: '🚀 Connect with Top Talent', desc: 'We help companies find the best sports professionals' },
+  ]
+
+  useEffect(() => {
+    const newsInterval = window.setInterval(() => {
+      setNewsIndex((prev) => (prev + 1) % newsMessages.length)
+    }, 8000)
+    return () => window.clearInterval(newsInterval)
+  }, [newsMessages.length])
 
   const bannerImages = [
     {
@@ -537,6 +556,31 @@ export function LandingPage() {
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <Navbar activeMode={mode} />
+
+      {/* News Banner Strip */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500 w-full py-4 sm:py-5 px-4 shadow-lg"
+      >
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            key={newsIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <h3 className="text-lg sm:text-xl font-bold text-white text-center mb-1">
+              {newsMessages[newsIndex].title}
+            </h3>
+            <p className="text-sm sm:text-base text-white/90 font-medium text-center">
+              {newsMessages[newsIndex].desc}
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
 
       {/* Hero Section */}
       <motion.section
