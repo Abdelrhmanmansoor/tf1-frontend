@@ -48,7 +48,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar />
+      <Navbar activeMode="application" activePage="blog" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
