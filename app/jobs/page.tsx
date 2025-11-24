@@ -751,7 +751,10 @@ export default function JobsPage() {
         </section>
       </div>
 
-      <Footer />
+      {/* Footer Section */}
+      <div className="relative z-20">
+        <Footer />
+      </div>
     </div>
   )
 }
