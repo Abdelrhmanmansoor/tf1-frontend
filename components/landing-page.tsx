@@ -72,10 +72,6 @@ export function LandingPage() {
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoScrollIntervalRef = useRef<number | null>(null)
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
-  const [isBannerPaused, setIsBannerPaused] = useState(false)
-  const bannerAutoScrollRef = useRef<number | null>(null)
-  const isPausedRef = useRef(false)
   const touchStartX = useRef(0)
   const [newsIndex, setNewsIndex] = useState(0)
   
@@ -100,23 +96,10 @@ export function LandingPage() {
     return () => window.clearInterval(newsInterval)
   }, [newsMessages.length])
 
-  const bannerImages = [
-    {
-      id: 1,
-      url: '/banners/banner-1-saudi-team.png',
-      alt: language === 'ar' ? 'فريق سعودي موحد' : 'Saudi Team Unity',
-    },
-    {
-      id: 2,
-      url: '/banners/banner-2-future-sports.png',
-      alt: language === 'ar' ? 'تطوير الرياضة المستقبلي' : 'Future Sports Development',
-    },
-    {
-      id: 3,
-      url: '/banners/banner-3-ecosystem.png',
-      alt: language === 'ar' ? 'النظام الرياضي' : 'Sports Ecosystem',
-    },
-  ]
+  const bannerImage = {
+    url: '/banners/banner-1-saudi-team.png',
+    alt: language === 'ar' ? 'فريق سعودي موحد' : 'Saudi Team Unity',
+  }
 
   const sportSpecializations = [
     {
@@ -568,41 +551,9 @@ export function LandingPage() {
    */
   // Auto-scroll disabled - users navigate manually with arrows
 
-  useEffect(() => {
-    const startBannerAutoScroll = () => {
-      if (bannerAutoScrollRef.current) {
-        window.clearInterval(bannerAutoScrollRef.current)
-        bannerAutoScrollRef.current = null
-      }
-
-      bannerAutoScrollRef.current = window.setInterval(() => {
-        if (isBannerPaused) return
-        
-        setCurrentBannerIndex((prev) => {
-          return (prev + 1) % bannerImages.length
-        })
-      }, 5000)
-    }
-
-    startBannerAutoScroll()
-
-    return () => {
-      if (bannerAutoScrollRef.current) {
-        window.clearInterval(bannerAutoScrollRef.current)
-        bannerAutoScrollRef.current = null
-      }
-    }
-  }, [bannerImages.length, isBannerPaused])
 
   // No auto-reset needed - manual navigation only
 
-  // pause/resume handlers
-  const handlePause = () => {
-    isPausedRef.current = true
-  }
-  const handleResume = () => {
-    isPausedRef.current = false
-  }
 
   return (
     <div
@@ -721,60 +672,20 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Premium Image Carousel - Customizable Banners */}
-      <section className="relative py-8 sm:py-12 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div 
-            className="relative h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden"
-            onMouseEnter={() => setIsBannerPaused(true)}
-            onMouseLeave={() => setIsBannerPaused(false)}
-          >
-            {/* Images Container */}
-            <motion.div
-              className="flex h-full w-full"
-              animate={{
-                x: `-${currentBannerIndex * 100}%`,
-              }}
-              transition={{
-                duration: 0.8,
-                ease: 'easeInOut',
-              }}
-              style={{
-                willChange: 'transform',
-              }}
-            >
-              {bannerImages.map((banner) => (
-                <div key={banner.id} className="min-w-full h-full relative flex-shrink-0">
-                  <img
-                    src={banner.url}
-                    alt={banner.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                    style={{
-                      objectPosition: 'center',
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Dots Navigation */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {bannerImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentBannerIndex(index)}
-                  className={`transition-all duration-300 rounded-full ${
-                    index === currentBannerIndex
-                      ? 'w-8 h-3 bg-white'
-                      : 'w-3 h-3 bg-white/50 hover:bg-white/70'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
+      {/* Hero Banner - Optimized for All Devices */}
+      <section className="relative w-full bg-white overflow-hidden">
+        <div className="w-full h-64 sm:h-80 md:h-96 lg:h-[28rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-7xl">
+          <img
+            src={bannerImage.url}
+            alt={bannerImage.alt}
+            loading="eager"
+            className="w-full h-full object-cover rounded-2xl"
+            style={{
+              objectPosition: 'center',
+              backfaceVisibility: 'hidden',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl pointer-events-none" />
         </div>
       </section>
 
