@@ -78,17 +78,20 @@ export function LandingPage() {
   const isPausedRef = useRef(false)
   const touchStartX = useRef(0)
   const [newsIndex, setNewsIndex] = useState(0)
-  const newsMessages = [
-    language === 'ar'
-      ? { title: '✓ ابدأ رحلتك الرياضية اليوم!', desc: 'انضم إلى آلاف المحترفين الذين وثقوا بنا' }
-      : { title: '✓ Start Your Sports Journey Today!', desc: 'Join thousands of professionals who trust us' },
-    language === 'ar'
-      ? { title: '🏆 اكتشف أفضل الفرص', desc: 'وظائف رياضية في أفضل الأكاديميات والأندية' }
-      : { title: '🏆 Discover Best Opportunities', desc: 'Sports jobs in top academies and clubs' },
-    language === 'ar'
-      ? { title: '🚀 اتصل بأفضل المواهب', desc: 'نساعد الشركات في إيجاد أفضل كفاءات المجال الرياضي' }
-      : { title: '🚀 Connect with Top Talent', desc: 'We help companies find the best sports professionals' },
+  
+  const newsMessagesAr = [
+    { title: '✓ ابدأ رحلتك الرياضية اليوم!', desc: 'انضم إلى آلاف المحترفين الذين وثقوا بنا' },
+    { title: '🏆 اكتشف أفضل الفرص', desc: 'وظائف رياضية في أفضل الأكاديميات والأندية' },
+    { title: '🚀 اتصل بأفضل المواهب', desc: 'نساعد الشركات في إيجاد أفضل كفاءات المجال الرياضي' },
   ]
+  
+  const newsMessagesEn = [
+    { title: '✓ Start Your Sports Journey Today!', desc: 'Join thousands of professionals who trust us' },
+    { title: '🏆 Discover Best Opportunities', desc: 'Sports jobs in top academies and clubs' },
+    { title: '🚀 Connect with Top Talent', desc: 'We help companies find the best sports professionals' },
+  ]
+
+  const newsMessages = language === 'ar' ? newsMessagesAr : newsMessagesEn
 
   useEffect(() => {
     const newsInterval = window.setInterval(() => {
