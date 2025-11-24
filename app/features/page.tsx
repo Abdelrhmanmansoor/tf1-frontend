@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
@@ -24,36 +24,88 @@ import {
   Wifi,
   Clock,
   Zap,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  Building2,
+  Briefcase,
+  Stethoscope,
+  Heart,
+  FolderKanban,
+  Mic,
+  BookOpen,
+  Settings,
 } from 'lucide-react'
 
 export default function FeaturesPage() {
   const { language } = useLanguage()
   const [activeTab, setActiveTab] = useState(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   const categories = [
     {
-      id: 0,
-      name: language === 'ar' ? 'البحث والاكتشاف' : 'Search & Discovery',
-      icon: Search,
-      color: 'bg-blue-500/20 text-blue-400 border-blue-400/30',
-    },
-    {
       id: 1,
-      name: language === 'ar' ? 'المطابقة الذكية' : 'Smart Matching',
-      icon: Target,
-      color: 'bg-green-500/20 text-green-400 border-green-400/30',
+      name: 'Players',
+      Icon: Users,
+      nameAr: 'اللاعبين',
+      nameEn: 'Players',
     },
     {
       id: 2,
-      name: language === 'ar' ? 'التعاون' : 'Collaboration',
-      icon: Users,
-      color: 'bg-purple-500/20 text-purple-400 border-purple-400/30',
+      name: 'Coaches',
+      Icon: GraduationCap,
+      nameAr: 'المدربين',
+      nameEn: 'Coaches',
+    },
+    { id: 3, name: 'Clubs', Icon: Building2, nameAr: 'الاندية', nameEn: 'Clubs' },
+    {
+      id: 4,
+      name: 'Support Roles',
+      Icon: Briefcase,
+      nameAr: 'الوظائف المساندة ',
+      nameEn: 'Support Roles',
     },
     {
-      id: 3,
-      name: language === 'ar' ? 'التحليلات' : 'Analytics',
-      icon: BarChart,
-      color: 'bg-orange-500/20 text-orange-400 border-orange-400/30',
+      id: 5,
+      name: 'Physical Therapists',
+      Icon: Heart,
+      nameAr: 'أخصائين العلاج الطبيعي ',
+      nameEn: 'Physical Therapists',
+    },
+    {
+      id: 6,
+      name: 'Sports Doctors',
+      Icon: Stethoscope,
+      nameAr: 'أطباء الطب الرياضي',
+      nameEn: 'Sports Doctors',
+    },
+    {
+      id: 7,
+      name: 'Sports Management',
+      Icon: FolderKanban,
+      nameAr: 'الإدارة الرياضية',
+      nameEn: 'Sports Management',
+    },
+    {
+      id: 8,
+      name: 'Sports Media',
+      Icon: Mic,
+      nameAr: 'الإعلام الرياضي',
+      nameEn: 'Sports Media',
+    },
+    {
+      id: 9,
+      name: 'Sports Education',
+      Icon: BookOpen,
+      nameAr: 'التعليم الرياضي',
+      nameEn: 'Sports Education',
+    },
+    {
+      id: 10,
+      name: 'Facility Operations',
+      Icon: Settings,
+      nameAr: 'تشغيل وإدارة المنشآت',
+      nameEn: 'Facility Operations',
     },
   ]
 
@@ -197,16 +249,21 @@ export default function FeaturesPage() {
             transition={{ duration: 0.6 }}
             className="flex flex-wrap gap-3 justify-center mb-16"
           >
-            {categories.map((cat, idx) => {
+            {[
+              { id: 0, name: language === 'ar' ? 'البحث والاكتشاف' : 'Search & Discovery', icon: Search },
+              { id: 1, name: language === 'ar' ? 'المطابقة الذكية' : 'Smart Matching', icon: Target },
+              { id: 2, name: language === 'ar' ? 'التعاون' : 'Collaboration', icon: Users },
+              { id: 3, name: language === 'ar' ? 'التحليلات' : 'Analytics', icon: BarChart },
+            ].map((cat, idx) => {
               const IconComponent = cat.icon
               return (
                 <motion.button
                   key={idx}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(idx)}
+                  onClick={() => setActiveTab(cat.id)}
                   className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 border ${
-                    activeTab === idx
+                    activeTab === cat.id
                       ? 'bg-gradient-to-r from-blue-500 to-emerald-500 text-white border-transparent shadow-lg'
                       : 'bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-300'
                   }`}
@@ -250,8 +307,82 @@ export default function FeaturesPage() {
         </div>
       </section>
 
+      {/* Target Categories Slider - استعادة الشريط */}
+      <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl sm:text-5xl font-black text-gray-900 text-center mb-16"
+          >
+            {language === 'ar' ? 'الفئات المستهدفة' : 'Target Categories'}
+          </motion.h3>
+
+          {/* Carousel wrapper */}
+          <div className="relative">
+            {/* Scrollable container with smooth scrolling */}
+            <div
+              ref={carouselRef}
+              className="overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <div className="flex gap-4 sm:gap-5 pb-6">
+                {categories.map((category, index) => {
+                  const IconComponent = category.Icon
+                  return (
+                    <motion.div
+                      key={`${category.id}-${index}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ scale: 1.08 }}
+                      className="group bg-white rounded-2xl border-2 border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-56 sm:w-64 transition-all duration-300 hover:border-blue-400 hover:shadow-xl cursor-pointer"
+                    >
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center transition-all duration-300 group-hover:from-blue-100 group-hover:to-cyan-100 group-hover:scale-110 shadow-md">
+                        <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 group-hover:text-blue-700" strokeWidth={1.5} />
+                      </div>
+
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                        {language === 'ar' ? category.nameAr : category.nameEn}
+                      </h3>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Navigation arrows */}
+            <button
+              aria-label="prev categories"
+              className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+              onClick={() => {
+                const container = carouselRef.current
+                if (container) {
+                  container.scrollBy({ left: -448, behavior: 'smooth' })
+                }
+              }}
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-700" strokeWidth={2} />
+            </button>
+            <button
+              aria-label="next categories"
+              className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+              onClick={() => {
+                const container = carouselRef.current
+                if (container) {
+                  container.scrollBy({ left: 448, behavior: 'smooth' })
+                }
+              }}
+            >
+              <ChevronRight className="w-6 h-6 text-gray-700" strokeWidth={2} />
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Technical Specs Section */}
-      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-emerald-50">
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -276,7 +407,7 @@ export default function FeaturesPage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-white rounded-2xl p-8 border border-gray-200 text-center shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 text-center shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <IconComponent className="w-6 h-6 text-white" />
@@ -291,7 +422,7 @@ export default function FeaturesPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-white">
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -312,18 +443,15 @@ export default function FeaturesPage() {
               {
                 name: language === 'ar' ? 'مجاني' : 'Free',
                 price: language === 'ar' ? 'مجاناً' : 'Free',
-                color: 'gray',
               },
               {
                 name: language === 'ar' ? 'احترافي' : 'Pro',
                 price: '$29',
-                color: 'blue',
                 popular: true,
               },
               {
                 name: language === 'ar' ? 'مؤسسات' : 'Enterprise',
                 price: language === 'ar' ? 'مخصص' : 'Custom',
-                color: 'emerald',
               },
             ].map((plan, idx) => (
               <motion.div
@@ -335,7 +463,7 @@ export default function FeaturesPage() {
                 className={`rounded-2xl p-8 transition-all duration-300 ${
                   plan.popular
                     ? `bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-xl scale-105`
-                    : `bg-gray-50 border border-gray-200 text-gray-900`
+                    : `bg-white border border-gray-200 text-gray-900`
                 }`}
               >
                 {plan.popular && (
