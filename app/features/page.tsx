@@ -349,15 +349,15 @@ export default function FeaturesPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-white">
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6">
               {language === 'ar' ? 'خطط مرنة' : 'Flexible Plans'}
             </h2>
             <p className="text-xl text-gray-600 font-semibold max-w-2xl mx-auto">
@@ -365,20 +365,34 @@ export default function FeaturesPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {[
               {
                 name: language === 'ar' ? 'مجاني' : 'Free',
                 price: language === 'ar' ? 'مجاناً' : 'Free',
+                description: language === 'ar' ? 'للبدء' : 'To get started',
+                features: language === 'ar' 
+                  ? ['ملف شخصي أساسي', 'البحث عن وظائف', 'تصفح الفرص'] 
+                  : ['Basic Profile', 'Job Search', 'Browse Opportunities'],
               },
               {
                 name: language === 'ar' ? 'احترافي' : 'Pro',
-                price: '$29',
+                price: '99',
+                currency: '﷼',
+                monthly: language === 'ar' ? '/شهر' : '/month',
+                description: language === 'ar' ? 'للمحترفين' : 'For professionals',
                 popular: true,
+                features: language === 'ar'
+                  ? ['كل مميزات المجاني', 'رسائل مباشرة', 'عرض ملفك للشركات', 'تحليلات مفصلة']
+                  : ['All Free features', 'Direct Messages', 'Show Profile to Companies', 'Detailed Analytics'],
               },
               {
                 name: language === 'ar' ? 'مؤسسات' : 'Enterprise',
                 price: language === 'ar' ? 'مخصص' : 'Custom',
+                description: language === 'ar' ? 'للشركات' : 'For companies',
+                features: language === 'ar'
+                  ? ['حل مخصص كامل', 'دعم مخصص', 'واجهات برمجية', 'تكامل API']
+                  : ['Custom Solution', 'Dedicated Support', 'API Access', 'Custom Integration'],
               },
             ].map((plan, idx) => (
               <motion.div
@@ -386,25 +400,64 @@ export default function FeaturesPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className={`rounded-2xl p-8 transition-all duration-300 ${
+                whileHover={{ translateY: -8 }}
+                className={`rounded-3xl p-8 sm:p-10 transition-all duration-300 relative ${
                   plan.popular
-                    ? `bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-xl scale-105`
-                    : `bg-white border border-gray-200 text-gray-900`
+                    ? `bg-gradient-to-br from-blue-600 via-blue-500 to-emerald-500 text-white shadow-2xl md:scale-105`
+                    : `bg-white border-2 border-gray-200 text-gray-900 hover:border-blue-300`
                 }`}
               >
                 {plan.popular && (
-                  <div className="mb-4 inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-block bg-yellow-400 text-gray-900 text-xs font-black px-4 py-2 rounded-full shadow-lg">
                     ⭐ {language === 'ar' ? 'الأشهر' : 'Most Popular'}
                   </div>
                 )}
-                <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
-                <div className="text-4xl font-black mb-6">{plan.price}</div>
+                
+                <h3 className="text-2xl sm:text-3xl font-black mb-2">{plan.name}</h3>
+                <p className={`text-sm font-semibold mb-4 ${plan.popular ? 'text-white/80' : 'text-gray-500'}`}>
+                  {plan.description}
+                </p>
+
+                <div className="mb-8">
+                  {plan.price === 'مجاناً' || plan.price === 'Free' ? (
+                    <div className={`text-5xl font-black ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                      {plan.price}
+                    </div>
+                  ) : plan.price === 'Custom' || plan.price === 'مخصص' ? (
+                    <div className={`text-4xl font-black ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                      {plan.price}
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline">
+                      <span className={`text-5xl font-black ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                        {plan.price}
+                      </span>
+                      <span className={`text-2xl font-black mx-1 ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                        {plan.currency}
+                      </span>
+                      <span className={`text-sm font-semibold ${plan.popular ? 'text-white/70' : 'text-gray-500'}`}>
+                        {plan.monthly}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3 mb-8">
+                  {plan.features?.map((feature, i) => (
+                    <div key={i} className={`flex items-center gap-3 text-sm sm:text-base font-semibold ${
+                      plan.popular ? 'text-white' : 'text-gray-700'
+                    }`}>
+                      <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
                 <Link href="/register">
                   <Button
-                    className={`w-full font-bold text-lg rounded-lg transition-all ${
+                    className={`w-full font-bold text-base sm:text-lg py-3 sm:py-4 rounded-xl transition-all duration-300 ${
                       plan.popular
-                        ? 'bg-white text-blue-600 hover:bg-gray-100'
+                        ? 'bg-white text-blue-600 hover:bg-gray-100 shadow-lg hover:shadow-xl'
                         : 'bg-gradient-to-r from-blue-500 to-emerald-500 text-white hover:shadow-lg'
                     }`}
                   >
@@ -415,6 +468,23 @@ export default function FeaturesPage() {
               </motion.div>
             ))}
           </div>
+
+          {/* Alert Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-gradient-to-r from-blue-50 to-emerald-50 border-2 border-blue-200 rounded-2xl p-6 sm:p-8 text-center"
+          >
+            <h4 className="text-xl sm:text-2xl font-black text-blue-900 mb-2">
+              {language === 'ar' ? '🎉 خبر سار!' : '🎉 Good News!'}
+            </h4>
+            <p className="text-base sm:text-lg text-blue-700 font-semibold max-w-3xl mx-auto">
+              {language === 'ar'
+                ? 'منصة TF1 مجانية بالكامل في الوقت الحالي. الباقات والخطط المدفوعة سيتم تفعيلها مستقبلاً مع ميزات متقدمة.'
+                : 'TF1 platform is completely free right now. Paid plans and premium features will be available in the future.'}
+            </p>
+          </motion.div>
         </div>
       </section>
 
