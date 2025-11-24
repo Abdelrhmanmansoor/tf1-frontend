@@ -6,8 +6,9 @@ import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
-import { Loader2, ArrowLeft, Share2 } from 'lucide-react'
+import { Loader2, ArrowLeft, Share2, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { motion } from 'framer-motion'
 import blogService from '@/services/blog'
 import type { Article } from '@/types/blog'
 
@@ -60,93 +61,107 @@ export default function BlogPostPage() {
     )
   }
 
-  return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
-      <Navbar activeMode="application" />
+  const content = language === 'ar' ? article.contentAr : article.content
+  const title = language === 'ar' ? article.titleAr : article.title
 
-      {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-            <ChevronLeft className="w-4 h-4" />
-            {language === 'ar' ? 'العودة للمدونة' : 'Back to blog'}
-          </Link>
+  return (
+    <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <Navbar />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
+        <Link href="/blog">
+          <Button variant="ghost" size="sm" className="gap-2 mb-8">
+            <ArrowLeft className="w-4 h-4" />
+            {language === 'ar' ? 'العودة للمدونة' : 'Back to Blog'}
+          </Button>
+        </Link>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+              {article.category}
+            </span>
+            {article.featured && (
+              <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+                {language === 'ar' ? 'مميز' : 'Featured'}
+              </span>
+            )}
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{title}</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-600 pb-6 border-b border-gray-200">
+            <div className="flex items-center gap-4">
+              <span>{article.readTime} {language === 'ar' ? 'دقيقة قراءة' : 'min read'}</span>
+              <span>{article.views} {language === 'ar' ? 'مشاهدة' : 'views'}</span>
+            </div>
+            <span className="text-sm">
+              {new Date(article.publishedAt || article.createdAt).toLocaleDateString(
+                language === 'ar' ? 'ar-SA' : 'en-US',
+                { year: 'numeric', month: 'long', day: 'numeric' }
+              )}
+            </span>
+          </div>
+        </header>
+
+        {/* Thumbnail */}
+        {article.thumbnail && (
+          <div className="mb-8 rounded-lg overflow-hidden">
+            <img
+              src={article.thumbnail}
+              alt={title}
+              className="w-full h-96 object-cover"
+            />
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="prose prose-lg max-w-none mb-8">
+          <div className="bg-white p-8 rounded-lg">
+            {content.split('\n\n').map((paragraph, idx) => (
+              <p key={idx} className="text-gray-700 mb-4 leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* Tags */}
+        {article.tags && article.tags.length > 0 && (
+          <div className="mb-8 py-6 border-t border-gray-200">
+            <div className="flex flex-wrap gap-2">
+              {article.tags.map(tag => (
+                <Link key={tag} href={`/blog?search=${tag}`}>
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                    #{tag}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Share */}
+        <div className="py-6 border-t border-gray-200 flex items-center gap-4">
+          <span className="text-gray-600">{language === 'ar' ? 'شارك المقالة:' : 'Share article:'}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title, url: window.location.href })
+              } else {
+                navigator.clipboard.writeText(window.location.href)
+                alert(language === 'ar' ? 'تم نسخ الرابط' : 'Link copied')
+              }
+            }}
+            className="gap-2"
+          >
+            <Share2 className="w-4 h-4" />
+            {language === 'ar' ? 'مشاركة' : 'Share'}
+          </Button>
         </div>
       </div>
-
-      {/* Article Content */}
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* Category Badge */}
-          <div className="mb-6 flex items-center gap-2">
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" />
-            <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">{post.category}</span>
-          </div>
-
-          {/* Title */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            {language === 'ar' ? post.titleAr : post.title}
-          </h1>
-
-          {/* Meta Information */}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-gray-600 mb-10 pb-8 border-b border-gray-200">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <span className="font-semibold">{new Date(post.date).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-gray-400" />
-              <span>{post.readTime} {language === 'ar' ? 'دقيقة قراءة' : 'min read'}</span>
-            </div>
-            <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-              <Share2 className="w-5 h-5" />
-              {language === 'ar' ? 'مشاركة' : 'Share'}
-            </button>
-          </div>
-
-          {/* Article Content */}
-          <div className="prose prose-lg max-w-none mb-12">
-            <div className="text-gray-800 leading-8 space-y-6 text-lg">
-              {(language === 'ar' ? post.contentAr : post.content)
-                .split('\n\n')
-                .map((paragraph, index) => (
-                  <motion.p
-                    key={index}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="text-gray-700 leading-relaxed"
-                  >
-                    {paragraph}
-                  </motion.p>
-                ))}
-            </div>
-          </div>
-
-          {/* Back to Blog CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-16 pt-8 border-t border-gray-200"
-          >
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg transition-all"
-            >
-              <ChevronLeft className="w-5 h-5" />
-              {language === 'ar' ? 'المزيد من المقالات' : 'More Articles'}
-            </Link>
-          </motion.div>
-        </motion.div>
-      </article>
 
       <Footer />
     </div>
