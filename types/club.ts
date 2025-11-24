@@ -362,6 +362,9 @@ export interface JobApplication {
     [key: string]: any
   }
   coverLetter?: string
+  whatsapp?: string
+  portfolio?: string
+  linkedin?: string
   attachments?: Array<{
     type: 'resume' | 'cv' | 'certificate' | 'portfolio' | 'video' | 'other'
     name: string
@@ -382,6 +385,7 @@ export interface JobApplication {
   }
   createdAt: string
   updatedAt: string
+  submittedAt?: string
 }
 
 export interface ScheduleInterviewData {

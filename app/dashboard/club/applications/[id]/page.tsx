@@ -114,15 +114,16 @@ const ApplicationDetailPage = () => {
   }
 
   const applicantName =
-    (typeof application.applicantId === 'object' &&
-      (application.applicantId.fullName || application.applicantId.name)) ||
+    (typeof application.applicantId === 'object' && application.applicantId.fullName) ||
     (language === 'ar' ? 'متقدم' : 'Applicant')
 
   const applicantEmail =
-    typeof application.applicantId === 'object' && application.applicantId.email
+    (typeof application.applicantId === 'object' && application.applicantId.email) || ''
 
   const jobTitle =
     (typeof application.jobId === 'object' && application.jobId.title) || ''
+
+  console.log('Application data:', { application, applicantName, applicantEmail, whatsapp: application.whatsapp, portfolio: application.portfolio, linkedin: application.linkedin })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
@@ -194,7 +195,7 @@ const ApplicationDetailPage = () => {
               </div>
 
               {/* WhatsApp */}
-              {(application as any)?.whatsapp && (
+              {application.whatsapp && (
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
                     <MessageCircle className="w-5 h-5 text-green-600" />
@@ -204,12 +205,12 @@ const ApplicationDetailPage = () => {
                       {language === 'ar' ? 'واتس أب' : 'WhatsApp'}
                     </p>
                     <a
-                      href={`https://wa.me/${(application as any).whatsapp.replace(/[^0-9]/g, '')}`}
+                      href={`https://wa.me/${application.whatsapp.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-green-600 hover:text-green-700 font-medium flex items-center gap-2"
                     >
-                      {(application as any).whatsapp}
+                      {application.whatsapp}
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
@@ -217,7 +218,7 @@ const ApplicationDetailPage = () => {
               )}
 
               {/* Portfolio */}
-              {(application as any)?.portfolio && (
+              {application.portfolio && (
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <ExternalLink className="w-5 h-5 text-purple-600" />
@@ -227,12 +228,12 @@ const ApplicationDetailPage = () => {
                       {language === 'ar' ? 'محفظة الأعمال' : 'Portfolio'}
                     </p>
                     <a
-                      href={(application as any).portfolio}
+                      href={application.portfolio}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-2 break-all"
                     >
-                      {(application as any).portfolio}
+                      {application.portfolio}
                       <ExternalLink className="w-4 h-4 flex-shrink-0" />
                     </a>
                   </div>
@@ -240,7 +241,7 @@ const ApplicationDetailPage = () => {
               )}
 
               {/* LinkedIn */}
-              {(application as any)?.linkedin && (
+              {application.linkedin && (
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                     <Briefcase className="w-5 h-5 text-blue-600" />
@@ -248,12 +249,12 @@ const ApplicationDetailPage = () => {
                   <div>
                     <p className="text-sm text-gray-500 mb-1">LinkedIn</p>
                     <a
-                      href={(application as any).linkedin}
+                      href={application.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2 break-all"
                     >
-                      {(application as any).linkedin}
+                      {application.linkedin}
                       <ExternalLink className="w-4 h-4 flex-shrink-0" />
                     </a>
                   </div>
