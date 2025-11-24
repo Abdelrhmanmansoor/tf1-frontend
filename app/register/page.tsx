@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Footer } from '@/components/footer'
 import {
   Mail,
   Lock,
@@ -509,7 +508,7 @@ export default function RegisterPage() {
 
     
     <div
-      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden pb-96 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 p-6 relative overflow-hidden ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
     {/* Back Button */}
@@ -1412,11 +1411,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </motion.div>
-
-      {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-10">
-        <Footer />
-      </div>
     </div>
   )
 }
