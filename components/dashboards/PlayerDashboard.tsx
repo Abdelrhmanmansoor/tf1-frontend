@@ -207,7 +207,7 @@ const PlayerDashboard = () => {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Job Notifications */}
-            {(authService.getCurrentUser()?.id || (authService.getCurrentUser() as any)?._id) && (
+            {profile && (authService.getCurrentUser()?.id || (authService.getCurrentUser() as any)?._id) && (
               <JobNotifications 
                 userId={authService.getCurrentUser()?.id || (authService.getCurrentUser() as any)?._id} 
               />

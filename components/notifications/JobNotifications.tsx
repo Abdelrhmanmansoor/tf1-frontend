@@ -14,19 +14,29 @@ interface JobNotificationsProps {
 }
 
 export default function JobNotifications({ compact = false, userId }: JobNotificationsProps) {
-  const { onJobNotification } = useSocket()
   const { language } = useLanguage()
   const [notifications, setNotifications] = useState<JobNotification[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  
+  // Safe socket hook - won't throw if not available
+  let socket = null
+  try {
+    const socketContext = useSocket()
+    socket = socketContext
+  } catch (e) {
+    // Socket not available, component will show empty state
+  }
+  
   const unreadCount = notifications.filter(n => n.status === 'pending').length
 
   useEffect(() => {
-    onJobNotification((notification) => {
+    if (!socket) return
+    socket.onJobNotification((notification) => {
       if (notification.userId === userId) {
         setNotifications(prev => [notification, ...prev])
       }
     })
-  }, [onJobNotification, userId])
+  }, [socket, userId])
 
   const handleDismiss = useCallback((notificationId: string) => {
     setNotifications(prev => prev.filter(n => n._id !== notificationId))
