@@ -47,39 +47,50 @@ export default function ContractPage() {
       const pdf = new jsPDF()
       const pageWidth = pdf.internal.pageSize.getWidth()
       const pageHeight = pdf.internal.pageSize.getHeight()
-      const margin = 15
+      const margin = 20
       const textWidth = pageWidth - 2 * margin
       let yPosition = margin
 
-      // Add logo placeholder (text for now)
-      pdf.setFontSize(14)
-      pdf.setTextColor(30, 90, 200)
-      pdf.text('TF1 Sports Platform', margin, yPosition)
-      pdf.setTextColor(100, 100, 100)
-      pdf.setFontSize(9)
-      pdf.text('Recruitment Agency Agreement', margin, yPosition + 6)
-      yPosition += 20
-
-      // Header
-      pdf.setDrawColor(30, 90, 200)
-      pdf.line(margin, yPosition, pageWidth - margin, yPosition)
-      yPosition += 5
-
-      // Contract Number
+      // Professional Header with Background
+      pdf.setFillColor(30, 90, 200)
+      pdf.rect(0, 0, pageWidth, 35, 'F')
+      
+      // Logo and Title
+      pdf.setFontSize(16)
+      pdf.setTextColor(255, 255, 255)
+      pdf.text('TF1 Sports Platform', margin, 15)
       pdf.setFontSize(10)
-      pdf.setTextColor(0, 0, 0)
-      pdf.text(`Contract ID: ${contractId}`, margin, yPosition)
-      pdf.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - margin - 50, yPosition)
-      yPosition += 10
+      pdf.text('Certified Recruitment Agency Agreement', margin, 23)
+      
+      yPosition = 45
 
+      // Contract Info Box
+      pdf.setDrawColor(200, 200, 200)
+      pdf.setLineWidth(0.5)
+      pdf.rect(margin, yPosition - 5, textWidth, 15)
+      
+      pdf.setFontSize(9)
+      pdf.setTextColor(50, 50, 50)
+      pdf.text(`Contract ID: ${contractId}`, margin + 3, yPosition + 2)
+      pdf.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - margin - 45, yPosition + 2)
+      pdf.text(`Status: Active ✓`, pageWidth - margin - 20, yPosition + 7)
+      
+      yPosition += 25
+
+      // Section background
+      pdf.setFillColor(245, 250, 255)
+      pdf.rect(margin, yPosition - 3, textWidth, 28, 'F')
+      
       // Company Information Section
       pdf.setFontSize(11)
       pdf.setTextColor(30, 90, 200)
-      pdf.text(language === 'ar' ? 'معلومات الجهة الموظفة' : 'Company Information', margin, yPosition)
+      pdf.setFont(undefined, 'bold')
+      pdf.text(language === 'ar' ? 'معلومات الجهة الموظفة' : 'Company Information', margin + 3, yPosition)
       yPosition += 7
+      pdf.setFont(undefined, 'normal')
 
       pdf.setFontSize(9)
-      pdf.setTextColor(0, 0, 0)
+      pdf.setTextColor(40, 40, 40)
       const companyInfo = [
         `${language === 'ar' ? 'الاسم:' : 'Name:'} ${formData.companyName}`,
         `${language === 'ar' ? 'المسؤول:' : 'Contact:'} ${formData.contactPerson}`,
@@ -88,19 +99,24 @@ export default function ContractPage() {
       ]
 
       companyInfo.forEach((info) => {
-        pdf.text(info, margin + 5, yPosition)
-        yPosition += 6
+        pdf.text(info, margin + 6, yPosition)
+        yPosition += 5
       })
-      yPosition += 5
+      yPosition += 8
 
-      // Position Details Section
+      // Position Details Section background
+      pdf.setFillColor(245, 250, 255)
+      pdf.rect(margin, yPosition - 3, textWidth, 26, 'F')
+      
       pdf.setFontSize(11)
       pdf.setTextColor(30, 90, 200)
-      pdf.text(language === 'ar' ? 'تفاصيل الوظيفة' : 'Position Details', margin, yPosition)
+      pdf.setFont(undefined, 'bold')
+      pdf.text(language === 'ar' ? 'تفاصيل الوظيفة' : 'Position Details', margin + 3, yPosition)
       yPosition += 7
+      pdf.setFont(undefined, 'normal')
 
       pdf.setFontSize(9)
-      pdf.setTextColor(0, 0, 0)
+      pdf.setTextColor(40, 40, 40)
       const jobDetails = [
         `${language === 'ar' ? 'المسمى:' : 'Title:'} ${formData.position}`,
         `${language === 'ar' ? 'المدة:' : 'Duration:'} ${formData.duration} ${language === 'ar' ? 'سنة' : 'Year(s)'}`,
@@ -109,45 +125,59 @@ export default function ContractPage() {
       ]
 
       jobDetails.forEach((detail) => {
-        pdf.text(detail, margin + 5, yPosition)
-        yPosition += 6
+        pdf.text(detail, margin + 6, yPosition)
+        yPosition += 5
       })
-      yPosition += 5
+      yPosition += 8
 
       // Description Section
       if (formData.description) {
+        pdf.setFillColor(245, 250, 255)
+        pdf.rect(margin, yPosition - 3, textWidth, 12, 'F')
+        
         pdf.setFontSize(11)
         pdf.setTextColor(30, 90, 200)
-        pdf.text(language === 'ar' ? 'وصف الوظيفة' : 'Job Description', margin, yPosition)
+        pdf.setFont(undefined, 'bold')
+        pdf.text(language === 'ar' ? 'وصف الوظيفة' : 'Job Description', margin + 3, yPosition)
         yPosition += 7
+        pdf.setFont(undefined, 'normal')
 
         pdf.setFontSize(9)
-        pdf.setTextColor(0, 0, 0)
+        pdf.setTextColor(40, 40, 40)
         const splitDescription = pdf.splitTextToSize(formData.description, textWidth - 10)
         splitDescription.forEach((line: string) => {
-          if (yPosition > pageHeight - 20) {
+          if (yPosition > pageHeight - 25) {
             pdf.addPage()
             yPosition = margin
           }
-          pdf.text(line, margin + 5, yPosition)
-          yPosition += 6
+          pdf.text(line, margin + 6, yPosition)
+          yPosition += 5
         })
-        yPosition += 5
+        yPosition += 8
       }
 
       // Terms Section
-      if (yPosition > pageHeight - 40) {
+      if (yPosition > pageHeight - 50) {
         pdf.addPage()
         yPosition = margin
       }
 
+      // Terms background with warning color
+      pdf.setFillColor(255, 250, 240)
+      pdf.rect(margin, yPosition - 3, textWidth, 35, 'F')
+      pdf.setDrawColor(255, 140, 0)
+      pdf.setLineWidth(1)
+      pdf.line(margin, yPosition - 3, margin, yPosition + 32)
+
       pdf.setFontSize(11)
-      pdf.setTextColor(30, 90, 200)
-      pdf.text(language === 'ar' ? 'شروط الخدمة' : 'Terms of Service', margin, yPosition)
+      pdf.setTextColor(200, 100, 0)
+      pdf.setFont(undefined, 'bold')
+      pdf.text(language === 'ar' ? 'شروط الخدمة' : 'Terms of Service', margin + 3, yPosition)
       yPosition += 7
+      pdf.setFont(undefined, 'normal')
 
       pdf.setFontSize(8)
-      pdf.setTextColor(0, 0, 0)
+      pdf.setTextColor(40, 40, 40)
       const terms = [
         language === 'ar' ? '• تعهد الجهة بالالتزام بجميع قوانين العمل السعودية' : '• Company commits to compliance with Saudi Labor Law',
         language === 'ar' ? '• تعهد جهة الاحالة بسرية البيانات والحماية الكاملة' : '• Recruitment agency ensures complete data confidentiality',
@@ -156,21 +186,26 @@ export default function ContractPage() {
       ]
 
       terms.forEach((term) => {
-        const splitTerm = pdf.splitTextToSize(term, textWidth - 10)
+        const splitTerm = pdf.splitTextToSize(term, textWidth - 12)
         splitTerm.forEach((line: string) => {
           if (yPosition > pageHeight - 20) {
             pdf.addPage()
             yPosition = margin
           }
-          pdf.text(line, margin + 5, yPosition)
+          pdf.text(line, margin + 6, yPosition)
           yPosition += 5
         })
       })
 
-      // Footer
+      // Professional Footer
+      pdf.setDrawColor(30, 90, 200)
+      pdf.setLineWidth(0.5)
+      pdf.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20)
+      
       yPosition = pageHeight - 15
       pdf.setFontSize(8)
-      pdf.setTextColor(150, 150, 150)
+      pdf.setTextColor(100, 100, 100)
+      pdf.setFont(undefined, 'bold')
       pdf.text(
         `${language === 'ar' ? 'منصة تف1 - جهة احالة موظفين معتمدة' : 'TF1 Platform - Certified Recruitment Agency'}`,
         pageWidth / 2,
@@ -262,43 +297,62 @@ export default function ContractPage() {
           <AnimatePresence>
             {showSuccess && (
               <motion.div
-                initial={{ opacity: 0, y: -50, scale: 0.95 }}
+                initial={{ opacity: 0, y: -50, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -50, scale: 0.95 }}
-                className="fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-md"
+                exit={{ opacity: 0, y: -50, scale: 0.8 }}
+                transition={{ duration: 0.4, type: 'spring', stiffness: 300 }}
+                className="fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4"
               >
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-8 shadow-2xl border border-green-400/50 text-white">
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
-                    className="mb-4 flex justify-center"
-                  >
-                    <CheckCircle className="w-12 h-12" />
-                  </motion.div>
-                  <h3 className="text-2xl font-bold mb-2 text-center">
-                    {language === 'ar' ? '✓ تم الإيداع بنجاح!' : '✓ Submitted Successfully!'}
-                  </h3>
-                  <p className="text-sm text-green-50 text-center mb-6">
-                    {language === 'ar'
-                      ? 'تم حفظ بيانات الوظيفة بشكل آمن وسنراجعها قريباً'
-                      : 'Job posting saved securely. We will review it shortly'}
-                  </p>
-
-                  {pdfUrl && (
-                    <a
-                      href={pdfUrl}
-                      download={`TF1-Recruitment-${Date.now()}.pdf`}
-                      className="block w-full bg-white text-green-600 font-bold py-3 px-4 rounded-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2 mb-3"
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 sm:p-8 shadow-2xl border-2 border-green-200 overflow-hidden relative">
+                  {/* Animated gradient background effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-400/10 opacity-0 animate-pulse" />
+                  
+                  <div className="relative z-10">
+                    <motion.div
+                      animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 0.6, repeat: Infinity }}
+                      className="mb-4 flex justify-center"
                     >
-                      <Download className="w-5 h-5" />
-                      {language === 'ar' ? 'تحميل العقد' : 'Download Contract'}
-                    </a>
-                  )}
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg">
+                        <CheckCircle className="w-8 h-8 text-white" />
+                      </div>
+                    </motion.div>
+                    
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-center bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      {language === 'ar' ? '✓ تم الإيداع بنجاح!' : '✓ Submitted Successfully!'}
+                    </h3>
+                    
+                    <p className="text-sm sm:text-base text-gray-700 text-center mb-6 font-medium">
+                      {language === 'ar'
+                        ? 'تم حفظ بيانات الوظيفة بشكل آمن وسنراجعها قريباً'
+                        : 'Job posting saved securely. We will review it shortly'}
+                    </p>
 
-                  <p className="text-xs text-green-100 text-center flex items-center justify-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    {language === 'ar' ? 'معلوماتك محمية بالتشفير من الدرجة العسكرية' : 'Military-grade encrypted'}
-                  </p>
+                    {pdfUrl && (
+                      <motion.a
+                        href={pdfUrl}
+                        download={`TF1-Recruitment-${Date.now()}.pdf`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="block w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 mb-4 shadow-md hover:shadow-lg"
+                      >
+                        <Download className="w-5 h-5" />
+                        {language === 'ar' ? 'تحميل العقد' : 'Download Contract'}
+                      </motion.a>
+                    )}
+
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="flex items-center justify-center gap-2 bg-white/50 backdrop-blur py-2 px-3 rounded-lg border border-green-100"
+                    >
+                      <Shield className="w-4 h-4 text-green-600" />
+                      <p className="text-xs sm:text-sm text-gray-700 font-semibold">
+                        {language === 'ar' ? '🔐 تشفير من الدرجة العسكرية' : '🔐 Military-grade encrypted'}
+                      </p>
+                    </motion.div>
+                  </div>
                 </div>
               </motion.div>
             )}

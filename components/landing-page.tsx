@@ -579,21 +579,6 @@ export function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
               >
-                {/* For Companies Button - Appears First when in Recruitment Mode */}
-                {mode === 'recruitment' && (
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                    <Link href="/contract" className="w-full block">
-                      <Button
-                        size="lg"
-                        className="w-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl border-2 border-green-500 bg-white hover:bg-green-50 text-green-600 font-bold transition-all duration-300 shadow-md hover:shadow-xl"
-                      >
-                        {language === 'ar' ? '📋 للشركات' : '📋 For Companies'}
-                      </Button>
-                    </Link>
-                  </motion.div>
-                )}
-
-                {/* Primary Button */}
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -617,7 +602,6 @@ export function LandingPage() {
                   </Link>
                 </motion.div>
 
-                {/* Secondary Button */}
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                   <Link href={mode === 'application' ? '/jobs' : '/contract'} className="w-full block">
                     <Button
@@ -628,7 +612,7 @@ export function LandingPage() {
                       <FootballWipeText transitionKey={mode}>
                         {mode === 'application'
                           ? t('exploreOpportunities')
-                          : language === 'ar' ? 'استكشف المزيد' : 'Learn More'}
+                          : language === 'ar' ? 'تعاقد معنا' : 'Contract With Us'}
                       </FootballWipeText>
                     </Button>
                   </Link>
