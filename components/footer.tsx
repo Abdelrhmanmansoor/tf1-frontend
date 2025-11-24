@@ -199,7 +199,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group"
             >
-              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+              <div className="bg-white rounded-xl p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 flex items-center justify-center">
                 <Image 
                   src="/ministry-commerce.png"
                   alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
@@ -217,7 +217,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group"
             >
-              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+              <div className="bg-white rounded-xl p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 flex items-center justify-center">
                 <Image 
                   src="/business-center.png"
                   alt={language === 'ar' ? 'مركز الأعمال السعودي' : 'Saudi Business Center'}
@@ -235,7 +235,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group"
             >
-              <div className="bg-white rounded-lg p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center">
+              <div className="bg-white rounded-xl p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-32 h-32 sm:w-36 sm:h-36 md:w-44 md:h-44 flex items-center justify-center">
                 <Image 
                   src="/vision-2030.png"
                   alt={language === 'ar' ? 'رؤية المملكة 2030' : 'Saudi Vision 2030'}
