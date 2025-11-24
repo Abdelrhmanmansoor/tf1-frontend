@@ -427,12 +427,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Journey Timeline - Unique Zigzag Design */}
+      {/* Journey Timeline - Modern Vertical Design */}
       <section
-        className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900 section-marker"
+        className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 section-marker"
         data-section="1"
       >
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -440,59 +440,108 @@ export default function AboutPage() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                {language === 'ar' ? 'رحلة النجاح' : 'Success Journey'}
+              <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                {language === 'ar' ? 'رحلة النجاح' : 'Our Journey'}
               </span>
             </h2>
-            <p className="text-xl text-white max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               {language === 'ar'
-                ? 'من فكرة بسيطة إلى منصة تصنع فرص الرياضة في المملكة.'
-                : 'From a simple idea to a platform creating sports opportunities in the Kingdom.'}
+                ? 'مراحل تطورنا نحو بناء منصة تصنع الفرص الرياضية في المملكة'
+                : 'Building the future of sports employment in Saudi Arabia'}
             </p>
           </motion.div>
 
-          {/* Zigzag Timeline */}
+          {/* Vertical Timeline */}
           <div className="relative">
-            {/* Central Line - Hidden on mobile */}
-            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-green-500"></div>
+            {/* Central Line */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-green-400 via-blue-400 to-purple-400"></div>
 
-            <div className="space-y-12 md:space-y-24">
+            <div className="space-y-16">
               {journeySteps.map((step, index) => (
                 <motion.div
                   key={index}
-                  initial={{
-                    opacity: 0,
-                    x: step.position === 'left' ? -100 : 100,
-                  }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className={`flex items-center flex-col md:flex-row ${step.position === 'right' ? 'md:flex-row-reverse' : ''}`}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="flex items-center"
                 >
-                  <div
-                    className={`flex-1 w-full ${step.position === 'right' ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12'}`}
-                  >
-                    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                          <step.icon className="w-8 h-8 text-white" />
-                        </div>
-                        <div>
-                          <div className="text-3xl font-bold text-blue-600">
-                            {step.year}
+                  {/* Left Content - Alternating */}
+                  {index % 2 === 0 ? (
+                    <>
+                      <div className="flex-1 pr-8 text-right">
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-blue-400/50 transition-all duration-300"
+                        >
+                          <div className="flex items-center gap-3 mb-3 flex-row-reverse">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                              <step.icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                              <div className="text-sm text-blue-300 font-semibold">
+                                {step.year}
+                              </div>
+                              <h3 className="text-lg font-bold text-white">
+                                {step.title}
+                              </h3>
+                            </div>
                           </div>
-                          <h3 className="text-xl font-bold text-gray-900">
-                            {step.title}
-                          </h3>
-                        </div>
+                          <p className="text-gray-300 text-sm leading-relaxed">
+                            {step.description}
+                          </p>
+                        </motion.div>
                       </div>
-                      <p className="text-gray-600 leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  </div>
 
-                  {/* Center Node - Hidden on mobile */}
-                  <div className="hidden md:block relative z-10 w-6 h-6 bg-white border-4 border-blue-500 rounded-full"></div>
+                      {/* Center Node */}
+                      <div className="flex justify-center w-12">
+                        <motion.div
+                          whileHover={{ scale: 1.3 }}
+                          className="w-7 h-7 bg-gradient-to-r from-blue-500 to-cyan-500 border-4 border-gray-900 rounded-full shadow-lg shadow-blue-500/50"
+                        />
+                      </div>
+
+                      {/* Right Empty Space */}
+                      <div className="flex-1" />
+                    </>
+                  ) : (
+                    <>
+                      {/* Left Empty Space */}
+                      <div className="flex-1" />
+
+                      {/* Center Node */}
+                      <div className="flex justify-center w-12">
+                        <motion.div
+                          whileHover={{ scale: 1.3 }}
+                          className="w-7 h-7 bg-gradient-to-r from-purple-500 to-pink-500 border-4 border-gray-900 rounded-full shadow-lg shadow-purple-500/50"
+                        />
+                      </div>
+
+                      {/* Right Content */}
+                      <div className="flex-1 pl-8 text-left">
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-purple-400/50 transition-all duration-300"
+                        >
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                              <step.icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                              <div className="text-sm text-purple-300 font-semibold">
+                                {step.year}
+                              </div>
+                              <h3 className="text-lg font-bold text-white">
+                                {step.title}
+                              </h3>
+                            </div>
+                          </div>
+                          <p className="text-gray-300 text-sm leading-relaxed">
+                            {step.description}
+                          </p>
+                        </motion.div>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               ))}
             </div>
