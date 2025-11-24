@@ -18,8 +18,6 @@ import {
   Mic,
   BookOpen,
   Settings,
-  Search,
-  TrendingUp,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
