@@ -797,7 +797,7 @@ export function LandingPage() {
               className="overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <div className="flex gap-4 sm:gap-5 pb-6">
+              <div className="flex gap-5 sm:gap-6 pb-6 justify-center sm:justify-start">
                 {categories.map((category, index) => {
                   const IconComponent = category.Icon
                   return (
@@ -806,14 +806,14 @@ export function LandingPage() {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      whileHover={{ scale: 1.08 }}
-                      className="group bg-white rounded-2xl border-2 border-gray-200 p-6 sm:p-8 text-center flex-shrink-0 w-56 sm:w-64 transition-all duration-300 hover:border-blue-400 hover:shadow-xl cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      className="text-center flex-shrink-0 w-40 sm:w-48 transition-all duration-300 cursor-pointer"
                     >
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center transition-all duration-300 group-hover:from-blue-100 group-hover:to-cyan-100 group-hover:scale-110 shadow-md">
-                        <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 group-hover:text-blue-700" strokeWidth={1.5} />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-full bg-blue-50 flex items-center justify-center transition-all duration-200 hover:bg-blue-100">
+                        <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-blue-500" strokeWidth={1.5} />
                       </div>
                       
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-sm sm:text-base font-semibold text-gray-700">
                         {language === 'ar' ? category.nameAr : category.nameEn}
                       </h3>
                     </motion.div>
@@ -825,27 +825,27 @@ export function LandingPage() {
             {/* Navigation arrows */}
             <button
               aria-label="prev categories"
-              className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+              className="absolute -left-3 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-10 h-10"
               onClick={() => {
                 const container = carouselRef.current
                 if (container) {
-                  container.scrollBy({ left: language === 'ar' ? 400 : -400, behavior: 'smooth' })
+                  container.scrollBy({ left: language === 'ar' ? 300 : -300, behavior: 'smooth' })
                 }
               }}
             >
-              <ChevronLeft className="w-6 h-6 text-gray-700" strokeWidth={2} />
+              <ChevronLeft className="w-5 h-5 text-gray-600" strokeWidth={2} />
             </button>
             <button
               aria-label="next categories"
-              className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-12 h-12"
+              className="absolute -right-3 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 z-10 hidden sm:flex items-center justify-center w-10 h-10"
               onClick={() => {
                 const container = carouselRef.current
                 if (container) {
-                  container.scrollBy({ left: language === 'ar' ? -400 : 400, behavior: 'smooth' })
+                  container.scrollBy({ left: language === 'ar' ? -300 : 300, behavior: 'smooth' })
                 }
               }}
             >
-              <ChevronRight className="w-6 h-6 text-gray-700" strokeWidth={2} />
+              <ChevronRight className="w-5 h-5 text-gray-600" strokeWidth={2} />
             </button>
           </div>
         </div>
