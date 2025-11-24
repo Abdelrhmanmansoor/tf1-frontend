@@ -97,8 +97,8 @@ export function LandingPage() {
   }, [newsMessages.length])
 
   const bannerImage = {
-    url: '/banners/banner-hero-main.png',
-    alt: language === 'ar' ? 'معاً نصنع نباحك خطوة بخطوة' : 'Together We Build Your Success Step by Step',
+    url: '/banners/banner-hero-saudi.png',
+    alt: language === 'ar' ? 'معاً نصنع نجاحك خطوة بخطوة' : 'Together We Build Your Success Step by Step',
   }
 
   const sportSpecializations = [
