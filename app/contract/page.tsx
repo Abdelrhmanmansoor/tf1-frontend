@@ -22,6 +22,20 @@ export default function ContractPage() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string>('')
 
+  const successMessages = [
+    language === 'ar' 
+      ? { title: '✓ تم بنجاح!', desc: 'تم استقبال طلبك - شكراً لاختيارك TF1' }
+      : { title: '✓ Success!', desc: 'Your request received - Thank you for choosing TF1' },
+    language === 'ar'
+      ? { title: '📋 طلبك قيد المراجعة', desc: 'سيتم التواصل معك قريباً من قبل فريقنا المتخصص' }
+      : { title: '📋 Under Review', desc: 'Our team will contact you soon' },
+    language === 'ar'
+      ? { title: '🚀 ستجد أفضل الكفاءات', desc: 'نساعدك في إيجاد أفضل المواهب الرياضية' }
+      : { title: '🚀 Best Talent Found', desc: 'We help you find the best sports talent' },
+  ]
+  
+  const [messageIndex, setMessageIndex] = useState(0)
+
   const [formData, setFormData] = useState({
     companyName: '',
     contactPerson: '',
@@ -231,6 +245,7 @@ export default function ContractPage() {
 
       // Show success
       setShowSuccess(true)
+      setMessageIndex(Math.floor(Math.random() * successMessages.length))
       setTimeout(() => {
         setFormData({
           companyName: '',
@@ -264,71 +279,51 @@ export default function ContractPage() {
 
       <section className="py-12 sm:py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          {/* Success Notification with PDF Download */}
+          {/* Success Banner Strip */}
           <AnimatePresence>
             {showSuccess && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.4, type: 'spring', stiffness: 300 }}
-                className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/30 backdrop-blur-sm"
+                initial={{ opacity: 0, y: -100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -100 }}
+                transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
+                className="fixed top-0 left-0 right-0 z-50 w-screen"
               >
-                <motion.div
-                  className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-green-200 overflow-hidden relative max-w-md w-full"
-                  animate={{ y: [10, 0, 10] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  {/* Animated gradient background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-400/10 opacity-0 animate-pulse" />
-                  
-                  <div className="relative z-10">
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1], rotate: [0, 8, -8, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity }}
-                      className="mb-6 flex justify-center"
-                    >
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg">
-                        <CheckCircle className="w-10 h-10 text-white" />
-                      </div>
-                    </motion.div>
+                <div className="bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500 w-full py-4 sm:py-6 px-4 shadow-lg">
+                  <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex-1 text-center sm:text-left">
+                      <motion.h3 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-xl sm:text-2xl font-bold text-white mb-1"
+                      >
+                        {successMessages[messageIndex].title}
+                      </motion.h3>
+                      <motion.p 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-sm sm:text-base text-white/90 font-medium"
+                      >
+                        {successMessages[messageIndex].desc}
+                      </motion.p>
+                    </div>
                     
-                    <h3 className="text-3xl sm:text-4xl font-bold mb-3 text-center bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                      {language === 'ar' ? '✓ تم بنجاح!' : '✓ Success!'}
-                    </h3>
-                    
-                    <p className="text-base sm:text-lg text-gray-700 text-center mb-8 font-semibold">
-                      {language === 'ar'
-                        ? 'تم استقبال طلبك بنجاح'
-                        : 'Your request has been received'}
-                    </p>
-
                     {pdfUrl && (
                       <motion.a
                         href={pdfUrl}
                         download={`TF1-Recruitment-${Date.now()}.pdf`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="block w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 mb-6 shadow-lg hover:shadow-xl text-lg"
+                        className="bg-white text-blue-600 font-bold py-2 px-6 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base flex-shrink-0"
                       >
-                        <Download className="w-6 h-6" />
-                        {language === 'ar' ? 'تحميل العقد' : 'Download Contract'}
+                        <Download className="w-4 h-4" />
+                        {language === 'ar' ? 'تحميل' : 'Download'}
                       </motion.a>
                     )}
-
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                      className="flex items-center justify-center gap-2 bg-white/70 backdrop-blur py-3 px-4 rounded-xl border-2 border-green-100"
-                    >
-                      <Shield className="w-5 h-5 text-green-600" />
-                      <p className="text-sm text-gray-700 font-semibold">
-                        {language === 'ar' ? '🔐 بيانات محمية' : '🔐 Data Protected'}
-                      </p>
-                    </motion.div>
                   </div>
-                </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
