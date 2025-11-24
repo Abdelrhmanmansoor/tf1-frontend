@@ -191,7 +191,7 @@ export function Footer() {
 
         {/* Government Logos Section */}
         <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-row flex-nowrap items-center justify-center gap-3 sm:gap-5 lg:gap-8 overflow-x-auto">
+          <div className="flex flex-row flex-nowrap items-center justify-center gap-2 sm:gap-4 lg:gap-6">
             {/* Ministry of Commerce Logo */}
             <a 
               href="https://mc.gov.sa" 
@@ -199,12 +199,12 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group flex-shrink-0"
             >
-              <div className="bg-white rounded-xl p-3 sm:p-4 md:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 flex items-center justify-center shadow-md">
+              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
                 <Image 
                   src="/ministry-commerce.png"
                   alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
-                  width={140}
-                  height={140}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-contain"
                   priority
                 />
@@ -218,12 +218,12 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group flex-shrink-0"
             >
-              <div className="bg-white rounded-xl p-3 sm:p-4 md:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 flex items-center justify-center shadow-md">
+              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
                 <Image 
                   src="/business-center.png"
                   alt={language === 'ar' ? 'مركز الأعمال السعودي' : 'Saudi Business Center'}
-                  width={140}
-                  height={140}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-contain"
                   priority
                 />
@@ -237,12 +237,12 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group flex-shrink-0"
             >
-              <div className="bg-white rounded-xl p-3 sm:p-4 md:p-5 transition-all duration-300 hover:shadow-xl hover:scale-105 w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 flex items-center justify-center shadow-md">
+              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
                 <Image 
                   src="/vision-2030.png"
                   alt={language === 'ar' ? 'رؤية المملكة 2030' : 'Saudi Vision 2030'}
-                  width={140}
-                  height={140}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-contain"
                   priority
                 />
