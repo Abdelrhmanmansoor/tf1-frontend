@@ -301,6 +301,7 @@ None at this time.
 
 - `SETUP_GUIDE.md` - **START HERE**: Complete setup and deployment guide
 - `BACKEND_URGENT_FIX.md` - **CRITICAL**: Quick guide for backend team to enable admin dashboard
+- `BACKEND_JOB_NOTIFICATIONS_FIX.md` - **Backend Team**: Fix job notifications & CV download issues
 - `ADMIN_BACKEND_COMMANDS.md` - Complete backend API implementation guide
 - `FRONTEND_JOB_NOTIFICATIONS_GUIDE.md` - **Frontend Team**: Socket.io notifications & file downloads guide
 - `BLOG_PUBLISHING_GUIDE.md` - Blog system API guide
