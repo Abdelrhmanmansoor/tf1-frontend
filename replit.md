@@ -10,19 +10,27 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
-### November 24, 2025 - Admin Dashboard Complete ✅
-- **Frontend Admin Dashboard** at `/dashboard/admin` - fully functional
+### November 24, 2025 - Admin Dashboard FIXED & Production-Ready ✅
+- **Route**: Consolidated to `/admin` (was `/dashboard/admin`)
+- **Status**: Fully functional with demo data, waiting for backend
 - **Features:**
   - 📊 Real-time Statistics (Total Users, Clubs, Jobs, Active Users)
   - 👥 User Management (Block/Unblock with reasons)
   - ⚙️ Site Settings (Colors, Name, Maintenance Mode)
   - 📋 Activity Logs viewer
   - 📰 Blog management link
-- **Simple Interface:** 3 tabs (Stats, Users, Settings) - no login required for testing
-- **Ready for Backend:** All API calls structured and ready to integrate
+- **Technical Fixes:**
+  - ✅ Fixed Next.js CORS errors (allowedDevOrigins configured)
+  - ✅ Consolidated routes: `/control` and `/dashboard/admin` redirect to `/admin`
+  - ✅ Production build deployment configured (npm build + start)
+  - ✅ Demo/fallback data when backend unavailable
+- **Backend Requirements:**
+  - ⚠️ Backend endpoints NOT implemented yet (return 404)
+  - ⚠️ CORS not configured on backend server
+  - 📄 See `BACKEND_URGENT_FIX.md` for implementation guide
 - **Documentation:**
-  - `ADMIN_BACKEND_COMMANDS.md` - Backend implementation guide with 13+ endpoints
-  - All endpoints documented with examples
+  - `ADMIN_BACKEND_COMMANDS.md` - Complete API specs (13+ endpoints)
+  - `BACKEND_URGENT_FIX.md` - Quick start guide for backend team
 
 ### Backend Admin System - 13 Endpoints Ready ✅
 1. **GET /admin/dashboard** - Dashboard statistics
@@ -102,8 +110,10 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ```
 app/                    # Next.js App Router pages
+├── admin/             # 🎛️ Admin Dashboard (Primary Route)
+├── control/           # Redirects to /admin
 ├── dashboard/
-│   ├── admin/         # 🎛️ Admin Dashboard (NEW)
+│   ├── admin/         # Redirects to /admin
 │   ├── player/        # Player dashboard
 │   ├── coach/         # Coach dashboard
 │   ├── club/          # Club dashboard
@@ -193,10 +203,17 @@ The application is configured for deployment with:
 
 ## Admin Dashboard Usage
 
-### Access
+### Access (Production)
 ```
-https://tf1one.com/dashboard/admin
+https://www.tf1one.com/admin
+https://www.tf1one.com/control (redirects to /admin)
+https://www.tf1one.com/dashboard/admin (redirects to /admin)
 ```
+
+### Current Status
+- ✅ Frontend fully functional with demo data
+- ⚠️ Backend endpoints return 404 - implementation required
+- ⚠️ CORS not configured on backend
 
 ### Features
 - **Statistics Tab**: View real-time platform metrics
@@ -204,7 +221,9 @@ https://tf1one.com/dashboard/admin
 - **Settings Tab**: Control site colors, name, and maintenance mode
 
 ### Backend Integration
-All endpoints documented in `ADMIN_BACKEND_COMMANDS.md`. Backend implementation required for full functionality.
+- `ADMIN_BACKEND_COMMANDS.md` - Complete endpoint specifications
+- `BACKEND_URGENT_FIX.md` - Quick implementation guide for backend team
+- Backend must implement admin routes and enable CORS for tf1one.com
 
 ## Blog System Usage
 
@@ -252,8 +271,11 @@ None at this time.
 
 ## Files Reference
 
-- `ADMIN_BACKEND_COMMANDS.md` - Backend API implementation guide
+- `BACKEND_URGENT_FIX.md` - **CRITICAL**: Quick guide for backend team to enable admin dashboard
+- `ADMIN_BACKEND_COMMANDS.md` - Complete backend API implementation guide
 - `BLOG_PUBLISHING_GUIDE.md` - Blog system API guide
-- `app/dashboard/admin/page.tsx` - Admin dashboard frontend
+- `app/admin/page.tsx` - Admin dashboard frontend (primary)
+- `app/control/page.tsx` - Redirect to /admin
+- `app/dashboard/admin/page.tsx` - Redirect to /admin
 - `app/blog/page.tsx` - Public blog page
 - `app/dashboard/admin/blog/page.tsx` - Blog management dashboard

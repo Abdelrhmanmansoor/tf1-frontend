@@ -26,8 +26,28 @@ interface AdminUser {
 
 export default function AdminDashboard() {
   const { language } = useLanguage()
-  const [stats, setStats] = useState<AdminStats | null>(null)
-  const [users, setUsers] = useState<AdminUser[]>([])
+  const [stats, setStats] = useState<AdminStats>({
+    totalUsers: 1250,
+    totalClubs: 42,
+    totalJobs: 567,
+    activeUsers: 348,
+  })
+  const [users, setUsers] = useState<AdminUser[]>([
+    {
+      _id: '1',
+      email: 'player@example.com',
+      name: 'Ahmed Player',
+      role: 'player',
+      blocked: false,
+    },
+    {
+      _id: '2',
+      email: 'coach@example.com',
+      name: 'Sara Coach',
+      role: 'coach',
+      blocked: false,
+    },
+  ])
   const [activeTab, setActiveTab] = useState<'stats' | 'users' | 'settings'>('stats')
   const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState({
@@ -44,13 +64,16 @@ export default function AdminDashboard() {
   }, [])
 
   const loadData = async () => {
+    setLoading(true)
+    
     try {
       // Try to fetch stats
       const statsRes = await axios.get('/api/v1/admin/dashboard', {
         baseURL: 'https://tf1-backend.onrender.com',
+        timeout: 3000,
       }).catch(() => null)
       
-      if (statsRes?.data) {
+      if (statsRes?.data?.stats) {
         setStats(statsRes.data.stats)
       } else {
         // Demo data if backend not available
@@ -61,13 +84,24 @@ export default function AdminDashboard() {
           activeUsers: 348,
         })
       }
+    } catch (error) {
+      // Fallback to demo data on any error
+      setStats({
+        totalUsers: 1250,
+        totalClubs: 42,
+        totalJobs: 567,
+        activeUsers: 348,
+      })
+    }
 
+    try {
       // Try to fetch users
       const usersRes = await axios.get('/api/v1/admin/users', {
         baseURL: 'https://tf1-backend.onrender.com',
+        timeout: 3000,
       }).catch(() => null)
       
-      if (usersRes?.data) {
+      if (usersRes?.data?.users) {
         setUsers(usersRes.data.users)
       } else {
         // Demo data if backend not available
@@ -89,10 +123,26 @@ export default function AdminDashboard() {
         ])
       }
     } catch (error) {
-      console.log('Backend not ready yet - using demo data')
-    } finally {
-      setLoading(false)
+      // Fallback to demo users on any error
+      setUsers([
+        {
+          _id: '1',
+          email: 'player@example.com',
+          name: 'Ahmed Player',
+          role: 'player',
+          blocked: false,
+        },
+        {
+          _id: '2',
+          email: 'coach@example.com',
+          name: 'Sara Coach',
+          role: 'coach',
+          blocked: false,
+        },
+      ])
     }
+    
+    setLoading(false)
   }
 
   const handleBlockUser = async (userId: string) => {
