@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+.next
+out
+build
+dist
+
+# Files
+*.json
+*.yml
+*.yaml
+
+# Directories
+public
