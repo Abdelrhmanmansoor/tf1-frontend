@@ -23,6 +23,9 @@ import {
   Globe,
   AlertCircle,
   Loader2,
+  MessageCircle,
+  Linkedin,
+  ExternalLink,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -40,6 +43,9 @@ export default function OpportunityDetailsPage() {
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [whatsapp, setWhatsapp] = useState('')
+  const [portfolio, setPortfolio] = useState('')
+  const [linkedin, setLinkedin] = useState('')
 
   useEffect(() => {
     const fetchOpportunity = async () => {
@@ -109,6 +115,15 @@ export default function OpportunityDetailsPage() {
       if (coverLetter) {
         formData.append('coverLetter', coverLetter)
       }
+      if (whatsapp) {
+        formData.append('whatsapp', whatsapp)
+      }
+      if (portfolio) {
+        formData.append('portfolio', portfolio)
+      }
+      if (linkedin) {
+        formData.append('linkedin', linkedin)
+      }
 
       await applyToOpportunity(params.id as string, formData)
 
@@ -116,6 +131,9 @@ export default function OpportunityDetailsPage() {
       setShowApplyForm(false)
       setResumeFile(null)
       setCoverLetter('')
+      setWhatsapp('')
+      setPortfolio('')
+      setLinkedin('')
 
       setTimeout(() => {
         setApplySuccess(false)
@@ -415,6 +433,60 @@ export default function OpportunityDetailsPage() {
                     )}
                   </div>
 
+                  {/* Contact Information Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* WhatsApp - Required */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'رقم واتس أب *' : 'WhatsApp *'}
+                      </label>
+                      <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                        <MessageCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                        <input
+                          type="tel"
+                          value={whatsapp}
+                          onChange={(e) => setWhatsapp(e.target.value)}
+                          placeholder={language === 'ar' ? '+966 50 123 4567' : '+966 50 123 4567'}
+                          className="flex-1 outline-none text-sm bg-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Portfolio - Optional */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'محفظة أعمالك (اختياري)' : 'Portfolio (Optional)'}
+                      </label>
+                      <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                        <ExternalLink className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                        <input
+                          type="url"
+                          value={portfolio}
+                          onChange={(e) => setPortfolio(e.target.value)}
+                          placeholder={language === 'ar' ? 'https://yourportfolio.com' : 'https://yourportfolio.com'}
+                          className="flex-1 outline-none text-sm bg-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    {/* LinkedIn - Optional */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'ملف LinkedIn (اختياري)' : 'LinkedIn (Optional)'}
+                      </label>
+                      <div className="flex items-center gap-2 border border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                        <Linkedin className="w-5 h-5 text-blue-700 flex-shrink-0" />
+                        <input
+                          type="url"
+                          value={linkedin}
+                          onChange={(e) => setLinkedin(e.target.value)}
+                          placeholder={language === 'ar' ? 'https://linkedin.com/in/yourprofile' : 'https://linkedin.com/in/yourprofile'}
+                          className="flex-1 outline-none text-sm bg-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Cover Letter - Optional */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -423,12 +495,12 @@ export default function OpportunityDetailsPage() {
                     <textarea
                       value={coverLetter}
                       onChange={(e) => setCoverLetter(e.target.value)}
-                      rows={6}
-                      className="w-full border border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      rows={4}
+                      className="w-full border border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                       placeholder={
                         language === 'ar'
-                          ? 'اكتب خطاب التقديم الخاص بك هنا...'
-                          : 'Write your cover letter here...'
+                          ? 'اكتب رسالة قصيرة عن نفسك...'
+                          : 'Write a brief message about yourself...'
                       }
                     />
                   </div>
@@ -437,7 +509,7 @@ export default function OpportunityDetailsPage() {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleApply}
-                      disabled={applying || !resumeFile}
+                      disabled={applying || !resumeFile || !whatsapp}
                       className="flex-1 bg-blue-600 hover:bg-blue-700 h-12 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {applying ? (
@@ -458,6 +530,9 @@ export default function OpportunityDetailsPage() {
                         setShowApplyForm(false)
                         setResumeFile(null)
                         setUploadError(null)
+                        setWhatsapp('')
+                        setPortfolio('')
+                        setLinkedin('')
                       }}
                       disabled={applying}
                       className="h-12"
