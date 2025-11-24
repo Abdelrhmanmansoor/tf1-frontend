@@ -691,17 +691,49 @@ class ClubService {
 
   /**
    * 26. Update Application Status
-   * PATCH /clubs/applications/:applicationId/status
+   * Uses appropriate endpoint based on status
    */
   async updateApplicationStatus(
     applicationId: string,
     status: 'new' | 'under_review' | 'interviewed' | 'offered' | 'hired' | 'rejected'
   ): Promise<JobApplication> {
     try {
-      const response = await api.patch<ApplicationResponse>(
-        `${this.BASE_PATH}/applications/${applicationId}/status`,
-        { status }
-      )
+      let response
+      
+      switch (status) {
+        case 'under_review':
+          response = await api.post<ApplicationResponse>(
+            `${this.BASE_PATH}/applications/${applicationId}/review`
+          )
+          break
+        case 'interviewed':
+          response = await api.post<ApplicationResponse>(
+            `${this.BASE_PATH}/applications/${applicationId}/interview`,
+            { type: 'in_person' }
+          )
+          break
+        case 'offered':
+          response = await api.post<ApplicationResponse>(
+            `${this.BASE_PATH}/applications/${applicationId}/offer`,
+            {}
+          )
+          break
+        case 'hired':
+          response = await api.post<ApplicationResponse>(
+            `${this.BASE_PATH}/applications/${applicationId}/hire`,
+            { startDate: new Date().toISOString().split('T')[0] }
+          )
+          break
+        case 'rejected':
+          response = await api.post<ApplicationResponse>(
+            `${this.BASE_PATH}/applications/${applicationId}/reject`,
+            { reason: 'Status updated' }
+          )
+          break
+        default:
+          throw new Error('Invalid status')
+      }
+      
       return response.data.application
     } catch (error) {
       throw this.handleError(error)

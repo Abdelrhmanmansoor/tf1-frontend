@@ -99,7 +99,7 @@ const ApplicationDetailPage = () => {
   }
 
   const handleStatusChange = async (newStatus: string) => {
-    if (!application) return
+    if (!application || newStatus === application.status) return
     
     try {
       setStatusLoading(true)
@@ -108,10 +108,12 @@ const ApplicationDetailPage = () => {
         newStatus as any
       )
       setApplication(updatedApp)
-      setSelectedStatus(newStatus)
+      setSelectedStatus(updatedApp.status)
+      alert(language === 'ar' ? 'تم تحديث الحالة بنجاح!' : 'Status updated successfully!')
     } catch (err: any) {
       console.error('Error updating status:', err)
       alert(err.message || (language === 'ar' ? 'خطأ في تحديث الحالة' : 'Error updating status'))
+      setSelectedStatus(application.status)
     } finally {
       setStatusLoading(false)
     }
@@ -220,7 +222,7 @@ const ApplicationDetailPage = () => {
               <Button
                 onClick={() => handleStatusChange(selectedStatus)}
                 disabled={statusLoading || selectedStatus === application?.status}
-                className="gap-2 w-full sm:w-auto"
+                className="gap-2 w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
               >
                 {statusLoading ? (
                   <>
