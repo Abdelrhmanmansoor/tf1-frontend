@@ -719,114 +719,135 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Contact CTA - Clean & Elegant */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-5xl mx-auto">
+      {/* Contact CTA - Clean & Mobile Friendly */}
+      <section className="py-16 sm:py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl p-8 sm:p-12 lg:p-16 shadow-lg border border-gray-100"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12 sm:mb-16"
           >
-            {/* Header */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {language === 'ar' ? 'تواصل معنا' : 'Get In Touch'}
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {language === 'ar'
-                  ? 'نحن هنا للإجابة على جميع أسئلتك حول المنصة والفرص المتاحة'
-                  : 'We are here to answer any questions about our platform and opportunities'}
-              </p>
-            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {language === 'ar' ? 'تواصل معنا' : 'Get In Touch'}
+              </span>
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'لدينا فريق جاهز للإجابة على أسئلتك'
+                : 'We are here to help answer your questions'}
+            </p>
+          </motion.div>
 
-            {/* Contact Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          {/* Main Contact Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-12 shadow-sm border border-gray-100 mb-8"
+          >
+            {/* Contact Info - Two Columns */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mb-8">
               {/* Phone */}
-              <motion.div
+              <motion.a
+                href="tel:+966501234567"
                 whileHover={{ scale: 1.02 }}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                whileTap={{ scale: 0.98 }}
+                className="group flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-100 hover:border-blue-300 transition-all duration-300 cursor-pointer"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-500 mb-1">
-                      {language === 'ar' ? 'رقم الهاتف' : 'Phone'}
-                    </h3>
-                    <p className="text-xl font-bold text-gray-900">
-                      <a
-                        href="tel:+966501234567"
-                        dir="ltr"
-                        className="hover:text-blue-600 transition-colors"
-                      >
-                        +966 50 123 4567
-                      </a>
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {language === 'ar' ? 'متاح 24/7' : 'Available 24/7'}
-                    </p>
-                  </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
+                  <Phone className="w-7 h-7 text-white" />
                 </div>
-              </motion.div>
+                <div className="flex-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">
+                    {language === 'ar' ? 'رقم الهاتف' : 'Phone'}
+                  </h3>
+                  <p className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors" dir="ltr">
+                    +966 50 123 4567
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                    {language === 'ar' ? 'متاح 24/7' : 'Available 24/7'}
+                  </p>
+                </div>
+              </motion.a>
 
               {/* Email */}
-              <motion.div
+              <motion.a
+                href="mailto:contact@tf1one.com"
                 whileHover={{ scale: 1.02 }}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                whileTap={{ scale: 0.98 }}
+                className="group flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-100 hover:border-purple-300 transition-all duration-300 cursor-pointer"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-500 mb-1">
-                      {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
-                    </h3>
-                    <p className="text-lg font-bold text-gray-900 break-all">
-                      <a
-                        href="mailto:contact@tf1one.com"
-                        className="hover:text-purple-600 transition-colors"
-                      >
-                        contact@tf1one.com
-                      </a>
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {language === 'ar' ? 'نرد في دقائق' : 'We reply in minutes'}
-                    </p>
-                  </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
+                  <Mail className="w-7 h-7 text-white" />
                 </div>
-              </motion.div>
+                <div className="flex-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">
+                    {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                  </h3>
+                  <p className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors break-all">
+                    contact@tf1one.com
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                    {language === 'ar' ? 'نرد في دقائق' : 'We reply quickly'}
+                  </p>
+                </div>
+              </motion.a>
             </div>
 
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mb-8"></div>
+
             {/* CTA Buttons */}
-            <div className="space-y-4 max-w-2xl mx-auto">
-              <motion.div whileHover={{ scale: 1.02 }}>
+            <div className="space-y-3 sm:space-y-4">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 <Link href="/register" className="block">
                   <Button
                     size="lg"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
                   >
-                    <CheckCircle className="w-5 h-5 mr-2" />
-                    {language === 'ar' ? 'ابدأ الآن' : 'Get Started'}
+                    <CheckCircle className="w-5 h-5 sm:mr-2 mr-1" />
+                    <span className="hidden sm:inline">
+                      {language === 'ar' ? 'ابدأ الآن' : 'Get Started'}
+                    </span>
+                    <span className="sm:hidden">
+                      {language === 'ar' ? 'ابدأ' : 'Start'}
+                    </span>
                   </Button>
                 </Link>
               </motion.div>
 
-              <div className="text-center">
-                <p className="text-gray-600 text-sm">
+              <div className="text-center pt-2">
+                <p className="text-gray-600 text-xs sm:text-sm">
                   {language === 'ar'
-                    ? 'أو'
-                    : 'Or'}{' '}
-                  <Link href="/jobs" className="text-blue-600 hover:underline font-semibold">
-                    {language === 'ar' ? 'استكشف الوظائف' : 'explore opportunities'}
+                    ? 'أو '
+                    : 'Or '}{' '}
+                  <Link href="/jobs" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                    {language === 'ar' ? 'استكشف الوظائف' : 'Explore Jobs'}
                   </Link>
                 </p>
               </div>
             </div>
+          </motion.div>
+
+          {/* Optional - Address Info */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center justify-center gap-2 text-gray-500 text-xs sm:text-sm"
+          >
+            <MapPin className="w-4 h-4" />
+            <p>
+              {language === 'ar'
+                ? 'الرياض، المملكة العربية السعودية'
+                : 'Riyadh, Saudi Arabia'}
+            </p>
           </motion.div>
         </div>
       </section>
