@@ -18,8 +18,13 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
-  // Allow all dev origins for Replit proxy
-  allowedDevOrigins: ['*'],
+  // Allow specific dev origins for Replit proxy and production
+  allowedDevOrigins: [
+    'https://tf1one.com',
+    'https://www.tf1one.com',
+    /\.replit\.dev$/,
+    /\.repl\.co$/,
+  ],
   // Allow all hosts for Replit proxy compatibility
   async rewrites() {
     return []
