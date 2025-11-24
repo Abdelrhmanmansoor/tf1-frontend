@@ -339,6 +339,48 @@ export default function FeaturesPage() {
     },
   ]
 
+  const collaborationCards = [
+    {
+      icon: Calendar,
+      title: language === 'ar' ? 'حدولة ذكية' : 'Smart Scheduling',
+      description: language === 'ar' 
+        ? 'جدولة المقابلات والتدريبات تلقائياً مع تزامن التقاويم'
+        : 'Automatic interview & training scheduling with calendar sync',
+      features: [
+        language === 'ar' ? 'مزامنة التقويم' : 'Calendar sync',
+        language === 'ar' ? 'جدولة تلقائية' : 'Auto-scheduling',
+        language === 'ar' ? 'دعم المناطق الزمنية' : 'Timezone support'
+      ],
+      gradient: 'from-blue-500 to-blue-600'
+    },
+    {
+      icon: Users,
+      title: language === 'ar' ? 'فريق العمل' : 'Team Workspace',
+      description: language === 'ar'
+        ? 'مساحات عمل مشتركة للأكاديميات والمراكز الرياضية'
+        : 'Shared workspaces for academies and sports centers',
+      features: [
+        language === 'ar' ? 'إدارة المشاريع' : 'Task management',
+        language === 'ar' ? 'مشاركة الملفات' : 'File sharing',
+        language === 'ar' ? 'تعاون فوري' : 'Collaborative'
+      ],
+      gradient: 'from-purple-500 to-purple-600'
+    },
+    {
+      icon: MessageCircle,
+      title: language === 'ar' ? 'رسائل فورية' : 'Instant Messaging',
+      description: language === 'ar'
+        ? 'تواصل مباشر وآمن مع أصحاب العمل والزملاء'
+        : 'Direct & secure communication with employers and colleagues',
+      features: [
+        language === 'ar' ? 'تواصل فوري' : 'Real-time messaging',
+        language === 'ar' ? 'آمن وموثوق' : 'Secure',
+        language === 'ar' ? 'ملفات متعددة الوسائط' : 'Multi-media'
+      ],
+      gradient: 'from-green-500 to-green-600'
+    }
+  ]
+
   const pricingPlans = [
     {
       name: language === 'ar' ? 'مجاني' : 'Free',
@@ -586,6 +628,68 @@ export default function FeaturesPage() {
   </div>
 </motion.div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Collaboration Section - New */}
+      <section className="py-16 sm:py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          {/* Header with Gradient Background */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-white text-center mb-12 sm:mb-16"
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
+              {language === 'ar' ? 'التعاون والتواصل' : 'Collaboration & Communication'}
+            </h2>
+            <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'أدوات متطورة للتعاون الفوري والتواصل الآمن بين الفرق والمؤسسات'
+                : 'Advanced tools for seamless collaboration and secure communication'}
+            </p>
+          </motion.div>
+
+          {/* Collaboration Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            {collaborationCards.map((card, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300"
+              >
+                {/* Icon Header */}
+                <div className={`bg-gradient-to-br ${card.gradient} rounded-xl w-14 h-14 flex items-center justify-center mb-6 shadow-md`}>
+                  <card.icon className="w-7 h-7 text-white" />
+                </div>
+
+                {/* Title & Description */}
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                  {card.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed mb-6 text-sm sm:text-base">
+                  {card.description}
+                </p>
+
+                {/* Features List */}
+                <div className="space-y-2 sm:space-y-3">
+                  {card.features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                      <span className="text-sm text-gray-600">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
