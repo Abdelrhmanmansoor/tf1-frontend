@@ -24,7 +24,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
     { id: 'jobs', label: t('jobs') },
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
-     { id: 'blog', label: t('blog') },
     { id: 'contact', label: t('contact') },
   ]
 
