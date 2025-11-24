@@ -52,6 +52,14 @@ export default function AdminDashboard() {
       
       if (statsRes?.data) {
         setStats(statsRes.data.stats)
+      } else {
+        // Demo data if backend not available
+        setStats({
+          totalUsers: 1250,
+          totalClubs: 42,
+          totalJobs: 567,
+          activeUsers: 348,
+        })
       }
 
       // Try to fetch users
@@ -61,9 +69,27 @@ export default function AdminDashboard() {
       
       if (usersRes?.data) {
         setUsers(usersRes.data.users)
+      } else {
+        // Demo data if backend not available
+        setUsers([
+          {
+            _id: '1',
+            email: 'player@example.com',
+            name: 'Ahmed Player',
+            role: 'player',
+            blocked: false,
+          },
+          {
+            _id: '2',
+            email: 'coach@example.com',
+            name: 'Sara Coach',
+            role: 'coach',
+            blocked: false,
+          },
+        ])
       }
     } catch (error) {
-      console.log('Backend not ready yet')
+      console.log('Backend not ready yet - using demo data')
     } finally {
       setLoading(false)
     }
@@ -100,6 +126,13 @@ export default function AdminDashboard() {
       <Navbar activeMode="application" />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Backend Status Alert */}
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm text-amber-700">
+            ⚠️ {language === 'ar' ? 'الخادم قيد الإعداد - تستخدم بيانات تجريبية' : 'Backend is being configured - using demo data. Contact backend team to activate.'}
+          </p>
+        </div>
+
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             {language === 'ar' ? '🎛️ لوحة التحكم' : '🎛️ Admin Dashboard'}
