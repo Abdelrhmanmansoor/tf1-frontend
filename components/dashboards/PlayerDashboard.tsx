@@ -37,6 +37,7 @@ import playerService from '@/services/player'
 import authService from '@/services/auth'
 import type { DashboardStats, PlayerProfile } from '@/types/player'
 import { calculateProfileCompletion } from '@/utils/profileCompletion'
+import JobNotifications from '@/components/notifications/JobNotifications'
 
 const PlayerDashboard = () => {
   const { language } = useLanguage()
@@ -63,6 +64,10 @@ const PlayerDashboard = () => {
 
       setStats(statsData)
       setProfile(profileData)
+      
+      // Log userId for debugging
+      const user = authService.getCurrentUser()
+      console.log('[PlayerDashboard] User ID:', user?._id)
     } catch (err: any) {
       console.error('Error fetching dashboard data:', err)
 
@@ -201,6 +206,13 @@ const PlayerDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Job Notifications */}
+            {authService.getCurrentUser()?._id && (
+              <JobNotifications 
+                userId={authService.getCurrentUser()!._id} 
+              />
+            )}
+
             {/* Stats Cards */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

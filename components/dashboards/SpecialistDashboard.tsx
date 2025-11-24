@@ -39,6 +39,7 @@ import {
   type Session,
   type SpecialistProfile,
 } from '@/services/specialist'
+import JobNotifications from '@/components/notifications/JobNotifications'
 
 const SpecialistDashboard = () => {
   const { language } = useLanguage()
@@ -225,6 +226,19 @@ const SpecialistDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Job Notifications */}
+        {user?._id && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <JobNotifications 
+              userId={user._id} 
+            />
+          </motion.div>
+        )}
+
         {/* Profile Completion Alert */}
         {profileCompletion < 100 && (
           <motion.div

@@ -36,6 +36,7 @@ import {
   MapPinned,
 } from 'lucide-react'
 import Link from 'next/link'
+import JobNotifications from '@/components/notifications/JobNotifications'
 
 const ClubDashboard = () => {
   const { language } = useLanguage()
@@ -261,6 +262,19 @@ const ClubDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Job Notifications */}
+        {authService.getCurrentUser()?._id && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <JobNotifications 
+              userId={authService.getCurrentUser()!._id} 
+            />
+          </motion.div>
+        )}
+
         {/* Profile Completion Alert */}
         {stats.profile?.completionPercentage !== undefined &&
           stats.profile.completionPercentage < 100 && (
