@@ -1098,213 +1098,105 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Smart Job Intelligence Dashboard */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-gray-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          {/* Header */}
+      {/* Live Status Section - Simplified & Premium */}
+      <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
+        <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 sm:p-14 border border-white/10"
           >
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-6">
-              📊 {language === 'ar' ? 'ذكاء السوق الحي' : 'Live Market Intelligence'}
-            </div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6">
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
-                {language === 'ar' ? 'اكتشف فرص لا محدودة' : 'Unlimited Opportunities Await'}
-              </span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-4xl mx-auto font-semibold">
-              {language === 'ar'
-                ? 'منصة ذكية تحلل سوق الوظائف بالفعل الحي وتوصلك بأفضل الفرص التي تناسب مهاراتك'
-                : 'Smart platform that analyzes the job market in real-time and connects you with opportunities that match your skills'}
-            </p>
-          </motion.div>
-
-          {/* Intelligence Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-            {/* Jobs In Demand */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-lg rounded-3xl p-8 border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="w-16 h-16 bg-blue-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-blue-300" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3">2.5K+</h3>
-              <p className="text-gray-300 font-semibold text-sm">
-                {language === 'ar' ? 'وظائف مفتوحة الآن' : 'Jobs Open Now'}
-              </p>
-              <div className="mt-4 pt-4 border-t border-blue-400/20 text-xs text-gray-400">
-                {language === 'ar' ? '↑ 340% هذا الشهر' : '↑ 340% This Month'}
-              </div>
-            </motion.div>
-
-            {/* Top Skills */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-lg rounded-3xl p-8 border border-purple-400/30 hover:border-purple-400/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="w-16 h-16 bg-purple-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Settings className="w-8 h-8 text-purple-300" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3">150+</h3>
-              <p className="text-gray-300 font-semibold text-sm">
-                {language === 'ar' ? 'مهارة مطلوبة' : 'In-Demand Skills'}
-              </p>
-              <div className="mt-4 pt-4 border-t border-purple-400/20 text-xs text-gray-400">
-                {language === 'ar' ? 'Python, React, Cloud' : 'Python, React, Cloud'}
-              </div>
-            </motion.div>
-
-            {/* Salary Insights */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 backdrop-blur-lg rounded-3xl p-8 border border-emerald-400/30 hover:border-emerald-400/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="w-16 h-16 bg-emerald-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Heart className="w-8 h-8 text-emerald-300" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3">98%</h3>
-              <p className="text-gray-300 font-semibold text-sm">
-                {language === 'ar' ? 'معدل الرضا' : 'Satisfaction Rate'}
-              </p>
-              <div className="mt-4 pt-4 border-t border-emerald-400/20 text-xs text-gray-400">
-                {language === 'ar' ? 'من المستخدمين النشطين' : 'From Active Users'}
-              </div>
-            </motion.div>
-
-            {/* Success Stories */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-gradient-to-br from-orange-500/20 to-red-600/20 backdrop-blur-lg rounded-3xl p-8 border border-orange-400/30 hover:border-orange-400/60 transition-all duration-300 cursor-pointer group"
-            >
-              <div className="w-16 h-16 bg-orange-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-orange-300" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3">50K+</h3>
-              <p className="text-gray-300 font-semibold text-sm">
-                {language === 'ar' ? 'قصة نجاح' : 'Success Stories'}
-              </p>
-              <div className="mt-4 pt-4 border-t border-orange-400/20 text-xs text-gray-400">
-                {language === 'ar' ? 'وظائف تم العثور عليها' : 'Jobs Found'}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Features Row */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 sm:p-12 border border-white/20 mb-12"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-                  <h4 className="text-lg font-bold">
-                    {language === 'ar' ? 'مطابقة ذكية' : 'Smart Matching'}
-                  </h4>
+            {/* Status Indicators */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-bold text-green-400">
+                    {language === 'ar' ? 'نشط الآن' : 'Live Now'}
+                  </span>
                 </div>
-                <p className="text-gray-300">
-                  {language === 'ar'
-                    ? 'تقنية AI تطابق مهاراتك مع الوظائف المثالية'
-                    : 'AI technology matches your skills with perfect jobs'}
+                <h3 className="text-3xl font-black mb-2">2.5K+</h3>
+                <p className="text-gray-300 font-semibold">
+                  {language === 'ar' ? 'وظائف متاحة' : 'Available Jobs'}
                 </p>
               </div>
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
-                  <h4 className="text-lg font-bold">
-                    {language === 'ar' ? 'تنبيهات فورية' : 'Instant Alerts'}
-                  </h4>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                  <span className="text-sm font-bold text-green-400">
+                    {language === 'ar' ? 'متصل' : 'Active'}
+                  </span>
                 </div>
-                <p className="text-gray-300">
-                  {language === 'ar'
-                    ? 'تصلك إشعارات فورية عندما تظهر وظيفة جديدة'
-                    : 'Get instant notifications when new jobs appear'}
+                <h3 className="text-3xl font-black mb-2">50K+</h3>
+                <p className="text-gray-300 font-semibold">
+                  {language === 'ar' ? 'محترف مسجل' : 'Registered Members'}
                 </p>
               </div>
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-emerald-400 rounded-full"></div>
-                  <h4 className="text-lg font-bold">
-                    {language === 'ar' ? 'دعم دائم' : '24/7 Support'}
-                  </h4>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <span className="text-sm font-bold text-green-400">
+                    {language === 'ar' ? 'جارٍ' : 'Processing'}
+                  </span>
                 </div>
-                <p className="text-gray-300">
-                  {language === 'ar'
-                    ? 'فريق متخصص جاهز لمساعدتك في كل خطوة'
-                    : 'Expert team ready to help at every step'}
+                <h3 className="text-3xl font-black mb-2">98%</h3>
+                <p className="text-gray-300 font-semibold">
+                  {language === 'ar' ? 'معدل الرضا' : 'Satisfaction'}
                 </p>
               </div>
             </div>
-          </motion.div>
 
-          {/* Final CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-center"
-          >
-            <h3 className="text-3xl sm:text-4xl font-bold mb-6">
-              {language === 'ar'
-                ? 'هل أنت مستعد لفرصة تغير حياتك؟'
-                : 'Ready for an opportunity that changes your life?'}
-            </h3>
-            <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto font-semibold">
-              {language === 'ar'
-                ? 'اكتشف آلاف الوظائف والفرص التي تنتظرك على منصة TF1'
-                : 'Discover thousands of jobs and opportunities waiting for you on TF1 platform'}
-            </p>
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
+            {/* Main Message */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-black mb-4">
+                {language === 'ar'
+                  ? 'هل تبحث عن فرصة تغير حياتك؟'
+                  : 'Looking for a life-changing opportunity?'}
+              </h2>
+              <p className="text-lg text-gray-300 mb-8 font-semibold">
+                {language === 'ar'
+                  ? 'اكتشف آلاف الوظائف والفرص التي تنتظرك على منصة TF1'
+                  : 'Discover thousands of jobs and opportunities waiting for you on TF1 platform'}
+              </p>
+
+              {/* AI Coming Soon Badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/30 to-blue-500/30 border border-purple-400/50 rounded-full px-6 py-3 mb-8"
+              >
+                <div className="w-2.5 h-2.5 bg-purple-400 rounded-full animate-pulse"></div>
+                <span className="text-sm font-bold">
+                  {language === 'ar' ? '🤖 الذكاء الاصطناعي قريباً' : '🤖 AI Coming Soon'}
+                </span>
+              </motion.div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link href="/register">
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 sm:px-12 py-4 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 text-lg font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                   >
                     {language === 'ar' ? '🚀 ابدأ الآن' : '🚀 Get Started'}
-                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   size="lg"
-                  className="bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white px-8 sm:px-12 py-4 text-lg font-bold rounded-xl border border-white/30 transition-all duration-300"
+                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 text-lg font-bold rounded-lg border border-white/30 transition-all duration-300 w-full sm:w-auto"
                 >
-                  {language === 'ar' ? '📚 اعرف المزيد' : '📚 Learn More'}
+                  {language === 'ar' ? '📖 اعرف المزيد' : '📖 Learn More'}
                 </Button>
               </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
