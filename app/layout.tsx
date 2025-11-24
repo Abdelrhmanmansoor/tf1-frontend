@@ -3,6 +3,7 @@ import '@/styles/globals.css'
 import { MSWProvider } from './mocks'
 import { LanguageProvider } from '@/contexts/language-context'
 import { AuthProvider } from '@/contexts/auth-context'
+import { SocketProvider } from '@/contexts/socket-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
 
@@ -33,8 +34,10 @@ export default function RootLayout({
         {/* <MSWProvider /> */}
         <LanguageProvider>
           <AuthProvider>
-            <SmoothScrollProvider>{children}</SmoothScrollProvider>
-            <ScrollToTop />
+            <SocketProvider>
+              <SmoothScrollProvider>{children}</SmoothScrollProvider>
+              <ScrollToTop />
+            </SocketProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>
