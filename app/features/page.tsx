@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-vars */
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
@@ -13,882 +13,380 @@ import {
   Search,
   Users,
   Target,
-  Heart,
-  Star,
-  Trophy,
-  Globe,
-  Shield,
-  Zap,
-  Award,
-  Building,
-  Briefcase,
+  MessageCircle,
+  BarChart,
   CheckCircle,
   ArrowRight,
   Sparkles,
-  TrendingUp,
-  Rocket,
-  Lightbulb,
-  Eye,
-  Compass,
-  Calendar,
-  MapPin,
-  Phone,
-  Mail,
-  Filter,
-  MessageCircle,
-  BarChart,
-  Lock,
+  Globe,
+  Shield,
   Smartphone,
-  Monitor,
   Wifi,
-  Bell,
-  Settings,
-  Cloud,
-  Database,
-  Cpu,
-  PlayCircle,
-  Pause,
-  ChevronLeft,
-  ChevronRight,
+  Clock,
+  Zap,
 } from 'lucide-react'
 
 export default function FeaturesPage() {
   const { language } = useLanguage()
-  const [activeCategory, setActiveCategory] = useState(0)
-  const [activeFeature, setActiveFeature] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  // Auto-play feature carousel
-  useEffect(() => {
-    if (!isPlaying) return
-
-    const interval = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % featuresShowcase.length)
-    }, 4000)
-
-    return () => clearInterval(interval)
-  }, [isPlaying])
+  const [activeTab, setActiveTab] = useState(0)
 
   const categories = [
     {
-      id: 'search',
+      id: 0,
       name: language === 'ar' ? 'البحث والاكتشاف' : 'Search & Discovery',
       icon: Search,
-      color: 'from-blue-500 to-cyan-500',
-      description:
-        language === 'ar'
-          ? 'أدوات بحث متقدمة للعثور على أفضل الفرص'
-          : 'Advanced search tools to find the best opportunities',
+      color: 'bg-blue-500/20 text-blue-400 border-blue-400/30',
     },
     {
-      id: 'matching',
+      id: 1,
       name: language === 'ar' ? 'المطابقة الذكية' : 'Smart Matching',
       icon: Target,
-      color: 'from-green-500 to-emerald-500',
-      description:
-        language === 'ar'
-          ? 'خوارزميات ذكية لمطابقة المواهب مع الفرص'
-          : 'Intelligent algorithms matching talents with opportunities',
+      color: 'bg-green-500/20 text-green-400 border-green-400/30',
     },
     {
-      id: 'collaboration',
-      name: language === 'ar' ? 'التعاون والتواصل' : 'Collaboration',
-      icon: MessageCircle,
-      color: 'from-purple-500 to-pink-500',
-      description:
-        language === 'ar'
-          ? 'أدوات تعاون متقدمة للفرق والمؤسسات'
-          : 'Advanced collaboration tools for teams and organizations',
-    },
-    {
-      id: 'analytics',
-      name: language === 'ar' ? 'التحليلات والإحصائيات' : 'Analytics',
-      icon: BarChart,
-      color: 'from-orange-500 to-red-500',
-      description:
-        language === 'ar'
-          ? 'تحليلات شاملة لفهم الأداء والنمو'
-          : 'Comprehensive analytics to understand performance and growth',
-    },
-  ]
-
-  const featuresShowcase = [
-    {
-      title: language === 'ar' ? 'بحث ذكي متقدم' : 'Advanced Smart Search',
-      description:
-        language === 'ar'
-          ? 'اعثر على الوظائف المثالية باستخدام فلاتر متقدمة وذكاء اصطناعي'
-          : 'Find perfect jobs using advanced filters and AI technology',
-      icon: Search,
-      gradient: 'from-blue-400 to-green-400',
-      features: [
-        language === 'ar'
-          ? 'فلترة بالموقع والراتب'
-          : 'Location & salary filters',
-        language === 'ar' ? 'بحث صوتي' : 'Voice search',
-        language === 'ar' ? 'اقتراحات ذكية' : 'Smart suggestions',
-      ],
-    },
-    {
-      title:
-        language === 'ar'
-          ? 'مطابقة مدعومة بالذكاء الاصطناعي'
-          : 'AI-Powered Matching',
-      description:
-        language === 'ar'
-          ? 'خوارزميات متقدمة تحلل مهاراتك وتجد أفضل الفرص المناسبة'
-          : 'Advanced algorithms analyze your skills to find the best opportunities',
-      icon: Target,
-      gradient: 'from-blue-400 to-green-400',
-      features: [
-        language === 'ar' ? 'تحليل المهارات' : 'Skills analysis',
-        language === 'ar' ? 'مطابقة دقيقة' : 'Precise matching',
-        language === 'ar' ? 'توصيات شخصية' : 'Personal recommendations',
-      ],
-    },
-    {
-      title:
-        language === 'ar' ? 'تعاون فريق متطور' : 'Advanced Team Collaboration',
-      description:
-        language === 'ar'
-          ? 'أدوات تعاون متطورة للفرق والمؤسسات الرياضية'
-          : 'Advanced collaboration tools for sports teams and organizations',
+      id: 2,
+      name: language === 'ar' ? 'التعاون' : 'Collaboration',
       icon: Users,
-      gradient: 'from-blue-400 to-green-400',
-      features: [
-        language === 'ar' ? 'دردشة جماعية' : 'Group messaging',
-        language === 'ar' ? 'مشاركة الملفات' : 'File sharing',
-        language === 'ar' ? 'إدارة المشاريع' : 'Project management',
-      ],
+      color: 'bg-purple-500/20 text-purple-400 border-purple-400/30',
     },
     {
-      title: language === 'ar' ? 'تحليلات شاملة' : 'Comprehensive Analytics',
-      description:
-        language === 'ar'
-          ? 'احصل على رؤى عميقة حول أدائك وتقدمك المهني'
-          : 'Get deep insights into your performance and career progress',
+      id: 3,
+      name: language === 'ar' ? 'التحليلات' : 'Analytics',
       icon: BarChart,
-      gradient: 'from-blue-400 to-green-400',
-      features: [
-        language === 'ar' ? 'تقارير الأداء' : 'Performance reports',
-        language === 'ar' ? 'تتبع التقدم' : 'Progress tracking',
-        language === 'ar' ? 'رؤى مخصصة' : 'Custom insights',
-      ],
+      color: 'bg-orange-500/20 text-orange-400 border-orange-400/30',
     },
   ]
 
-  const allFeatures = [
-    {
-      category: 'search',
-      icon: Search,
-      title: language === 'ar' ? 'البحث المتقدم' : 'Advanced Search',
-      description:
-        language === 'ar'
-          ? 'فلاتر متعددة وبحث ذكي بالذكاء الاصطناعي'
-          : 'Multiple filters and AI-powered smart search',
-      benefits: ['99% accuracy', '10x faster', 'Real-time results'],
-    },
-    {
-      category: 'search',
-      icon: Filter,
-      title: language === 'ar' ? 'فلترة ذكية' : 'Smart Filtering',
-      description:
-        language === 'ar'
-          ? 'فلترة تلقائية حسب المهارات والخبرة'
-          : 'Automatic filtering based on skills and experience',
-      benefits: ['Auto-filters', 'Skill matching', 'Location-based'],
-    },
-    {
-      category: 'search',
-      icon: Globe,
-      title: language === 'ar' ? 'بحث عالمي' : 'Global Search',
-      description:
-        language === 'ar'
-          ? 'ابحث في جميع أنحاء العالم عن أفضل الفرص'
-          : 'Search worldwide for the best opportunities',
-      benefits: ['200+ countries', 'Multi-language', '24/7 availability'],
-    },
-    {
-      category: 'matching',
-      icon: Target,
-      title: language === 'ar' ? 'مطابقة دقيقة' : 'Precision Matching',
-      description:
-        language === 'ar'
-          ? 'مطابقة دقيقة بنسبة 98% للمهارات والمتطلبات'
-          : '98% accurate matching of skills and requirements',
-      benefits: ['98% accuracy', 'Real-time', 'ML-powered'],
-    },
-    {
-      category: 'matching',
-      icon: Cpu,
-      title: language === 'ar' ? 'ذكاء اصطناعي' : 'AI Intelligence',
-      description:
-        language === 'ar'
-          ? 'خوارزميات تعلم آلي متطورة لأفضل النتائج'
-          : 'Advanced machine learning algorithms for best results',
-      benefits: ['Deep learning', 'Neural networks', 'Continuous improvement'],
-    },
-    {
-      category: 'matching',
-      icon: Lightbulb,
-      title: language === 'ar' ? 'اقتراحات ذكية' : 'Smart Suggestions',
-      description:
-        language === 'ar'
-          ? 'اقتراحات مخصصة بناءً على ملفك الشخصي'
-          : 'Personalized suggestions based on your profile',
-      benefits: ['Personalized', 'Data-driven', 'Adaptive'],
-    },
-    {
-      category: 'collaboration',
-      icon: MessageCircle,
-      title: language === 'ar' ? 'رسائل فورية' : 'Instant Messaging',
-      description:
-        language === 'ar'
-          ? 'تواصل مباشر مع أصحاب العمل والزملاء'
-          : 'Direct communication with employers and colleagues',
-      benefits: ['Real-time', 'Secure', 'Multi-media'],
-    },
-    {
-      category: 'collaboration',
-      icon: Users,
-      title: language === 'ar' ? 'فرق العمل' : 'Team Workspace',
-      description:
-        language === 'ar'
-          ? 'مساحات عمل مشتركة للفرق والمشاريع'
-          : 'Shared workspaces for teams and projects',
-      benefits: ['Collaborative', 'File sharing', 'Task management'],
-    },
-    {
-      category: 'collaboration',
-      icon: Calendar,
-      title: language === 'ar' ? 'جدولة ذكية' : 'Smart Scheduling',
-      description:
-        language === 'ar'
-          ? 'جدولة المقابلات والاجتماعات تلقائياً'
-          : 'Automatic scheduling of interviews and meetings',
-      benefits: ['Auto-scheduling', 'Calendar sync', 'Timezone support'],
-    },
-    {
-      category: 'analytics',
-      icon: BarChart,
-      title: language === 'ar' ? 'تحليل الأداء' : 'Performance Analytics',
-      description:
-        language === 'ar'
-          ? 'تحليل شامل لأدائك وتقدمك المهني'
-          : 'Comprehensive analysis of your performance and career progress',
-      benefits: ['Real-time data', 'Custom reports', 'Predictive insights'],
-    },
-    {
-      category: 'analytics',
-      icon: TrendingUp,
-      title: language === 'ar' ? 'تتبع النمو' : 'Growth Tracking',
-      description:
-        language === 'ar'
-          ? 'تتبع نموك المهني عبر الزمن'
-          : 'Track your professional growth over time',
-      benefits: ['Timeline view', 'Milestone tracking', 'Goal setting'],
-    },
-    {
-      category: 'analytics',
-      icon: Eye,
-      title: language === 'ar' ? 'رؤى السوق' : 'Market Insights',
-      description:
-        language === 'ar'
-          ? 'فهم اتجاهات السوق والفرص الناشئة'
-          : 'Understand market trends and emerging opportunities',
-      benefits: ['Market data', 'Trend analysis', 'Opportunity forecasting'],
-    },
-  ]
+  const features = {
+    0: [
+      {
+        icon: Search,
+        title: language === 'ar' ? 'بحث ذكي متقدم' : 'Advanced Smart Search',
+        desc: language === 'ar' ? 'اعثر على أفضل الفرص بسهولة' : 'Find best opportunities easily',
+      },
+      {
+        icon: Globe,
+        title: language === 'ar' ? 'بحث عالمي' : 'Global Search',
+        desc: language === 'ar' ? 'ابحث في 200+ دولة' : 'Search in 200+ countries',
+      },
+      {
+        icon: Zap,
+        title: language === 'ar' ? 'فلاتر ذكية' : 'Smart Filters',
+        desc: language === 'ar' ? 'فلترة تلقائية حسب مهاراتك' : 'Auto-filter by your skills',
+      },
+    ],
+    1: [
+      {
+        icon: Target,
+        title: language === 'ar' ? 'مطابقة دقيقة 98%' : '98% Precision Matching',
+        desc: language === 'ar' ? 'خوارزميات AI متطورة' : 'Advanced AI algorithms',
+      },
+      {
+        icon: Sparkles,
+        title: language === 'ar' ? 'توصيات ذكية' : 'Smart Suggestions',
+        desc: language === 'ar' ? 'اقتراحات مخصصة لك' : 'Personalized recommendations',
+      },
+      {
+        icon: CheckCircle,
+        title: language === 'ar' ? 'نتائج فورية' : 'Instant Results',
+        desc: language === 'ar' ? 'احصل على نتائج في ثواني' : 'Get results in seconds',
+      },
+    ],
+    2: [
+      {
+        icon: MessageCircle,
+        title: language === 'ar' ? 'رسائل فورية آمنة' : 'Secure Instant Messaging',
+        desc: language === 'ar' ? 'تواصل مباشر مع الشركات' : 'Direct communication',
+      },
+      {
+        icon: Clock,
+        title: language === 'ar' ? 'جدولة ذكية' : 'Smart Scheduling',
+        desc: language === 'ar' ? 'احجز المقابلات تلقائياً' : 'Auto-book interviews',
+      },
+      {
+        icon: Users,
+        title: language === 'ar' ? 'مساحات عمل مشتركة' : 'Team Workspace',
+        desc: language === 'ar' ? 'تعاون سلس مع فريقك' : 'Seamless team collaboration',
+      },
+    ],
+    3: [
+      {
+        icon: BarChart,
+        title: language === 'ar' ? 'تحليل الأداء' : 'Performance Analytics',
+        desc: language === 'ar' ? 'تتبع تقدمك المهني' : 'Track your progress',
+      },
+      {
+        icon: Zap,
+        title: language === 'ar' ? 'رؤى السوق' : 'Market Insights',
+        desc: language === 'ar' ? 'فهم اتجاهات الوظائف' : 'Understand job trends',
+      },
+      {
+        icon: Sparkles,
+        title: language === 'ar' ? 'تقارير مخصصة' : 'Custom Reports',
+        desc: language === 'ar' ? 'تقارير مفصلة لتقدمك' : 'Detailed progress reports',
+      },
+    ],
+  }
 
-  const technicalSpecs = [
-    {
-      icon: Cloud,
-      title: language === 'ar' ? 'البنية السحابية' : 'Cloud Infrastructure',
-      description:
-        language === 'ar'
-          ? 'استضافة سحابية موثوقة مع ضمان تشغيل 99.9%'
-          : 'Reliable cloud hosting with 99.9% uptime guarantee',
-      stats: '99.9% uptime',
-    },
+  const technicalFeatures = [
     {
       icon: Shield,
-      title: language === 'ar' ? 'الأمان المتقدم' : 'Advanced Security',
-      description:
-        language === 'ar'
-          ? 'تشفير من الدرجة العسكرية وحماية متعددة الطبقات'
-          : 'Military-grade encryption and multi-layer protection',
-      stats: 'Bank-level security',
+      title: language === 'ar' ? 'أمان عسكري' : 'Military-Grade Security',
+      desc: language === 'ar' ? 'تشفير من أعلى المستويات' : 'Top-level encryption',
+    },
+    {
+      icon: Clock,
+      title: '99.9% Uptime',
+      desc: language === 'ar' ? 'استخدم المنصة دائماً' : 'Platform always available',
     },
     {
       icon: Smartphone,
-      title: language === 'ar' ? 'تطبيق الجوال' : 'Mobile App',
-      description:
-        language === 'ar'
-          ? 'تطبيق أصلي لنظامي iOS و Android'
-          : 'Native apps for iOS and Android platforms',
-      stats: '4.8★ rating',
+      title: language === 'ar' ? 'تطبيقات أصلية' : 'Native Apps',
+      desc: language === 'ar' ? 'iOS و Android' : 'iOS & Android',
     },
     {
       icon: Wifi,
-      title: language === 'ar' ? 'العمل بلا انترنت' : 'Offline Support',
-      description:
-        language === 'ar'
-          ? 'استمر في العمل حتى بدون اتصال بالإنترنت'
-          : 'Continue working even without internet connection',
-      stats: 'Offline sync',
+      title: language === 'ar' ? 'عمل بلا إنترنت' : 'Offline Mode',
+      desc: language === 'ar' ? 'استمر بدون اتصال' : 'Work without internet',
     },
   ]
-
-  const collaborationCards = [
-    {
-      icon: Calendar,
-      title: language === 'ar' ? 'حدولة ذكية' : 'Smart Scheduling',
-      description: language === 'ar' 
-        ? 'جدولة المقابلات والتدريبات تلقائياً مع تزامن التقاويم'
-        : 'Automatic interview & training scheduling with calendar sync',
-      features: [
-        language === 'ar' ? 'مزامنة التقويم' : 'Calendar sync',
-        language === 'ar' ? 'جدولة تلقائية' : 'Auto-scheduling',
-        language === 'ar' ? 'دعم المناطق الزمنية' : 'Timezone support'
-      ],
-      gradient: 'from-blue-500 to-blue-600'
-    },
-    {
-      icon: Users,
-      title: language === 'ar' ? 'فريق العمل' : 'Team Workspace',
-      description: language === 'ar'
-        ? 'مساحات عمل مشتركة للأكاديميات والمراكز الرياضية'
-        : 'Shared workspaces for academies and sports centers',
-      features: [
-        language === 'ar' ? 'إدارة المشاريع' : 'Task management',
-        language === 'ar' ? 'مشاركة الملفات' : 'File sharing',
-        language === 'ar' ? 'تعاون فوري' : 'Collaborative'
-      ],
-      gradient: 'from-purple-500 to-purple-600'
-    },
-    {
-      icon: MessageCircle,
-      title: language === 'ar' ? 'رسائل فورية' : 'Instant Messaging',
-      description: language === 'ar'
-        ? 'تواصل مباشر وآمن مع أصحاب العمل والزملاء'
-        : 'Direct & secure communication with employers and colleagues',
-      features: [
-        language === 'ar' ? 'تواصل فوري' : 'Real-time messaging',
-        language === 'ar' ? 'آمن وموثوق' : 'Secure',
-        language === 'ar' ? 'ملفات متعددة الوسائط' : 'Multi-media'
-      ],
-      gradient: 'from-green-500 to-green-600'
-    }
-  ]
-
-  const pricingPlans = [
-    {
-      name: language === 'ar' ? 'مجاني' : 'Free',
-      price: language === 'ar' ? 'مجاناً' : 'Free',
-      description: language === 'ar' ? 'للمبتدئين' : 'For starters',
-      features: [
-        language === 'ar' ? 'بحث محدود' : 'Limited search',
-        language === 'ar' ? 'ملف شخصي أساسي' : 'Basic profile',
-        language === 'ar' ? 'دعم إيميل' : 'Email support',
-      ],
-      gradient: 'from-gray-400 to-gray-600',
-      popular: false,
-    },
-    {
-      name: language === 'ar' ? 'احترافي' : 'Professional',
-      price: language === 'ar' ? '$29/شهر' : '$29/mo',
-      description: language === 'ar' ? 'للمحترفين' : 'For professionals',
-      features: [
-        language === 'ar' ? 'بحث غير محدود' : 'Unlimited search',
-        language === 'ar' ? 'تحليلات متقدمة' : 'Advanced analytics',
-        language === 'ar' ? 'دعم فوري' : 'Priority support',
-      ],
-      gradient: 'from-blue-500 to-purple-600',
-      popular: true,
-    },
-    {
-      name: language === 'ar' ? 'المؤسسات' : 'Enterprise',
-      price: language === 'ar' ? 'مخصص' : 'Custom',
-      description: language === 'ar' ? 'للشركات' : 'For companies',
-      features: [
-        language === 'ar' ? 'جميع المميزات' : 'All features',
-        language === 'ar' ? 'دعم مخصص' : 'Custom support',
-        language === 'ar' ? 'تكامل API' : 'API integration',
-      ],
-      gradient: 'from-green-500 to-teal-600',
-      popular: false,
-    },
-  ]
-
-  const filteredFeatures = allFeatures.filter(
-    (feature) => feature.category === categories[activeCategory].id
-  )
 
   return (
     <div
-      className={`min-h-screen bg-white relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+      className={`min-h-screen bg-white ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <Navbar activeMode="application" activePage="features" />
 
-      {/* Hero Section with Interactive Feature Showcase */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
+      {/* Hero Section */}
+      <section className="py-20 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
+        <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-center mb-16"
+            transition={{ duration: 0.8 }}
+            className="text-center"
           >
-            <span className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold mb-6">
-              <Sparkles className="w-4 h-4 mr-2" />
-              {language === 'ar' ? 'مميزات استثنائية' : 'Exceptional Features'}
+            <span className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-blue-400/30">
+              <Sparkles className="w-4 h-4" />
+              {language === 'ar' ? 'مميزات عالمية' : 'World-Class Features'}
             </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar' ? 'تقنيات متطورة لمستقبل الرياضة' : 'Advanced Technology for Sports Future'}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                {language === 'ar' ? 'منصة احترافية متطورة' : 'Professional Advanced Platform'}
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-white mb-12 max-w-4xl mx-auto leading-relaxed mt-10">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto font-semibold mb-4">
               {language === 'ar'
-                ? 'اكتشف مجموعة شاملة من الأدوات والتقنيات المتطورة التي تجعل TF1 المنصة الأولى عالمياً للتوظيف الرياضي'
-                : "Discover a comprehensive suite of advanced tools and technologies that make TF1 the world's #1 sports recruitment platform"}
+                ? 'أدوات قوية وذكية تجعل التوظيف الرياضي أسهل وأسرع'
+                : 'Powerful & intelligent tools making sports recruitment easier and faster'}
             </p>
           </motion.div>
-
-          {/* Interactive Feature Showcase */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Feature Display */}
-            <motion.div
-              key={activeFeature}
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-700"
-            >
-              <div
-                className={`w-16 h-16 bg-gradient-to-r ${featuresShowcase[activeFeature].gradient} rounded-2xl flex items-center justify-center mb-6`}
-              >
-                {(() => {
-                  const IconComponent = featuresShowcase[activeFeature].icon
-                  return <IconComponent className="w-8 h-8 text-white" />
-                })()}
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                {featuresShowcase[activeFeature].title}
-              </h3>
-
-              <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                {featuresShowcase[activeFeature].description}
-              </p>
-
-              <div className="space-y-3">
-                {featuresShowcase[activeFeature].features.map(
-                  (feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-400" />
-                      <span className="text-gray-200">{feature}</span>
-                    </div>
-                  )
-                )}
-              </div>
-            </motion.div>
-
-
-            {/* Right - Controls */}
-            <div className="space-y-6">
-              {/* Carousel Controls */}
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                  {language === 'ar' ? 'استكشف المميزات' : 'Explore Features'}
-                </h3>
-
-                <div className="flex items-center gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() =>
-                      setActiveFeature(
-                        (prev) =>
-                          (prev - 1 + featuresShowcase.length) %
-                          featuresShowcase.length
-                      )
-                    }
-                    className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 hover:border-blue-500 transition-colors duration-200"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-white" />
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 hover:border-blue-500 transition-colors duration-200"
-                  >
-                    {isPlaying ? (
-                      <Pause className="w-4 h-4 text-white" />
-                    ) : (
-                      <PlayCircle className="w-4 h-4 text-white" />
-                    )}
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() =>
-                      setActiveFeature(
-                        (prev) => (prev + 1) % featuresShowcase.length
-                      )
-                    }
-                    className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 hover:border-blue-500 transition-colors duration-200"
-                  >
-                    <ChevronRight className="w-4 h-4 text-white" />
-                  </motion.button>
-                </div>
-              </div>
-
-              {/* Feature Navigation */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {featuresShowcase.map((feature, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => setActiveFeature(index)}
-                    className={`p-4 rounded-2xl border-2 text-left transition-all duration-300 ${
-                      activeFeature === index
-                        ? 'border-blue-500 bg-gray-800 shadow-lg'
-                        : 'border-gray-700 bg-gray-800 hover:border-gray-600 hover:shadow-md'
-                    }`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                          activeFeature === index
-                            ? 'bg-gradient-to-r from-blue-500 to-green-500 text-white'
-                            : 'bg-gray-700 text-gray-300'
-                        }`}
-                      >
-                        <feature.icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-sm text-gray-200">
-                          {feature.title}
-                        </h4>
-                        <div
-                          className={`w-full bg-gray-700 rounded-full h-1 mt-2 ${
-                            activeFeature === index ? 'block' : 'hidden'
-                          }`}
-                        >
-                          <motion.div
-                            className="bg-gradient-to-r from-blue-500 to-green-500 h-1 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{
-                              width:
-                                activeFeature === index && isPlaying
-                                  ? '100%'
-                                  : '0%',
-                            }}
-                            transition={{ duration: 4 }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-             {/* Quick Action */}
-<motion.div
-  className="bg-gradient-to-r from-blue-500 to-green-600 rounded-2xl p-6 text-white"
-  whileHover={{ scale: 1.02 }}
->
-  <h4 className="text-lg font-semibold mb-2 text-center">
-    {language === 'ar' ? 'جرب الآن مجاناً' : 'Try Now for Free'}
-  </h4>
-  <p className="text-blue-100 text-sm mb-4 text-center">
-    {language === 'ar'
-      ? 'ابدأ رحلتك مع جميع هذه المميزات'
-      : 'Start your journey with all these features'}
-  </p>
-  <div className="flex justify-center">
-    <Link href="/register">
-      <Button
-        size="lg"
-        className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
-      >
-        {language === 'ar' ? 'ابدأ الآن' : 'Get Started'}
-        <ArrowRight className="w-4 h-4 ml-2" />
-      </Button>
-    </Link>
-  </div>
-</motion.div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Collaboration Section - New */}
-      <section className="py-16 sm:py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white">
+      {/* Main Features Section */}
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          {/* Header with Gradient Background */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-white text-center mb-12 sm:mb-16"
-          >
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
-              {language === 'ar' ? 'التعاون والتواصل' : 'Collaboration & Communication'}
-            </h2>
-            <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto">
-              {language === 'ar'
-                ? 'أدوات متطورة للتعاون الفوري والتواصل الآمن بين الفرق والمؤسسات'
-                : 'Advanced tools for seamless collaboration and secure communication'}
-            </p>
-          </motion.div>
-
-          {/* Collaboration Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-            {collaborationCards.map((card, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02, y: -5 }}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300"
-              >
-                {/* Icon Header */}
-                <div className={`bg-gradient-to-br ${card.gradient} rounded-xl w-14 h-14 flex items-center justify-center mb-6 shadow-md`}>
-                  <card.icon className="w-7 h-7 text-white" />
-                </div>
-
-                {/* Title & Description */}
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                  {card.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6 text-sm sm:text-base">
-                  {card.description}
-                </p>
-
-                {/* Features List */}
-                <div className="space-y-2 sm:space-y-3">
-                  {card.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                      <span className="text-sm text-gray-600">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Categories Section */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
           {/* Category Tabs */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            transition={{ duration: 0.6 }}
+            className="flex flex-wrap gap-3 justify-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-              {language === 'ar' ? 'فئات المميزات' : 'Feature Categories'}
-            </h2>
-
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {categories.map((category, index) => (
+            {categories.map((cat, idx) => {
+              const IconComponent = cat.icon
+              return (
                 <motion.button
-                  key={category.id}
-                  onClick={() => setActiveCategory(index)}
-                  className={`px-6 py-4 rounded-2xl border-2 transition-all duration-300 ${
-                    activeCategory === index
-                      ? 'border-blue-500 bg-blue-50 text-blue-600'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                  }`}
+                  key={idx}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveTab(idx)}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 border ${
+                    activeTab === idx
+                      ? 'bg-gradient-to-r from-blue-500 to-emerald-500 text-white border-transparent shadow-lg'
+                      : 'bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-300'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <category.icon className="w-5 h-5" />
-                    <span className="font-semibold">{category.name}</span>
-                  </div>
+                  <IconComponent className="w-5 h-5" />
+                  {cat.name}
                 </motion.button>
-              ))}
-            </div>
+              )
+            })}
           </motion.div>
 
-          {/* Active Category Features */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* Category Header */}
-              <div
-                className={`bg-gradient-to-r ${categories[activeCategory].color} rounded-3xl p-8 mb-12 text-white text-center`}
-              >
-                {(() => {
-                  const IconComponent = categories[activeCategory].icon
-                  return <IconComponent className="w-16 h-16 mx-auto mb-4" />
-                })()}
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4">
-                  {categories[activeCategory].name}
-                </h3>
-                <p className="text-white/90 text-lg max-w-2xl mx-auto">
-                  {categories[activeCategory].description}
-                </p>
-              </div>
+          {/* Features Grid */}
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {features[activeTab as keyof typeof features].map((feature, idx) => {
+              const IconComponent = feature.icon
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ translateY: -5 }}
+                  className="group bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-lg"
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <IconComponent className="w-7 h-7 text-white" />
+                  </div>
 
-              {/* Features Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredFeatures.map((feature, index) => (
-                  <motion.div
-                    key={feature.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 group"
-                  >
-                    <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <feature.icon className="w-6 h-6 text-gray-600" />
-                    </div>
-
-                    <h4 className="text-xl font-bold text-gray-900 mb-3">
-                      {feature.title}
-                    </h4>
-
-                    <p className="text-gray-600 mb-4 leading-relaxed">
-                      {feature.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2">
-                      {feature.benefits.map((benefit, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full"
-                        >
-                          {benefit}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </AnimatePresence>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600 font-semibold">{feature.desc}</p>
+                </motion.div>
+              )
+            })}
+          </motion.div>
         </div>
       </section>
 
-      {/* Technical Specifications */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
+      {/* Technical Specs Section */}
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-50 to-emerald-50">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar'
-                  ? 'المواصفات التقنية'
-                  : 'Technical Specifications'}
-              </span>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
+              {language === 'ar' ? 'تقنيات متطورة' : 'Advanced Technology'}
             </h2>
-            <p className="text-xl text-white max-w-3xl mx-auto">
-              {language === 'ar'
-                ? 'بنية تقنية متقدمة تضمن الأداء والموثوقية'
-                : 'Advanced technical architecture ensuring performance and reliability'}
+            <p className="text-xl text-gray-600 font-semibold max-w-2xl mx-auto">
+              {language === 'ar' ? 'بنية تحتية قوية وموثوقة' : 'Powerful & reliable infrastructure'}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {technicalSpecs.map((spec, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-gray-800 rounded-2xl p-6 text-center hover:bg-gray-700 transition-colors duration-300"
-              >
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <spec.icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">{spec.title}</h3>
-                <p className="text-gray-300 mb-4 text-sm leading-relaxed">
-                  {spec.description}
-                </p>
-                <div className="bg-gradient-to-r from-blue-500 to-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                  {spec.stats}
-                </div>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {technicalFeatures.map((tech, idx) => {
+              const IconComponent = tech.icon
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-white rounded-2xl p-8 border border-gray-200 text-center shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <IconComponent className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2">{tech.title}</h3>
+                  <p className="text-sm text-gray-600 font-semibold">{tech.desc}</p>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      
-
-      {/* Final CTA */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-green-600">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* Pricing Section */}
+      <section className="py-24 lg:py-32 px-4 sm:px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-              {language === 'ar'
-                ? 'جاهز لتجربة المستقبل؟'
-                : 'Ready to Experience the Future?'}
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
+              {language === 'ar' ? 'خطط مرنة' : 'Flexible Plans'}
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              {language === 'ar'
-                ? 'انضم إلى آلاف المحترفين الذين اختاروا TF1 لتطوير مسيرتهم المهنية'
-                : 'Join thousands of professionals who chose TF1 to advance their careers'}
+            <p className="text-xl text-gray-600 font-semibold max-w-2xl mx-auto">
+              {language === 'ar' ? 'اختر ما يناسبك' : 'Choose what suits you'}
             </p>
+          </motion.div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: language === 'ar' ? 'مجاني' : 'Free',
+                price: language === 'ar' ? 'مجاناً' : 'Free',
+                color: 'gray',
+              },
+              {
+                name: language === 'ar' ? 'احترافي' : 'Pro',
+                price: '$29',
+                color: 'blue',
+                popular: true,
+              },
+              {
+                name: language === 'ar' ? 'مؤسسات' : 'Enterprise',
+                price: language === 'ar' ? 'مخصص' : 'Custom',
+                color: 'emerald',
+              },
+            ].map((plan, idx) => (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                className={`rounded-2xl p-8 transition-all duration-300 ${
+                  plan.popular
+                    ? `bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-xl scale-105`
+                    : `bg-gray-50 border border-gray-200 text-gray-900`
+                }`}
               >
+                {plan.popular && (
+                  <div className="mb-4 inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    ⭐ {language === 'ar' ? 'الأشهر' : 'Most Popular'}
+                  </div>
+                )}
+                <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
+                <div className="text-4xl font-black mb-6">{plan.price}</div>
                 <Link href="/register">
                   <Button
-                    size="lg"
-                    className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    className={`w-full font-bold text-lg rounded-lg transition-all ${
+                      plan.popular
+                        ? 'bg-white text-blue-600 hover:bg-gray-100'
+                        : 'bg-gradient-to-r from-blue-500 to-emerald-500 text-white hover:shadow-lg'
+                    }`}
                   >
-                    <Rocket className="w-5 h-5 mr-2" />
-                    {language === 'ar' ? 'ابدأ مجاناً' : 'Start Free Trial'}
+                    {language === 'ar' ? 'اختر الخطة' : 'Choose Plan'}
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
               </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-              
-              </motion.div>
-            </div>
-          </motion.div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-br from-blue-600 to-emerald-600 text-white">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <h2 className="text-4xl sm:text-5xl font-black mb-6">
+            {language === 'ar' ? 'جاهز لتحويل مسارك المهني؟' : 'Ready to Transform Your Career?'}
+          </h2>
+          <p className="text-xl mb-10 font-semibold text-white/90">
+            {language === 'ar'
+              ? 'اكتشف آلاف الفرص الرياضية والمحترفين على منصة TF1'
+              : 'Discover thousands of sports opportunities on TF1'}
+          </p>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/register">
+              <Button className="bg-white text-blue-600 hover:bg-gray-100 px-10 py-4 text-lg font-bold rounded-lg shadow-lg">
+                {language === 'ar' ? '🚀 ابدأ الآن' : '🚀 Get Started'}
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
       </section>
 
       <Footer />
