@@ -10,6 +10,11 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Removed Office Locations Section
+- Removed "Our Global Offices" section from Contact page (user has no physical offices)
+- Removed officeLocations array data (Dubai, London, New York)
+- Contact page now focuses on digital communication channels only
+
 ### November 24, 2025 - Partners Marquee Section Added
 - Added animated partners logo carousel below banner section  
 - Smooth infinite auto-scrolling animation (30s loop, pauses on hover)

@@ -123,33 +123,6 @@ export default function ContactPage() {
     },
   ]
 
-  const officeLocations = [
-    {
-      city: language === 'ar' ? 'نيويورك' : 'New York',
-      address: '123 Sports Avenue, NY 10001',
-      timezone: 'EST',
-      hours: '9:00 AM - 6:00 PM',
-      phone: '+1 (555) 123-4567',
-      email: 'ny@TF1.com',
-    },
-    {
-      city: language === 'ar' ? 'لندن' : 'London',
-      address: '456 Athletic Street, London SW1A 1AA',
-      timezone: 'GMT',
-      hours: '9:00 AM - 5:30 PM',
-      phone: '+44 20 1234 5678',
-      email: 'london@TF1.com',
-    },
-    {
-      city: language === 'ar' ? 'دبي' : 'Dubai',
-      address: 'Sports Tower, DIFC, Dubai',
-      timezone: 'GST',
-      hours: '8:00 AM - 5:00 PM',
-      phone: '+971 4 123 4567',
-      email: 'dubai@TF1.com',
-    },
-  ]
-
   const supportCategories = [
     {
       icon: Users,
@@ -546,82 +519,6 @@ export default function ContactPage() {
                 </div>
               ))}
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Office Locations */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              {language === 'ar' ? 'مكاتبنا حول العالم' : 'Our Global Offices'}
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {language === 'ar'
-                ? 'زورنا في أي من مكاتبنا أو تواصل معنا محلياً'
-                : 'Visit us at any of our offices or contact us locally'}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {officeLocations.map((office, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300"
-              >
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <MapPin className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {office.city}
-                  </h3>
-                  <p className="text-gray-600 text-sm">{office.address}</p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {office.hours}
-                      </p>
-                      <p className="text-xs text-gray-600">{office.timezone}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-gray-400" />
-                    <span className="text-sm text-gray-700">
-                      {office.phone}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-gray-400" />
-                    <span className="text-sm text-gray-700">
-                      {office.email}
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  className="w-full mt-6 border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 transition-colors duration-200"
-                >
-                  {language === 'ar' ? 'احصل على الاتجاهات' : 'Get Directions'}
-                </Button>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
