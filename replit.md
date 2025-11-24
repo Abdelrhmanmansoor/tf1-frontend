@@ -10,6 +10,29 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Socket.io Notifications Updated ✅
+- **BREAKING CHANGE**: Socket event changed from `'job:notification'` to `'new_notification'`
+- **Updated Files:**
+  - ✅ `contexts/socket-context.tsx` - Updated to use `new_notification`
+  - ✅ `components/notifications/JobNotifications.tsx` - Support new notification structure
+  - ✅ Updated `JobNotification` interface with new fields (`notificationType`, `titleAr`, `messageAr`, `actionUrl`, `priority`)
+- **New Features:**
+  - Bilingual notification support (Arabic/English)
+  - Priority levels (normal, high, urgent)
+  - Custom action URLs for notifications
+  - Better notification filtering by type
+- **Documentation:**
+  - `FRONTEND_JOB_NOTIFICATIONS_GUIDE.md` - Complete guide for frontend team
+
+### November 24, 2025 - Environment Variables Configured ✅
+- **Environment Variable**: `NEXT_PUBLIC_API_URL` configured in Replit Secrets
+- **Files Updated:**
+  - ✅ `config/api.ts` - Uses environment variable
+  - ✅ `app/admin/page.tsx` - Uses environment variable
+  - ✅ `.env.example` - Template created
+- **Documentation:**
+  - `SETUP_GUIDE.md` - Complete setup guide with environment variable instructions
+
 ### November 24, 2025 - Admin Dashboard FIXED & Production-Ready ✅
 - **Route**: Consolidated to `/admin` (was `/dashboard/admin`)
 - **Status**: Fully functional with demo data, waiting for backend
@@ -279,6 +302,7 @@ None at this time.
 - `SETUP_GUIDE.md` - **START HERE**: Complete setup and deployment guide
 - `BACKEND_URGENT_FIX.md` - **CRITICAL**: Quick guide for backend team to enable admin dashboard
 - `ADMIN_BACKEND_COMMANDS.md` - Complete backend API implementation guide
+- `FRONTEND_JOB_NOTIFICATIONS_GUIDE.md` - **Frontend Team**: Socket.io notifications & file downloads guide
 - `BLOG_PUBLISHING_GUIDE.md` - Blog system API guide
 - `.env.example` - Environment variables template
 - `app/admin/page.tsx` - Admin dashboard frontend (primary)

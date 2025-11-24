@@ -22,14 +22,30 @@ interface TypingUser {
 
 export interface JobNotification {
   _id: string
-  type: 'application_reviewed' | 'application_rejected' | 'application_accepted' | 'new_application'
-  applicationId: string
-  jobId: string
-  jobTitle: string
-  status: 'pending' | 'read' | 'archived'
+  type: 'job_application' | 'club_accepted' | 'club_rejected'
+  notificationType: 'new_application' | 'application_submitted' | 'application_reviewed' | 'interview_scheduled' | 'job_offer_received' | 'application_accepted' | 'application_rejected'
+  applicationId?: string
+  jobId?: string
+  jobTitle?: string
+  jobTitleAr?: string
+  applicantName?: string
+  clubName?: string
+  title: string
+  titleAr?: string
   message: string
-  createdAt: string
+  messageAr?: string
+  actionUrl?: string
   userId: string
+  status?: 'new' | 'pending' | 'read' | 'archived'
+  priority?: 'normal' | 'high' | 'urgent'
+  isRead: boolean
+  createdAt: string
+  storedIn?: 'mongodb' | 'memory'
+  interviewDate?: string
+  offerDetails?: {
+    salary?: number
+    startDate?: string
+  }
 }
 
 interface SocketContextType {
@@ -179,7 +195,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const onJobNotification = useCallback(
     (callback: (notification: JobNotification) => void) => {
       if (socketRef.current) {
-        socketRef.current.on('job:notification', callback)
+        socketRef.current.on('new_notification', callback)
       }
     },
     []

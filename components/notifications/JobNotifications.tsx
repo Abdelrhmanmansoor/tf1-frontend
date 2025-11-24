@@ -20,13 +20,18 @@ export default function JobNotifications({ compact = false, userId }: JobNotific
   
   // Get socket safely
   const socketContext = useSocket()
-  const unreadCount = notifications.filter(n => n.status === 'pending').length
+  const unreadCount = notifications.filter(n => !n.isRead).length
 
   useEffect(() => {
     if (!socketContext) return
     const handleNotification = (notification: JobNotification) => {
-      if (notification.userId === userId) {
-        setNotifications(prev => [notification, ...prev])
+      // Filter only job-related notifications
+      if (notification.type === 'job_application' || 
+          notification.type === 'club_accepted' || 
+          notification.type === 'club_rejected') {
+        if (notification.userId === userId) {
+          setNotifications(prev => [notification, ...prev])
+        }
       }
     }
     socketContext.onJobNotification(handleNotification)
@@ -36,27 +41,38 @@ export default function JobNotifications({ compact = false, userId }: JobNotific
     setNotifications(prev => prev.filter(n => n._id !== notificationId))
   }, [])
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
+  const getNotificationIcon = (notificationType: string, priority?: string) => {
+    if (priority === 'urgent') {
+      return <CheckCircle className="w-5 h-5 text-green-500" />
+    }
+    
+    switch (notificationType) {
       case 'application_accepted':
         return <CheckCircle className="w-5 h-5 text-green-500" />
       case 'application_rejected':
         return <AlertCircle className="w-5 h-5 text-red-500" />
       case 'application_reviewed':
+      case 'interview_scheduled':
         return <Clock className="w-5 h-5 text-blue-500" />
+      case 'job_offer_received':
+        return <CheckCircle className="w-5 h-5 text-green-500" />
       default:
         return <Bell className="w-5 h-5 text-blue-500" />
     }
   }
 
-  const getNotificationTitle = (type: string) => {
-    const titles = {
-      application_reviewed: language === 'ar' ? 'تم مراجعة طلبك' : 'Your application was reviewed',
-      application_rejected: language === 'ar' ? 'تم رفض طلبك' : 'Your application was rejected',
-      application_accepted: language === 'ar' ? 'تم قبول طلبك' : 'Your application was accepted',
-      new_application: language === 'ar' ? 'تطبيق جديد' : 'New application',
+  const getNotificationTitle = (notification: JobNotification) => {
+    if (language === 'ar' && notification.titleAr) {
+      return notification.titleAr
     }
-    return titles[type as keyof typeof titles] || type
+    return notification.title
+  }
+
+  const getNotificationMessage = (notification: JobNotification) => {
+    if (language === 'ar' && notification.messageAr) {
+      return notification.messageAr
+    }
+    return notification.message
   }
 
   if (compact) {
@@ -96,19 +112,19 @@ export default function JobNotifications({ compact = false, userId }: JobNotific
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       className={`p-4 hover:bg-gray-50 transition-colors ${
-                        notification.status === 'pending' ? 'bg-blue-50/50' : ''
+                        !notification.isRead ? 'bg-blue-50/50' : ''
                       }`}
                     >
                       <div className="flex gap-3">
                         <div className="flex-shrink-0 mt-1">
-                          {getNotificationIcon(notification.type)}
+                          {getNotificationIcon(notification.notificationType, notification.priority)}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-gray-900 text-sm">
-                            {getNotificationTitle(notification.type)}
+                            {getNotificationTitle(notification)}
                           </p>
                           <p className="text-xs text-gray-600 mt-1">
-                            {notification.jobTitle}
+                            {getNotificationMessage(notification)}
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
                             {new Date(notification.createdAt).toLocaleDateString()}
@@ -163,29 +179,39 @@ export default function JobNotifications({ compact = false, userId }: JobNotific
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               className={`p-4 rounded-lg border transition-all ${
-                notification.status === 'pending'
+                !notification.isRead
                   ? 'bg-blue-50 border-blue-200'
                   : 'bg-gray-50 border-gray-200'
               }`}
             >
               <div className="flex gap-3">
                 <div className="flex-shrink-0 mt-1">
-                  {getNotificationIcon(notification.type)}
+                  {getNotificationIcon(notification.notificationType, notification.priority)}
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900 text-sm">
-                    {getNotificationTitle(notification.type)}
+                    {getNotificationTitle(notification)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    {notification.jobTitle}
-                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{getNotificationMessage(notification)}</p>
+                  {notification.jobTitle && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      {language === 'ar' && notification.jobTitleAr ? notification.jobTitleAr : notification.jobTitle}
+                    </p>
+                  )}
                   <div className="flex gap-2 mt-3">
-                    <Link href={`/dashboard/player/opportunities/${notification.jobId}`}>
-                      <button className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
-                        {language === 'ar' ? 'عرض' : 'View'}
-                      </button>
-                    </Link>
+                    {notification.actionUrl ? (
+                      <Link href={notification.actionUrl}>
+                        <button className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
+                          {language === 'ar' ? 'عرض' : 'View'}
+                        </button>
+                      </Link>
+                    ) : notification.jobId ? (
+                      <Link href={`/dashboard/player/opportunities/${notification.jobId}`}>
+                        <button className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
+                          {language === 'ar' ? 'عرض' : 'View'}
+                        </button>
+                      </Link>
+                    ) : null}
                     <button
                       onClick={() => handleDismiss(notification._id)}
                       className="text-xs px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
