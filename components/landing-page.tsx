@@ -27,6 +27,7 @@ import { ArabicSwitcher } from './arabic-switcher'
 import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
 import { TopRatedPlayers } from './rating/TopRatedPlayers'
+import { PartnersMarquee } from './partners-marquee'
 import { useLanguage } from '@/contexts/language-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -678,6 +679,9 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Partners Marquee Section */}
+      <PartnersMarquee />
 
       {/* Categories Section - Clean & Modern Design */}
       <section className="py-16 sm:py-24 bg-white overflow-hidden">

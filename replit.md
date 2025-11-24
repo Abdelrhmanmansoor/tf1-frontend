@@ -10,6 +10,14 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 24, 2025 - Partners Marquee Section Added
+- Added animated partners logo carousel below banner section
+- Smooth infinite auto-scrolling animation (pauses on hover)
+- 13 partner logos: sports clubs (Hilal, Nassr, Ahli, Shabab, etc.) and Fitness Time
+- Logos displayed in grayscale, colored on hover for professional look
+- Section title: "شركاؤنا المحتملون" / "Our Potential Partners"
+- All logos uniformly sized (120x120px) with consistent spacing
+
 ### November 24, 2025 - Snapchat Logo Fixed
 - Fixed incorrect Snapchat icon in footer - now shows correct ghost icon
 - Applied across all pages automatically via unified Footer component
