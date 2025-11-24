@@ -20,22 +20,22 @@ export default function FAQPage() {
         {
           question:
             language === 'ar'
-              ? 'ما هو TF1 وكيف يعمل؟'
-              : 'What is TF1 and how does it work?',
+              ? 'ما هي منصة TF1 للتوظيف الرياضي؟'
+              : 'What is TF1 Sports Employment Platform?',
           answer:
             language === 'ar'
-              ? 'TF1 هي منصة رائدة عالمياً تربط المواهب الرياضية مع الفرص الوظيفية في مجال الرياضة. نحن نوفر أدوات بحث متقدمة، مطابقة ذكية مدعومة بالذكاء الاصطناعي، ونربط بين اللاعبين والمدربين والأندية والمتخصصين في جميع أنحاء العالم.'
-              : 'TF1 is a leading global platform that connects sports talents with career opportunities in the sports industry. We provide advanced search tools, AI-powered smart matching, and connect players, coaches, clubs, and specialists worldwide.',
+              ? 'TF1 هي المنصة الرقمية الرائدة في المملكة العربية السعودية لتوظيف المواهب الرياضية. نربط بين لاعبي كرة القدم والرياضيين والمدربين والمتخصصين مع الأكاديميات الرياضية والمراكز التدريبية الموثوقة في السوق السعودي. نحن نوفر منصة آمنة وموثوقة لتطوير المسارات الوظيفية الرياضية.'
+              : 'TF1 is the leading digital platform in Saudi Arabia for sports talent recruitment and employment. We connect football players, athletes, coaches, and specialists with trusted sports academies and training centers in the Saudi market. We provide a secure and reliable platform for developing sports career paths.',
         },
         {
           question:
             language === 'ar'
-              ? 'هل المنصة مجانية؟'
-              : 'Is the platform free to use?',
+              ? 'هل المنصة مناسبة للسوق السعودي؟'
+              : 'Is the platform suitable for the Saudi market?',
           answer:
             language === 'ar'
-              ? 'نعم، نقدم خطة مجانية تتيح لك الوصول إلى الميزات الأساسية. كما نوفر خطط مدفوعة للمحترفين والشركات التي توفر ميزات متقدمة مثل التحليلات الشاملة، الأولوية في البحث، والدعم المخصص.'
-              : 'Yes, we offer a free plan that gives you access to basic features. We also provide paid plans for professionals and businesses that include advanced features like comprehensive analytics, priority search, and dedicated support.',
+              ? 'نعم، منصتنا مصممة خصيصاً للسوق السعودي. نركز على الأكاديميات الرياضية والمراكز التدريبية المحلية الموثوقة. كل الشركات على المنصة متحققة ومعتمدة، ونلتزم بأعلى معايير الأمان والخصوصية وفقاً للأنظمة السعودية.'
+              : 'Yes, our platform is specifically designed for the Saudi market. We focus on trusted local sports academies and training centers. All organizations on the platform are verified and approved, and we comply with the highest security and privacy standards in accordance with Saudi regulations.',
         },
         {
           question:
@@ -44,8 +44,8 @@ export default function FAQPage() {
               : 'How do I get started?',
           answer:
             language === 'ar'
-              ? 'ببساطة اضغط على "إنشاء حساب" واختر نوع حسابك (لاعب، مدرب، نادي، أو متخصص). املأ ملفك الشخصي بمعلوماتك ومهاراتك وخبراتك، وستكون جاهزاً للبدء في البحث عن الفرص أو نشر الوظائف!'
-              : 'Simply click "Create Account" and choose your account type (player, coach, club, or specialist). Fill out your profile with your information, skills, and experience, and you\'ll be ready to start searching for opportunities or posting jobs!',
+              ? 'ببساطة انقر على "إنشاء حساب" واختر نوع ملفك الشخصي (لاعب، مدرب، أكاديمية، أو متخصص). أكمل ملفك الشخصي بمعلوماتك الأساسية والمهارات والخبرات. بعدها ستتمكن من البحث عن فرص عمل أو نشر وظائف جديدة.'
+              : 'Simply click "Create Account" and select your profile type (player, coach, academy, or specialist). Complete your profile with your basic information, skills, and experience. Then you\'ll be able to search for job opportunities or post new positions.',
         },
       ],
     },
@@ -55,102 +55,102 @@ export default function FAQPage() {
         {
           question:
             language === 'ar'
-              ? 'كيف يمكنني تحديث ملفي الشخصي؟'
-              : 'How can I update my profile?',
+              ? 'كيف يمكنني إنشاء ملفي الشخصي كلاعب؟'
+              : 'How can I create my player profile?',
           answer:
             language === 'ar'
-              ? 'انتقل إلى لوحة التحكم الخاصة بك، اضغط على "الإعدادات" ثم "الملف الشخصي". يمكنك تحديث معلوماتك الشخصية، المهارات، الخبرات، الصور، ومقاطع الفيديو في أي وقت.'
-              : 'Go to your dashboard, click on "Settings" then "Profile". You can update your personal information, skills, experience, photos, and videos at any time.',
+              ? 'انتقل إلى صفحة "إنشاء حساب"، اختر "لاعب"، ثم أكمل الخطوات التالية: أضف صورتك الشخصية، أضف بيانات أساسية (الاسم، العمر، المدينة)، أضف تاريخك الرياضي والمؤهلات. يمكنك تحديث ملفك في أي وقت من لوحة التحكم.'
+              : 'Go to "Create Account", select "Player", then complete these steps: Add your profile photo, add basic information (name, age, city), add your sports history and qualifications. You can update your profile anytime from your dashboard.',
         },
         {
           question:
             language === 'ar'
-              ? 'كيف أستعيد كلمة المرور الخاصة بي؟'
-              : 'How do I recover my password?',
+              ? 'كيف أحافظ على أمان حسابي؟'
+              : 'How do I keep my account secure?',
           answer:
             language === 'ar'
-              ? 'في صفحة تسجيل الدخول، اضغط على "نسيت كلمة المرور". أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور. تأكد من التحقق من مجلد البريد العشوائي إذا لم تجد الرسالة.'
-              : 'On the login page, click "Forgot Password". Enter your email and we\'ll send you a password reset link. Make sure to check your spam folder if you don\'t see the email.',
+              ? 'استخدم كلمة مرور قوية تحتوي على أحرف وأرقام ورموز. فعّل المصادقة الثنائية من الإعدادات. لا تشارك كلمة المرور مع أحد. إذا كنت تشك في نشاط مريب، غيّر كلمة المرور فوراً وتواصل معنا.'
+              : 'Use a strong password with letters, numbers, and symbols. Enable two-factor authentication from settings. Never share your password. If you suspect suspicious activity, change your password immediately and contact us.',
         },
         {
           question:
             language === 'ar'
-              ? 'هل يمكنني حذف حسابي؟'
-              : 'Can I delete my account?',
+              ? 'هل يمكنني تحويل نوع حسابي من لاعب إلى أكاديمية؟'
+              : 'Can I change my account type?',
           answer:
             language === 'ar'
-              ? 'نعم، يمكنك حذف حسابك في أي وقت من خلال الانتقال إلى الإعدادات > الأمان > حذف الحساب. يرجى ملاحظة أن هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع بياناتك بشكل دائم.'
-              : 'Yes, you can delete your account at any time by going to Settings > Security > Delete Account. Please note that this action is irreversible and all your data will be permanently deleted.',
-        },
-      ],
-    },
-    {
-      title: language === 'ar' ? 'البحث والتوظيف' : 'Search & Hiring',
-      faqs: [
-        {
-          question:
-            language === 'ar'
-              ? 'كيف أبحث عن وظائف؟'
-              : 'How do I search for jobs?',
-          answer:
-            language === 'ar'
-              ? 'استخدم شريط البحث في الصفحة الرئيسية أو صفحة الوظائف. يمكنك البحث بالكلمات المفتاحية، الموقع، نوع الرياضة، مستوى الخبرة، والراتب. نظامنا المدعوم بالذكاء الاصطناعي سيقترح أيضاً وظائف مناسبة لك بناءً على ملفك الشخصي.'
-              : 'Use the search bar on the homepage or jobs page. You can search by keywords, location, sport type, experience level, and salary. Our AI-powered system will also suggest suitable jobs for you based on your profile.',
-        },
-        {
-          question:
-            language === 'ar'
-              ? 'كيف يمكنني نشر وظيفة؟'
-              : 'How can I post a job?',
-          answer:
-            language === 'ar'
-              ? 'للأندية والمؤسسات: انتقل إلى لوحة التحكم واضغط على "نشر وظيفة جديدة". املأ تفاصيل الوظيفة بما في ذلك المسمى الوظيفي، الوصف، المتطلبات، الراتب، والموقع. يمكنك أيضاً تحديد المهارات المطلوبة لمساعدة نظامنا في المطابقة.'
-              : 'For clubs and organizations: Go to your dashboard and click "Post New Job". Fill in the job details including title, description, requirements, salary, and location. You can also specify required skills to help our matching system.',
-        },
-        {
-          question:
-            language === 'ar'
-              ? 'كم من الوقت يستغرق العثور على وظيفة؟'
-              : 'How long does it take to find a job?',
-          answer:
-            language === 'ar'
-              ? 'يختلف الوقت حسب التخصص ومستوى الخبرة، لكن معظم مستخدمينا يجدون فرصاً مناسبة خلال 2-4 أسابيع. نوصي بتحديث ملفك الشخصي بانتظام، التقديم على وظائف متعددة، وتفعيل الإشعارات للفرص الجديدة.'
-              : 'The time varies by specialization and experience level, but most of our users find suitable opportunities within 2-4 weeks. We recommend regularly updating your profile, applying to multiple jobs, and enabling notifications for new opportunities.',
+              ? 'لا يمكن تحويل نوع الحساب مباشرة. إذا كنت تريد تبديل نوع حسابك، يمكنك إنشاء حساب جديد بالنوع المطلوب. تواصل مع فريق الدعم إذا كنت بحاجة إلى مساعدة في نقل بياناتك.'
+              : 'Account types cannot be directly converted. If you want to switch account types, you can create a new account with the desired type. Contact our support team if you need help transferring your data.',
         },
       ],
     },
     {
-      title: language === 'ar' ? 'الدفع والاشتراكات' : 'Payment & Subscriptions',
+      title: language === 'ar' ? 'البحث والفرص الوظيفية' : 'Search & Job Opportunities',
       faqs: [
         {
           question:
             language === 'ar'
-              ? 'ما هي خيارات الدفع المتاحة؟'
-              : 'What payment options are available?',
+              ? 'كيف أبحث عن فرص وظيفية في المملكة؟'
+              : 'How do I search for job opportunities in Saudi Arabia?',
           answer:
             language === 'ar'
-              ? 'نقبل جميع بطاقات الائتمان والخصم الرئيسية (Visa, MasterCard, American Express)، PayPal، والتحويلات البنكية للحسابات المؤسسية. جميع المعاملات آمنة ومشفرة.'
-              : 'We accept all major credit and debit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise accounts. All transactions are secure and encrypted.',
+              ? 'استخدم شريط البحث الرئيسي وحدد المدينة (الرياض، جدة، الدمام، إلخ)، نوع الرياضة، والمسمى الوظيفي. يمكنك تصفية النتائج حسب المؤهلات المطلوبة والراتب. فعّل الإشعارات لتتلقى تنبيهات عند ظهور فرص جديدة مناسبة لك.'
+              : 'Use the main search bar and select a city (Riyadh, Jeddah, Dammam, etc.), sport type, and job title. You can filter results by required qualifications and salary. Enable notifications to receive alerts when new suitable opportunities appear.',
         },
         {
           question:
             language === 'ar'
-              ? 'هل يمكنني إلغاء اشتراكي؟'
-              : 'Can I cancel my subscription?',
+              ? 'كيف تنشر أكاديمية رياضية فرصة وظيفية؟'
+              : 'How does a sports academy post a job opportunity?',
           answer:
             language === 'ar'
-              ? 'نعم، يمكنك إلغاء اشتراكك في أي وقت. انتقل إلى الإعدادات > الاشتراك > إلغاء الاشتراك. سيظل لديك وصول إلى الميزات المدفوعة حتى نهاية فترة الفوترة الحالية.'
-              : 'Yes, you can cancel your subscription at any time. Go to Settings > Subscription > Cancel Subscription. You\'ll retain access to premium features until the end of your current billing period.',
+              ? 'انتقل إلى لوحة تحكم الأكاديمية، اختر "نشر فرصة جديدة"، أضف تفاصيل الفرصة (المسمى، الوصف، المتطلبات، الراتب، المدينة). تأكد من وصف احتياجاتك بوضوح لجذب أفضل المرشحين. يمكنك تعديل أو حذف الفرصة في أي وقت.'
+              : 'Go to your academy dashboard, select "Post New Opportunity", add opportunity details (title, description, requirements, salary, city). Make sure to clearly describe your needs to attract the best candidates. You can edit or remove the opportunity anytime.',
         },
         {
           question:
             language === 'ar'
-              ? 'هل هناك سياسة استرداد؟'
-              : 'Is there a refund policy?',
+              ? 'ما هي أفضل طريقة للتقديم على فرصة؟'
+              : 'What is the best way to apply for an opportunity?',
           answer:
             language === 'ar'
-              ? 'نقدم ضمان استرداد الأموال لمدة 14 يوماً للاشتراكات الجديدة. إذا لم تكن راضياً عن الخدمة خلال أول 14 يوماً، اتصل بفريق الدعم للحصول على استرداد كامل.'
-              : 'We offer a 14-day money-back guarantee for new subscriptions. If you\'re not satisfied with the service within the first 14 days, contact our support team for a full refund.',
+              ? 'تأكد أن ملفك الشخصي مكتمل ومحدّث قبل التقديم. اقرأ متطلبات الفرصة بعناية وتأكد من أنك تستوفيها. اكتب رسالة تقديم شخصية توضح لماذا أنت الخيار الأفضل. استجب بسرعة إذا تم الاتصال بك من قبل الأكاديمية.'
+              : 'Ensure your profile is complete and up-to-date before applying. Read the opportunity requirements carefully and confirm you meet them. Write a personal cover letter explaining why you\'re the best choice. Respond promptly if the academy contacts you.',
+        },
+      ],
+    },
+    {
+      title: language === 'ar' ? 'الدفع والتسعير' : 'Payment & Pricing',
+      faqs: [
+        {
+          question:
+            language === 'ar'
+              ? 'هل الخطة الأساسية مجانية تماماً؟'
+              : 'Is the basic plan completely free?',
+          answer:
+            language === 'ar'
+              ? 'نعم! الخطة الأساسية مجانية تماماً. تشمل الخطة المجانية البحث عن الفرص الوظيفية، إنشاء ملف شخصي، والتقديم على الفرص. إذا كنت بحاجة لميزات متقدمة مثل الإحصائيات المفصلة والدعم المتخصص، يمكنك الترقية لخطة مدفوعة.'
+              : 'Yes! The basic plan is completely free. The free plan includes job search, profile creation, and applying for opportunities. If you need advanced features like detailed analytics and specialized support, you can upgrade to a paid plan.',
+        },
+        {
+          question:
+            language === 'ar'
+              ? 'ما هي طرق الدفع المقبولة؟'
+              : 'What payment methods are accepted?',
+          answer:
+            language === 'ar'
+              ? 'نقبل بطاقات الائتمان والخصم (Visa, MasterCard)، محافظ رقمية سعودية، والتحويل البنكي. جميع المعاملات محمية بتشفير عالي ومعايير أمان دولية. يمكنك إدارة طرق الدفع من إعداداتك.'
+              : 'We accept credit and debit cards (Visa, MasterCard), Saudi digital wallets, and bank transfers. All transactions are protected with high-level encryption and international security standards. You can manage payment methods from your settings.',
+        },
+        {
+          question:
+            language === 'ar'
+              ? 'هل يمكن استرجاع الأموال في حالة عدم الرضا؟'
+              : 'Is there a money-back guarantee?',
+          answer:
+            language === 'ar'
+              ? 'نعم، نقدم ضمان استرجاع الأموال لمدة 7 أيام من تاريخ الشراء دون شروط. إذا لم تكن راضياً عن الخدمة، تواصل معنا وسنرجع أموالك بالكامل فوراً.'
+              : 'Yes, we offer a 7-day money-back guarantee from the date of purchase with no questions asked. If you\'re not satisfied with the service, contact us and we\'ll refund your money immediately.',
         },
       ],
     },
@@ -160,32 +160,32 @@ export default function FAQPage() {
         {
           question:
             language === 'ar'
-              ? 'هل بياناتي آمنة؟'
-              : 'Is my data secure?',
+              ? 'هل بياناتي الشخصية محمية؟'
+              : 'Is my personal data protected?',
           answer:
             language === 'ar'
-              ? 'نعم، أمان بياناتك هو أولويتنا القصوى. نستخدم تشفير من الدرجة العسكرية (AES-256)، بروتوكولات HTTPS آمنة، ونخزن البيانات في خوادم سحابية معتمدة بمعايير ISO. لا نشارك بياناتك الشخصية مع أطراف ثالثة بدون موافقتك.'
-              : 'Yes, your data security is our top priority. We use military-grade encryption (AES-256), secure HTTPS protocols, and store data in ISO-certified cloud servers. We never share your personal data with third parties without your consent.',
+              ? 'نعم تماماً! نحن نلتزم بأعلى معايير حماية البيانات. نستخدم تشفير عسكري (AES-256)، وبروتوكولات HTTPS آمنة، وتخزين آمن في خوادم موثوقة. لا نبيع بياناتك لأي جهة خارجية. بياناتك ملكك وحدك.'
+              : 'Absolutely yes! We comply with the highest data protection standards. We use military-grade encryption (AES-256), secure HTTPS protocols, and safe storage in trusted servers. We never sell your data to third parties. Your data is yours alone.',
         },
         {
           question:
             language === 'ar'
-              ? 'من يمكنه رؤية ملفي الشخصي؟'
-              : 'Who can see my profile?',
+              ? 'كيف يمكن للأكاديميات التحقق من المتقدمين؟'
+              : 'How can academies verify applicants?',
           answer:
             language === 'ar'
-              ? 'يمكنك التحكم في خصوصية ملفك الشخصي من الإعدادات. يمكنك اختيار جعل ملفك عاماً (مرئياً للجميع)، خاصاً (مرئياً فقط للأندية المعتمدة)، أو مخفياً (غير قابل للبحث). يمكنك أيضاً إخفاء معلومات محددة.'
-              : 'You can control your profile privacy from settings. You can choose to make your profile public (visible to everyone), private (visible only to verified clubs), or hidden (not searchable). You can also hide specific information.',
+              ? 'كل ملف شخصي يحتوي على معلومات يمكن التحقق منها (الصور، الشهادات، الخبرة). الأكاديميات المعتمدة يمكنها التواصل مباشرة مع المتقدمين والتحقق من بيانات الاتصال. نحن نوفر أدوات للتحقق الأمني من جميع الأطراف.'
+              : 'Every profile contains verifiable information (photos, certificates, experience). Approved academies can contact applicants directly and verify contact information. We provide security verification tools for all parties.',
         },
         {
           question:
             language === 'ar'
-              ? 'كيف تحمون من الاحتيال؟'
-              : 'How do you protect against fraud?',
+              ? 'كيف تحمي المنصة من عمليات الاحتيال؟'
+              : 'How does the platform protect against fraud?',
           answer:
             language === 'ar'
-              ? 'نتحقق من جميع الأندية والمؤسسات قبل السماح لهم بنشر الوظائف. نستخدم أنظمة كشف الاحتيال المتقدمة، ونراقب النشاط المشبوه، ونوفر أدوات للإبلاغ عن أي سلوك مشبوه. فريقنا متاح دائماً للتحقيق في أي مخاوف.'
-              : 'We verify all clubs and organizations before allowing them to post jobs. We use advanced fraud detection systems, monitor suspicious activity, and provide tools to report any suspicious behavior. Our team is always available to investigate concerns.',
+              ? 'نتحقق من جميع الأكاديميات قبل الموافقة عليها. نراقب العمليات بشكل مستمر، ونكتشف الأنشطة المريبة تلقائياً. يمكنك الإبلاغ عن أي مشكلة فوراً وفريقنا يتحقق منها خلال 24 ساعة. أمانك والتزامك القانوني أولويتنا.'
+              : 'We verify all academies before approval. We monitor transactions continuously and automatically detect suspicious activity. You can report any issues immediately and our team investigates within 24 hours. Your security and legal protection are our priority.',
         },
       ],
     },
@@ -195,32 +195,32 @@ export default function FAQPage() {
         {
           question:
             language === 'ar'
-              ? 'المنصة لا تعمل بشكل صحيح، ماذا أفعل؟'
-              : 'The platform is not working properly, what should I do?',
+              ? 'المنصة تعمل ببطء أو لا تحمل، ماذا أفعل؟'
+              : 'The platform is slow or not loading, what should I do?',
           answer:
             language === 'ar'
-              ? 'أولاً، جرب تحديث الصفحة أو مسح ذاكرة التخزين المؤقت للمتصفح. إذا استمرت المشكلة، تحقق من اتصالك بالإنترنت وتأكد من استخدام متصفح محدث. إذا لم تحل المشكلة، اتصل بفريق الدعم الفني مع وصف تفصيلي للمشكلة.'
-              : 'First, try refreshing the page or clearing your browser cache. If the problem persists, check your internet connection and ensure you\'re using an updated browser. If the issue continues, contact our technical support team with a detailed description of the problem.',
+              ? 'أولاً: أعد تحميل الصفحة (F5). ثانياً: امسح ذاكرة التخزين المؤقت للمتصفح. ثالثاً: تأكد من اتصالك بالإنترنت بسرعة جيدة. استخدم متصفح حديث (Chrome, Safari, Edge). إذا استمرت المشكلة، تواصل معنا مع لقطة شاشة للمشكلة.'
+              : 'First: Refresh the page (F5). Second: Clear your browser cache. Third: Ensure you have a good internet connection. Use a modern browser (Chrome, Safari, Edge). If the issue persists, contact us with a screenshot of the problem.',
         },
         {
           question:
             language === 'ar'
-              ? 'هل يوجد تطبيق للهاتف المحمول؟'
-              : 'Is there a mobile app?',
+              ? 'لم أتمكن من تسجيل الدخول، ماذا أفعل؟'
+              : 'I cannot log in, what should I do?',
           answer:
             language === 'ar'
-              ? 'نعم، لدينا تطبيقات أصلية لنظامي iOS و Android. يمكنك تحميلها من App Store أو Google Play. التطبيقات توفر نفس الميزات الموجودة على الموقع الإلكتروني مع واجهة محسنة للهواتف المحمولة.'
-              : 'Yes, we have native apps for both iOS and Android. You can download them from the App Store or Google Play. The apps provide the same features as the website with an optimized mobile interface.',
+              ? 'تحقق من أن بريدك الإلكتروني وكلمة المرور صحيحة. استخدم "نسيت كلمة المرور" لإعادة تعيين كلمة المرور. تحقق من البريد الإلكتروني الذي تلقيت رسالة إعادة التعيين فيه (تحقق من مجلد البريد العشوائي). إذا لم ينجح شيء، اتصل بنا مباشرة عبر الدردشة المباشرة.'
+              : 'Check that your email and password are correct. Use "Forgot Password" to reset your password. Check the email you received the reset link in (check spam folder). If nothing works, contact us via live chat right away.',
         },
         {
           question:
             language === 'ar'
-              ? 'كيف أتواصل مع الدعم الفني؟'
-              : 'How do I contact technical support?',
+              ? 'كيف أتواصل مع فريق الدعم؟'
+              : 'How do I contact the support team?',
           answer:
             language === 'ar'
-              ? 'يمكنك التواصل معنا عبر: الدردشة المباشرة (متاح 24/7)، البريد الإلكتروني (support@tf1one.com)، الهاتف (+1-555-123-4567)، أو نموذج الاتصال في صفحة "اتصل بنا". متوسط وقت الرد أقل من ساعتين.'
-              : 'You can reach us via: Live chat (available 24/7), email (support@tf1one.com), phone (+1-555-123-4567), or the contact form on the "Contact Us" page. Our average response time is less than 2 hours.',
+              ? 'اختر الطريقة التي تفضلها: 1) الدردشة المباشرة (أسرع - متاحة 24/7) 2) البريد الإلكتروني: contact@tf1one.com 3) الهاتف: +966 50 123 4567 4) زيارة صفحة "اتصل بنا". الرد على جميع الاستفسارات خلال 24 ساعة كحد أقصى.'
+              : 'Choose your preferred method: 1) Live chat (fastest - available 24/7) 2) Email: contact@tf1one.com 3) Phone: +966 50 123 4567 4) Visit "Contact Us" page. We respond to all inquiries within 24 hours maximum.',
         },
       ],
     },
@@ -377,25 +377,25 @@ export default function FAQPage() {
               </Link>
 
               <a
-                href="mailto:support@TF1.com"
+                href="mailto:contact@tf1one.com"
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300"
               >
                 <Mail className="w-8 h-8 text-white mx-auto mb-3" />
                 <h3 className="text-white font-semibold mb-2">
                   {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
                 </h3>
-                <p className="text-white/80 text-sm">support@tf1one.com</p>
+                <p className="text-white/80 text-sm">contact@tf1one.com</p>
               </a>
 
               <a
-                href="tel:+15551234567"
+                href="tel:+966501234567"
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300"
               >
                 <Phone className="w-8 h-8 text-white mx-auto mb-3" />
                 <h3 className="text-white font-semibold mb-2">
                   {language === 'ar' ? 'الهاتف' : 'Phone'}
                 </h3>
-                <p className="text-white/80 text-sm">+1 (555) 123-4567</p>
+                <p className="text-white/80 text-sm" dir="ltr">+966 50 123 4567</p>
               </a>
             </div>
           </motion.div>
