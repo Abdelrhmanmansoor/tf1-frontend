@@ -12,6 +12,7 @@ import {
   Instagram, 
   Linkedin 
 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export function Footer() {
   const { language } = useLanguage()
@@ -29,25 +30,29 @@ export function Footer() {
       name: 'Facebook', 
       icon: Facebook, 
       url: 'https://www.facebook.com/', 
-      color: 'hover:bg-[#1877F2]' 
+      color: 'hover:text-blue-400 hover:border-blue-400',
+      bgGradient: 'from-blue-500/20 to-blue-600/20'
     },
     { 
       name: 'Twitter', 
       icon: Twitter, 
       url: 'https://twitter.com/', 
-      color: 'hover:bg-[#1DA1F2]' 
+      color: 'hover:text-cyan-400 hover:border-cyan-400',
+      bgGradient: 'from-cyan-500/20 to-blue-500/20'
     },
     { 
       name: 'Instagram', 
       icon: Instagram, 
       url: 'https://www.instagram.com/', 
-      color: 'hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500' 
+      color: 'hover:text-pink-400 hover:border-pink-400',
+      bgGradient: 'from-pink-500/20 to-purple-500/20'
     },
     { 
       name: 'LinkedIn', 
       icon: Linkedin, 
       url: 'https://www.linkedin.com/', 
-      color: 'hover:bg-[#0A66C2]' 
+      color: 'hover:text-blue-300 hover:border-blue-300',
+      bgGradient: 'from-blue-600/20 to-blue-700/20'
     },
     { 
       name: 'Snapchat', 
@@ -57,7 +62,8 @@ export function Footer() {
         </svg>
       ),
       url: 'https://www.snapchat.com/add/tf1sports',
-      color: 'hover:bg-[#FFFC00] hover:text-black'
+      color: 'hover:text-yellow-300 hover:border-yellow-300',
+      bgGradient: 'from-yellow-500/20 to-yellow-600/20'
     }
   ]
 
@@ -98,21 +104,26 @@ export function Footer() {
                 : 'Leading sports recruitment platform in Saudi Arabia. Connecting talent with opportunities in the sports sector.'}
             </p>
             
-            {/* Social Media */}
-            <div className="flex gap-3 pt-2">
-              {socialLinks.map((social) => {
+            {/* Social Media - Beautiful Modern Design */}
+            <div className="flex gap-4 pt-4">
+              {socialLinks.map((social, index) => {
                 const IconComponent = social.icon
                 return (
-                  <a
+                  <motion.a
                     key={social.name}
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-300 ${social.color}`}
+                    whileHover={{ scale: 1.15, translateY: -4 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`w-12 h-12 bg-gradient-to-br ${social.bgGradient} border border-gray-600 rounded-full flex items-center justify-center transition-all duration-300 ${social.color} text-gray-300 backdrop-blur-sm hover:shadow-lg`}
                     aria-label={social.name}
                   >
                     <IconComponent className="w-5 h-5" />
-                  </a>
+                  </motion.a>
                 )
               })}
             </div>
