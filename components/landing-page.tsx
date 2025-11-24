@@ -674,18 +674,17 @@ export function LandingPage() {
 
       {/* Hero Banner - Optimized for All Devices */}
       <section className="relative w-full bg-white overflow-hidden">
-        <div className="w-full h-64 sm:h-80 md:h-96 lg:h-[28rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-7xl">
+        <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-6xl">
           <img
             src={bannerImage.url}
             alt={bannerImage.alt}
             loading="eager"
-            className="w-full h-full object-cover rounded-2xl"
+            className="w-full h-full object-contain rounded-2xl"
             style={{
               objectPosition: 'center',
               backfaceVisibility: 'hidden',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-2xl pointer-events-none" />
         </div>
       </section>
 
