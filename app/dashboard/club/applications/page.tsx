@@ -19,6 +19,8 @@ import {
   Phone,
   FileText,
   Download,
+  MessageCircle,
+  ExternalLink,
 } from 'lucide-react'
 import Link from 'next/link'
 import clubService from '@/services/club'
@@ -194,6 +196,7 @@ const ClubApplicationsPage = () => {
                       {application.status}
                     </span>
                   </div>
+                  {/* Contact Info Row */}
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-4">
                     <div className="flex items-center gap-1">
                       <Mail className="w-4 h-4" />
@@ -221,6 +224,45 @@ const ClubApplicationsPage = () => {
                       </a>
                     )}
                   </div>
+
+                  {/* Additional Contact Fields */}
+                  <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                    {(application as any)?.whatsapp && (
+                      <a
+                        href={`https://wa.me/${(application as any).whatsapp.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="font-medium">{(application as any).whatsapp}</span>
+                      </a>
+                    )}
+                    {(application as any)?.portfolio && (
+                      <a
+                        href={(application as any).portfolio}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        <span className="font-medium">{language === 'ar' ? 'محفظة' : 'Portfolio'}</span>
+                      </a>
+                    )}
+                    {(application as any)?.linkedin && (
+                      <a
+                        href={(application as any).linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
+                      >
+                        <Briefcase className="w-4 h-4" />
+                        <span className="font-medium">LinkedIn</span>
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Cover Letter */}
                   {application.coverLetter && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                       <p className="text-sm font-medium text-gray-700 mb-2">
