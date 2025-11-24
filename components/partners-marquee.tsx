@@ -22,7 +22,8 @@ export function PartnersMarquee() {
     { name: 'Fitness Time', logo: '/partners/fitnesstime.png' },
   ]
 
-  const duplicatedPartners = [...partners, ...partners]
+  // Create 3 copies for seamless infinite scroll
+  const triplePartners = [...partners, ...partners, ...partners]
 
   return (
     <section className="py-12 sm:py-16 bg-gradient-to-br from-gray-50 via-blue-50/20 to-green-50/20 overflow-hidden">
@@ -32,12 +33,13 @@ export function PartnersMarquee() {
         </h2>
       </div>
       
-      <div className="relative w-full">
-        <div className="flex gap-6 sm:gap-8 animate-scroll">
-          {duplicatedPartners.map((partner, index) => (
+      <div className="relative w-full overflow-hidden">
+        {/* Infinite scrolling container */}
+        <div className="flex animate-infinite-scroll hover:pause-animation">
+          {triplePartners.map((partner, index) => (
             <div
               key={`${partner.name}-${index}`}
-              className="flex-shrink-0 w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+              className="flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 mx-3 sm:mx-4 flex items-center justify-center bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <Image
                 src={partner.logo}
@@ -52,21 +54,21 @@ export function PartnersMarquee() {
       </div>
 
       <style jsx>{`
-        @keyframes scroll {
-          0% {
+        @keyframes infinite-scroll {
+          from {
             transform: translateX(0);
           }
-          100% {
-            transform: translateX(-50%);
+          to {
+            transform: translateX(calc(-100% / 3));
           }
         }
 
-        .animate-scroll {
-          animation: scroll 30s linear infinite;
-          width: fit-content;
+        .animate-infinite-scroll {
+          animation: infinite-scroll 40s linear infinite;
+          display: flex;
         }
 
-        .animate-scroll:hover {
+        .pause-animation:hover .animate-infinite-scroll {
           animation-play-state: paused;
         }
       `}</style>
