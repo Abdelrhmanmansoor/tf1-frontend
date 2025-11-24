@@ -670,52 +670,41 @@ export default function JobsPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 relative overflow-hidden">
-          {/* Decorative elements */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          </div>
-
-          <div className="max-w-4xl mx-auto relative z-10">
+        {/* Premium CTA Section */}
+        <section className="py-20 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-blue-500 via-purple-500 to-green-400 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto relative z-10">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="text-center"
             >
-              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white mb-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                 {language === 'ar'
-                  ? 'ابدأ رحلتك المهنية اليوم'
-                  : 'Start Your Career Journey Today'}
+                  ? 'ابدأ رحلتك المهنية اليوم!'
+                  : 'Start Your Professional Journey Today!'}
               </h2>
-              <p className="text-base sm:text-xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-lg sm:text-xl text-white/95 mb-12 max-w-3xl mx-auto leading-relaxed font-semibold">
                 {language === 'ar'
                   ? 'انضم إلى آلاف المحترفين الذين وجدوا فرص أحلامهم من خلال منصتنا'
                   : 'Join thousands of professionals who found their dream opportunities through our platform'}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link href="/register">
-                    <Button
-                      size="lg"
-                      className="bg-white text-blue-600 hover:bg-gray-50 px-10 py-6 text-lg font-bold rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2"
-                    >
-                      <UserCheck className="w-6 h-6" />
-                      {language === 'ar' ? 'انضم الآن' : 'Join Now'}
-                      <ArrowRight className="w-6 h-6" />
-                    </Button>
-                  </Link>
-                </motion.div>
-              </div>
+              {/* CTA Button */}
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                className="mb-16"
+              >
+                <Link href="/register">
+                  <Button className="bg-white text-blue-600 hover:bg-gray-50 px-14 py-5 text-xl font-black rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300">
+                    ✨ {language === 'ar' ? 'اختم التسجيل الآن' : 'Sign Up Now'} →
+                  </Button>
+                </Link>
+              </motion.div>
 
-              {/* Stats */}
-              <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-3 gap-6 sm:gap-10 max-w-3xl mx-auto">
                 {[
                   {
                     number: '50K+',
@@ -734,13 +723,12 @@ export default function JobsPage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="text-white"
+                    transition={{ duration: 0.5, delay: index * 0.15 }}
                   >
-                    <div className="text-3xl sm:text-4xl font-bold mb-1">
+                    <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2">
                       {stat.number}
                     </div>
-                    <div className="text-sm sm:text-base text-white/80">
+                    <div className="text-base sm:text-lg text-white/90 font-bold">
                       {stat.label}
                     </div>
                   </motion.div>
