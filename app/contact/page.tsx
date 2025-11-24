@@ -30,6 +30,10 @@ import {
   Shield,
   Zap,
   Heart,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
 } from 'lucide-react'
 
 export default function ContactPage() {
@@ -84,8 +88,8 @@ export default function ContactPage() {
       title: language === 'ar' ? 'اتصل بنا' : 'Call Us',
       description:
         language === 'ar' ? 'متاح 24/7 لخدمتك' : 'Available 24/7 for you',
-      value: '+1 (555) 123-4567',
-      action: 'tel:+15551234567',
+      value: '+966 50 123 4567',
+      action: 'tel:+966501234567',
       color: 'from-green-500 to-emerald-600',
       available: language === 'ar' ? 'متاح الآن' : 'Available Now',
     },
@@ -94,8 +98,8 @@ export default function ContactPage() {
       title: language === 'ar' ? 'راسلنا' : 'Email Us',
       description:
         language === 'ar' ? 'نرد خلال ساعتين' : 'We reply within 2 hours',
-      value: 'support@TF1.com',
-      action: 'mailto:support@TF1.com',
+      value: 'contact@tf1one.com',
+      action: 'mailto:contact@tf1one.com',
       color: 'from-blue-500 to-cyan-600',
       available: language === 'ar' ? 'رد سريع' : 'Quick Response',
     },
@@ -194,11 +198,18 @@ export default function ContactPage() {
       color: 'text-blue-600',
     },
     {
-      value: '15',
-      label: language === 'ar' ? 'لغة مدعومة' : 'Languages Supported',
+      value: '50K+',
+      label: language === 'ar' ? 'عضو نشط' : 'Active Members',
       icon: Globe,
       color: 'text-purple-600',
     },
+  ]
+
+  const socialLinks = [
+    { icon: Facebook, url: '#', color: 'hover:text-blue-600' },
+    { icon: Twitter, url: '#', color: 'hover:text-blue-400' },
+    { icon: Linkedin, url: '#', color: 'hover:text-blue-700' },
+    { icon: Instagram, url: '#', color: 'hover:text-pink-600' },
   ]
 
   return (
@@ -209,25 +220,31 @@ export default function ContactPage() {
       <Navbar activeMode="application" activePage="contact" />
 
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="relative min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        </div>
+
+        <div className="max-w-6xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <span className="inline-flex items-center bg-gradient-to-r from-blue-400 to-green-400 text-white px-6 py-3 rounded-full text-sm font-semibold mb-8">
+            <span className="inline-flex items-center bg-gradient-to-r from-blue-400 to-emerald-400 text-white px-6 py-3 rounded-full text-sm font-bold mb-8 shadow-lg">
               <Heart className="w-4 h-4 mr-2" />
-              {language === 'ar' ? 'نحن هنا لمساعدتك' : "We're Here to Help"}
+              {language === 'ar' ? '✨ نحن هنا لمساعدتك' : "✨ We're Here to Help"}
             </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8">
-              <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-8 leading-tight">
+              <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
                 {language === 'ar' ? 'تواصل معنا' : 'Get in Touch'}
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-white mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed font-medium">
               {language === 'ar'
                 ? 'نحن متحمسون للاستماع إليك! سواء كنت تحتاج للمساعدة أو لديك اقتراح أو ترغب في الشراكة معنا، فريقنا المختص جاهز لخدمتك على مدار الساعة'
                 : "We're excited to hear from you! Whether you need help, have a suggestion, or want to partner with us, our expert team is ready to serve you around the clock"}
@@ -241,13 +258,13 @@ export default function ContactPage() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                  className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+                  className="bg-white/10 backdrop-blur-lg rounded-2xl p-5 sm:p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300 hover:bg-white/20"
                 >
                   <stat.icon className={`w-8 h-8 ${stat.color} mx-auto mb-3`} />
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                  <div className="text-2xl sm:text-3xl font-black text-white mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
+                  <div className="text-sm text-gray-300 font-semibold">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -256,18 +273,19 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Methods */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
+      <section className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6">
               {language === 'ar' ? 'طرق التواصل' : 'Contact Methods'}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full mx-auto mb-8"></div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-semibold">
               {language === 'ar'
                 ? 'اختر الطريقة الأنسب لك للتواصل معنا'
                 : 'Choose the most convenient way to reach us'}
@@ -276,38 +294,40 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {contactMethods.map((method, index) => (
-              <motion.div
+              <motion.a
                 key={index}
+                href={method.action}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group cursor-pointer"
+                whileHover={{ scale: 1.08, translateY: -10 }}
+                className="group cursor-pointer block"
               >
-                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 h-full">
                   <div
-                    className={`w-16 h-16 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-20 h-20 bg-gradient-to-r ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-125 transition-transform duration-300 shadow-lg`}
                   >
-                    <method.icon className="w-8 h-8 text-white" />
+                    <method.icon className="w-10 h-10 text-white" />
                   </div>
 
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">
                       {method.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-4">
+                    <p className="text-gray-600 text-sm mb-4 font-medium">
                       {method.description}
                     </p>
-                    <div className="text-lg font-semibold text-gray-900 mb-3">
+                    <div className="text-lg font-bold text-gray-900 mb-4">
                       {method.value}
                     </div>
 
-                    <div className="inline-flex items-center bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <div className="inline-flex items-center bg-gradient-to-r from-green-50 to-emerald-50 text-green-600 px-4 py-2 rounded-full text-xs font-bold">
+                      <div className="w-2.5 h-2.5 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                       {method.available}
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </motion.a>
             ))}
           </div>
         </div>
@@ -315,7 +335,7 @@ export default function ContactPage() {
 
       {/* Contact Form & Support Categories */}
       <section
-        className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900"
+        className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50"
         data-section="contact-form"
       >
         <div className="max-w-7xl mx-auto">
@@ -325,17 +345,17 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-white rounded-3xl p-6 sm:p-8 lg:p-12 shadow-xl"
+              className="bg-white rounded-3xl p-8 sm:p-10 lg:p-12 shadow-2xl border border-gray-100"
             >
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
-                {language === 'ar' ? 'أرسل رسالة' : 'Send us a Message'}
+              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10">
+                {language === 'ar' ? '📧 أرسل رسالة' : '📧 Send Message'}
               </h3>
 
               {!isSubmitted ? (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-sm font-bold text-gray-900 mb-3">
                         {language === 'ar' ? 'الاسم' : 'Name'}
                       </label>
                       <input
@@ -344,7 +364,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-semibold"
                         placeholder={
                           language === 'ar' ? 'اسمك الكامل' : 'Your full name'
                         }
@@ -352,7 +372,7 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-sm font-bold text-gray-900 mb-3">
                         {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
                       </label>
                       <input
@@ -361,25 +381,21 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                        placeholder={
-                          language === 'ar'
-                            ? 'your@email.com'
-                            : 'your@email.com'
-                        }
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-semibold"
+                        placeholder="your@email.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
                       {language === 'ar' ? 'نوع الاستفسار' : 'Inquiry Type'}
                     </label>
                     <select
                       name="type"
                       value={formData.type}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-semibold"
                     >
                       <option value="general">
                         {language === 'ar' ? 'استفسار عام' : 'General Inquiry'}
@@ -399,7 +415,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
                       {language === 'ar' ? 'الموضوع' : 'Subject'}
                     </label>
                     <input
@@ -408,7 +424,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-semibold"
                       placeholder={
                         language === 'ar'
                           ? 'موضوع رسالتك'
@@ -418,7 +434,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    <label className="block text-sm font-bold text-gray-900 mb-3">
                       {language === 'ar' ? 'الرسالة' : 'Message'}
                     </label>
                     <textarea
@@ -427,7 +443,7 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none font-semibold"
                       placeholder={
                         language === 'ar'
                           ? 'اكتب رسالتك هنا...'
@@ -439,7 +455,7 @@ export default function ContactPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 py-4 text-lg font-semibold rounded-xl transition-all duration-300 disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-4 text-lg font-bold rounded-xl transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center gap-2">
@@ -460,13 +476,15 @@ export default function ContactPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-12"
                 >
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
                     {language === 'ar'
-                      ? 'تم إرسال رسالتك!'
-                      : 'Message Sent Successfully!'}
+                      ? '✓ تم إرسال رسالتك!'
+                      : '✓ Message Sent!'}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-lg">
                     {language === 'ar'
                       ? 'شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.'
                       : "Thank you for contacting us. We'll get back to you as soon as possible."}
@@ -480,27 +498,30 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="space-y-8 "
+              className="space-y-8"
             >
-              <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent mb-8">
-                {language === 'ar' ? 'أقسام الدعم' : 'Support Categories'}
+              <h3 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent mb-10">
+                {language === 'ar' ? '🎯 أقسام الدعم' : '🎯 Support Categories'}
               </h3>
 
               {supportCategories.map((category, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <category.icon className="w-6 h-6 text-blue-600" />
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                      <category.icon className="w-7 h-7 text-blue-600" />
                     </div>
 
                     <div className="flex-1">
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">
                         {category.title}
                       </h4>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-gray-600 mb-4 font-semibold">
                         {category.description}
                       </p>
 
@@ -508,128 +529,106 @@ export default function ContactPage() {
                         {category.topics.map((topic, i) => (
                           <span
                             key={i}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                            className="px-4 py-2 bg-gradient-to-r from-blue-50 to-cyan-50 text-gray-700 text-xs font-bold rounded-full border border-blue-200 hover:border-blue-300 transition-colors"
                           >
-                            {topic}
+                            ✓ {topic}
                           </span>
                         ))}
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar'
-                  ? 'الأسئلة الشائعة'
-                  : 'Frequently Asked Questions'}
-              </span>
-            </h2>
-            <p className="text-xl text-gray-300">
-              {language === 'ar'
-                ? 'إجابات سريعة لأكثر الأسئلة شيوعاً'
-                : 'Quick answers to the most common questions'}
-            </p>
-          </motion.div>
+      {/* Social Media & Info Section */}
+      <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            {/* Social Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center"
+            >
+              <h3 className="text-2xl font-bold mb-8">
+                {language === 'ar' ? 'تابعنا على' : 'Follow Us'}
+              </h3>
+              <div className="flex gap-6 justify-center">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.url}
+                    whileHover={{ scale: 1.3, rotate: 10 }}
+                    className={`w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 ${social.color} text-2xl border border-white/20`}
+                  >
+                    <social.icon className="w-6 h-6" />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
 
-          <div className="grid grid-cols-1 gap-6 sm:gap-8">
-            {[
-              {
-                q:
-                  language === 'ar'
-                    ? 'كيف أبدأ في استخدام المنصة؟'
-                    : 'How do I get started with the platform?',
-                a:
-                  language === 'ar'
-                    ? 'ببساطة اضغط على "إنشاء حساب" واتبع الخطوات البسيطة لإنشاء ملفك الشخصي.'
-                    : 'Simply click "Create Account" and follow the simple steps to create your profile.',
-              },
-              {
-                q:
-                  language === 'ar'
-                    ? 'هل المنصة مجانية؟'
-                    : 'Is the platform free?',
-                a:
-                  language === 'ar'
-                    ? 'نعم، نوفر خطة مجانية مع إمكانية الترقية للحصول على مميزات إضافية.'
-                    : 'Yes, we offer a free plan with the option to upgrade for additional features.',
-              },
-              {
-                q:
-                  language === 'ar'
-                    ? 'كم من الوقت يستغرق العثور على وظيفة؟'
-                    : 'How long does it take to find a job?',
-                a:
-                  language === 'ar'
-                    ? 'يختلف الوقت حسب التخصص، لكن معظم المستخدمين يجدون فرص مناسبة خلال أسبوعين.'
-                    : 'It varies by specialization, but most users find suitable opportunities within two weeks.',
-              },
-              {
-                q:
-                  language === 'ar'
-                    ? 'هل تدعمون التوظيف الدولي؟'
-                    : 'Do you support international hiring?',
-                a:
-                  language === 'ar'
-                    ? 'بالطبع! نربط المواهب مع الفرص في أكثر من 200 دولة حول العالم.'
-                    : 'Absolutely! We connect talents with opportunities in over 200 countries worldwide.',
-              },
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
-              >
-                <h4 className="text-lg font-bold mb-3">{faq.q}</h4>
-                <p className="text-gray-300">{faq.a}</p>
-              </motion.div>
-            ))}
+            {/* Hours */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-center"
+            >
+              <h3 className="text-2xl font-bold mb-8">
+                {language === 'ar' ? '⏰ ساعات العمل' : '⏰ Business Hours'}
+              </h3>
+              <div className="space-y-3 text-gray-300">
+                <p className="font-semibold">{language === 'ar' ? 'الأحد - الخميس' : 'Sun - Thu'}</p>
+                <p>8:00 AM - 6:00 PM</p>
+                <p className="font-semibold mt-4">{language === 'ar' ? 'الجمعة - السبت' : 'Fri - Sat'}</p>
+                <p>{language === 'ar' ? 'مغلق' : 'Closed'}</p>
+              </div>
+            </motion.div>
+
+            {/* Location */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center"
+            >
+              <h3 className="text-2xl font-bold mb-8">
+                {language === 'ar' ? '📍 موقعنا' : '📍 Location'}
+              </h3>
+              <p className="text-gray-300 font-semibold">
+                {language === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia'}
+              </p>
+              <p className="text-gray-400 mt-2">
+                {language === 'ar' ? 'الرياض، جدة، الدمام' : 'Riyadh, Jeddah, Dammam'}
+              </p>
+            </motion.div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-center mt-12"
-          >
-            <p className="text-gray-300 mb-6">
-              {language === 'ar'
-                ? 'لم تجد إجابة لسؤالك؟'
-                : "Didn't find an answer to your question?"}
-            </p>
-            <Button
-              size="lg"
-              onClick={() => {
-                const formSection = document.querySelector(
-                  '[data-section="contact-form"]'
-                )
-                formSection?.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start',
-                })
-              }}
-              className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl cursor-pointer"
+          <div className="border-t border-white/20 pt-16 text-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
             >
-              {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
+              <p className="text-gray-400 mb-8 font-semibold text-lg">
+                {language === 'ar'
+                  ? 'نحن نسعى لتقديم أفضل خدمة لك'
+                  : "We strive to provide you with the best service"}
+              </p>
+              <div className="flex justify-center gap-4">
+                <motion.div whileHover={{ scale: 1.1 }}>
+                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 font-bold rounded-lg">
+                    {language === 'ar' ? 'اتصل بنا الآن' : 'Contact Now'}
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
