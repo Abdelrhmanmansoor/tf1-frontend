@@ -174,20 +174,29 @@ const ClubApplicationsPage = () => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
-                      {typeof application.applicantId === 'object' &&
-                        application.applicantId.fullName?.[0]?.toUpperCase()}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">
-                        {typeof application.applicantId === 'object' &&
-                          application.applicantId.fullName}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {typeof application.jobId === 'object' &&
-                          application.jobId.title}
-                      </p>
-                    </div>
+                    {(() => {
+                      const applicantName =
+                        (typeof application.applicantId === 'object' &&
+                          application.applicantId.fullName) ||
+                        ''
+                      
+                      return (
+                        <>
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                            {applicantName?.[0]?.toUpperCase() || '?'}
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-gray-900">
+                              {applicantName || (language === 'ar' ? 'متقدم' : 'Applicant')}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {typeof application.jobId === 'object' &&
+                                application.jobId.title}
+                            </p>
+                          </div>
+                        </>
+                      )
+                    })()}
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
                         application.status

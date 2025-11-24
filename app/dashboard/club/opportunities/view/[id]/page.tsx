@@ -401,7 +401,10 @@ export default function ViewJobPage() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
-                            {application.applicant?.name || language === 'ar' ? 'متقدم' : 'Applicant'}
+                            {application.applicant?.name || 
+                             (typeof application.applicantId === 'object' && 
+                              (application.applicantId.fullName || application.applicantId.name)) || 
+                             (language === 'ar' ? 'متقدم' : 'Applicant')}
                           </p>
                           <p className="text-sm text-gray-500">
                             {new Date(application.submittedAt).toLocaleDateString()}
