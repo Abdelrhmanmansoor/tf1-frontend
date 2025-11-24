@@ -103,18 +103,18 @@ export function LandingPage() {
   const bannerImages = [
     {
       id: 1,
-      url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=400&fit=crop',
-      alt: language === 'ar' ? 'رياضة 1' : 'Sports 1',
+      url: '/banners/banner-1-saudi-team.png',
+      alt: language === 'ar' ? 'فريق سعودي موحد' : 'Saudi Team Unity',
     },
     {
       id: 2,
-      url: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&h=400&fit=crop',
-      alt: language === 'ar' ? 'رياضة 2' : 'Sports 2',
+      url: '/banners/banner-2-future-sports.png',
+      alt: language === 'ar' ? 'تطوير الرياضة المستقبلي' : 'Future Sports Development',
     },
     {
       id: 3,
-      url: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&h=400&fit=crop',
-      alt: language === 'ar' ? 'رياضة 3' : 'Sports 3',
+      url: '/banners/banner-3-ecosystem.png',
+      alt: language === 'ar' ? 'النظام الرياضي' : 'Sports Ecosystem',
     },
   ]
 
