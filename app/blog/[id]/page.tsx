@@ -1,78 +1,57 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Calendar, ChevronLeft, Loader, Share2, BookOpen } from 'lucide-react'
-import { useParams } from 'next/navigation'
-
-interface BlogPost {
-  id: string
-  title: string
-  titleAr: string
-  excerpt: string
-  excerptAr: string
-  content: string
-  contentAr: string
-  author: string
-  date: string
-  category: string
-  readTime: number
-}
+import { Loader2, ArrowLeft, Share2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import blogService from '@/services/blog'
+import type { Article } from '@/types/blog'
 
 export default function BlogPostPage() {
   const { language } = useLanguage()
   const params = useParams()
-  const postId = params.id as string
-  const [post, setPost] = useState<BlogPost | null>(null)
+  const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const response = await fetch(`/api/blog/${postId}`)
-        if (response.ok) {
-          const data = await response.json()
-          setPost(data.post)
-        }
-      } catch (error) {
-        console.error('Error fetching post:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    loadArticle()
+  }, [params.id])
 
-    if (postId) {
-      fetchPost()
+  const loadArticle = async () => {
+    try {
+      setLoading(true)
+      const data = await blogService.getArticle(params.id as string)
+      setArticle(data)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
-  }, [postId])
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar activeMode="application" />
-        <div className="flex justify-center items-center py-40">
-          <Loader className="w-8 h-8 text-blue-600 animate-spin" />
-        </div>
-        <Footer />
+      <div className="min-h-screen flex items-center justify-center bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
       </div>
     )
   }
 
-  if (!post) {
+  if (error || !article) {
     return (
-      <div className="min-h-screen bg-gray-50" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar activeMode="application" />
-        <div className="flex justify-center items-center py-40">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {language === 'ar' ? 'المقالة غير موجودة' : 'Post not found'}
-            </h1>
-            <Link href="/blog" className="text-blue-600 hover:underline font-semibold">
-              {language === 'ar' ? 'العودة للمدونة' : 'Back to blog'}
+      <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {language === 'ar' ? 'المقالة غير موجودة' : 'Article not found'}
+          </h1>
+          <Link href="/blog" className="text-blue-600 hover:underline font-semibold">
+            {language === 'ar' ? 'العودة للمدونة' : 'Back to blog'}
             </Link>
           </div>
         </div>
