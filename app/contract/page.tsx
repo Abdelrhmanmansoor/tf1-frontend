@@ -6,21 +6,15 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  FileText,
   CheckCircle,
-  Shield,
-  Lock,
-  Download,
   Building2,
 } from 'lucide-react'
-import jsPDF from 'jspdf'
 
 export default function ContractPage() {
   const { language } = useLanguage()
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [pdfUrl, setPdfUrl] = useState<string>('')
 
   const successMessages = [
     language === 'ar' 
@@ -56,158 +50,26 @@ export default function ContractPage() {
     }))
   }
 
-  const generatePDF = async (contractData: typeof formData, contractId: string) => {
-    try {
-      const pdf = new jsPDF()
-      const pageWidth = pdf.internal.pageSize.getWidth()
-      const pageHeight = pdf.internal.pageSize.getHeight()
-      const margin = 15
-      const textWidth = pageWidth - 2 * margin
-      let yPosition = margin
-
-      // ===== PAGE HEADER =====
-      pdf.setFillColor(30, 90, 200)
-      pdf.rect(0, 0, pageWidth, 28, 'F')
-      
-      pdf.setFontSize(14)
-      pdf.setTextColor(255, 255, 255)
-      pdf.setFont('helvetica', 'bold')
-      pdf.text('TF1 SPORTS PLATFORM', pageWidth / 2, 10, { align: 'center' })
-      pdf.setFontSize(9)
-      pdf.setFont('helvetica', 'normal')
-      pdf.text('Recruitment Agreement', pageWidth / 2, 18, { align: 'center' })
-      
-      yPosition = 35
-
-      // ===== CONTRACT META INFO =====
-      pdf.setFontSize(8)
-      pdf.setTextColor(100, 100, 100)
-      pdf.text(`Contract ID: ${contractId}`, margin, yPosition)
-      pdf.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - margin - 40, yPosition)
-      yPosition += 8
-
-      // ===== COMPANY SECTION =====
-      pdf.setFillColor(235, 245, 255)
-      pdf.rect(margin, yPosition, textWidth, 30, 'F')
-      
-      pdf.setFontSize(10)
-      pdf.setTextColor(30, 90, 200)
-      pdf.setFont('helvetica', 'bold')
-      pdf.text(language === 'ar' ? 'بيانات الجهة' : 'ORGANIZATION', margin + 3, yPosition + 4)
-      
-      pdf.setFontSize(8)
-      pdf.setTextColor(50, 50, 50)
-      pdf.setFont('helvetica', 'normal')
-      pdf.text(`${formData.companyName}`, margin + 3, yPosition + 10)
-      pdf.text(`${language === 'ar' ? 'المسؤول: ' : 'Contact: '}${formData.contactPerson}`, margin + 3, yPosition + 15)
-      pdf.text(`${formData.email} | ${formData.phone}`, margin + 3, yPosition + 20)
-      
-      yPosition += 35
-
-      // ===== JOB DETAILS SECTION =====
-      pdf.setFillColor(245, 250, 255)
-      pdf.rect(margin, yPosition, textWidth, 28, 'F')
-      
-      pdf.setFontSize(10)
-      pdf.setTextColor(30, 90, 200)
-      pdf.setFont('helvetica', 'bold')
-      pdf.text(language === 'ar' ? 'تفاصيل الوظيفة' : 'POSITION DETAILS', margin + 3, yPosition + 4)
-      
-      pdf.setFontSize(8)
-      pdf.setTextColor(50, 50, 50)
-      pdf.setFont('helvetica', 'normal')
-      pdf.text(`${formData.position} | ${formData.duration} ${language === 'ar' ? 'سنة' : 'Year(s)'}`, margin + 3, yPosition + 10)
-      pdf.text(`${language === 'ar' ? 'البدء: ' : 'Start: '}${formData.startDate} | ${language === 'ar' ? 'الراتب: ' : 'Salary: '}${formData.salary} SAR`, margin + 3, yPosition + 15)
-      
-      yPosition += 33
-
-      // ===== DESCRIPTION =====
-      if (formData.description) {
-        pdf.setFillColor(235, 245, 255)
-        pdf.rect(margin, yPosition, textWidth, 8, 'F')
-        
-        pdf.setFontSize(10)
-        pdf.setTextColor(30, 90, 200)
-        pdf.setFont('helvetica', 'bold')
-        pdf.text(language === 'ar' ? 'الوصف' : 'DESCRIPTION', margin + 3, yPosition + 4)
-        
-        yPosition += 10
-
-        pdf.setFontSize(8)
-        pdf.setTextColor(50, 50, 50)
-        pdf.setFont('helvetica', 'normal')
-        const splitDescription = pdf.splitTextToSize(formData.description, textWidth - 6)
-        splitDescription.forEach((line: string) => {
-          if (yPosition > pageHeight - 30) {
-            pdf.addPage()
-            yPosition = margin
-          }
-          pdf.text(line, margin + 3, yPosition)
-          yPosition += 4
-        })
-        yPosition += 5
-      }
-
-      // ===== TERMS SECTION =====
-      if (yPosition > pageHeight - 40) {
-        pdf.addPage()
-        yPosition = margin
-      }
-
-      pdf.setFillColor(255, 248, 240)
-      pdf.setDrawColor(255, 140, 0)
-      pdf.setLineWidth(0.3)
-      pdf.rect(margin, yPosition, textWidth, 32, 'FD')
-      
-      pdf.setFontSize(10)
-      pdf.setTextColor(200, 100, 0)
-      pdf.setFont('helvetica', 'bold')
-      pdf.text(language === 'ar' ? 'الشروط والأحكام' : 'TERMS', margin + 3, yPosition + 4)
-      
-      yPosition += 7
-      pdf.setFontSize(7)
-      pdf.setTextColor(50, 50, 50)
-      pdf.setFont('helvetica', 'normal')
-      
-      const terms = [
-        language === 'ar' ? '• الالتزام بقوانين العمل السعودية' : '• Saudi Labor Law Compliance',
-        language === 'ar' ? '• حماية كاملة للبيانات والسرية' : '• Complete Data Confidentiality',
-        language === 'ar' ? '• العقد ملزم بعد التوقيع الإلكتروني' : '• Legally Binding Agreement',
-      ]
-
-      terms.forEach((term) => {
-        const splitTerm = pdf.splitTextToSize(term, textWidth - 8)
-        splitTerm.forEach((line: string) => {
-          if (yPosition > pageHeight - 10) {
-            pdf.addPage()
-            yPosition = margin
-          }
-          pdf.text(line, margin + 4, yPosition)
-          yPosition += 3
-        })
-      })
-
-      // ===== FOOTER =====
-      yPosition = pageHeight - 8
-      pdf.setFontSize(7)
-      pdf.setTextColor(150, 150, 150)
-      pdf.text(
-        `${language === 'ar' ? 'منصة تف1 - جهة احالة موظفين' : 'TF1 Platform - Recruitment Agency'}`,
-        pageWidth / 2,
-        yPosition,
-        { align: 'center' }
-      )
-
-      // Generate blob and create download link
-      const pdfBlob = pdf.output('blob')
-      const url = URL.createObjectURL(pdfBlob)
-      setPdfUrl(url)
-
-      return url
-    } catch (error) {
-      console.error('Error generating PDF:', error)
-      return null
+  const generateContractData = (contractId: string) => {
+    // Create contract data object instead of PDF
+    const contractData = {
+      contractId,
+      date: new Date().toLocaleDateString(),
+      company: formData.companyName,
+      contact: formData.contactPerson,
+      email: formData.email,
+      phone: formData.phone,
+      position: formData.position,
+      duration: formData.duration,
+      startDate: formData.startDate,
+      salary: formData.salary,
+      description: formData.description,
     }
+    
+    // Save to localStorage
+    const contracts = JSON.parse(localStorage.getItem('tf1_contracts') || '[]')
+    contracts.push(contractData)
+    localStorage.setItem('tf1_contracts', JSON.stringify(contracts))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -240,8 +102,8 @@ export default function ContractPage() {
         localStorage.setItem('tf1_contracts', JSON.stringify(contracts))
       })
 
-      // Generate PDF
-      await generatePDF(formData, contractId)
+      // Save contract data
+      generateContractData(contractId)
 
       // Show success
       setShowSuccess(true)
@@ -260,7 +122,6 @@ export default function ContractPage() {
         })
         setAgreedToTerms(false)
         setShowSuccess(false)
-        setPdfUrl('')
       }, 8000)
     } catch (error) {
       console.error('Error:', error)
@@ -310,18 +171,14 @@ export default function ContractPage() {
                       </motion.p>
                     </div>
                     
-                    {pdfUrl && (
-                      <motion.a
-                        href={pdfUrl}
-                        download={`TF1-Recruitment-${Date.now()}.pdf`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="bg-white text-blue-600 font-bold py-2 px-6 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base flex-shrink-0"
-                      >
-                        <Download className="w-4 h-4" />
-                        {language === 'ar' ? 'تحميل' : 'Download'}
-                      </motion.a>
-                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-white text-blue-600 font-bold py-2 px-6 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base flex-shrink-0"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      {language === 'ar' ? 'تم الحفظ' : 'Saved'}
+                    </motion.button>
                   </div>
                 </div>
               </motion.div>
