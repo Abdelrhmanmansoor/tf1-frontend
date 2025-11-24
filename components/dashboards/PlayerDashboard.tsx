@@ -67,7 +67,7 @@ const PlayerDashboard = () => {
       
       // Log userId for debugging
       const user = authService.getCurrentUser()
-      console.log('[PlayerDashboard] User ID:', user?._id)
+      console.log('[PlayerDashboard] User ID:', user?.id || (user as any)?._id)
     } catch (err: any) {
       console.error('Error fetching dashboard data:', err)
 
@@ -207,9 +207,9 @@ const PlayerDashboard = () => {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Job Notifications */}
-            {authService.getCurrentUser()?._id && (
+            {(authService.getCurrentUser()?.id || (authService.getCurrentUser() as any)?._id) && (
               <JobNotifications 
-                userId={authService.getCurrentUser()!._id} 
+                userId={authService.getCurrentUser()?.id || (authService.getCurrentUser() as any)?._id} 
               />
             )}
 
