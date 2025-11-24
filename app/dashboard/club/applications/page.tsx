@@ -271,19 +271,25 @@ const ClubApplicationsPage = () => {
                     )}
                   </div>
 
-                  {/* Cover Letter */}
+                  {/* Cover Letter Preview */}
                   {application.coverLetter && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                       <p className="text-sm font-medium text-gray-700 mb-2">
                         {language === 'ar' ? 'خطاب التقديم:' : 'Cover Letter:'}
                       </p>
-                      <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                      <p className="text-sm text-gray-600 line-clamp-2">
                         {application.coverLetter}
                       </p>
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-col sm:flex-row">
+                  <Link href={`/dashboard/club/applications/${application._id}`}>
+                    <Button size="sm" variant="default" className="gap-1 w-full sm:w-auto">
+                      <Eye className="w-4 h-4" />
+                      {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
+                    </Button>
+                  </Link>
                   {application.status === 'new' && (
                     <Button
                       size="sm"
