@@ -22,8 +22,7 @@ const nextConfig = {
   allowedDevOrigins: [
     'https://tf1one.com',
     'https://www.tf1one.com',
-    /\.replit\.dev$/,
-    /\.repl\.co$/,
+    'https://ff3206f6-1840-4e38-a069-b62fff8598f0-00-1in3fwgpywskf.worf.replit.dev',
   ],
   // Allow all hosts for Replit proxy compatibility
   async rewrites() {
