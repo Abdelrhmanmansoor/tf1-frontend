@@ -731,23 +731,30 @@ export function LandingPage() {
           >
             {/* Images Container */}
             <motion.div
-              className="flex h-full"
+              className="flex h-full w-full"
               animate={{
                 x: `-${currentBannerIndex * 100}%`,
               }}
               transition={{
-                duration: 0.7,
+                duration: 0.8,
                 ease: 'easeInOut',
+              }}
+              style={{
+                willChange: 'transform',
               }}
             >
               {bannerImages.map((banner) => (
-                <div key={banner.id} className="min-w-full h-full relative">
+                <div key={banner.id} className="min-w-full h-full relative flex-shrink-0">
                   <img
                     src={banner.url}
                     alt={banner.alt}
+                    loading="lazy"
                     className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: 'center',
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
                 </div>
               ))}
             </motion.div>

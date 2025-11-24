@@ -10,6 +10,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
   },
   // Skip static generation for error pages
   skipTrailingSlashRedirect: true,
