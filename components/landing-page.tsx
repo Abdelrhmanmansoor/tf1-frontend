@@ -97,8 +97,8 @@ export function LandingPage() {
   }, [newsMessages.length])
 
   const bannerImage = {
-    url: '/banners/banner-1-saudi-team.png',
-    alt: language === 'ar' ? 'فريق سعودي موحد' : 'Saudi Team Unity',
+    url: '/banners/banner-hero-main.png',
+    alt: language === 'ar' ? 'معاً نصنع نباحك خطوة بخطوة' : 'Together We Build Your Success Step by Step',
   }
 
   const sportSpecializations = [
