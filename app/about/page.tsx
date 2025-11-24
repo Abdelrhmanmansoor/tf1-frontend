@@ -604,9 +604,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Leadership Team - Card Stack Effect */}
+      {/* Platform Goals - Clean Modern Design */}
       <section
-        className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 to-blue-900 text-white section-marker"
+        className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white section-marker"
         data-section="3"
       >
         <div className="max-w-6xl mx-auto">
@@ -617,70 +617,104 @@ export default function AboutPage() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                {language === 'ar' ? 'أهداف المنصة' : 'Platform Goals'}
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
+                {language === 'ar' ? 'أهداف المنصة' : 'Our Goals'}
               </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {language === 'ar'
-                ? 'بناء مستقبل الرياضة عبر تمكين المواهب وتوسيع الفرص'
-                : 'Empowering talents to build the future of sports'}
+                ? 'نسعى لتحقيق أهداف استراتيجية تخدم الرياضة والمواهب السعودية'
+                : 'Strategic goals to empower sports talent in Saudi Arabia'}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {leadership.map((leader, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 100, rotateX: -30 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                transition={{
-                  duration: 0.8,
-                  delay: index * 0.2,
-                  type: 'spring',
-                  stiffness: 100,
-                }}
-                whileHover={{
-                  y: -20,
-                  rotateY: 5,
-                  transition: { duration: 0.3 },
-                }}
-                className="group"
-                style={{ transformStyle: 'preserve-3d' }}
-              >
-                <div className="bg-white text-gray-900 rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-4xl transition-shadow duration-500">
-                  {/* Header with Gradient */}
-                  <div
-                    className={`h-32 bg-gradient-to-r ${leader.gradient} relative`}
-                  >
-                    <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                    <div className="absolute bottom-4 left-6 right-6">
-                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
-                        <Users className="w-10 h-10 text-gray-700" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-8 pt-12">
-                    <h3 className="text-2xl font-bold mb-2">{leader.name}</h3>
-                    <p className="text-blue-600 font-semibold mb-4">
-                      {leader.role}
-                    </p>
-                    <p className="text-gray-600 leading-relaxed mb-6">
-                      {leader.bio}
-                    </p>
-                    <div className="bg-gray-50 rounded-2xl p-4">
-                      <div className="flex items-center gap-2">
-                        <Award className="w-5 h-5 text-yellow-500" />
-                        <span className="text-sm font-semibold">
-                          {leader.achievements}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Goal 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0 }}
+              whileHover={{ scale: 1.02, y: -10 }}
+              className="group"
+            >
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-8 h-full shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Rocket className="w-8 h-8 text-white" />
                 </div>
-              </motion.div>
-            ))}
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {language === 'ar' ? 'تمكين المواهب' : 'Empower Talent'}
+                </h3>
+                <p className="text-blue-100 leading-relaxed mb-6">
+                  {language === 'ar'
+                    ? 'ربط لاعبي كرة القدم والرياضيين بفرص عمل حقيقية مع أكاديميات ومراكز تدريب موثوقة في المملكة.'
+                    : 'Connect athletes with real opportunities at trusted academies and training centers.'}
+                </p>
+                <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl backdrop-blur-md">
+                  <span className="text-2xl">🎯</span>
+                  <span className="text-sm font-semibold text-white">
+                    {language === 'ar' ? 'الهدف الأول' : 'Primary Goal'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Goal 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ scale: 1.02, y: -10 }}
+              className="group"
+            >
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-8 h-full shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {language === 'ar' ? 'ربط الأكاديميات' : 'Connect Academies'}
+                </h3>
+                <p className="text-purple-100 leading-relaxed mb-6">
+                  {language === 'ar'
+                    ? 'توفير منصة حديثة لتجمع الأكاديميات والمراكز الرياضية مع أفضل المواهب وتيسير عملية التوظيف.'
+                    : 'Provide a platform for academies to find and hire top sports talent effortlessly.'}
+                </p>
+                <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl backdrop-blur-md">
+                  <span className="text-2xl">🤝</span>
+                  <span className="text-sm font-semibold text-white">
+                    {language === 'ar' ? 'الهدف الثاني' : 'Secondary Goal'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Goal 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ scale: 1.02, y: -10 }}
+              className="group"
+            >
+              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-8 h-full shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Trophy className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {language === 'ar' ? 'دعم رؤية 2030' : 'Vision 2030'}
+                </h3>
+                <p className="text-green-100 leading-relaxed mb-6">
+                  {language === 'ar'
+                    ? 'المساهمة في تطوير القطاع الرياضي السعودي وتحقيق أهداف الرؤية الوطنية للتنمية المستدامة.'
+                    : 'Contribute to Saudi sports sector development aligned with Vision 2030.'}
+                </p>
+                <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl backdrop-blur-md">
+                  <span className="text-2xl">🌟</span>
+                  <span className="text-sm font-semibold text-white">
+                    {language === 'ar' ? 'الهدف الثالث' : 'Strategic Goal'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
