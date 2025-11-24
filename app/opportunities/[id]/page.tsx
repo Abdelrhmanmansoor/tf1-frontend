@@ -140,7 +140,25 @@ export default function OpportunityDetailsPage() {
       }, 5000)
     } catch (err: any) {
       console.error('Error applying:', err)
-      setUploadError(err.message || (language === 'ar' ? 'فشل إرسال الطلب' : 'Failed to apply'))
+      
+      // Handle specific error codes
+      let errorMessage = language === 'ar' ? 'فشل إرسال الطلب' : 'Failed to apply'
+      
+      if (err.response?.status === 409) {
+        errorMessage = language === 'ar' 
+          ? 'لقد تقدمت بالفعل على هذه الوظيفة' 
+          : 'You have already applied to this job'
+      } else if (err.response?.status === 401) {
+        errorMessage = language === 'ar'
+          ? 'يرجى تسجيل الدخول أولاً'
+          : 'Please login first'
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message
+      } else if (err.message) {
+        errorMessage = err.message
+      }
+      
+      setUploadError(errorMessage)
     } finally {
       setApplying(false)
     }
