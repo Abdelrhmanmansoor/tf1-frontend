@@ -11,8 +11,8 @@ export default function DashboardAdminRedirect() {
   }, [router])
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <p className="text-gray-600">جاري التحويل... / Redirecting to admin dashboard...</p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <p className="text-gray-600">...</p>
     </div>
   )
 }

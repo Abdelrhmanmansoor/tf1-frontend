@@ -10,6 +10,15 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### November 25, 2025 - Admin Dashboard Temporarily Disabled ✅
+- **Status**: Admin panel temporarily disabled for performance optimization
+- **Access**: `/admin`, `/control`, `/dashboard/admin` show maintenance page
+- **Reason**: Reducing site load until backend is fully ready
+- **Files Simplified**:
+  - ✅ `app/admin/page.tsx` - Shows maintenance message
+  - ✅ `app/control/page.tsx` - Redirects to /admin
+  - ✅ `app/dashboard/admin/page.tsx` - Redirects to /admin
+
 ### November 24, 2025 - Socket.io Notifications Updated ✅
 - **BREAKING CHANGE**: Socket event changed from `'job:notification'` to `'new_notification'`
 - **Updated Files:**
