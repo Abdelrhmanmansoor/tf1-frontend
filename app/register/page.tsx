@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, CheckCircle, Loader2, ChevronDown, ArrowRight } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, CheckCircle, Loader2, ChevronDown, ArrowRight, X, Shield } from 'lucide-react'
 
 export default function RegisterPage() {
   const { language } = useLanguage()
@@ -33,6 +34,7 @@ export default function RegisterPage() {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
   // Role-specific data - MINIMAL fields only
   const [roleData, setRoleData] = useState<any>({
@@ -186,9 +188,30 @@ export default function RegisterPage() {
         transition={{ duration: 0.5 }}
         className="relative max-w-2xl mx-auto"
       >
-        {/* Header */}
+        {/* Header with Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">TF1</h1>
+          <motion.div 
+            className="flex justify-center mb-4"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="relative w-24 h-24 bg-gradient-to-br from-blue-600 via-cyan-500 to-green-500 rounded-2xl p-1 shadow-lg">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="TF1 Logo"
+                  width={80}
+                  height={80}
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+          </motion.div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 bg-clip-text text-transparent mb-2">
+            TF1 JOBS
+          </h1>
           <p className="text-gray-600">
             {language === 'ar' ? 'انضم إلى منصة التوظيف الرياضي' : 'Join the Sports Career Platform'}
           </p>
@@ -637,9 +660,14 @@ export default function RegisterPage() {
                   <label className="flex items-start gap-2 cursor-pointer mt-6">
                     <input type="checkbox" className="rounded mt-1" required />
                     <span className="text-sm text-gray-600">
-                      {language === 'ar' 
-                        ? 'أوافق على شروط الخدمة وسياسة الخصوصية' 
-                        : 'I agree to Terms of Service and Privacy Policy'}
+                      {language === 'ar' ? 'أوافق على ' : 'I agree to '}
+                      <button
+                        type="button"
+                        onClick={() => setShowPrivacyModal(true)}
+                        className="text-blue-600 hover:text-blue-700 underline font-medium"
+                      >
+                        {language === 'ar' ? 'سياسة الخصوصية وشروط الخدمة' : 'Privacy Policy and Terms of Service'}
+                      </button>
                     </span>
                   </label>
 
@@ -690,6 +718,205 @@ export default function RegisterPage() {
           <LanguageSelector />
         </div>
       </motion.div>
+
+      {/* Privacy Policy Modal */}
+      <AnimatePresence>
+        {showPrivacyModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowPrivacyModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+              dir={language === 'ar' ? 'rtl' : 'ltr'}
+            >
+              {/* Modal Header */}
+              <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-8 h-8" />
+                    <h2 className="text-2xl font-bold">
+                      {language === 'ar' ? 'سياسة الخصوصية وشروط الخدمة' : 'Privacy Policy & Terms of Service'}
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => setShowPrivacyModal(false)}
+                    className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 overflow-y-auto max-h-[60vh] text-gray-700 leading-relaxed">
+                {language === 'ar' ? (
+                  <div className="space-y-6">
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">مقدمة</h3>
+                      <p>
+                        مرحباً بك في منصة TF1 للتوظيف الرياضي. نحن نلتزم بحماية خصوصيتك وبياناتك الشخصية وفقاً لنظام حماية البيانات الشخصية في المملكة العربية السعودية الصادر بالمرسوم الملكي رقم (م/19) بتاريخ 9/2/1443هـ.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">البيانات التي نجمعها</h3>
+                      <ul className="list-disc list-inside space-y-2">
+                        <li>البيانات الشخصية: الاسم، البريد الإلكتروني، رقم الهاتف</li>
+                        <li>البيانات المهنية: الخبرات، المؤهلات، الشهادات الرياضية</li>
+                        <li>بيانات الاستخدام: سجل التصفح داخل المنصة</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">أغراض جمع البيانات</h3>
+                      <ul className="list-disc list-inside space-y-2">
+                        <li>تقديم خدمات التوظيف الرياضي</li>
+                        <li>التواصل معك بشأن الفرص الوظيفية</li>
+                        <li>تحسين تجربة المستخدم</li>
+                        <li>الامتثال للمتطلبات القانونية</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">حقوقك</h3>
+                      <p>وفقاً لنظام حماية البيانات الشخصية السعودي، لديك الحق في:</p>
+                      <ul className="list-disc list-inside space-y-2 mt-2">
+                        <li>الوصول إلى بياناتك الشخصية</li>
+                        <li>تصحيح البيانات غير الدقيقة</li>
+                        <li>حذف بياناتك (في حالات معينة)</li>
+                        <li>الاعتراض على معالجة بياناتك</li>
+                        <li>سحب الموافقة في أي وقت</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">أمان البيانات</h3>
+                      <p>
+                        نتخذ إجراءات أمنية مناسبة لحماية بياناتك من الوصول غير المصرح به أو التعديل أو الإفشاء أو الإتلاف، بما يتوافق مع معايير الأمن السيبراني في المملكة العربية السعودية.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">الإفصاح عن البيانات</h3>
+                      <p>
+                        لن نشارك بياناتك الشخصية مع أطراف ثالثة إلا في الحالات التالية:
+                      </p>
+                      <ul className="list-disc list-inside space-y-2 mt-2">
+                        <li>بموافقتك الصريحة</li>
+                        <li>للامتثال للمتطلبات القانونية</li>
+                        <li>لتنفيذ العقود المبرمة معك</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">التواصل معنا</h3>
+                      <p>
+                        لأي استفسارات حول سياسة الخصوصية أو ممارسة حقوقك، يرجى التواصل معنا عبر البريد الإلكتروني: privacy@tf1jobs.com
+                      </p>
+                    </section>
+
+                    <section className="bg-blue-50 p-4 rounded-lg">
+                      <p className="text-sm text-blue-800">
+                        هذه السياسة متوافقة مع نظام حماية البيانات الشخصية في المملكة العربية السعودية ولوائحه التنفيذية.
+                      </p>
+                    </section>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Introduction</h3>
+                      <p>
+                        Welcome to TF1 Sports Employment Platform. We are committed to protecting your privacy and personal data in accordance with the Personal Data Protection Law of the Kingdom of Saudi Arabia, issued by Royal Decree No. (M/19) dated 9/2/1443H.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Data We Collect</h3>
+                      <ul className="list-disc list-inside space-y-2">
+                        <li>Personal Data: Name, email, phone number</li>
+                        <li>Professional Data: Experience, qualifications, sports certifications</li>
+                        <li>Usage Data: Browsing history within the platform</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Purpose of Data Collection</h3>
+                      <ul className="list-disc list-inside space-y-2">
+                        <li>Providing sports employment services</li>
+                        <li>Communicating with you about job opportunities</li>
+                        <li>Improving user experience</li>
+                        <li>Compliance with legal requirements</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Your Rights</h3>
+                      <p>Under the Saudi Personal Data Protection Law, you have the right to:</p>
+                      <ul className="list-disc list-inside space-y-2 mt-2">
+                        <li>Access your personal data</li>
+                        <li>Correct inaccurate data</li>
+                        <li>Delete your data (in certain cases)</li>
+                        <li>Object to data processing</li>
+                        <li>Withdraw consent at any time</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Data Security</h3>
+                      <p>
+                        We implement appropriate security measures to protect your data from unauthorized access, modification, disclosure, or destruction, in compliance with cybersecurity standards in the Kingdom of Saudi Arabia.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Data Disclosure</h3>
+                      <p>
+                        We will not share your personal data with third parties except in the following cases:
+                      </p>
+                      <ul className="list-disc list-inside space-y-2 mt-2">
+                        <li>With your explicit consent</li>
+                        <li>To comply with legal requirements</li>
+                        <li>To execute contracts with you</li>
+                      </ul>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Contact Us</h3>
+                      <p>
+                        For any inquiries about our privacy policy or to exercise your rights, please contact us at: privacy@tf1jobs.com
+                      </p>
+                    </section>
+
+                    <section className="bg-blue-50 p-4 rounded-lg">
+                      <p className="text-sm text-blue-800">
+                        This policy complies with the Personal Data Protection Law of the Kingdom of Saudi Arabia and its implementing regulations.
+                      </p>
+                    </section>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t bg-gray-50">
+                <Button
+                  onClick={() => setShowPrivacyModal(false)}
+                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-2.5 rounded-lg"
+                >
+                  {language === 'ar' ? 'فهمت، أغلق' : 'I Understand, Close'}
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
