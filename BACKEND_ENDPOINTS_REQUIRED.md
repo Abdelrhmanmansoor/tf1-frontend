@@ -10,115 +10,130 @@
 ### 2. Permissions
 **GET** `/api/v1/leader/permissions`
 - Returns: Array of all available permissions
-- Fields: id, name, description, category
 
-### 3. Roles
 **GET** `/api/v1/leader/roles`
 - Returns: Array of all roles
-- Fields: id, name, description, permissions[]
 
 **PUT** `/api/v1/leader/roles/{roleId}/permissions`
 - Body: `{ permissions: string[] }`
-- Returns: Updated role
 
-### 4. Users Management
+### 3. Users & Teams
 **GET** `/api/v1/leader/users?page=1&limit=50`
-- Returns: `{ users: [], total: number }`
-
-### 5. Teams Management
 **GET** `/api/v1/leader/teams`
-- Returns: Array of teams
-
 **POST** `/api/v1/leader/teams/members`
-- Body: `{ userId: string, permissions: string[] }`
-- Returns: Created team member
-
 **PUT** `/api/v1/leader/teams/members/{memberId}/permissions`
-- Body: `{ permissions: string[] }`
-- Returns: Updated member
 
-### 6. Audit Logs
+### 4. System
 **GET** `/api/v1/leader/audit-logs?page=1&limit=50`
-- Returns: `{ logs: [], total: number }`
-- Fields: id, action, actor, target, timestamp, status
-
-### 7. Settings
 **GET** `/api/v1/leader/settings`
-- Returns: Settings object
-
 **PUT** `/api/v1/leader/settings`
-- Body: Settings object
-- Returns: Updated settings
-
-### 8. Analytics
-**GET** `/api/v1/leader/analytics?startDate=&endDate=`
-- Returns: Analytics data
+**GET** `/api/v1/leader/analytics`
 
 ---
 
 ## Team Dashboard Endpoints
 
-### 1. Team Permissions
 **GET** `/api/v1/team/permissions`
-- Returns: Array of permissions assigned to this team member
-- Fields: id, name, description, enabled, category
-
-### 2. Team Dashboard
 **GET** `/api/v1/team/dashboard`
-- Returns: `{ permissions, memberInfo, accessibleModules }`
-
-### 3. Permission Check
 **GET** `/api/v1/team/permissions/{permissionId}/check`
-- Returns: `{ hasPermission: boolean }`
-
-### 4. Conditional Endpoints (based on permissions)
-
 **GET** `/api/v1/team/users?page=1&limit=50` (if users.view permission)
-- Returns: `{ users: [], total: number }`
-
 **GET** `/api/v1/team/content?page=1&limit=50` (if content.view permission)
-- Returns: `{ content: [], total: number }`
-
 **GET** `/api/v1/team/jobs?page=1&limit=50` (if jobs.view permission)
-- Returns: `{ jobs: [], total: number }`
-
 **GET** `/api/v1/team/applications?page=1&limit=50` (if applications.view permission)
-- Returns: `{ applications: [], total: number }`
-
 **GET** `/api/v1/team/notifications` (if notifications.view permission)
-- Returns: Array of notifications
-
 **GET** `/api/v1/team/messages` (if messages.view permission)
-- Returns: Array of messages
-
-### 5. Access Denied Logging
 **POST** `/api/v1/team/access-denied`
-- Body: `{ reason: string }`
-- Purpose: Log when team member tries to access restricted resource
 
 ---
 
-## Key Implementation Notes
+## NEW: Job Application & Notifications Endpoints
 
-1. **All endpoints require Bearer token authentication**
-2. **Team endpoints must check permissions on backend before returning data**
-3. **404 pages should NOT be thrown - use access-denied instead**
-4. **Team permissions are permission-by-permission (not role-based)**
-5. **Leader has 100% access to everything**
+### Job Application
+**POST** `/api/v1/jobs/{jobId}/apply`
+- Body: FormData with resume file, whatsapp, portfolio, linkedin, coverLetter
+- Returns: Application confirmation with ID
+- Triggers: Real-time notification to club
+
+### Notifications - Applicant Side
+**GET** `/api/v1/notifications/jobs?page=1&limit=20`
+- Returns: List of job-related notifications for current user
+- Fields: _id, userId, jobId, type, title, titleAr, message, messageAr, read, createdAt
+
+**PUT** `/api/v1/notifications/{notificationId}/read`
+- Marks single notification as read
+
+**PUT** `/api/v1/notifications/mark-all-read`
+- Marks all notifications as read
+
+**GET** `/api/v1/notifications/unread-count`
+- Returns: `{ count: number }`
+
+**DELETE** `/api/v1/notifications/{notificationId}`
+- Deletes a notification
+
+### Notifications - Club Side
+**GET** `/api/v1/notifications/club/applications?page=1&limit=20`
+- Returns: List of applications received for club's jobs
+- Fields: Same as notifications + applicantData, jobData
+
+### Send Notifications
+**POST** `/api/v1/notifications/job-application`
+- Body: `{ jobId, applicantInfo: { name, email, whatsapp, portfolio, linkedin, coverLetter } }`
+- Purpose: Send instant notifications to both applicant and club
 
 ---
 
-## Example Request
+## Real-time WebSocket Events
 
-```bash
-curl -X GET https://tf1-backend.onrender.com/api/v1/leader/dashboard \
-  -H "Authorization: Bearer {token}" \
-  -H "Content-Type: application/json"
-```
+**Event:** `application_submitted`
+- Sent to: Applicant (browser)
+- Data: `{ jobId, jobTitle, clubName, timestamp }`
+
+**Event:** `application_received`
+- Sent to: Club (admin dashboard)
+- Data: `{ jobId, jobTitle, applicantName, applicantEmail, timestamp }`
 
 ---
 
 ## Implementation Status
-- ✅ Frontend API services created: `services/leader.ts`, `services/team.ts`
-- ⏳ Backend endpoints: AWAITING IMPLEMENTATION
-- ✅ Frontend dashboard pages: READY at `/dashboard/leader` and `/dashboard/team`
+
+### Frontend (100% Ready)
+- ✅ `services/leader.ts` - Leader dashboard API calls
+- ✅ `services/team.ts` - Team dashboard API calls
+- ✅ `services/notifications.ts` - Notification management
+- ✅ `components/JobApplicationForm.tsx` - Enhanced job application form
+- ✅ Dashboard pages: `/dashboard/leader`, `/dashboard/team`
+- ✅ Job application page with real-time notifications
+
+### Backend (AWAITING IMPLEMENTATION)
+- ⏳ Leader dashboard endpoints
+- ⏳ Team dashboard endpoints  
+- ⏳ Job application endpoint with validation
+- ⏳ Notification service with WebSocket support
+- ⏳ Notification endpoints for CRUD operations
+- ⏳ Real-time notification broadcasting via Socket.io
+
+---
+
+## Key Features
+
+1. **Job Application**
+   - Resume upload (PDF, DOC, DOCX - max 10MB)
+   - Contact info (WhatsApp, LinkedIn, Portfolio)
+   - Optional cover letter
+   - Duplicate application prevention (409 status)
+
+2. **Instant Notifications**
+   - Applicant gets confirmation notification
+   - Club gets application notification immediately
+   - Real-time updates via WebSocket
+
+3. **Notification Center**
+   - View all job notifications
+   - Mark as read / mark all as read
+   - Delete notifications
+   - Unread count badge
+
+4. **Bilingual Support**
+   - Arabic and English notifications
+   - RTL/LTR layout support
