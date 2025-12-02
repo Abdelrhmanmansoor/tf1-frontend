@@ -43,6 +43,16 @@ The TF1 platform is built as a Next.js 15 web application utilizing the App Rout
 -   Image handling is integrated with Cloudinary.
 -   CORS headers and security configurations are managed within `next.config.js`.
 
+## Recent Changes (December 2025)
+
+-   **Join a Match Feature**: Added complete "Join a Match" functionality
+    -   `/matches` - Main matches page with filters (region, sport, level)
+    -   `/matches/my-matches` - User's joined matches page
+    -   Services: `services/matches.ts` with all API calls
+    -   Types: `types/match.ts` for TypeScript definitions
+-   **Navigation**: Added "Matches" link in navbar (Arabic: المباريات)
+-   **Registration**: Added TF1 logo with gradient design and privacy policy modal
+
 ## External Dependencies
 
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)
