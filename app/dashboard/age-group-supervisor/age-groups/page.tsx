@@ -23,8 +23,10 @@ import {
   ArrowLeft,
   GraduationCap,
   Calendar,
-  X
+  X,
+  AlertCircle
 } from 'lucide-react'
+import { toast } from 'sonner'
 import Link from 'next/link'
 
 interface AgeGroup {
@@ -70,7 +72,10 @@ function AgeGroupsContent() {
   }
 
   const handleAddGroup = async () => {
-    if (!newGroup.name || !newGroup.nameAr) return
+    if (!newGroup.name || !newGroup.nameAr) {
+      toast.error(language === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill all fields')
+      return
+    }
     
     try {
       setSaving(true)
@@ -83,11 +88,22 @@ function AgeGroupsContent() {
         coachId: '',
         coachName: ''
       })
+      toast.success(language === 'ar' ? 'تمت إضافة الفئة بنجاح' : 'Age group added successfully')
       setShowAddModal(false)
       setNewGroup({ name: '', nameAr: '', minAge: 6, maxAge: 8 })
       fetchAgeGroups()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating age group:', error)
+      const isBackendError = error?.response?.status === 404 || error?.message?.includes('Network')
+      if (isBackendError) {
+        toast.error(
+          language === 'ar' 
+            ? 'الخدمة غير متاحة حالياً - يرجى التواصل مع مطور الباك اند' 
+            : 'Service unavailable - please contact backend developer'
+        )
+      } else {
+        toast.error(language === 'ar' ? 'حدث خطأ أثناء الإضافة' : 'Error adding age group')
+      }
     } finally {
       setSaving(false)
     }
