@@ -229,7 +229,7 @@ export default function MatchesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar />
+      <Navbar activeMode="application" activePage="matches" />
 
       {/* Hero Section */}
       <section className="relative py-16 overflow-hidden">

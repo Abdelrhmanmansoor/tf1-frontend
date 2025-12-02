@@ -129,7 +129,7 @@ export default function MyMatchesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar />
+      <Navbar activeMode="application" activePage="matches" />
 
       {/* Header */}
       <section className="py-12 bg-gradient-to-r from-blue-600 via-cyan-600 to-green-600">

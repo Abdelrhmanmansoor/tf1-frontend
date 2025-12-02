@@ -22,6 +22,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const navItems = [
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
+    { id: 'matches', label: t('matches') },
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
     { id: 'blog', label: t('blog') },
