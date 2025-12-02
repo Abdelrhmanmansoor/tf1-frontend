@@ -34,15 +34,13 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  // Role-specific data
+  // Role-specific data - MINIMAL fields only
   const [roleData, setRoleData] = useState<any>({
     // Player fields
     city: '',
-    district: '',
     age: '',
     position: '',
     level: '',
-    league: '',
     
     // Coach fields
     experience: '',
@@ -52,12 +50,13 @@ export default function RegisterPage() {
     // Club fields
     organizationName: '',
     organizationType: 'club',
-    established: '',
-    registrationNumber: '',
     
-    // Job fields
-    companyName: '',
-    industry: '',
+    // Specialist fields
+    specialization: '',
+    
+    // Admin fields
+    department: '',
+    adminPosition: '',
   })
 
   // Select options
@@ -82,8 +81,8 @@ export default function RegisterPage() {
     [{ value: 'club', label: 'Club' }, { value: 'academy', label: 'Academy' }, { value: 'federation', label: 'Federation' }]
 
   const saudiCities = language === 'ar' ?
-    ['الرياض', 'جدة', 'الدمام', 'الدقهلية', 'أبها', 'الباحة'] :
-    ['Riyadh', 'Jeddah', 'Dammam', 'Daqahliyyah', 'Abha', 'Al-Baha']
+    ['الرياض', 'جدة', 'الدمام', 'الخبر', 'الظهران', 'الأحساء', 'أبها', 'الباحة', 'عسير', 'نجران', 'جيزان', 'تبوك', 'حائل', 'القصيم', 'الجوف', 'المدينة المنورة', 'مكة المكرمة', 'الطائف', 'ينبع', 'رابغ', 'الجبيل', 'الزلفي', 'شرورة', 'خميس مشيط', 'المجمعة', 'الشمالية', 'الحدود الشمالية', 'صفوى', 'حفر الباطن', 'بيشة', 'سكاكا'] :
+    ['Riyadh', 'Jeddah', 'Dammam', 'Khobar', 'Dhahran', 'Al-Ahsa', 'Abha', 'Al-Baha', 'Asir', 'Najran', 'Jazan', 'Tabuk', 'Ha\'il', 'Qassim', 'Al-Jouf', 'Madinah', 'Makkah', 'Taif', 'Yanbu', 'Rabigh', 'Jubail', 'Al-Zulfi', 'Sharurah', 'Khamis Mushait', 'Al-Majmaah', 'Northern Region', 'Northern Borders', 'Safwa', 'Hafar Al-Batin', 'Bisha', 'Sakaka']
 
   const handleStep1Continue = () => {
     if (!basicData.role) {
@@ -117,11 +116,37 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const registrationData = {
-        ...basicData,
-        ...roleData,
+      // Build clean registration data - ONLY what backend needs
+      const registrationData: any = {
+        email: basicData.email,
+        password: basicData.password,
+        firstName: basicData.firstName,
+        lastName: basicData.lastName,
+        phone: basicData.phone,
+        role: basicData.role,
       }
 
+      // Add role-specific fields only if they have values
+      if (basicData.role === 'player') {
+        registrationData.city = roleData.city
+        registrationData.age = roleData.age
+        registrationData.position = roleData.position
+        registrationData.level = roleData.level
+      } else if (basicData.role === 'coach') {
+        registrationData.experience = roleData.experience
+        registrationData.trainingType = roleData.trainingType
+        registrationData.certificates = roleData.certificates.length > 0 ? roleData.certificates.join(',') : null
+      } else if (basicData.role === 'club') {
+        registrationData.organizationName = roleData.organizationName
+        registrationData.organizationType = roleData.organizationType
+      } else if (basicData.role === 'specialist') {
+        registrationData.specialization = roleData.specialization
+      } else if (['administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary'].includes(basicData.role)) {
+        registrationData.department = roleData.department
+        registrationData.position = roleData.adminPosition
+      }
+
+      console.log('[REGISTER] Sending data:', registrationData)
       await register(registrationData)
       
       // Redirect to login or verification
@@ -129,6 +154,7 @@ export default function RegisterPage() {
         router.push('/login?registered=true')
       }, 1000)
     } catch (err: any) {
+      console.error('[REGISTER] Error:', err)
       setError(err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed'))
     } finally {
       setLoading(false)
@@ -402,25 +428,27 @@ export default function RegisterPage() {
                   {/* Player Fields */}
                   {basicData.role === 'player' && (
                     <>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'المدينة' : 'City'} *
+                        </label>
+                        <select
+                          value={roleData.city}
+                          onChange={(e) => setRoleData({ ...roleData, city: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                          required
+                        >
+                          <option value="">{language === 'ar' ? 'اختر مدينة' : 'Select a city'}</option>
+                          {saudiCities.map((city) => (
+                            <option key={city} value={city}>{city}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'المدينة' : 'City'}
-                          </label>
-                          <select
-                            value={roleData.city}
-                            onChange={(e) => setRoleData({ ...roleData, city: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                          >
-                            <option value="">{language === 'ar' ? 'اختر' : 'Select'}</option>
-                            {saudiCities.map((city) => (
-                              <option key={city} value={city}>{city}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'العمر' : 'Age'}
+                            {language === 'ar' ? 'العمر' : 'Age'} *
                           </label>
                           <Input
                             type="number"
@@ -429,19 +457,18 @@ export default function RegisterPage() {
                             onChange={(e) => setRoleData({ ...roleData, age: e.target.value })}
                             min="16"
                             max="100"
+                            required
                           />
                         </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'المركز' : 'Position'}
+                            {language === 'ar' ? 'المركز' : 'Position'} *
                           </label>
                           <select
                             value={roleData.position}
                             onChange={(e) => setRoleData({ ...roleData, position: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                            required
                           >
                             <option value="">{language === 'ar' ? 'اختر' : 'Select'}</option>
                             {playerPositions.map((pos) => (
@@ -451,12 +478,13 @@ export default function RegisterPage() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'المستوى' : 'Level'}
+                            {language === 'ar' ? 'المستوى' : 'Level'} *
                           </label>
                           <select
                             value={roleData.level}
                             onChange={(e) => setRoleData({ ...roleData, level: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                            required
                           >
                             <option value="">{language === 'ar' ? 'اختر' : 'Select'}</option>
                             {playerLevels.map((level) => (
@@ -533,44 +561,31 @@ export default function RegisterPage() {
                     <>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          {language === 'ar' ? 'اسم المنظمة' : 'Organization Name'}
+                          {language === 'ar' ? 'اسم النادي/المنظمة' : 'Organization Name'} *
                         </label>
                         <Input
                           type="text"
                           placeholder={language === 'ar' ? 'اسم النادي' : 'Club name'}
                           value={roleData.organizationName}
                           onChange={(e) => setRoleData({ ...roleData, organizationName: e.target.value })}
+                          required
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'النوع' : 'Type'}
-                          </label>
-                          <select
-                            value={roleData.organizationType}
-                            onChange={(e) => setRoleData({ ...roleData, organizationType: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
-                          >
-                            {organizationTypes.map((type) => (
-                              <option key={type.value} value={type.value}>{type.label}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            {language === 'ar' ? 'سنة التأسيس' : 'Established Year'}
-                          </label>
-                          <Input
-                            type="number"
-                            placeholder="2020"
-                            value={roleData.established}
-                            onChange={(e) => setRoleData({ ...roleData, established: e.target.value })}
-                            min="1900"
-                            max={new Date().getFullYear()}
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'نوع المنظمة' : 'Organization Type'} *
+                        </label>
+                        <select
+                          value={roleData.organizationType}
+                          onChange={(e) => setRoleData({ ...roleData, organizationType: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                          required
+                        >
+                          {organizationTypes.map((type) => (
+                            <option key={type.value} value={type.value}>{type.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </>
                   )}
@@ -611,8 +626,8 @@ export default function RegisterPage() {
                         <Input
                           type="text"
                           placeholder={language === 'ar' ? 'مثال: مدير' : 'E.g., Manager'}
-                          value={roleData.position || ''}
-                          onChange={(e) => setRoleData({ ...roleData, position: e.target.value })}
+                          value={roleData.adminPosition || ''}
+                          onChange={(e) => setRoleData({ ...roleData, adminPosition: e.target.value })}
                         />
                       </div>
                     </>

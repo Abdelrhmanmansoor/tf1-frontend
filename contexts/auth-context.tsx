@@ -11,7 +11,7 @@ interface User {
   email: string
   firstName: string
   lastName: string
-  role: 'player' | 'coach' | 'club' | 'specialist'
+  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
   isEmailVerified: boolean
 }
 
