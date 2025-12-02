@@ -63,6 +63,12 @@ The TF1 platform is built as a Next.js 15 web application utilizing the App Rout
 
 The following endpoints need to be implemented on the backend for full Age Group Supervisor functionality:
 
+### Public Player Registration (للتسجيل العام)
+- `GET /api/v1/age-groups` - List all available age groups (public endpoint)
+- `POST /api/v1/player-registrations` - Submit new player registration request
+  - Body: `{ playerName, playerFirstName, playerLastName, dateOfBirth, age, parentName, parentPhone, parentEmail, requestedAgeGroup, requestedAgeGroupId, notes, status: 'pending', submittedAt }`
+  - This creates a pending registration that appears in supervisor's registrations page
+
 ### Dashboard
 - `GET /api/v1/age-group-supervisor/dashboard` - Returns stats: totalAgeGroups, totalPlayers, totalCoaches, upcomingMatches, activeTrainings, pendingRegistrations
 
