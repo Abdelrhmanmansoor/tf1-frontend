@@ -180,3 +180,61 @@ The following endpoints need to be implemented on the backend for full Secretary
 - `GET /api/v1/secretary/calls` - List call logs
 - `POST /api/v1/secretary/calls` - Add new call
   - Body: `{ type, contactName, contactPhone, date, time, duration, notes, status }`
+
+## Sports Director Dashboard Backend Endpoints (Required)
+
+The following endpoints need to be implemented on the backend for full Sports Director functionality:
+
+### Dashboard
+- `GET /api/v1/sports-director/dashboard` - Returns stats: activePrograms, totalAthletes, coachingStaff, upcomingEvents, winRate, trainingHours, pendingApprovals, recentMatches
+
+### Programs CRUD
+- `GET /api/v1/sports-director/programs` - List all programs (supports ?status=active&type=training filters)
+- `GET /api/v1/sports-director/programs/:id` - Get single program
+- `POST /api/v1/sports-director/programs` - Create new program
+  - Body: `{ name, nameAr, type, description, descriptionAr, startDate, endDate, participants, maxParticipants, progress, status, coaches }`
+- `PATCH /api/v1/sports-director/programs/:id` - Update program
+- `DELETE /api/v1/sports-director/programs/:id` - Delete program
+- `PATCH /api/v1/sports-director/programs/:id/status` - Update program status only
+
+### Coaches Management
+- `GET /api/v1/sports-director/coaches` - List all coaches (supports ?status=active&specialization=xxx filters)
+- `GET /api/v1/sports-director/coaches/:id` - Get single coach details
+- `GET /api/v1/sports-director/coaches/performance` - Get all coaches performance stats
+- `GET /api/v1/sports-director/coaches/:id/performance` - Get specific coach performance with history
+- `PATCH /api/v1/sports-director/coaches/:id/rating` - Update coach rating (body: { rating, notes })
+- `POST /api/v1/sports-director/coaches/:id/assign` - Assign coach to program (body: { programId })
+- `POST /api/v1/sports-director/coaches/:id/message` - Send message to coach (body: { subject, body })
+
+### Athletes Management
+- `GET /api/v1/sports-director/athletes` - List all athletes (supports ?team=xxx&coach=xxx&status=active&category=xxx filters)
+- `GET /api/v1/sports-director/athletes/:id` - Get single athlete details
+- `GET /api/v1/sports-director/athletes/:id/performance` - Get athlete performance history
+- `GET /api/v1/sports-director/athletes/:id/attendance` - Get athlete attendance records
+
+### Technical Events
+- `GET /api/v1/sports-director/events` - List all events (supports ?type=match&status=scheduled filters)
+- `GET /api/v1/sports-director/events/:id` - Get single event
+- `POST /api/v1/sports-director/events` - Create new event
+  - Body: `{ title, titleAr, type, date, time, location, locationAr, description, descriptionAr, participants, status }`
+- `PATCH /api/v1/sports-director/events/:id` - Update event
+- `DELETE /api/v1/sports-director/events/:id` - Delete event
+
+### Analytics & Reports
+- `GET /api/v1/sports-director/analytics` - Get general analytics (supports ?period=week|month|quarter|year)
+- `GET /api/v1/sports-director/analytics/training` - Get training-specific analytics
+- `GET /api/v1/sports-director/analytics/matches` - Get match-specific analytics
+- `GET /api/v1/sports-director/reports` - List generated reports (supports ?type=performance|attendance|training|match)
+- `POST /api/v1/sports-director/reports/generate` - Generate new report (body: { type, period })
+
+### Win Rate & Achievements
+- `GET /api/v1/sports-director/win-rate` - Get win rate stats: { winRate, totalMatches, wins, losses, draws }
+- `GET /api/v1/sports-director/achievements` - Get list of achievements
+
+### Training Hours
+- `GET /api/v1/sports-director/training-hours` - Get training hours summary (supports ?period=xxx)
+
+### Notifications
+- `GET /api/v1/sports-director/notifications` - Get all notifications
+- `PATCH /api/v1/sports-director/notifications/:id/read` - Mark notification as read
+- `PATCH /api/v1/sports-director/notifications/read-all` - Mark all notifications as read
