@@ -145,6 +145,79 @@ The landing page now includes a real-time Jobs Ticker Bar that displays live job
 **Expected Response Format:**
 `{ success: boolean, data: JobEvent[], total: number }`
 
+### Player Training Requests System Backend Endpoints (Required)
+
+The Player Dashboard now includes a Training Requests System for players to request training sessions from coaches. The following backend endpoints are required:
+
+**Training Requests Management:**
+-   `GET /players/training-requests` - Get player's training requests (query: status, page, limit)
+-   `GET /players/training-requests/:id` - Get specific training request details
+-   `POST /players/training-requests` - Create new training request
+-   `DELETE /players/training-requests/:id` - Cancel training request (only pending requests)
+-   `GET /players/training-requests/active/count` - Get count of active requests (pending + approved)
+
+**Enhanced Training Sessions:**
+-   `GET /players/training-sessions/enhanced` - Get enhanced training sessions with full details (query: status, from, to, limit)
+-   `GET /players/training-sessions/:id` - Get specific training session details
+-   `POST /players/training-sessions/:id/confirm` - Confirm attendance for a session
+-   `POST /players/training-sessions/:id/excuse` - Request excuse for a session
+
+**Training Request Data Structure:**
+```typescript
+{
+  id: string
+  playerId: string
+  playerName: string
+  playerNameAr?: string
+  coachId: string
+  coach: CoachInfo
+  type: 'private' | 'group' | 'evaluation' | 'trial'
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed'
+  title: string
+  titleAr?: string
+  description?: string
+  descriptionAr?: string
+  preferredDates: string[]
+  preferredTimeSlots: { startTime: string, endTime: string }[]
+  location?: string
+  locationAr?: string
+  duration: number
+  notes?: string
+  notesAr?: string
+  coachNotes?: string
+  coachNotesAr?: string
+  rejectionReason?: string
+  rejectionReasonAr?: string
+  scheduledDate?: string
+  scheduledTime?: string
+  createdAt: string
+  updatedAt: string
+  respondedAt?: string
+}
+```
+
+**Enhanced Training Session Data Structure:**
+```typescript
+{
+  ...TrainingSession,
+  coach: CoachInfo
+  program?: TrainingProgram
+  participants?: number
+  maxParticipants?: number
+  objectives?: string[]
+  objectivesAr?: string[]
+  equipment?: string[]
+  equipmentAr?: string[]
+  intensity?: 'low' | 'medium' | 'high'
+  weather?: string
+}
+```
+
+**Expected Response Formats:**
+- Training Requests List: `{ success: boolean, data: { requests: TrainingRequest[], pagination: { total, page, limit, totalPages } } }`
+- Single Request: `{ success: boolean, data: TrainingRequest }`
+- Enhanced Sessions: `{ success: boolean, data: EnhancedTrainingSession[] }`
+
 ## External Dependencies
 
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)
