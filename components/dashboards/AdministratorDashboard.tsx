@@ -33,10 +33,14 @@ import {
   Activity,
   ClipboardList,
   Mail,
-  MessageSquare
+  MessageSquare,
+  Check,
+  X,
+  AlertTriangle
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import administratorService from '@/services/administrator'
 
 interface DashboardStats {
   totalUsers: number
@@ -92,29 +96,11 @@ const AdministratorDashboard = () => {
         setLoading(true)
         setError(null)
         
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        setStats({
-          totalUsers: 1250,
-          activeUsers: 890,
-          pendingApprovals: 15,
-          totalClubs: 45,
-          totalCoaches: 180,
-          totalPlayers: 820,
-          recentRegistrations: 28,
-          systemAlerts: 3
-        })
+        const dashboardStats = await administratorService.getDashboard()
+        setStats(dashboardStats)
 
-        setPendingApprovals([
-          { id: '1', name: 'أحمد محمد', email: 'ahmed@example.com', role: 'coach', date: '2024-01-15', status: 'pending' },
-          { id: '2', name: 'نادي الاتحاد', email: 'ittihad@example.com', role: 'club', date: '2024-01-14', status: 'pending' },
-          { id: '3', name: 'سارة علي', email: 'sara@example.com', role: 'specialist', date: '2024-01-13', status: 'pending' },
-        ])
-
-        setSystemAlerts([
-          { id: '1', type: 'warning', message: 'High server load detected', messageAr: 'تم اكتشاف حمل عالي على الخادم', date: '2024-01-15' },
-          { id: '2', type: 'info', message: 'System maintenance scheduled', messageAr: 'صيانة مجدولة للنظام', date: '2024-01-16' },
-        ])
+        const approvals = await administratorService.getPendingApprovals()
+        setPendingApprovals(approvals)
 
       } catch (err: any) {
         console.error('Error fetching dashboard data:', err)
@@ -126,6 +112,32 @@ const AdministratorDashboard = () => {
 
     fetchDashboardData()
   }, [])
+
+  const handleApproveUser = async (userId: string) => {
+    try {
+      await administratorService.approveUser(userId)
+      setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
+    } catch (err: any) {
+      alert(language === 'ar' ? 'فشل الموافقة على المستخدم' : 'Failed to approve user')
+    }
+  }
+
+  const handleRejectUser = async (userId: string) => {
+    try {
+      await administratorService.rejectUser(userId, 'تم الرفض')
+      setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
+    } catch (err: any) {
+      alert(language === 'ar' ? 'فشل رفض المستخدم' : 'Failed to reject user')
+    }
+  }
+
+  const handleBlockUser = async (userId: string) => {
+    try {
+      await administratorService.blockUser(userId, 'تم الحظر من قبل الإدارة')
+    } catch (err: any) {
+      alert(language === 'ar' ? 'فشل حظر المستخدم' : 'Failed to block user')
+    }
+  }
 
   const displayName = user?.firstName || language === 'ar' ? 'الإداري' : 'Administrator'
 
@@ -292,10 +304,19 @@ const AdministratorDashboard = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button size="sm" className="bg-green-500 hover:bg-green-600">
+                    <Button 
+                      size="sm" 
+                      className="bg-green-500 hover:bg-green-600"
+                      onClick={() => handleApproveUser(approval.id)}
+                    >
                       <CheckCircle className="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="outline" className="text-red-500 border-red-500 hover:bg-red-50">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-red-500 border-red-500 hover:bg-red-50"
+                      onClick={() => handleRejectUser(approval.id)}
+                    >
                       <XCircle className="w-4 h-4" />
                     </Button>
                   </div>
