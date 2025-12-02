@@ -38,11 +38,11 @@ const statusConfig: Record<TrainingRequestStatus, {
     bgColor: 'bg-amber-100',
     label: { ar: 'قيد الانتظار', en: 'Pending' }
   },
-  approved: {
+  accepted: {
     icon: CheckCircle,
     color: 'text-green-600',
     bgColor: 'bg-green-100',
-    label: { ar: 'مقبول', en: 'Approved' }
+    label: { ar: 'مقبول', en: 'Accepted' }
   },
   rejected: {
     icon: XCircle,
@@ -87,7 +87,7 @@ export default function ActiveRequestsWidget({ language, onNewRequest }: ActiveR
       })
       
       const activeRequests = response.requests.filter(
-        r => r.status === 'pending' || r.status === 'approved'
+        r => r.status === 'pending' || r.status === 'accepted'
       )
       setRequests(activeRequests)
       setBackendAvailable(true)

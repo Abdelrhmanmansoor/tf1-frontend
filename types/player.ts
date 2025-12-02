@@ -523,7 +523,7 @@ export interface TeamMember {
 // Training Request System Types
 // ============================================
 
-export type TrainingRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed'
+export type TrainingRequestStatus = 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'completed'
 export type TrainingRequestType = 'private' | 'group' | 'evaluation' | 'trial'
 
 export interface TrainingRequest {

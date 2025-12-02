@@ -38,11 +38,11 @@ const statusConfig: Record<TrainingRequestStatus, {
     bgColor: 'bg-amber-100',
     label: { ar: 'قيد الانتظار', en: 'Pending' }
   },
-  approved: {
+  accepted: {
     icon: CheckCircle,
     color: 'text-green-600',
     bgColor: 'bg-green-100',
-    label: { ar: 'مقبول', en: 'Approved' }
+    label: { ar: 'مقبول', en: 'Accepted' }
   },
   rejected: {
     icon: XCircle,
@@ -145,7 +145,7 @@ export default function TrainingRequestsPage() {
   const filterOptions: { value: FilterStatus; label: { ar: string; en: string } }[] = [
     { value: 'all', label: { ar: 'الكل', en: 'All' } },
     { value: 'pending', label: { ar: 'قيد الانتظار', en: 'Pending' } },
-    { value: 'approved', label: { ar: 'مقبول', en: 'Approved' } },
+    { value: 'accepted', label: { ar: 'مقبول', en: 'Accepted' } },
     { value: 'rejected', label: { ar: 'مرفوض', en: 'Rejected' } },
     { value: 'completed', label: { ar: 'مكتمل', en: 'Completed' } },
     { value: 'cancelled', label: { ar: 'ملغي', en: 'Cancelled' } }

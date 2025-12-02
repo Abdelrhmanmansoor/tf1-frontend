@@ -172,7 +172,7 @@ The Player Dashboard now includes a Training Requests System for players to requ
   coachId: string
   coach: CoachInfo
   type: 'private' | 'group' | 'evaluation' | 'trial'
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed'
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'completed'
   title: string
   titleAr?: string
   description?: string

@@ -692,7 +692,7 @@ class PlayerService {
    * GET /players/training-requests
    */
   async getTrainingRequests(params?: {
-    status?: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed' | 'all'
+    status?: 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'completed' | 'all'
     page?: number
     limit?: number
   }): Promise<TrainingRequestsResponse> {
