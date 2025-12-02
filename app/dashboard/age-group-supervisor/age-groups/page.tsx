@@ -46,6 +46,8 @@ function AgeGroupsContent() {
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingGroup, setEditingGroup] = useState<AgeGroup | null>(null)
   const [saving, setSaving] = useState(false)
   const [newGroup, setNewGroup] = useState({
     name: '',
@@ -107,6 +109,58 @@ function AgeGroupsContent() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleEditGroup = (group: AgeGroup) => {
+    setEditingGroup(group)
+    setShowEditModal(true)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingGroup) return
+
+    try {
+      setSaving(true)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/groups/${editingGroup.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(editingGroup)
+        }
+      )
+
+      if (response.ok) {
+        toast.success(language === 'ar' ? 'تم تحديث الفئة بنجاح' : 'Age group updated successfully')
+        setShowEditModal(false)
+        setEditingGroup(null)
+        fetchAgeGroups()
+      } else if (response.status === 404) {
+        toast.error(
+          language === 'ar' 
+            ? 'الخدمة غير متاحة - يرجى التواصل مع مطور الباك اند' 
+            : 'Service unavailable - please contact backend developer'
+        )
+      } else {
+        toast.error(language === 'ar' ? 'حدث خطأ أثناء التحديث' : 'Error updating age group')
+      }
+    } catch (error) {
+      console.error('Error updating group:', error)
+      toast.error(
+        language === 'ar' 
+          ? 'الخدمة غير متاحة حالياً' 
+          : 'Service unavailable'
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleViewPlayers = (groupId: string) => {
+    router.push(`/dashboard/age-group-supervisor/players?group=${groupId}`)
   }
 
   const filteredGroups = ageGroups.filter(group =>
@@ -218,16 +272,24 @@ function AgeGroupsContent() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleEditGroup(group)}
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     {language === 'ar' ? 'تعديل' : 'Edit'}
                   </Button>
-                  <Link href={`/dashboard/age-group-supervisor/players?group=${group.id}`} className="flex-1">
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Users className="w-4 h-4 mr-1" />
-                      {language === 'ar' ? 'اللاعبين' : 'Players'}
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleViewPlayers(group.id)}
+                  >
+                    <Users className="w-4 h-4 mr-1" />
+                    {language === 'ar' ? 'اللاعبين' : 'Players'}
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -310,6 +372,104 @@ function AgeGroupsContent() {
                 className="flex-1 bg-green-600 text-white"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (language === 'ar' ? 'إضافة' : 'Add')}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showEditModal && editingGroup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl max-w-md w-full p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                {language === 'ar' ? 'تعديل الفئة السنية' : 'Edit Age Group'}
+              </h2>
+              <button onClick={() => { setShowEditModal(false); setEditingGroup(null); }}>
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {language === 'ar' ? 'الاسم بالإنجليزية' : 'Name (English)'}
+                </label>
+                <Input
+                  value={editingGroup.name}
+                  onChange={(e) => setEditingGroup({ ...editingGroup, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {language === 'ar' ? 'الاسم بالعربية' : 'Name (Arabic)'}
+                </label>
+                <Input
+                  value={editingGroup.nameAr}
+                  onChange={(e) => setEditingGroup({ ...editingGroup, nameAr: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {language === 'ar' ? 'الحد الأدنى للعمر' : 'Min Age'}
+                  </label>
+                  <Input
+                    type="number"
+                    value={editingGroup.ageRange.min}
+                    onChange={(e) => setEditingGroup({ 
+                      ...editingGroup, 
+                      ageRange: { ...editingGroup.ageRange, min: parseInt(e.target.value) }
+                    })}
+                    min={4}
+                    max={20}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {language === 'ar' ? 'الحد الأقصى للعمر' : 'Max Age'}
+                  </label>
+                  <Input
+                    type="number"
+                    value={editingGroup.ageRange.max}
+                    onChange={(e) => setEditingGroup({ 
+                      ...editingGroup, 
+                      ageRange: { ...editingGroup.ageRange, max: parseInt(e.target.value) }
+                    })}
+                    min={4}
+                    max={20}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {language === 'ar' ? 'الحالة' : 'Status'}
+                </label>
+                <select
+                  value={editingGroup.status}
+                  onChange={(e) => setEditingGroup({ ...editingGroup, status: e.target.value as 'active' | 'inactive' })}
+                  className="w-full px-3 py-2 border rounded-lg bg-white"
+                >
+                  <option value="active">{language === 'ar' ? 'نشط' : 'Active'}</option>
+                  <option value="inactive">{language === 'ar' ? 'غير نشط' : 'Inactive'}</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" onClick={() => { setShowEditModal(false); setEditingGroup(null); }} className="flex-1">
+                {language === 'ar' ? 'إلغاء' : 'Cancel'}
+              </Button>
+              <Button 
+                onClick={handleSaveEdit} 
+                disabled={saving}
+                className="flex-1 bg-green-600 text-white"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (language === 'ar' ? 'حفظ' : 'Save')}
               </Button>
             </div>
           </motion.div>

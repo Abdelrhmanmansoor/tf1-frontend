@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import ageGroupSupervisorService from '@/services/age-group-supervisor'
+import { toast } from 'sonner'
 import {
   ArrowLeft,
   Plus,
@@ -34,15 +35,31 @@ interface TrainingSession {
   status: 'scheduled' | 'completed' | 'cancelled'
 }
 
+interface AgeGroup {
+  id: string
+  name: string
+  nameAr: string
+}
+
 function ScheduleContent() {
   const { language } = useLanguage()
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [sessions, setSessions] = useState<TrainingSession[]>([])
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [newSession, setNewSession] = useState({
+    ageGroupId: '',
+    date: '',
+    time: '',
+    duration: 90,
+    location: ''
+  })
 
   useEffect(() => {
     fetchSchedule()
+    fetchAgeGroups()
   }, [])
 
   const fetchSchedule = async () => {
@@ -55,6 +72,69 @@ function ScheduleContent() {
       setSessions([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchAgeGroups = async () => {
+    try {
+      const groups = await ageGroupSupervisorService.getAgeGroups()
+      setAgeGroups(groups)
+    } catch (error) {
+      console.error('Error fetching age groups:', error)
+      setAgeGroups([])
+    }
+  }
+
+  const handleAddSession = async () => {
+    if (!newSession.ageGroupId || !newSession.date || !newSession.time) {
+      toast.error(language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill all required fields')
+      return
+    }
+
+    try {
+      setSaving(true)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/schedule`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            ageGroupId: newSession.ageGroupId,
+            date: newSession.date,
+            time: newSession.time,
+            duration: newSession.duration,
+            location: newSession.location || (language === 'ar' ? 'ملعب النادي الرئيسي' : 'Main Club Field'),
+            status: 'scheduled'
+          })
+        }
+      )
+
+      if (response.ok) {
+        toast.success(language === 'ar' ? 'تمت إضافة جلسة التدريب بنجاح' : 'Training session added successfully')
+        setShowAddModal(false)
+        setNewSession({ ageGroupId: '', date: '', time: '', duration: 90, location: '' })
+        fetchSchedule()
+      } else if (response.status === 404) {
+        toast.error(
+          language === 'ar' 
+            ? 'الخدمة غير متاحة - يرجى التواصل مع مطور الباك اند' 
+            : 'Service unavailable - please contact backend developer'
+        )
+      } else {
+        toast.error(language === 'ar' ? 'حدث خطأ أثناء الإضافة' : 'Error adding training session')
+      }
+    } catch (error) {
+      console.error('Error adding session:', error)
+      toast.error(
+        language === 'ar' 
+          ? 'الخدمة غير متاحة حالياً' 
+          : 'Service unavailable'
+      )
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -196,37 +276,72 @@ function ScheduleContent() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {language === 'ar' ? 'الفئة السنية' : 'Age Group'}
+                  {language === 'ar' ? 'الفئة السنية' : 'Age Group'} *
                 </label>
-                <select className="w-full px-3 py-2 border rounded-lg">
-                  <option>{language === 'ar' ? 'اختر الفئة' : 'Select Group'}</option>
+                <select 
+                  className="w-full px-3 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  value={newSession.ageGroupId}
+                  onChange={(e) => setNewSession({ ...newSession, ageGroupId: e.target.value })}
+                >
+                  <option value="">{language === 'ar' ? 'اختر الفئة' : 'Select Group'}</option>
+                  {ageGroups.map(group => (
+                    <option key={group.id} value={group.id}>
+                      {language === 'ar' ? group.nameAr : group.name}
+                    </option>
+                  ))}
                 </select>
+                {ageGroups.length === 0 && (
+                  <p className="text-xs text-orange-600 mt-1">
+                    {language === 'ar' ? 'لا توجد فئات - يرجى إضافة فئة أولاً' : 'No groups - please add a group first'}
+                  </p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {language === 'ar' ? 'التاريخ' : 'Date'}
+                    {language === 'ar' ? 'التاريخ' : 'Date'} *
                   </label>
-                  <Input type="date" />
+                  <Input 
+                    type="date" 
+                    value={newSession.date}
+                    onChange={(e) => setNewSession({ ...newSession, date: e.target.value })}
+                    className="w-full"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {language === 'ar' ? 'الوقت' : 'Time'}
+                    {language === 'ar' ? 'الوقت' : 'Time'} *
                   </label>
-                  <Input type="time" />
+                  <Input 
+                    type="time" 
+                    value={newSession.time}
+                    onChange={(e) => setNewSession({ ...newSession, time: e.target.value })}
+                    className="w-full"
+                  />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {language === 'ar' ? 'المدة (بالدقائق)' : 'Duration (minutes)'}
                 </label>
-                <Input type="number" placeholder="90" />
+                <Input 
+                  type="number" 
+                  value={newSession.duration}
+                  onChange={(e) => setNewSession({ ...newSession, duration: parseInt(e.target.value) || 90 })}
+                  placeholder="90" 
+                  min={15}
+                  max={240}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {language === 'ar' ? 'المكان' : 'Location'}
                 </label>
-                <Input placeholder={language === 'ar' ? 'ملعب النادي الرئيسي' : 'Main Club Field'} />
+                <Input 
+                  value={newSession.location}
+                  onChange={(e) => setNewSession({ ...newSession, location: e.target.value })}
+                  placeholder={language === 'ar' ? 'ملعب النادي الرئيسي' : 'Main Club Field'} 
+                />
               </div>
             </div>
 
@@ -234,8 +349,12 @@ function ScheduleContent() {
               <Button variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">
                 {language === 'ar' ? 'إلغاء' : 'Cancel'}
               </Button>
-              <Button className="flex-1 bg-green-600 text-white">
-                {language === 'ar' ? 'إضافة' : 'Add'}
+              <Button 
+                onClick={handleAddSession}
+                disabled={saving || !newSession.ageGroupId || !newSession.date || !newSession.time}
+                className="flex-1 bg-green-600 text-white"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (language === 'ar' ? 'إضافة' : 'Add')}
               </Button>
             </div>
           </motion.div>
