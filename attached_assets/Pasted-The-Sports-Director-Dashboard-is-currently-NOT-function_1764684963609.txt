@@ -1,0 +1,174 @@
+The “Sports Director Dashboard” is currently NOT functional and contains multiple sections that are visually designed but not connected to any real data. I need you to completely review, restructure, and rebuild this role to ensure every component is real, active, and fully functional.
+
+1) Core Issue
+
+Right now, the Sports Director is seeing:
+
+Dummy numbers
+
+Non-functional buttons
+
+Visual UI that is not linked to the backend
+
+Pages that open but do nothing
+
+Some modules that should not exist
+
+Some modules that exist but don’t work
+
+This role must become fully production-ready, NO placeholders, NO static values, NO broken data.
+
+2) Role Purpose
+
+The Sports Director manages:
+
+Coaches
+
+Athletes
+
+Training programs
+
+Performance analytics
+
+Upcoming events
+
+Technical reports
+
+Therefore the dashboard must reflect real actionable data, not decorative blocks.
+
+3) Required Functional Modules
+A) Coaches Performance
+
+Real rating from real sessions
+
+Clicking a coach must open a detailed view with:
+
+Sessions count
+
+Performance history
+
+Attendance
+
+Notes
+
+Programs assigned
+
+All buttons (messages – details – profile – actions) must work
+
+B) Athletes
+
+Live count
+
+Filters by category / team / coach
+
+Detailed profiles (performance – attendance – results)
+
+C) Sports Programs
+
+Add new program
+
+Edit existing program
+
+Show progress bars based on actual completion %, not random values
+
+Ability to activate/inactivate programs
+
+D) Technical Events
+
+Upcoming events connected to real database dates
+
+Ability to add/edit/remove events
+
+E) Training Hours
+
+Total hours from actual sessions
+
+Calculated automatically
+
+F) Achievements / Win Rate
+
+Win % must be calculated from real matches
+
+Ability to see details when clicking the card
+
+4) Remove Fake Data
+
+Everything shown in the UI must:
+
+Come from the database
+
+Be updated in real time
+
+Not rely on hardcoded or placeholder values
+
+The system must run a check to ensure zero dummy content across the entire Sports Director dashboard.
+
+5) No Errors — No 404 — No Logout
+
+The dashboard must:
+
+Never kick Sports Director out when clicking a module
+
+Never produce broken pages or missing routes
+
+Always redirect safely inside the dashboard
+
+Contain functional navigation for every element
+
+6) Notification System (Recommended Architecture)
+
+The Sports Director must receive:
+
+Instant Notifications for:
+
+New athlete added
+
+Program updated
+
+Coach performance changes
+
+New match scheduled
+
+New event
+
+Urgent reports from coaches
+
+Notification Center
+
+Title
+
+Category (program – coach – team – event)
+
+Timestamp
+
+Action button (open related module)
+
+Use WebSocket / Firebase / Server Sent Events for real-time delivery.
+
+7) Stability Check
+
+Verify that EVERY:
+
+Card
+
+Counter
+
+List
+
+Button
+
+Icon
+
+Section
+
+Progress bar
+
+Routing
+
+Data fetch
+
+…is working and connected to real backend logic.
+
+The Sports Director dashboard must behave like an enterprise system, not a static design.
+
+Deliver a fully functional, real-data-driven, stable, error-free Sports Director Dashboard with no dummy content and full operational control for all sports-related modules.

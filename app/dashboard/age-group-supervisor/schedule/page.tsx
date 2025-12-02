@@ -78,7 +78,7 @@ function ScheduleContent() {
   const fetchAgeGroups = async () => {
     try {
       const groups = await ageGroupSupervisorService.getAgeGroups()
-      setAgeGroups(groups)
+      setAgeGroups(groups || [])
     } catch (error) {
       console.error('Error fetching age groups:', error)
       setAgeGroups([])
@@ -346,13 +346,23 @@ function ScheduleContent() {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <Button variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">
+              <Button 
+                type="button"
+                variant="outline" 
+                onClick={() => setShowAddModal(false)} 
+                className="flex-1"
+              >
                 {language === 'ar' ? 'إلغاء' : 'Cancel'}
               </Button>
               <Button 
-                onClick={handleAddSession}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleAddSession()
+                }}
                 disabled={saving || !newSession.ageGroupId || !newSession.date || !newSession.time}
-                className="flex-1 bg-green-600 text-white"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (language === 'ar' ? 'إضافة' : 'Add')}
               </Button>

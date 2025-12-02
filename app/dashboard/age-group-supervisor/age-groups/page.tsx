@@ -64,7 +64,7 @@ function AgeGroupsContent() {
     try {
       setLoading(true)
       const groups = await ageGroupSupervisorService.getAgeGroups()
-      setAgeGroups(groups)
+      setAgeGroups(groups || [])
     } catch (error) {
       console.error('Error fetching age groups:', error)
       setAgeGroups([])
@@ -96,16 +96,11 @@ function AgeGroupsContent() {
       fetchAgeGroups()
     } catch (error: any) {
       console.error('Error creating age group:', error)
-      const isBackendError = error?.response?.status === 404 || error?.message?.includes('Network')
-      if (isBackendError) {
-        toast.error(
-          language === 'ar' 
-            ? 'الخدمة غير متاحة حالياً - يرجى التواصل مع مطور الباك اند' 
-            : 'Service unavailable - please contact backend developer'
-        )
-      } else {
-        toast.error(language === 'ar' ? 'حدث خطأ أثناء الإضافة' : 'Error adding age group')
-      }
+      toast.error(
+        language === 'ar' 
+          ? 'الخدمة غير متاحة حالياً - يرجى التواصل مع مطور الباك اند' 
+          : 'Service unavailable - please contact backend developer'
+      )
     } finally {
       setSaving(false)
     }
@@ -121,38 +116,17 @@ function AgeGroupsContent() {
 
     try {
       setSaving(true)
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/groups/${editingGroup.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(editingGroup)
-        }
-      )
-
-      if (response.ok) {
-        toast.success(language === 'ar' ? 'تم تحديث الفئة بنجاح' : 'Age group updated successfully')
-        setShowEditModal(false)
-        setEditingGroup(null)
-        fetchAgeGroups()
-      } else if (response.status === 404) {
-        toast.error(
-          language === 'ar' 
-            ? 'الخدمة غير متاحة - يرجى التواصل مع مطور الباك اند' 
-            : 'Service unavailable - please contact backend developer'
-        )
-      } else {
-        toast.error(language === 'ar' ? 'حدث خطأ أثناء التحديث' : 'Error updating age group')
-      }
+      await ageGroupSupervisorService.updateAgeGroup(editingGroup.id, editingGroup)
+      toast.success(language === 'ar' ? 'تم تحديث الفئة بنجاح' : 'Age group updated successfully')
+      setShowEditModal(false)
+      setEditingGroup(null)
+      fetchAgeGroups()
     } catch (error) {
       console.error('Error updating group:', error)
       toast.error(
         language === 'ar' 
-          ? 'الخدمة غير متاحة حالياً' 
-          : 'Service unavailable'
+          ? 'الخدمة غير متاحة حالياً - يرجى التواصل مع مطور الباك اند' 
+          : 'Service unavailable - please contact backend developer'
       )
     } finally {
       setSaving(false)
@@ -461,13 +435,23 @@ function AgeGroupsContent() {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <Button variant="outline" onClick={() => { setShowEditModal(false); setEditingGroup(null); }} className="flex-1">
+              <Button 
+                type="button"
+                variant="outline" 
+                onClick={() => { setShowEditModal(false); setEditingGroup(null); }} 
+                className="flex-1"
+              >
                 {language === 'ar' ? 'إلغاء' : 'Cancel'}
               </Button>
               <Button 
-                onClick={handleSaveEdit} 
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleSaveEdit()
+                }} 
                 disabled={saving}
-                className="flex-1 bg-green-600 text-white"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (language === 'ar' ? 'حفظ' : 'Save')}
               </Button>
