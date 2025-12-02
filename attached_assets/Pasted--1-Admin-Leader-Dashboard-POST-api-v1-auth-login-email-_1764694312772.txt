@@ -1,0 +1,218 @@
+
+1️⃣ Admin/Leader Dashboard - الأوامر الأساسية:
+
+// تسجيل الدخول
+POST /api/v1/auth/login
+{
+  email: "admin@sportx.com",
+  password: "Admin123456"
+}
+
+// الحصول على بيانات لوحة التحكم
+GET /api/v1/admin/dashboard
+Headers: Authorization: Bearer TOKEN
+
+// إدارة المستخدمين
+GET /api/v1/admin/users
+GET /api/v1/admin/users/:id
+POST /api/v1/admin/users (إنشاء مستخدم)
+PATCH /api/v1/admin/users/:id (تحديث)
+DELETE /api/v1/admin/users/:id (حذف)
+
+// سجل الأنشطة
+GET /api/v1/admin/audit-logs
+GET /api/v1/admin/audit-logs?action=create_user&limit=20
+
+// إعدادات الموقع
+GET /api/v1/admin/site-settings
+PATCH /api/v1/admin/site-settings
+{
+  siteName: "SportX",
+  siteNameAr: "سبورتس إكس",
+  primaryColor: "#2196F3",
+  secondaryColor: "#FF9800"
+}
+
+2️⃣ Team Dashboard - أوامر الفريق:
+
+// لوحة معلومات الفريق
+GET /api/v1/team/dashboard
+Headers: Authorization: Bearer TOKEN
+
+// عرض أعضاء الفريق
+GET /api/v1/team/members
+GET /api/v1/team/members/:id
+
+// إدارة الأنشطة
+GET /api/v1/team/activities
+GET /api/v1/team/activities?limit=20&page=1
+
+// الجلسات والمباريات
+GET /api/v1/age-group-supervisor/schedule
+POST /api/v1/age-group-supervisor/schedule
+PATCH /api/v1/age-group-supervisor/schedule/:id
+DELETE /api/v1/age-group-supervisor/schedule/:id
+
+GET /api/v1/age-group-supervisor/matches
+POST /api/v1/age-group-supervisor/matches
+PATCH /api/v1/age-group-supervisor/matches/:id
+
+3️⃣ نظام التسجيلات (Player Registrations):
+
+// الحصول على التسجيلات
+GET /api/v1/age-group-supervisor/registrations?status=pending
+GET /api/v1/age-group-supervisor/registrations/:id
+
+// إنشاء تسجيل جديد
+POST /api/v1/age-group-supervisor/registrations
+{
+  playerName: "أحمد علي",
+  playerNameAr: "أحمد علي",
+  dateOfBirth: "2015-05-20",
+  gender: "male",
+  parentName: "علي محمد",
+  parentPhone: "0501234567",
+  requestedAgeGroup: "U-10",
+  requestedAgeGroupId: "OBJECT_ID",
+  sport: "football"
+}
+
+// الموافقة على تسجيل
+POST /api/v1/age-group-supervisor/registrations/:id/approve
+{
+  notes: "تم الموافقة"
+}
+
+// رفض تسجيل
+POST /api/v1/age-group-supervisor/registrations/:id/reject
+{
+  reason: "لا يستوفي المتطلبات"
+}
+
+// عرض اللاعبين المعتمدين
+GET /api/v1/age-group-supervisor/players?ageGroupId=GROUP_ID
+GET /api/v1/age-group-supervisor/players?search=أحمد
+
+4️⃣ نظام الوظائف (Jobs Events):
+
+// الحصول على شريط الوظائف المباشر
+GET /api/v1/jobs/events/ticker?limit=20
+
+// أحداث الوظائف مع فلاتر
+GET /api/v1/jobs/events?limit=50&page=1
+GET /api/v1/jobs/events?eventType=job_posted&isUrgent=true
+GET /api/v1/jobs/events?category=coach&sport=football
+
+// إنشاء حدث وظيفة
+POST /api/v1/jobs/:jobId/create-event
+{
+  eventType: "job_posted",
+  isUrgent: true
+}
+
+5️⃣ WebSocket Events (التحديثات المباشرة):
+
+// الاتصال بـ WebSocket
+const socket = io('http://localhost:3000', {
+  auth: {
+    token: ACCESS_TOKEN
+  }
+});
+
+// الاشتراك في أحداث الوظائف
+socket.emit('subscribe_job_events');
+
+// استقبال أحداث الوظائف
+socket.on('job_event', (data) => {
+  console.log('Job event:', data.type, data.data);
+});
+
+// إلغاء الاشتراك
+socket.emit('unsubscribe_job_events');
+
+// أحداث المستخدم العام
+socket.on('user_online', (userData) => {
+  console.log('User online:', userData);
+});
+
+socket.on('user_offline', (data) => {
+  console.log('User offline:', data);
+});
+
+// الكتابة (Typing)
+socket.emit('typing_start', { conversationId: 'ID' });
+socket.on('user_typing', (data) => {
+  console.log(data.firstName, 'is typing...');
+});
+
+6️⃣ رموز الحالات (Status Codes):
+
+200 - نجح ✅
+201 - تم الإنشاء ✅
+400 - طلب غير صحيح ❌
+401 - غير مصرح (حاجة توكن) ❌
+403 - ممنوع (لا توجد صلاحيات) ❌
+404 - غير موجود ❌
+500 - خطأ الخادم ❌
+
+7️⃣ نموذج الرد الموحد:
+
+// نجح
+{
+  "success": true,
+  "data": { /* البيانات */ },
+  "message": "تم بنجاح",
+  "pagination": { 
+    "page": 1, 
+    "limit": 50, 
+    "total": 100, 
+    "pages": 2 
+  }
+}
+
+// فشل
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Error in English",
+    "messageAr": "خطأ بالعربية"
+  }
+}
+
+8️⃣ Headers المطلوبة:
+
+Authorization: Bearer ACCESS_TOKEN
+Content-Type: application/json
+Accept-Language: ar-SA (اختياري - للعربية)
+
+9️⃣ أمثلة عملية للـ Frontend:
+
+// 1️⃣ جلب بيانات Dashboard
+async function loadAdminDashboard() {
+  const response = await fetch('/api/v1/admin/dashboard', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return response.json();
+}
+
+// 2️⃣ موافقة على تسجيل
+async function approveRegistration(registrationId) {
+  const response = await fetch(`/api/v1/age-group-supervisor/registrations/${registrationId}/approve`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ notes: 'Approved' })
+  });
+  return response.json();
+}
+
+// 3️⃣ الاشتراك في أحداث الوظائف
+function subscribeToJobEvents() {
+  socket.emit('subscribe_job_events');
+  socket.on('job_event', (event) => {
+    console.log('New job event:', event);
+  });
+}

@@ -2,7 +2,7 @@
 
 ## Overview
 
-TF1 is a comprehensive sports networking platform designed for Egypt and the Middle East, conceptualized as a "LinkedIn for sports." Its primary goal is to connect various sports professionals, including players, coaches, clubs, and specialists (physiotherapists, nutritionists, fitness trainers, sports psychologists), to facilitate career growth and community building within the sports industry. The platform aims to offer a robust, bilingual, and multi-role online environment for sports professionals.
+TF1 is a sports networking platform for Egypt and the Middle East, envisioned as a "LinkedIn for sports." It aims to connect sports professionals (players, coaches, clubs, specialists) to foster career growth and community. The platform provides a robust, bilingual, multi-role online environment, enabling users to manage profiles, find opportunities, and communicate in real-time.
 
 ## User Preferences
 
@@ -13,213 +13,38 @@ TF1 is a comprehensive sports networking platform designed for Egypt and the Mid
 
 ## System Architecture
 
-The TF1 platform is a Next.js 15 web application utilizing the App Router. It uses TypeScript for type safety, Tailwind CSS for styling, and Radix UI for accessible UI components. State is managed with Zustand, and data fetching with TanStack React Query v5 and Axios. Form handling employs React Hook Form with Zod validation. The application supports internationalization with `next-intl` for Arabic and English, including RTL layout. Theming is handled by `next-themes` for dark/light mode, real-time features use Socket.io, and animations are powered by Framer Motion.
-
-**Key Features:**
-
--   **Multi-Role System**: Supports Players, Coaches, Clubs, Specialists, and various administrative roles (Administrator, Age Group Supervisor, Sports Director, Executive Director, Secretary). Each role has dedicated dashboards and profile management.
--   **Authentication**: JWT-based authentication with email verification and password reset.
--   **Profile Management**: Role-specific dashboards and profiles.
--   **Messaging**: Real-time chat functionality.
--   **Opportunities**: A job board for sports-related positions, integrated with a smart job notification system.
--   **Admin Dashboard**: Comprehensive site management for various administrative roles, including user control, content management, and system analytics. Features include an enterprise-grade dual dashboard (Leader and Team) with Role-Based Access Control (RBAC) and audit logging.
--   **Blog System**: Full content management for articles, supporting bilingual content and categorization.
--   **Search**: Global search capabilities across users, clubs, and opportunities.
--   **Bilingual Support**: Full Arabic and English support with dynamic RTL/LTR layouts.
--   **Join a Match Feature**: Functionality for users to find and join matches, with filtering options.
+The TF1 platform is a Next.js 15 web application using the App Router, TypeScript, Tailwind CSS, and Radix UI. State is managed with Zustand, data fetching with TanStack React Query v5 and Axios, and forms with React Hook Form and Zod. It supports internationalization with `next-intl` (Arabic and English, including RTL layout), theming with `next-themes`, real-time features with Socket.io, and animations with Framer Motion.
 
 **UI/UX Decisions:**
-
--   Modern gradient designs (blue-cyan-green) for login/registration pages, featuring multi-step forms with real-time validation and progress indicators.
--   Consistent footer and navigation elements.
--   Animated and responsive sections for testimonials and statistics.
+- Modern gradient designs (blue-cyan-green) for authentication pages, featuring multi-step forms with real-time validation.
+- Consistent footer and navigation.
+- Animated and responsive sections for testimonials and statistics.
 
 **Technical Implementations:**
+- Frontend routes are organized in the `app/` directory.
+- API service layer is under `services/`.
+- TypeScript types are defined in `types/`.
+- Utility functions are in `lib/`.
+- Environment variables (`NEXT_PUBLIC_API_URL`) are used for backend API endpoints.
+- Image handling is integrated with Cloudinary.
 
--   Frontend routes are organized within the `app/` directory following Next.js App Router conventions.
--   API service layer is structured under `services/`, with dedicated modules.
--   TypeScript types are centrally defined in `types/`.
--   Utility functions are located in `lib/`.
--   Environment variables (`NEXT_PUBLIC_API_URL`) are used for backend API endpoints.
--   Image handling is integrated with Cloudinary.
-
-**Backend Endpoints (Required for various Admin Roles):**
-
-The platform requires extensive backend support for its multi-role system, including dedicated API endpoints for:
-
--   **Leader Dashboard**: Authentication, team management (CRUD operations, permission updates, key regeneration), audit logging, platform settings, and analytics.
--   **Age Group Supervisor Dashboard**: Public player registration, dashboard statistics, CRUD operations for age groups, matches, and training schedules, registration management (approve/reject), player/coach listings, and reports.
--   **Secretary Dashboard**: Dashboard statistics, calendar/meeting management, document management (upload, approval, rejection), message sending/listing, task management, and call logging.
--   **Sports Director Dashboard**: Dashboard statistics, CRUD for programs and technical events, management of coaches (performance tracking, assignment) and athletes (performance, attendance), analytics, reports, win rate tracking, and notifications.
--   **Executive Director Dashboard**: Dashboard statistics, KPI management, CRUD for strategic initiatives, partnerships, and announcements, decision management, meetings, and financial analytics/reports.
--   **Smart Job Notifications System**: Global endpoints for all roles to retrieve job notifications, mark them as read, and find matching jobs. Specific endpoints exist for applying to jobs and for clubs to receive applicant notifications.
-
-### Player Age Category System Backend Endpoints (Required)
-
-The Player Dashboard now includes a comprehensive Age Category System. The following backend endpoints are required:
-
-**Age Category & Team Management:**
--   `GET /players/age-category` - Get player's assigned age category (returns PlayerAgeCategory with team, coach info)
--   `GET /players/team` - Get player's assigned team details
--   `GET /players/team/members` - Get list of teammates in the same age category team
--   `GET /players/coach` - Get assigned coach information
-
-**Training Programs:**
--   `GET /players/training-programs` - Get all training programs for player's age category
--   `GET /players/training-programs/:id` - Get specific training program details
--   `GET /players/training-sessions` - Get upcoming training sessions (query: limit, status)
--   `PATCH /players/training-sessions/:id/attendance` - Update player attendance for a session
-
-**Matches:**
--   `GET /players/matches` - Get matches for player's age category (query: status=upcoming|completed|all)
-
-**Performance & Progress:**
--   `GET /players/performance` - Get player performance statistics (goals, assists, rating, skills)
--   `GET /players/progress` - Get player progress history over time
-
-**Announcements:**
--   `GET /players/announcements` - Get age category specific announcements
--   `PATCH /players/announcements/:id/read` - Mark announcement as read
-
-**Combined Dashboard Endpoint:**
--   `GET /players/dashboard/age-category` - Get complete dashboard data in one call (playerCategory, matches, programs, trainings, stats, announcements, team)
-
-**Expected Response Format:**
-All endpoints should return: `{ success: boolean, data: <type>, message?: string }`
-
-**Data Types:**
--   AgeCategory: { id, name, nameAr, code (U10/U12/U15/U17/U19/U21/Senior), minAge, maxAge, totalPlayers, status }
--   Team: { id, name, nameAr, ageCategory, coach, totalPlayers, trainingDays, trainingTime, homeGround }
--   TrainingProgram: { id, name, nameAr, type (fitness/technical/tactical/mental/recovery), duration, progress, status, sessions[], coach }
--   TrainingSession: { id, title, titleAr, date, startTime, endTime, location, type (group/individual), status, attendance }
--   AgeCategoryMatch: { id, title, homeTeam, awayTeam, date, time, venue, type (league/cup/tournament/friendly), playerStatus (starting/substitute/not-selected) }
--   PlayerPerformanceStats: { matchesPlayed, goals, assists, attendanceRate, averageRating, skillLevels[], achievements[] }
--   AgeCategoryAnnouncement: { id, title, titleAr, content, contentAr, priority (high/medium/low), type, read, createdAt }
-
-### Real-time Jobs Ticker Bar Backend Endpoints (Required)
-
-The landing page now includes a real-time Jobs Ticker Bar that displays live job events. The following backend endpoints and WebSocket events are required:
-
-**REST API Endpoints:**
--   `GET /jobs/events` - Get recent job events (query: limit=20)
--   `GET /jobs/events/ticker` - Get public ticker events (query: limit=20)
--   `GET /jobs/events/type/:eventType` - Get events filtered by type (query: limit=10)
-
-**WebSocket Events (Channel: job_events):**
--   `job_posted` - Emitted when a new job is posted
--   `job_updated` - Emitted when a job is updated
--   `job_closed` - Emitted when a job is closed
--   `job_reopened` - Emitted when a job is reopened
--   `deadline_changed` - Emitted when job deadline changes
--   `announcement_posted` - Emitted for general hiring announcements
-
-**Event Types:**
--   `job_posted` - New job posted
--   `job_updated` - Job details updated
--   `job_closed` - Job closed/filled
--   `job_reopened` - Job reopened
--   `deadline_changed` - Deadline modified
--   `announcement_posted` - General announcement
-
-**JobEvent Data Structure:**
-```typescript
-{
-  id: string
-  jobId: string
-  jobTitle: string
-  jobTitleAr?: string
-  organization: string
-  organizationAr?: string
-  organizationLogo?: string
-  eventType: 'job_posted' | 'job_updated' | 'job_closed' | 'job_reopened' | 'deadline_changed' | 'announcement_posted'
-  timestamp: string (ISO date)
-  link: string
-  sport?: string
-  location?: string
-  locationAr?: string
-  deadline?: string
-  isUrgent?: boolean
-}
-```
-
-**Expected Response Format:**
-`{ success: boolean, data: JobEvent[], total: number }`
-
-### Player Training Requests System Backend Endpoints (Required)
-
-The Player Dashboard now includes a Training Requests System for players to request training sessions from coaches. The following backend endpoints are required:
-
-**Training Requests Management:**
--   `GET /players/training-requests` - Get player's training requests (query: status, page, limit)
--   `GET /players/training-requests/:id` - Get specific training request details
--   `POST /players/training-requests` - Create new training request
--   `DELETE /players/training-requests/:id` - Cancel training request (only pending requests)
--   `GET /players/training-requests/active/count` - Get count of active requests (pending + approved)
-
-**Enhanced Training Sessions:**
--   `GET /players/training-sessions/enhanced` - Get enhanced training sessions with full details (query: status, from, to, limit)
--   `GET /players/training-sessions/:id` - Get specific training session details
--   `POST /players/training-sessions/:id/confirm` - Confirm attendance for a session
--   `POST /players/training-sessions/:id/excuse` - Request excuse for a session
-
-**Training Request Data Structure:**
-```typescript
-{
-  id: string
-  playerId: string
-  playerName: string
-  playerNameAr?: string
-  coachId: string
-  coach: CoachInfo
-  type: 'private' | 'group' | 'evaluation' | 'trial'
-  status: 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'completed'
-  title: string
-  titleAr?: string
-  description?: string
-  descriptionAr?: string
-  preferredDates: string[]
-  preferredTimeSlots: { startTime: string, endTime: string }[]
-  location?: string
-  locationAr?: string
-  duration: number
-  notes?: string
-  notesAr?: string
-  coachNotes?: string
-  coachNotesAr?: string
-  rejectionReason?: string
-  rejectionReasonAr?: string
-  scheduledDate?: string
-  scheduledTime?: string
-  createdAt: string
-  updatedAt: string
-  respondedAt?: string
-}
-```
-
-**Enhanced Training Session Data Structure:**
-```typescript
-{
-  ...TrainingSession,
-  coach: CoachInfo
-  program?: TrainingProgram
-  participants?: number
-  maxParticipants?: number
-  objectives?: string[]
-  objectivesAr?: string[]
-  equipment?: string[]
-  equipmentAr?: string[]
-  intensity?: 'low' | 'medium' | 'high'
-  weather?: string
-}
-```
-
-**Expected Response Formats:**
-- Training Requests List: `{ success: boolean, data: { requests: TrainingRequest[], pagination: { total, page, limit, totalPages } } }`
-- Single Request: `{ success: boolean, data: TrainingRequest }`
-- Enhanced Sessions: `{ success: boolean, data: EnhancedTrainingSession[] }`
+**Feature Specifications:**
+- **Multi-Role System**: Players, Coaches, Clubs, Specialists, and various administrative roles (Administrator, Age Group Supervisor, Sports Director, Executive Director, Secretary), each with dedicated dashboards and profile management.
+- **Authentication**: JWT-based with email verification and password reset.
+- **Profile Management**: Role-specific dashboards and profiles.
+- **Messaging**: Real-time chat.
+- **Opportunities**: Sports job board with smart notifications.
+- **Admin Dashboards**: Comprehensive site management for various administrative roles, including user control, content management, RBAC, and audit logging.
+- **Blog System**: Bilingual content management.
+- **Search**: Global search for users, clubs, and opportunities.
+- **Bilingual Support**: Full Arabic and English with dynamic RTL/LTR layouts.
+- **Join a Match**: Functionality to find and join matches with filtering.
+- **Player Age Category System**: Management of player age categories, teams, training programs, matches, performance tracking, and announcements, including specific API endpoints for player dashboards.
+- **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
+- **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
 ## External Dependencies
 
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)
 -   **Image Storage**: Cloudinary
--   **Real-time Communication**: Socket.io (WebSocket connection)
+-   **Real-time Communication**: Socket.io
