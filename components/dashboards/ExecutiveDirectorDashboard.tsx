@@ -1,74 +1,50 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import { LanguageSelector } from '@/components/language-selector'
 import { MessageNotificationBadge } from '@/components/messaging/MessageNotificationBadge'
 import { GlobalSearchButton } from '@/components/search/GlobalSearchButton'
 import { useAuth } from '@/contexts/auth-context'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import executiveDirectorService, {
+  DashboardStats,
+  KPI,
+  Initiative
+} from '@/services/executive-director'
+import { JobNotificationsModule } from '@/components/job-notifications/JobNotificationsModule'
 import {
   Users,
   Calendar,
-  User,
   TrendingUp,
-  Clock,
-  CheckCircle,
   XCircle,
-  Award,
   Loader2,
   LogOut,
-  Briefcase,
-  AlertCircle,
-  Edit,
-  Shield,
-  FileText,
-  Bell,
   BarChart3,
   Target,
-  Trophy,
   Activity,
   DollarSign,
   PieChart,
   LineChart,
-  Building2,
   Globe,
   Megaphone,
   FileCheck,
-  TrendingDown
+  TrendingDown,
+  Plus,
+  X,
+  ChevronRight,
+  RefreshCw,
+  Bell,
+  Briefcase,
+  Edit,
+  Eye,
+  FileText,
+  CheckCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-
-interface KPI {
-  id: string
-  name: string
-  nameAr: string
-  value: number
-  target: number
-  trend: 'up' | 'down' | 'stable'
-  unit: string
-}
-
-interface Initiative {
-  id: string
-  title: string
-  titleAr: string
-  status: 'planning' | 'in-progress' | 'completed'
-  priority: 'high' | 'medium' | 'low'
-  deadline: string
-  progress: number
-}
-
-interface DashboardStats {
-  totalRevenue: number
-  monthlyGrowth: number
-  totalMembers: number
-  activePartnerships: number
-  pendingDecisions: number
-  upcomingMeetings: number
-}
 
 const ExecutiveDirectorDashboard = () => {
   const { language } = useLanguage()
@@ -77,58 +53,114 @@ const ExecutiveDirectorDashboard = () => {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
   const [stats, setStats] = useState<DashboardStats>({
     totalRevenue: 0,
     monthlyGrowth: 0,
     totalMembers: 0,
     activePartnerships: 0,
     pendingDecisions: 0,
-    upcomingMeetings: 0
+    upcomingMeetings: 0,
+    newMembers: 0,
+    memberRetention: 0
   })
   const [kpis, setKpis] = useState<KPI[]>([])
   const [initiatives, setInitiatives] = useState<Initiative[]>([])
+  const [showNewInitiativeModal, setShowNewInitiativeModal] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [newInitiative, setNewInitiative] = useState({
+    title: '',
+    titleAr: '',
+    description: '',
+    descriptionAr: '',
+    status: 'planning' as const,
+    priority: 'medium' as const,
+    deadline: '',
+    owner: '',
+    ownerAr: '',
+    department: '',
+    departmentAr: '',
+    budget: 0
+  })
+
+  const fetchDashboardData = useCallback(async () => {
+    try {
+      setError(null)
+      
+      const [dashboardData, kpisData, initiativesData] = await Promise.allSettled([
+        executiveDirectorService.getDashboard(),
+        executiveDirectorService.getKPIs(),
+        executiveDirectorService.getInitiatives({ status: 'in-progress' })
+      ])
+
+      if (dashboardData.status === 'fulfilled') {
+        setStats(dashboardData.value)
+      }
+
+      if (kpisData.status === 'fulfilled') {
+        setKpis(kpisData.value.slice(0, 4))
+      }
+
+      if (initiativesData.status === 'fulfilled') {
+        setInitiatives(initiativesData.value.slice(0, 4))
+      }
+
+    } catch (err: any) {
+      console.error('Error fetching dashboard data:', err)
+      setError(err.message || (language === 'ar' ? 'فشل تحميل البيانات' : 'Failed to load data'))
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
+    }
+  }, [language])
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        setStats({
-          totalRevenue: 2450000,
-          monthlyGrowth: 12.5,
-          totalMembers: 3200,
-          activePartnerships: 18,
-          pendingDecisions: 7,
-          upcomingMeetings: 4
-        })
+    fetchDashboardData()
+  }, [fetchDashboardData])
 
-        setKpis([
-          { id: '1', name: 'Member Satisfaction', nameAr: 'رضا الأعضاء', value: 92, target: 95, trend: 'up', unit: '%' },
-          { id: '2', name: 'Revenue Growth', nameAr: 'نمو الإيرادات', value: 15, target: 20, trend: 'up', unit: '%' },
-          { id: '3', name: 'Staff Retention', nameAr: 'الاحتفاظ بالموظفين', value: 88, target: 90, trend: 'stable', unit: '%' },
-          { id: '4', name: 'Program Completion', nameAr: 'إكمال البرامج', value: 78, target: 85, trend: 'down', unit: '%' },
-        ])
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await fetchDashboardData()
+    toast.success(language === 'ar' ? 'تم تحديث البيانات' : 'Data refreshed')
+  }
 
-        setInitiatives([
-          { id: '1', title: 'Digital Transformation', titleAr: 'التحول الرقمي', status: 'in-progress', priority: 'high', deadline: '2024-06-30', progress: 65 },
-          { id: '2', title: 'Youth Academy Expansion', titleAr: 'توسعة أكاديمية الشباب', status: 'planning', priority: 'high', deadline: '2024-09-15', progress: 25 },
-          { id: '3', title: 'Partnership Program', titleAr: 'برنامج الشراكات', status: 'in-progress', priority: 'medium', deadline: '2024-04-30', progress: 80 },
-          { id: '4', title: 'Sustainability Initiative', titleAr: 'مبادرة الاستدامة', status: 'planning', priority: 'low', deadline: '2024-12-31', progress: 10 },
-        ])
-
-      } catch (err: any) {
-        console.error('Error fetching dashboard data:', err)
-        setError(err.message || 'Failed to load dashboard data')
-      } finally {
-        setLoading(false)
-      }
+  const handleCreateInitiative = async () => {
+    if (!newInitiative.title || !newInitiative.titleAr || !newInitiative.deadline) {
+      toast.error(language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill all required fields')
+      return
     }
 
-    fetchDashboardData()
-  }, [])
+    try {
+      setSaving(true)
+      await executiveDirectorService.createInitiative({
+        ...newInitiative,
+        progress: 0,
+        spent: 0,
+        tasks: []
+      })
+      toast.success(language === 'ar' ? 'تم إنشاء المبادرة بنجاح' : 'Initiative created successfully')
+      setShowNewInitiativeModal(false)
+      setNewInitiative({
+        title: '',
+        titleAr: '',
+        description: '',
+        descriptionAr: '',
+        status: 'planning',
+        priority: 'medium',
+        deadline: '',
+        owner: '',
+        ownerAr: '',
+        department: '',
+        departmentAr: '',
+        budget: 0
+      })
+      await fetchDashboardData()
+    } catch (err: any) {
+      toast.error(err.message || (language === 'ar' ? 'فشل إنشاء المبادرة' : 'Failed to create initiative'))
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const displayName = user?.firstName || (language === 'ar' ? 'المدير التنفيذي' : 'Executive Director')
 
@@ -172,7 +204,10 @@ const ExecutiveDirectorDashboard = () => {
             </h3>
             <p className="text-gray-600 mb-6">{error}</p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setLoading(true)
+                fetchDashboardData()
+              }}
               className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
             >
               {language === 'ar' ? 'إعادة المحاولة' : 'Try Again'}
@@ -184,12 +219,12 @@ const ExecutiveDirectorDashboard = () => {
   }
 
   const statCards = [
-    { icon: DollarSign, label: language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue', value: `${(stats.totalRevenue / 1000000).toFixed(1)}M SAR`, color: 'from-purple-500 to-indigo-500' },
-    { icon: TrendingUp, label: language === 'ar' ? 'النمو الشهري' : 'Monthly Growth', value: `+${stats.monthlyGrowth}%`, color: 'from-green-500 to-emerald-500' },
-    { icon: Users, label: language === 'ar' ? 'إجمالي الأعضاء' : 'Total Members', value: stats.totalMembers, color: 'from-blue-500 to-cyan-500' },
-    { icon: Globe, label: language === 'ar' ? 'الشراكات النشطة' : 'Active Partnerships', value: stats.activePartnerships, color: 'from-pink-500 to-rose-500' },
-    { icon: FileCheck, label: language === 'ar' ? 'قرارات معلقة' : 'Pending Decisions', value: stats.pendingDecisions, color: 'from-yellow-500 to-orange-500' },
-    { icon: Calendar, label: language === 'ar' ? 'اجتماعات قادمة' : 'Upcoming Meetings', value: stats.upcomingMeetings, color: 'from-cyan-500 to-teal-500' },
+    { icon: DollarSign, label: language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue', value: `${(stats.totalRevenue / 1000000).toFixed(1)}M SAR`, color: 'from-purple-500 to-indigo-500', href: '/dashboard/executive-director/reports' },
+    { icon: TrendingUp, label: language === 'ar' ? 'النمو الشهري' : 'Monthly Growth', value: `+${stats.monthlyGrowth}%`, color: 'from-green-500 to-emerald-500', href: '/dashboard/executive-director/analytics' },
+    { icon: Users, label: language === 'ar' ? 'إجمالي الأعضاء' : 'Total Members', value: stats.totalMembers, color: 'from-blue-500 to-cyan-500', href: '/dashboard/executive-director/analytics' },
+    { icon: Globe, label: language === 'ar' ? 'الشراكات النشطة' : 'Active Partnerships', value: stats.activePartnerships, color: 'from-pink-500 to-rose-500', href: '/dashboard/executive-director/partnerships' },
+    { icon: FileCheck, label: language === 'ar' ? 'قرارات معلقة' : 'Pending Decisions', value: stats.pendingDecisions, color: 'from-yellow-500 to-orange-500', href: '/dashboard/executive-director/decisions' },
+    { icon: Calendar, label: language === 'ar' ? 'اجتماعات قادمة' : 'Upcoming Meetings', value: stats.upcomingMeetings, color: 'from-cyan-500 to-teal-500', href: '/dashboard/executive-director/meetings' },
   ]
 
   return (
@@ -213,7 +248,21 @@ const ExecutiveDirectorDashboard = () => {
             </div>
 
             <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="text-gray-600"
+              >
+                <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+              </Button>
               <GlobalSearchButton />
+              <Link href="/dashboard/executive-director/job-notifications">
+                <Button variant="ghost" size="sm" className="relative text-gray-600">
+                  <Briefcase className="w-5 h-5" />
+                </Button>
+              </Link>
               <MessageNotificationBadge dashboardType="executive-director" />
               <LanguageSelector />
               <Button
@@ -248,23 +297,24 @@ const ExecutiveDirectorDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {statCards.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-900">{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</p>
+            <Link key={index} href={stat.href}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900">{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</p>
+                  </div>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                    <stat.icon className="w-7 h-7 text-white" />
+                  </div>
                 </div>
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                  <stat.icon className="w-7 h-7 text-white" />
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
 
@@ -278,35 +328,53 @@ const ExecutiveDirectorDashboard = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {language === 'ar' ? 'مؤشرات الأداء الرئيسية' : 'Key Performance Indicators'}
               </h2>
-              <PieChart className="w-5 h-5 text-gray-400" />
+              <Link href="/dashboard/executive-director/kpis">
+                <Button variant="ghost" size="sm">
+                  <PieChart className="w-5 h-5 text-gray-400" />
+                </Button>
+              </Link>
             </div>
             <div className="space-y-4">
-              {kpis.map((kpi) => (
-                <div key={kpi.id} className="p-4 bg-gray-50 rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-gray-900">{language === 'ar' ? kpi.nameAr : kpi.name}</span>
-                    <div className="flex items-center gap-2">
-                      {kpi.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-500" />}
-                      {kpi.trend === 'down' && <TrendingDown className="w-4 h-4 text-red-500" />}
-                      {kpi.trend === 'stable' && <Activity className="w-4 h-4 text-yellow-500" />}
-                      <span className="font-bold text-gray-900">{kpi.value}{kpi.unit}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full ${
-                          kpi.value >= kpi.target ? 'bg-green-500' :
-                          kpi.value >= kpi.target * 0.8 ? 'bg-yellow-500' :
-                          'bg-red-500'
-                        }`}
-                        style={{ width: `${Math.min((kpi.value / kpi.target) * 100, 100)}%` }}
-                      />
-                    </div>
-                    <span className="text-sm text-gray-500">{language === 'ar' ? 'الهدف:' : 'Target:'} {kpi.target}{kpi.unit}</span>
-                  </div>
+              {kpis.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  {language === 'ar' ? 'لا توجد مؤشرات أداء' : 'No KPIs available'}
                 </div>
-              ))}
+              ) : (
+                kpis.map((kpi) => (
+                  <Link key={kpi.id} href={`/dashboard/executive-director/kpis/${kpi.id}`}>
+                    <div className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-900">{language === 'ar' ? kpi.nameAr : kpi.name}</span>
+                        <div className="flex items-center gap-2">
+                          {kpi.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-500" />}
+                          {kpi.trend === 'down' && <TrendingDown className="w-4 h-4 text-red-500" />}
+                          {kpi.trend === 'stable' && <Activity className="w-4 h-4 text-yellow-500" />}
+                          <span className="font-bold text-gray-900">{kpi.value}{kpi.unit}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              kpi.value >= kpi.target ? 'bg-green-500' :
+                              kpi.value >= kpi.target * 0.8 ? 'bg-yellow-500' :
+                              'bg-red-500'
+                            }`}
+                            style={{ width: `${Math.min((kpi.value / kpi.target) * 100, 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-sm text-gray-500">{language === 'ar' ? 'الهدف:' : 'Target:'} {kpi.target}{kpi.unit}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              )}
+              <Link href="/dashboard/executive-director/kpis">
+                <Button variant="outline" className="w-full mt-4">
+                  {language === 'ar' ? 'عرض جميع المؤشرات' : 'View All KPIs'}
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
 
@@ -319,72 +387,270 @@ const ExecutiveDirectorDashboard = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {language === 'ar' ? 'المبادرات الاستراتيجية' : 'Strategic Initiatives'}
               </h2>
-              <Button className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+              <Button 
+                onClick={() => setShowNewInitiativeModal(true)}
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
+              >
                 <Target className="w-4 h-4 mr-2" />
                 {language === 'ar' ? 'مبادرة جديدة' : 'New Initiative'}
               </Button>
             </div>
             <div className="space-y-4">
-              {initiatives.map((initiative) => (
-                <div key={initiative.id} className="p-4 bg-gray-50 rounded-xl">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className={`w-2 h-2 rounded-full ${
-                        initiative.priority === 'high' ? 'bg-red-500' :
-                        initiative.priority === 'medium' ? 'bg-yellow-500' :
-                        'bg-green-500'
-                      }`} />
-                      <span className="font-medium text-gray-900">{language === 'ar' ? initiative.titleAr : initiative.title}</span>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-xs ${
-                      initiative.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      initiative.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {initiative.status === 'completed' ? (language === 'ar' ? 'مكتمل' : 'Completed') :
-                       initiative.status === 'in-progress' ? (language === 'ar' ? 'قيد التنفيذ' : 'In Progress') :
-                       (language === 'ar' ? 'تخطيط' : 'Planning')}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-                    <span>{language === 'ar' ? 'الموعد النهائي:' : 'Deadline:'} {initiative.deadline}</span>
-                    <span>{initiative.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full"
-                      style={{ width: `${initiative.progress}%` }}
-                    />
-                  </div>
+              {initiatives.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  {language === 'ar' ? 'لا توجد مبادرات نشطة' : 'No active initiatives'}
                 </div>
-              ))}
+              ) : (
+                initiatives.map((initiative) => (
+                  <Link key={initiative.id} href={`/dashboard/executive-director/initiatives/${initiative.id}`}>
+                    <div className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <span className={`w-2 h-2 rounded-full ${
+                            initiative.priority === 'high' ? 'bg-red-500' :
+                            initiative.priority === 'medium' ? 'bg-yellow-500' :
+                            'bg-green-500'
+                          }`} />
+                          <span className="font-medium text-gray-900">{language === 'ar' ? initiative.titleAr : initiative.title}</span>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs ${
+                          initiative.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          initiative.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                          initiative.status === 'on-hold' ? 'bg-orange-100 text-orange-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {initiative.status === 'completed' ? (language === 'ar' ? 'مكتمل' : 'Completed') :
+                           initiative.status === 'in-progress' ? (language === 'ar' ? 'قيد التنفيذ' : 'In Progress') :
+                           initiative.status === 'on-hold' ? (language === 'ar' ? 'معلق' : 'On Hold') :
+                           (language === 'ar' ? 'تخطيط' : 'Planning')}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                        <span>{language === 'ar' ? 'الموعد النهائي:' : 'Deadline:'} {new Date(initiative.deadline).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}</span>
+                        <span>{initiative.progress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all"
+                          style={{ width: `${initiative.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              )}
+              <Link href="/dashboard/executive-director/initiatives">
+                <Button variant="outline" className="w-full mt-4">
+                  {language === 'ar' ? 'عرض جميع المبادرات' : 'View All Initiatives'}
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          {[
-            { icon: LineChart, label: language === 'ar' ? 'التحليلات' : 'Analytics', href: '/dashboard/executive-director/analytics' },
-            { icon: FileText, label: language === 'ar' ? 'التقارير' : 'Reports', href: '/dashboard/executive-director/reports' },
-            { icon: Globe, label: language === 'ar' ? 'الشراكات' : 'Partnerships', href: '/dashboard/executive-director/partnerships' },
-            { icon: Megaphone, label: language === 'ar' ? 'الإعلانات' : 'Announcements', href: '/dashboard/executive-director/announcements' },
-          ].map((action, index) => (
-            <Link key={index} href={action.href}>
-              <div className="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer text-center">
-                <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                  <action.icon className="w-6 h-6 text-white" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <JobNotificationsModule dashboardType="executive-director" maxItems={5} />
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="space-y-4"
+          >
+            {[
+              { icon: LineChart, label: language === 'ar' ? 'التحليلات' : 'Analytics', href: '/dashboard/executive-director/analytics', color: 'from-blue-500 to-cyan-500' },
+              { icon: FileText, label: language === 'ar' ? 'التقارير' : 'Reports', href: '/dashboard/executive-director/reports', color: 'from-green-500 to-emerald-500' },
+              { icon: Globe, label: language === 'ar' ? 'الشراكات' : 'Partnerships', href: '/dashboard/executive-director/partnerships', color: 'from-pink-500 to-rose-500' },
+              { icon: Megaphone, label: language === 'ar' ? 'الإعلانات' : 'Announcements', href: '/dashboard/executive-director/announcements', color: 'from-yellow-500 to-orange-500' },
+            ].map((action, index) => (
+              <Link key={index} href={action.href}>
+                <div className="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer flex items-center gap-4">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center`}>
+                    <action.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="font-medium text-gray-900 flex-1">{action.label}</span>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
-                <p className="font-medium text-gray-900">{action.label}</p>
-              </div>
-            </Link>
-          ))}
-        </motion.div>
+              </Link>
+            ))}
+          </motion.div>
+        </div>
       </main>
+
+      <AnimatePresence>
+        {showNewInitiativeModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowNewInitiativeModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {language === 'ar' ? 'مبادرة استراتيجية جديدة' : 'New Strategic Initiative'}
+                </h2>
+                <Button variant="ghost" size="sm" onClick={() => setShowNewInitiativeModal(false)}>
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'العنوان (إنجليزي)' : 'Title (English)'} *
+                    </label>
+                    <input
+                      type="text"
+                      value={newInitiative.title}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, title: e.target.value })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'العنوان (عربي)' : 'Title (Arabic)'} *
+                    </label>
+                    <input
+                      type="text"
+                      value={newInitiative.titleAr}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, titleAr: e.target.value })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      dir="rtl"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'الأولوية' : 'Priority'}
+                    </label>
+                    <select
+                      value={newInitiative.priority}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, priority: e.target.value as any })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="high">{language === 'ar' ? 'عالية' : 'High'}</option>
+                      <option value="medium">{language === 'ar' ? 'متوسطة' : 'Medium'}</option>
+                      <option value="low">{language === 'ar' ? 'منخفضة' : 'Low'}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'الحالة' : 'Status'}
+                    </label>
+                    <select
+                      value={newInitiative.status}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, status: e.target.value as any })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="planning">{language === 'ar' ? 'تخطيط' : 'Planning'}</option>
+                      <option value="in-progress">{language === 'ar' ? 'قيد التنفيذ' : 'In Progress'}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'الموعد النهائي' : 'Deadline'} *
+                    </label>
+                    <input
+                      type="date"
+                      value={newInitiative.deadline}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, deadline: e.target.value })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'الميزانية (ريال)' : 'Budget (SAR)'}
+                    </label>
+                    <input
+                      type="number"
+                      value={newInitiative.budget}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, budget: parseInt(e.target.value) || 0 })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'المسؤول' : 'Owner'}
+                    </label>
+                    <input
+                      type="text"
+                      value={newInitiative.owner}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, owner: e.target.value })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {language === 'ar' ? 'القسم' : 'Department'}
+                    </label>
+                    <input
+                      type="text"
+                      value={newInitiative.department}
+                      onChange={(e) => setNewInitiative({ ...newInitiative, department: e.target.value })}
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {language === 'ar' ? 'الوصف' : 'Description'}
+                  </label>
+                  <textarea
+                    value={newInitiative.description}
+                    onChange={(e) => setNewInitiative({ ...newInitiative, description: e.target.value })}
+                    rows={3}
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowNewInitiativeModal(false)}
+                    className="flex-1"
+                  >
+                    {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </Button>
+                  <Button
+                    onClick={handleCreateInitiative}
+                    disabled={saving}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
+                  >
+                    {saving ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        {language === 'ar' ? 'إنشاء' : 'Create'}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

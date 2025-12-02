@@ -238,3 +238,86 @@ The following endpoints need to be implemented on the backend for full Sports Di
 - `GET /api/v1/sports-director/notifications` - Get all notifications
 - `PATCH /api/v1/sports-director/notifications/:id/read` - Mark notification as read
 - `PATCH /api/v1/sports-director/notifications/read-all` - Mark all notifications as read
+
+## Executive Director Dashboard Backend Endpoints (Required)
+
+The following endpoints need to be implemented on the backend for full Executive Director functionality:
+
+### Dashboard
+- `GET /api/v1/executive-director/dashboard` - Returns stats: totalRevenue, monthlyGrowth, totalMembers, activePartnerships, pendingDecisions, upcomingMeetings, newMembers, memberRetention
+
+### KPIs (Key Performance Indicators)
+- `GET /api/v1/executive-director/kpis` - List all KPIs
+- `GET /api/v1/executive-director/kpis/:id/detail` - Get KPI detail with history and breakdown
+- `PATCH /api/v1/executive-director/kpis/:id` - Update KPI target or value
+
+### Strategic Initiatives CRUD
+- `GET /api/v1/executive-director/initiatives` - List all initiatives (supports ?status=xxx&priority=xxx filters)
+- `GET /api/v1/executive-director/initiatives/:id` - Get single initiative
+- `POST /api/v1/executive-director/initiatives` - Create new initiative
+  - Body: `{ title, titleAr, description, descriptionAr, status, priority, deadline, progress, owner, ownerAr, department, departmentAr, budget, spent, tasks }`
+- `PATCH /api/v1/executive-director/initiatives/:id` - Update initiative
+- `DELETE /api/v1/executive-director/initiatives/:id` - Delete initiative
+- `PATCH /api/v1/executive-director/initiatives/:id/progress` - Update initiative progress (body: { progress })
+- `POST /api/v1/executive-director/initiatives/:id/tasks` - Add task to initiative
+
+### Partnerships CRUD
+- `GET /api/v1/executive-director/partnerships` - List all partnerships (supports ?status=xxx&type=xxx filters)
+- `GET /api/v1/executive-director/partnerships/:id` - Get single partnership
+- `POST /api/v1/executive-director/partnerships` - Create new partnership
+  - Body: `{ partnerName, partnerNameAr, type, status, startDate, endDate, value, currency, contactPerson, contactEmail, contactPhone, description, descriptionAr, benefits }`
+- `PATCH /api/v1/executive-director/partnerships/:id` - Update partnership
+- `DELETE /api/v1/executive-director/partnerships/:id` - Delete partnership
+
+### Announcements CRUD
+- `GET /api/v1/executive-director/announcements` - List all announcements (supports ?status=xxx&type=xxx filters)
+- `GET /api/v1/executive-director/announcements/:id` - Get single announcement
+- `POST /api/v1/executive-director/announcements` - Create new announcement
+  - Body: `{ title, titleAr, content, contentAr, type, priority, status, targetAudience, publishDate, expiryDate, author, authorId }`
+- `PATCH /api/v1/executive-director/announcements/:id` - Update announcement
+- `DELETE /api/v1/executive-director/announcements/:id` - Delete announcement
+- `PATCH /api/v1/executive-director/announcements/:id/publish` - Publish announcement
+
+### Decisions
+- `GET /api/v1/executive-director/decisions` - List pending decisions (supports ?status=xxx filter)
+- `PATCH /api/v1/executive-director/decisions/:id/status` - Update decision status (body: { status, notes })
+
+### Meetings
+- `GET /api/v1/executive-director/meetings` - List all meetings (supports ?status=xxx filter)
+- `POST /api/v1/executive-director/meetings` - Create new meeting
+- `PATCH /api/v1/executive-director/meetings/:id` - Update meeting
+
+### Analytics & Reports
+- `GET /api/v1/executive-director/analytics` - Get general analytics (supports ?period=week|month|quarter|year)
+- `GET /api/v1/executive-director/reports/financial` - Get financial report (supports ?period=month|quarter|year&year=xxx&month=xxx)
+
+### Smart Job Notifications System (Required for ALL Roles)
+- `GET /api/v1/executive-director/job-notifications` - Get job notifications for user
+- `PATCH /api/v1/executive-director/job-notifications/:id/read` - Mark notification as read
+- `GET /api/v1/executive-director/matching-jobs` - Get jobs matching user profile
+- `POST /api/v1/jobs/:id/apply` - Apply to a job (body: { note })
+
+## Smart Job Notifications System (Global)
+
+This system must be implemented for ALL dashboard roles. It provides intelligent job matching and notifications.
+
+### Job Posting (When club posts a job)
+1. System detects suitable users based on: role, skills, department, profile tags
+2. Users receive instant notification with: job title, details, club name, deadline, "Apply Now" button
+
+### Job Application (When user applies)
+1. Club receives notification with: applicant name, role, CV link, experience summary
+2. Status updates are sent to applicant
+
+### Required Endpoints per Role
+Replace `{role}` with: executive-director, sports-director, secretary, coach, admin, player, etc.
+- `GET /api/v1/{role}/job-notifications` - Get notifications for this role
+- `PATCH /api/v1/{role}/job-notifications/:id/read` - Mark as read
+- `GET /api/v1/{role}/matching-jobs` - Get matching jobs based on profile
+
+### Notification Types
+- `new_job` - New job posted matching user profile
+- `application_received` - Application received (for clubs)
+- `application_status` - Application status update
+- `job_match` - Smart job match based on profile
+- `urgent_job` - Urgent job with deadline
