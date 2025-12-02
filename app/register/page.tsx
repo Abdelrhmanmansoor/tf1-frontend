@@ -20,6 +20,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
@@ -87,10 +88,31 @@ export default function RegisterPage() {
       console.log('[REGISTER] Sending data:', registrationData)
       await register(registrationData)
       
-      router.push('/login?registered=true')
+      setSuccess(true)
+      setStep(3)
+      
+      setTimeout(() => {
+        router.push('/login?registered=true')
+      }, 4000)
     } catch (err: any) {
       console.error('[REGISTER] Error:', err)
-      setError(err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed'))
+      const errorMessage = err.message || ''
+      
+      if (errorMessage.includes('Validation failed') || errorMessage.includes('validation')) {
+        setError(language === 'ar' 
+          ? 'خطأ في البيانات المدخلة. تأكد من صحة البريد الإلكتروني ورقم الجوال.' 
+          : 'Invalid data. Please check your email and phone number.')
+      } else if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
+        setError(language === 'ar' 
+          ? 'هذا البريد الإلكتروني مسجل مسبقاً. جرب تسجيل الدخول.' 
+          : 'This email is already registered. Try logging in.')
+      } else if (errorMessage.includes('network') || errorMessage.includes('connect')) {
+        setError(language === 'ar' 
+          ? 'خطأ في الاتصال. تحقق من الإنترنت وحاول مجدداً.' 
+          : 'Connection error. Check your internet and try again.')
+      } else {
+        setError(errorMessage || (language === 'ar' ? 'فشل التسجيل. حاول مجدداً.' : 'Registration failed. Please try again.'))
+      }
     } finally {
       setLoading(false)
     }
@@ -377,16 +399,69 @@ export default function RegisterPage() {
                 </form>
               </motion.div>
             )}
+
+            {step === 3 && success && (
+              <motion.div 
+                key="step3" 
+                initial={{ opacity: 0, scale: 0.9 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                className="text-center py-8"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', delay: 0.2 }}
+                  className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
+                >
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+                
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
+                </h2>
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                  <div className="flex items-center justify-center gap-3 mb-2">
+                    <Mail className="w-6 h-6 text-blue-600" />
+                    <span className="font-semibold text-blue-900">
+                      {language === 'ar' ? 'تأكيد الحساب' : 'Account Verification'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-blue-700">
+                    {language === 'ar' 
+                      ? `تم إرسال رابط التفعيل إلى ${formData.email}. يرجى فتح بريدك الإلكتروني والضغط على الرابط لتفعيل حسابك.`
+                      : `A verification link has been sent to ${formData.email}. Please check your email and click the link to activate your account.`}
+                  </p>
+                </div>
+
+                <p className="text-sm text-gray-500 mb-4">
+                  {language === 'ar' 
+                    ? 'سيتم تحويلك لصفحة تسجيل الدخول خلال ثواني...'
+                    : 'Redirecting to login page in a few seconds...'}
+                </p>
+
+                <Button
+                  onClick={() => router.push('/login?registered=true')}
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+                >
+                  {language === 'ar' ? 'الذهاب لتسجيل الدخول' : 'Go to Login'}
+                </Button>
+              </motion.div>
+            )}
           </AnimatePresence>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              {language === 'ar' ? 'لديك حساب؟' : 'Already have an account?'}{' '}
-              <Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
-                {language === 'ar' ? 'سجل دخول' : 'Sign In'}
-              </Link>
-            </p>
-          </div>
+          {step !== 3 && (
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                {language === 'ar' ? 'لديك حساب؟' : 'Already have an account?'}{' '}
+                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+                  {language === 'ar' ? 'سجل دخول' : 'Sign In'}
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="absolute top-4 right-4">
