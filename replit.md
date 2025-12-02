@@ -143,3 +143,40 @@ The following endpoints need to be implemented on the backend for full Age Group
 
 ### Reports
 - `GET /api/v1/age-group-supervisor/reports/:type` - Get report (types: players, attendance, performance, registrations)
+
+## Secretary Dashboard Backend Endpoints (Required)
+
+The following endpoints need to be implemented on the backend for full Secretary functionality:
+
+### Dashboard
+- `GET /api/v1/secretary/dashboard` - Returns stats: todayMeetings, pendingDocuments, unreadMessages, upcomingCalls, tasksToday, scheduledEvents
+
+### Calendar & Meetings
+- `GET /api/v1/secretary/calendar` - List all meetings
+- `POST /api/v1/secretary/calendar/meetings` - Create new meeting
+  - Body: `{ title, titleAr, date, time, duration, location, locationAr, isOnline, meetingLink, attendees, agenda, agendaAr, status }`
+- `PATCH /api/v1/secretary/calendar/meetings/:id` - Update meeting
+- `DELETE /api/v1/secretary/calendar/meetings/:id` - Delete meeting
+
+### Documents
+- `GET /api/v1/secretary/documents` - List all documents
+- `POST /api/v1/secretary/documents` - Upload/create new document
+  - Body: `{ name, type, fileUrl, priority, assignedTo, dueDate, notes }`
+- `POST /api/v1/secretary/documents/:id/approve` - Approve document
+- `POST /api/v1/secretary/documents/:id/reject` - Reject document (body: { reason })
+
+### Messages
+- `GET /api/v1/secretary/messages` - List all messages
+- `POST /api/v1/secretary/messages` - Send new message
+  - Body: `{ from: {id, name, email}, to: {id, name, email}, subject, subjectAr, body, bodyAr, priority }`
+
+### Tasks
+- `GET /api/v1/secretary/tasks` - List all tasks
+- `POST /api/v1/secretary/tasks` - Create new task
+  - Body: `{ title, titleAr, description, priority, dueDate, status, assignedBy }`
+- `PATCH /api/v1/secretary/tasks/:id` - Update task (status, etc.)
+
+### Calls
+- `GET /api/v1/secretary/calls` - List call logs
+- `POST /api/v1/secretary/calls` - Add new call
+  - Body: `{ type, contactName, contactPhone, date, time, duration, notes, status }`
