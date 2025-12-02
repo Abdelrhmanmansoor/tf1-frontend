@@ -8,32 +8,23 @@ import { GlobalSearchButton } from '@/components/search/GlobalSearchButton'
 import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import ageGroupSupervisorService from '@/services/age-group-supervisor'
 import {
   Users,
   Calendar,
-  User,
   TrendingUp,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Award,
   Loader2,
   LogOut,
-  Briefcase,
-  AlertCircle,
   Edit,
-  Shield,
-  FileText,
-  Bell,
-  BarChart3,
   UserPlus,
-  Star,
-  Target,
   Trophy,
   Activity,
   Layers,
   Baby,
-  GraduationCap
+  GraduationCap,
+  FileText,
+  MessageSquare,
+  User
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -42,10 +33,9 @@ interface AgeGroup {
   id: string
   name: string
   nameAr: string
-  ageRange: string
+  ageRange: { min: number; max: number }
   playersCount: number
   coachName: string
-  nextTraining: string
   status: 'active' | 'inactive'
 }
 
@@ -64,7 +54,6 @@ const AgeGroupSupervisorDashboard = () => {
   const router = useRouter()
 
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<DashboardStats>({
     totalAgeGroups: 0,
     totalPlayers: 0,
@@ -79,31 +68,19 @@ const AgeGroupSupervisorDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true)
-        setError(null)
         
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        setStats({
-          totalAgeGroups: 8,
-          totalPlayers: 245,
-          totalCoaches: 12,
-          upcomingMatches: 5,
-          activeTrainings: 3,
-          pendingRegistrations: 8
-        })
-
-        setAgeGroups([
-          { id: '1', name: 'Under 8', nameAr: 'تحت 8 سنوات', ageRange: '6-8', playersCount: 28, coachName: 'أحمد محمد', nextTraining: '2024-01-16 16:00', status: 'active' },
-          { id: '2', name: 'Under 10', nameAr: 'تحت 10 سنوات', ageRange: '8-10', playersCount: 32, coachName: 'خالد علي', nextTraining: '2024-01-16 17:00', status: 'active' },
-          { id: '3', name: 'Under 12', nameAr: 'تحت 12 سنة', ageRange: '10-12', playersCount: 35, coachName: 'محمد سعيد', nextTraining: '2024-01-17 16:00', status: 'active' },
-          { id: '4', name: 'Under 14', nameAr: 'تحت 14 سنة', ageRange: '12-14', playersCount: 40, coachName: 'عبدالله أحمد', nextTraining: '2024-01-17 17:00', status: 'active' },
-          { id: '5', name: 'Under 16', nameAr: 'تحت 16 سنة', ageRange: '14-16', playersCount: 38, coachName: 'فهد سالم', nextTraining: '2024-01-18 16:00', status: 'active' },
-          { id: '6', name: 'Under 18', nameAr: 'تحت 18 سنة', ageRange: '16-18', playersCount: 42, coachName: 'سعود محمد', nextTraining: '2024-01-18 17:00', status: 'active' },
+        const [dashboardStats, groups] = await Promise.all([
+          ageGroupSupervisorService.getDashboard().catch(() => null),
+          ageGroupSupervisorService.getAgeGroups().catch(() => [])
         ])
+        
+        if (dashboardStats) {
+          setStats(dashboardStats)
+        }
+        setAgeGroups(groups)
 
       } catch (err: any) {
         console.error('Error fetching dashboard data:', err)
-        setError(err.message || 'Failed to load dashboard data')
       } finally {
         setLoading(false)
       }
@@ -137,41 +114,24 @@ const AgeGroupSupervisorDashboard = () => {
     )
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-cyan-50 to-blue-50">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="bg-white rounded-2xl p-8 shadow-xl max-w-md w-full mx-4"
-        >
-          <div className="text-center">
-            <div className="bg-red-100 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <XCircle className="w-8 h-8 text-red-600" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              {language === 'ar' ? 'خطأ في التحميل' : 'Loading Error'}
-            </h3>
-            <p className="text-gray-600 mb-6">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-            >
-              {language === 'ar' ? 'إعادة المحاولة' : 'Try Again'}
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    )
-  }
-
   const statCards = [
-    { icon: Layers, label: language === 'ar' ? 'الفئات السنية' : 'Age Groups', value: stats.totalAgeGroups, color: 'from-green-500 to-emerald-500' },
-    { icon: Users, label: language === 'ar' ? 'إجمالي اللاعبين' : 'Total Players', value: stats.totalPlayers, color: 'from-blue-500 to-cyan-500' },
-    { icon: GraduationCap, label: language === 'ar' ? 'المدربين' : 'Coaches', value: stats.totalCoaches, color: 'from-purple-500 to-pink-500' },
-    { icon: Trophy, label: language === 'ar' ? 'المباريات القادمة' : 'Upcoming Matches', value: stats.upcomingMatches, color: 'from-yellow-500 to-orange-500' },
-    { icon: Activity, label: language === 'ar' ? 'التدريبات النشطة' : 'Active Trainings', value: stats.activeTrainings, color: 'from-cyan-500 to-teal-500' },
-    { icon: UserPlus, label: language === 'ar' ? 'طلبات التسجيل' : 'Pending Registrations', value: stats.pendingRegistrations, color: 'from-red-500 to-pink-500' },
+    { icon: Layers, label: language === 'ar' ? 'الفئات السنية' : 'Age Groups', value: stats.totalAgeGroups, color: 'from-green-500 to-emerald-500', href: '/dashboard/age-group-supervisor/age-groups' },
+    { icon: Users, label: language === 'ar' ? 'إجمالي اللاعبين' : 'Total Players', value: stats.totalPlayers, color: 'from-blue-500 to-cyan-500', href: '/dashboard/age-group-supervisor/players' },
+    { icon: GraduationCap, label: language === 'ar' ? 'المدربين' : 'Coaches', value: stats.totalCoaches, color: 'from-purple-500 to-pink-500', href: '/dashboard/age-group-supervisor/coaches' },
+    { icon: Trophy, label: language === 'ar' ? 'المباريات القادمة' : 'Upcoming Matches', value: stats.upcomingMatches, color: 'from-yellow-500 to-orange-500', href: '/dashboard/age-group-supervisor/schedule' },
+    { icon: Activity, label: language === 'ar' ? 'التدريبات النشطة' : 'Active Trainings', value: stats.activeTrainings, color: 'from-cyan-500 to-teal-500', href: '/dashboard/age-group-supervisor/schedule' },
+    { icon: UserPlus, label: language === 'ar' ? 'طلبات التسجيل' : 'Pending Registrations', value: stats.pendingRegistrations, color: 'from-red-500 to-pink-500', href: '/dashboard/age-group-supervisor/registrations' },
+  ]
+
+  const quickActions = [
+    { icon: Layers, label: language === 'ar' ? 'الفئات السنية' : 'Age Groups', href: '/dashboard/age-group-supervisor/age-groups', color: 'from-green-500 to-emerald-500' },
+    { icon: Users, label: language === 'ar' ? 'اللاعبين' : 'Players', href: '/dashboard/age-group-supervisor/players', color: 'from-blue-500 to-cyan-500' },
+    { icon: GraduationCap, label: language === 'ar' ? 'المدربين' : 'Coaches', href: '/dashboard/age-group-supervisor/coaches', color: 'from-purple-500 to-pink-500' },
+    { icon: Calendar, label: language === 'ar' ? 'الجدول' : 'Schedule', href: '/dashboard/age-group-supervisor/schedule', color: 'from-yellow-500 to-orange-500' },
+    { icon: UserPlus, label: language === 'ar' ? 'التسجيلات' : 'Registrations', href: '/dashboard/age-group-supervisor/registrations', color: 'from-red-500 to-pink-500' },
+    { icon: FileText, label: language === 'ar' ? 'التقارير' : 'Reports', href: '/dashboard/age-group-supervisor/reports', color: 'from-indigo-500 to-purple-500' },
+    { icon: User, label: language === 'ar' ? 'الملف الشخصي' : 'Profile', href: '/dashboard/age-group-supervisor/profile', color: 'from-gray-500 to-gray-600' },
+    { icon: MessageSquare, label: language === 'ar' ? 'الرسائل' : 'Messages', href: '/dashboard/age-group-supervisor/messages', color: 'from-teal-500 to-cyan-500' },
   ]
 
   return (
@@ -230,23 +190,24 @@ const AgeGroupSupervisorDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {statCards.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value.toLocaleString()}</p>
+            <Link key={index} href={stat.href}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value.toLocaleString()}</p>
+                  </div>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                    <stat.icon className="w-7 h-7 text-white" />
+                  </div>
                 </div>
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                  <stat.icon className="w-7 h-7 text-white" />
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
 
@@ -259,108 +220,113 @@ const AgeGroupSupervisorDashboard = () => {
             <h2 className="text-xl font-bold text-gray-900">
               {language === 'ar' ? 'الفئات السنية' : 'Age Groups'}
             </h2>
-            <Button className="bg-gradient-to-r from-green-500 to-cyan-500 text-white">
-              <UserPlus className="w-4 h-4 mr-2" />
-              {language === 'ar' ? 'إضافة فئة' : 'Add Group'}
-            </Button>
+            <Link href="/dashboard/age-group-supervisor/age-groups">
+              <Button className="bg-gradient-to-r from-green-500 to-cyan-500 text-white">
+                <UserPlus className="w-4 h-4 mr-2" />
+                {language === 'ar' ? 'إدارة الفئات' : 'Manage Groups'}
+              </Button>
+            </Link>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'الفئة' : 'Group'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'الفئة العمرية' : 'Age Range'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'اللاعبين' : 'Players'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'المدرب' : 'Coach'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'التدريب القادم' : 'Next Training'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'الحالة' : 'Status'}
-                  </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
-                    {language === 'ar' ? 'الإجراءات' : 'Actions'}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ageGroups.map((group) => (
-                  <tr key={group.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                          <Baby className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="font-medium">{language === 'ar' ? group.nameAr : group.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-gray-600">{group.ageRange} {language === 'ar' ? 'سنة' : 'years'}</td>
-                    <td className="py-4 px-4">
-                      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                        {group.playersCount}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-gray-600">{group.coachName}</td>
-                    <td className="py-4 px-4 text-gray-600">{group.nextTraining}</td>
-                    <td className="py-4 px-4">
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        group.status === 'active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {group.status === 'active' 
-                          ? (language === 'ar' ? 'نشط' : 'Active')
-                          : (language === 'ar' ? 'غير نشط' : 'Inactive')
-                        }
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Users className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
+          {ageGroups.length === 0 ? (
+            <div className="text-center py-12">
+              <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                {language === 'ar' ? 'لا توجد فئات سنية' : 'No Age Groups'}
+              </h3>
+              <p className="text-gray-500 mb-4">
+                {language === 'ar' ? 'ابدأ بإضافة فئة سنية جديدة' : 'Start by adding a new age group'}
+              </p>
+              <Link href="/dashboard/age-group-supervisor/age-groups">
+                <Button className="bg-green-600 text-white">
+                  {language === 'ar' ? 'إضافة فئة' : 'Add Group'}
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-right py-3 px-4 font-medium text-gray-600">
+                      {language === 'ar' ? 'الفئة' : 'Group'}
+                    </th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-600">
+                      {language === 'ar' ? 'الفئة العمرية' : 'Age Range'}
+                    </th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-600">
+                      {language === 'ar' ? 'اللاعبين' : 'Players'}
+                    </th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-600">
+                      {language === 'ar' ? 'المدرب' : 'Coach'}
+                    </th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-600">
+                      {language === 'ar' ? 'الحالة' : 'Status'}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {ageGroups.map((group) => (
+                    <tr key={group.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                            <Baby className="w-5 h-5 text-white" />
+                          </div>
+                          <span className="font-medium">{language === 'ar' ? group.nameAr : group.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-gray-600">
+                        {group.ageRange.min}-{group.ageRange.max} {language === 'ar' ? 'سنة' : 'years'}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                          {group.playersCount}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-gray-600">
+                        {group.coachName || (language === 'ar' ? 'لم يُعين' : 'Not assigned')}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`px-3 py-1 rounded-full text-sm ${
+                          group.status === 'active' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {group.status === 'active' 
+                            ? (language === 'ar' ? 'نشط' : 'Active')
+                            : (language === 'ar' ? 'غير نشط' : 'Inactive')
+                          }
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
         >
-          {[
-            { icon: Layers, label: language === 'ar' ? 'إدارة الفئات' : 'Manage Groups', href: '/dashboard/age-group-supervisor/groups' },
-            { icon: Users, label: language === 'ar' ? 'اللاعبين' : 'Players', href: '/dashboard/age-group-supervisor/players' },
-            { icon: Calendar, label: language === 'ar' ? 'الجدول' : 'Schedule', href: '/dashboard/age-group-supervisor/schedule' },
-            { icon: Trophy, label: language === 'ar' ? 'المباريات' : 'Matches', href: '/dashboard/age-group-supervisor/matches' },
-          ].map((action, index) => (
-            <Link key={index} href={action.href}>
-              <div className="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer text-center">
-                <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-green-500 to-cyan-500 rounded-xl flex items-center justify-center">
-                  <action.icon className="w-6 h-6 text-white" />
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            {language === 'ar' ? 'الوصول السريع' : 'Quick Access'}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {quickActions.map((action, index) => (
+              <Link key={index} href={action.href}>
+                <div className="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer text-center">
+                  <div className={`w-12 h-12 mx-auto mb-3 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center`}>
+                    <action.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="font-medium text-gray-900">{action.label}</p>
                 </div>
-                <p className="font-medium text-gray-900">{action.label}</p>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </motion.div>
       </main>
     </div>
