@@ -96,6 +96,57 @@ All endpoints should return: `{ success: boolean, data: <type>, message?: string
 -   PlayerPerformanceStats: { matchesPlayed, goals, assists, attendanceRate, averageRating, skillLevels[], achievements[] }
 -   AgeCategoryAnnouncement: { id, title, titleAr, content, contentAr, priority (high/medium/low), type, read, createdAt }
 
+### Real-time Jobs Ticker Bar Backend Endpoints (Required)
+
+The landing page now includes a real-time Jobs Ticker Bar that displays live job events. The following backend endpoints and WebSocket events are required:
+
+**REST API Endpoints:**
+-   `GET /jobs/events` - Get recent job events (query: limit=20)
+-   `GET /jobs/events/ticker` - Get public ticker events (query: limit=20)
+-   `GET /jobs/events/type/:eventType` - Get events filtered by type (query: limit=10)
+
+**WebSocket Events (Channel: job_events):**
+-   `job_event_new` - Emitted when a new job is posted
+-   `job_event_update` - Emitted when a job is updated
+-   `job_event_closed` - Emitted when a job is closed
+-   `job_event_reopened` - Emitted when a job is reopened
+-   `job_event_deadline` - Emitted when job deadline changes
+-   `job_event_urgent` - Emitted for urgent hiring posts
+-   `hiring_announcement` - Emitted for general hiring announcements
+
+**Event Types:**
+-   `new` - New job posted
+-   `updated` - Job details updated
+-   `closed` - Job closed/filled
+-   `reopened` - Job reopened
+-   `deadline_changed` - Deadline modified
+-   `urgent` - Urgent hiring
+-   `hiring_announcement` - General announcement
+
+**JobEvent Data Structure:**
+```typescript
+{
+  id: string
+  jobId: string
+  jobTitle: string
+  jobTitleAr?: string
+  organization: string
+  organizationAr?: string
+  organizationLogo?: string
+  eventType: 'new' | 'updated' | 'closed' | 'reopened' | 'deadline_changed' | 'urgent' | 'hiring_announcement'
+  timestamp: string (ISO date)
+  link: string
+  sport?: string
+  location?: string
+  locationAr?: string
+  deadline?: string
+  isUrgent?: boolean
+}
+```
+
+**Expected Response Format:**
+`{ success: boolean, data: JobEvent[], total: number }`
+
 ## External Dependencies
 
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)

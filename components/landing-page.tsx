@@ -30,6 +30,7 @@ import { TopRatedPlayers } from './rating/TopRatedPlayers'
 import { PartnersMarquee } from './partners-marquee'
 import { StatsSection } from './stats-section'
 import { JobsAnnouncements } from './jobs-announcements'
+import { JobsTickerBar } from './landing/JobsTickerBar'
 import { useLanguage } from '@/contexts/language-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -561,6 +562,9 @@ export function LandingPage() {
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <Navbar activeMode={mode} />
+
+      {/* Real-time Jobs Ticker Bar */}
+      <JobsTickerBar />
 
       {/* News Banner Strip */}
       <motion.div
