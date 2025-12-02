@@ -58,3 +58,41 @@ The TF1 platform is built as a Next.js 15 web application utilizing the App Rout
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)
 -   **Image Storage**: Cloudinary
 -   **Real-time Communication**: Socket.io (WebSocket connection)
+
+## Age Group Supervisor Backend Endpoints (Required)
+
+The following endpoints need to be implemented on the backend for full Age Group Supervisor functionality:
+
+### Dashboard
+- `GET /api/v1/age-group-supervisor/dashboard` - Returns stats: totalAgeGroups, totalPlayers, totalCoaches, upcomingMatches, activeTrainings, pendingRegistrations
+
+### Age Groups CRUD
+- `GET /api/v1/age-group-supervisor/groups` - List all age groups
+- `POST /api/v1/age-group-supervisor/groups` - Create new age group
+- `PUT /api/v1/age-group-supervisor/groups/:id` - Update age group
+- `DELETE /api/v1/age-group-supervisor/groups/:id` - Delete age group
+- `PATCH /api/v1/age-group-supervisor/groups/:id/coach` - Assign coach to group
+
+### Matches CRUD
+- `GET /api/v1/age-group-supervisor/matches` - List all matches
+- `POST /api/v1/age-group-supervisor/matches` - Create new match
+- `PUT /api/v1/age-group-supervisor/matches/:id` - Update match
+- `DELETE /api/v1/age-group-supervisor/matches/:id` - Delete match
+
+### Training Schedule CRUD
+- `GET /api/v1/age-group-supervisor/schedule` - List training sessions
+- `POST /api/v1/age-group-supervisor/schedule` - Create training session
+- `PUT /api/v1/age-group-supervisor/schedule/:id` - Update training session
+- `DELETE /api/v1/age-group-supervisor/schedule/:id` - Delete training session
+
+### Registrations Management
+- `GET /api/v1/age-group-supervisor/registrations?status=pending|approved|rejected` - List registrations
+- `POST /api/v1/age-group-supervisor/registrations/:id/approve` - Approve registration (body: {ageGroupId})
+- `POST /api/v1/age-group-supervisor/registrations/:id/reject` - Reject registration (body: {reason})
+
+### Players & Coaches
+- `GET /api/v1/age-group-supervisor/players?ageGroupId=xxx` - List players (optional filter)
+- `GET /api/v1/age-group-supervisor/coaches` - List available coaches
+
+### Reports
+- `GET /api/v1/age-group-supervisor/reports/:type` - Get report (types: players, attendance, performance, registrations)
