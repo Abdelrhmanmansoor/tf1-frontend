@@ -1,11 +1,10 @@
 export type JobEventType = 
-  | 'new'
-  | 'updated'
-  | 'closed'
-  | 'reopened'
+  | 'job_posted'
+  | 'job_updated'
+  | 'job_closed'
+  | 'job_reopened'
   | 'deadline_changed'
-  | 'urgent'
-  | 'hiring_announcement'
+  | 'announcement_posted'
 
 export interface JobEvent {
   id: string
@@ -40,19 +39,17 @@ export interface JobEventSubscription {
 
 export const getEventIcon = (eventType: JobEventType): string => {
   switch (eventType) {
-    case 'new':
+    case 'job_posted':
       return '🆕'
-    case 'updated':
+    case 'job_updated':
       return '🔄'
-    case 'closed':
+    case 'job_closed':
       return '🔒'
-    case 'reopened':
+    case 'job_reopened':
       return '🔓'
     case 'deadline_changed':
       return '⏰'
-    case 'urgent':
-      return '🔥'
-    case 'hiring_announcement':
+    case 'announcement_posted':
       return '📢'
     default:
       return '📌'
@@ -61,32 +58,29 @@ export const getEventIcon = (eventType: JobEventType): string => {
 
 export const getEventLabel = (eventType: JobEventType, language: 'ar' | 'en'): string => {
   const labels: Record<JobEventType, { ar: string; en: string }> = {
-    new: { ar: 'وظيفة جديدة', en: 'New Job' },
-    updated: { ar: 'تم التحديث', en: 'Updated' },
-    closed: { ar: 'تم الإغلاق', en: 'Closed' },
-    reopened: { ar: 'تم إعادة الفتح', en: 'Reopened' },
+    job_posted: { ar: 'وظيفة جديدة', en: 'New Job' },
+    job_updated: { ar: 'تم التحديث', en: 'Updated' },
+    job_closed: { ar: 'تم الإغلاق', en: 'Closed' },
+    job_reopened: { ar: 'تم إعادة الفتح', en: 'Reopened' },
     deadline_changed: { ar: 'تغيير الموعد', en: 'Deadline Changed' },
-    urgent: { ar: 'عاجل', en: 'Urgent' },
-    hiring_announcement: { ar: 'إعلان توظيف', en: 'Hiring Announcement' },
+    announcement_posted: { ar: 'إعلان توظيف', en: 'Hiring Announcement' },
   }
-  return labels[eventType][language]
+  return labels[eventType]?.[language] || eventType
 }
 
 export const getEventColor = (eventType: JobEventType): string => {
   switch (eventType) {
-    case 'new':
+    case 'job_posted':
       return 'bg-green-500'
-    case 'updated':
+    case 'job_updated':
       return 'bg-blue-500'
-    case 'closed':
+    case 'job_closed':
       return 'bg-gray-500'
-    case 'reopened':
+    case 'job_reopened':
       return 'bg-purple-500'
     case 'deadline_changed':
       return 'bg-orange-500'
-    case 'urgent':
-      return 'bg-red-500'
-    case 'hiring_announcement':
+    case 'announcement_posted':
       return 'bg-cyan-500'
     default:
       return 'bg-gray-500'

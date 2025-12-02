@@ -27,7 +27,7 @@ interface JobsTickerBarProps {
 
 export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) => {
   const { language } = useLanguage()
-  const { events, loading, error, connected, refresh } = useJobEvents({
+  const { events, loading, error, connected, backendAvailable, refresh } = useJobEvents({
     maxEvents: 20,
     autoConnect: true,
     pollInterval: 30000
@@ -92,6 +92,27 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
           <span className="text-sm">
             {language === 'ar' ? 'جاري تحميل آخر الوظائف...' : 'Loading latest jobs...'}
           </span>
+        </div>
+      </div>
+    )
+  }
+
+  if (!backendAvailable && events.length === 0) {
+    return (
+      <div className={`bg-gradient-to-r from-amber-900/80 via-orange-800/80 to-amber-900/80 ${className}`}>
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-3 text-amber-200">
+          <AlertCircle className="w-4 h-4 text-amber-400" />
+          <span className="text-sm">
+            {language === 'ar' 
+              ? 'نظام الوظائف الفورية قيد الإعداد - سيتوفر قريباً' 
+              : 'Live jobs ticker is being set up - coming soon'}
+          </span>
+          <Link 
+            href="/jobs"
+            className="text-amber-100 hover:text-white text-sm font-medium underline underline-offset-2"
+          >
+            {language === 'ar' ? 'تصفح الوظائف' : 'Browse Jobs'}
+          </Link>
         </div>
       </div>
     )

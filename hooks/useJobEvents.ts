@@ -9,29 +9,47 @@ interface UseJobEventsOptions {
   pollInterval?: number
 }
 
-export const useJobEvents = (options: UseJobEventsOptions = {}) => {
+interface UseJobEventsReturn {
+  events: JobEvent[]
+  loading: boolean
+  error: string | null
+  connected: boolean
+  backendAvailable: boolean
+  refresh: () => void
+}
+
+export const useJobEvents = (options: UseJobEventsOptions = {}): UseJobEventsReturn => {
   const { maxEvents = 20, autoConnect = true, pollInterval = 30000 } = options
   
   const [events, setEvents] = useState<JobEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [connected, setConnected] = useState(false)
+  const [backendAvailable, setBackendAvailable] = useState(true)
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const lastEventIdRef = useRef<string | null>(null)
 
   const fetchEvents = useCallback(async () => {
     try {
-      const fetchedEvents = await jobEventsService.getPublicTickerEvents(maxEvents)
-      if (fetchedEvents.length > 0) {
-        const newFirstId = fetchedEvents[0]?.id
-        if (newFirstId !== lastEventIdRef.current) {
-          setEvents(fetchedEvents)
-          lastEventIdRef.current = newFirstId
+      const result = await jobEventsService.getPublicTickerEvents(maxEvents)
+      if (result.success) {
+        const fetchedEvents = result.data
+        if (fetchedEvents.length > 0) {
+          const newFirstId = fetchedEvents[0]?.id
+          if (newFirstId !== lastEventIdRef.current) {
+            setEvents(fetchedEvents)
+            lastEventIdRef.current = newFirstId
+          }
         }
+        setBackendAvailable(true)
+        setError(null)
+      } else {
+        setBackendAvailable(false)
+        setError(result.error || 'Backend endpoint not available')
       }
-      setError(null)
     } catch (err: any) {
       console.error('Failed to fetch job events:', err)
+      setBackendAvailable(false)
       setError(err.message || 'Failed to load job events')
     } finally {
       setLoading(false)
@@ -75,13 +93,12 @@ export const useJobEvents = (options: UseJobEventsOptions = {}) => {
     }
 
     websocketClient.on('connection', handleConnection)
-    websocketClient.on('job_event_new', handleNewEvent)
-    websocketClient.on('job_event_update', handleEventUpdate)
-    websocketClient.on('job_event_closed', handleEventUpdate)
-    websocketClient.on('job_event_reopened', handleEventUpdate)
-    websocketClient.on('job_event_deadline', handleEventUpdate)
-    websocketClient.on('job_event_urgent', handleNewEvent)
-    websocketClient.on('hiring_announcement', handleNewEvent)
+    websocketClient.on('job_posted', handleNewEvent)
+    websocketClient.on('job_updated', handleEventUpdate)
+    websocketClient.on('job_closed', handleEventUpdate)
+    websocketClient.on('job_reopened', handleEventUpdate)
+    websocketClient.on('deadline_changed', handleEventUpdate)
+    websocketClient.on('announcement_posted', handleNewEvent)
 
     websocketClient.connect()
 
@@ -92,13 +109,12 @@ export const useJobEvents = (options: UseJobEventsOptions = {}) => {
 
     return () => {
       websocketClient.off('connection', handleConnection)
-      websocketClient.off('job_event_new', handleNewEvent)
-      websocketClient.off('job_event_update', handleEventUpdate)
-      websocketClient.off('job_event_closed', handleEventUpdate)
-      websocketClient.off('job_event_reopened', handleEventUpdate)
-      websocketClient.off('job_event_deadline', handleEventUpdate)
-      websocketClient.off('job_event_urgent', handleNewEvent)
-      websocketClient.off('hiring_announcement', handleNewEvent)
+      websocketClient.off('job_posted', handleNewEvent)
+      websocketClient.off('job_updated', handleEventUpdate)
+      websocketClient.off('job_closed', handleEventUpdate)
+      websocketClient.off('job_reopened', handleEventUpdate)
+      websocketClient.off('deadline_changed', handleEventUpdate)
+      websocketClient.off('announcement_posted', handleNewEvent)
 
       websocketClient.send({
         type: 'unsubscribe',
@@ -108,7 +124,7 @@ export const useJobEvents = (options: UseJobEventsOptions = {}) => {
   }, [autoConnect, handleNewEvent, handleEventUpdate])
 
   useEffect(() => {
-    if (pollInterval > 0) {
+    if (pollInterval > 0 && backendAvailable) {
       pollIntervalRef.current = setInterval(fetchEvents, pollInterval)
     }
 
@@ -117,7 +133,7 @@ export const useJobEvents = (options: UseJobEventsOptions = {}) => {
         clearInterval(pollIntervalRef.current)
       }
     }
-  }, [pollInterval, fetchEvents])
+  }, [pollInterval, fetchEvents, backendAvailable])
 
   const refresh = useCallback(() => {
     setLoading(true)
@@ -129,6 +145,7 @@ export const useJobEvents = (options: UseJobEventsOptions = {}) => {
     loading,
     error,
     connected,
+    backendAvailable,
     refresh
   }
 }
