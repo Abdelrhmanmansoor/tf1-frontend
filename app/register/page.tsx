@@ -82,7 +82,7 @@ export default function RegisterPage() {
 
   const saudiCities = language === 'ar' ?
     ['الرياض', 'جدة', 'الدمام', 'الخبر', 'الظهران', 'الأحساء', 'أبها', 'الباحة', 'عسير', 'نجران', 'جيزان', 'تبوك', 'حائل', 'القصيم', 'الجوف', 'المدينة المنورة', 'مكة المكرمة', 'الطائف', 'ينبع', 'رابغ', 'الجبيل', 'الزلفي', 'شرورة', 'خميس مشيط', 'المجمعة', 'الشمالية', 'الحدود الشمالية', 'صفوى', 'حفر الباطن', 'بيشة', 'سكاكا'] :
-    ['Riyadh', 'Jeddah', 'Dammam', 'Khobar', 'Dhahran', 'Al-Ahsa', 'Abha', 'Al-Baha', 'Asir', 'Najran', 'Jazan', 'Tabuk', 'Ha\'il', 'Qassim', 'Al-Jouf', 'Madinah', 'Makkah', 'Taif', 'Yanbu', 'Rabigh', 'Jubail', 'Al-Zulfi', 'Sharurah', 'Khamis Mushait', 'Al-Majmaah', 'Northern Region', 'Northern Borders', 'Safwa', 'Hafar Al-Batin', 'Bisha', 'Sakaka']
+    ['Riyadh', 'Jeddah', 'Dammam', 'Khobar', 'Dhahran', 'Al-Ahsa', 'Abha', 'Al-Baha', 'Asir', 'Najran', 'Jazan', 'Tabuk', 'Hail', 'Qassim', 'Al-Jouf', 'Madinah', 'Makkah', 'Taif', 'Yanbu', 'Rabigh', 'Jubail', 'Al-Zulfi', 'Sharurah', 'Khamis Mushait', 'Al-Majmaah', 'Northern Region', 'Northern Borders', 'Safwa', 'Hafar Al-Batin', 'Bisha', 'Sakaka']
 
   const handleStep1Continue = () => {
     if (!basicData.role) {
