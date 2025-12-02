@@ -57,6 +57,15 @@ function LoginContent() {
       setSuccess(true)
       const userRole = response.user.role
 
+      const redirectUrl = searchParams.get('redirect') || searchParams.get('next')
+      
+      if (redirectUrl) {
+        setTimeout(() => {
+          router.push(redirectUrl)
+        }, 500)
+        return
+      }
+
       const roleRoutes: Record<string, string> = {
         player: '/dashboard/player',
         coach: '/dashboard/coach',
