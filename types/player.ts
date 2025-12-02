@@ -518,3 +518,101 @@ export interface TeamMember {
   jerseyNumber?: number
   isCaptain?: boolean
 }
+
+// ============================================
+// Training Request System Types
+// ============================================
+
+export type TrainingRequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed'
+export type TrainingRequestType = 'private' | 'group' | 'evaluation' | 'trial'
+
+export interface TrainingRequest {
+  id: string
+  playerId: string
+  playerName: string
+  playerNameAr?: string
+  playerAvatar?: string
+  coachId: string
+  coach: CoachInfo
+  type: TrainingRequestType
+  status: TrainingRequestStatus
+  title: string
+  titleAr?: string
+  description?: string
+  descriptionAr?: string
+  preferredDates: string[]
+  preferredTimeSlots: {
+    startTime: string
+    endTime: string
+  }[]
+  location?: string
+  locationAr?: string
+  duration: number
+  notes?: string
+  notesAr?: string
+  coachNotes?: string
+  coachNotesAr?: string
+  rejectionReason?: string
+  rejectionReasonAr?: string
+  scheduledDate?: string
+  scheduledTime?: string
+  createdAt: string
+  updatedAt: string
+  respondedAt?: string
+}
+
+export interface CreateTrainingRequestData {
+  coachId: string
+  type: TrainingRequestType
+  title: string
+  titleAr?: string
+  description?: string
+  descriptionAr?: string
+  preferredDates: string[]
+  preferredTimeSlots: {
+    startTime: string
+    endTime: string
+  }[]
+  location?: string
+  locationAr?: string
+  duration: number
+  notes?: string
+  notesAr?: string
+}
+
+export interface UpdateTrainingRequestData {
+  status?: TrainingRequestStatus
+  scheduledDate?: string
+  scheduledTime?: string
+  coachNotes?: string
+  coachNotesAr?: string
+  rejectionReason?: string
+  rejectionReasonAr?: string
+}
+
+export interface TrainingRequestsResponse {
+  requests: TrainingRequest[]
+  pagination: {
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+  }
+}
+
+// ============================================
+// Enhanced Training Session Types
+// ============================================
+
+export interface EnhancedTrainingSession extends TrainingSession {
+  coach: CoachInfo
+  program?: TrainingProgram
+  participants?: number
+  maxParticipants?: number
+  objectives?: string[]
+  objectivesAr?: string[]
+  equipment?: string[]
+  equipmentAr?: string[]
+  intensity?: 'low' | 'medium' | 'high'
+  weather?: string
+}

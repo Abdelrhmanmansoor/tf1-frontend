@@ -29,6 +29,10 @@ import type {
   PlayerDashboardData,
   TeamMember,
   CoachInfo,
+  TrainingRequest,
+  CreateTrainingRequestData,
+  TrainingRequestsResponse,
+  EnhancedTrainingSession,
 } from '@/types/player'
 
 interface ApiResponse<T> {
@@ -676,6 +680,155 @@ class PlayerService {
     } catch (error) {
       console.error('Failed to fetch progress history:', error)
       return []
+    }
+  }
+
+  // ============================================
+  // Training Requests System Methods
+  // ============================================
+
+  /**
+   * Get Player's Training Requests
+   * GET /players/training-requests
+   */
+  async getTrainingRequests(params?: {
+    status?: 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed' | 'all'
+    page?: number
+    limit?: number
+  }): Promise<TrainingRequestsResponse> {
+    try {
+      const response = await api.get<{ success: boolean; data: TrainingRequestsResponse }>(
+        `${this.BASE_PATH}/training-requests`,
+        { params }
+      )
+      return response.data.data || { requests: [], pagination: { total: 0, page: 1, limit: 10, totalPages: 0 } }
+    } catch (error) {
+      console.error('Failed to fetch training requests:', error)
+      return { requests: [], pagination: { total: 0, page: 1, limit: 10, totalPages: 0 } }
+    }
+  }
+
+  /**
+   * Get Single Training Request Details
+   * GET /players/training-requests/:id
+   */
+  async getTrainingRequest(id: string): Promise<TrainingRequest | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: TrainingRequest }>(
+        `${this.BASE_PATH}/training-requests/${id}`
+      )
+      return response.data.data || null
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Create New Training Request
+   * POST /players/training-requests
+   */
+  async createTrainingRequest(data: CreateTrainingRequestData): Promise<TrainingRequest> {
+    try {
+      const response = await api.post<{ success: boolean; data: TrainingRequest }>(
+        `${this.BASE_PATH}/training-requests`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Cancel Training Request
+   * DELETE /players/training-requests/:id
+   */
+  async cancelTrainingRequest(id: string): Promise<void> {
+    try {
+      await api.delete(`${this.BASE_PATH}/training-requests/${id}`)
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Active Training Requests Count
+   * GET /players/training-requests/active/count
+   */
+  async getActiveRequestsCount(): Promise<{ pending: number; approved: number; total: number }> {
+    try {
+      const response = await api.get<{ success: boolean; data: { pending: number; approved: number; total: number } }>(
+        `${this.BASE_PATH}/training-requests/active/count`
+      )
+      return response.data.data || { pending: 0, approved: 0, total: 0 }
+    } catch (error) {
+      console.error('Failed to fetch active requests count:', error)
+      return { pending: 0, approved: 0, total: 0 }
+    }
+  }
+
+  // ============================================
+  // Enhanced Training Sessions Methods
+  // ============================================
+
+  /**
+   * Get Enhanced Training Sessions with Full Details
+   * GET /players/training-sessions/enhanced
+   */
+  async getEnhancedTrainingSessions(params?: {
+    status?: 'scheduled' | 'completed' | 'cancelled' | 'all'
+    from?: string
+    to?: string
+    limit?: number
+  }): Promise<EnhancedTrainingSession[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: EnhancedTrainingSession[] }>(
+        `${this.BASE_PATH}/training-sessions/enhanced`,
+        { params }
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch enhanced training sessions:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get Training Session Details
+   * GET /players/training-sessions/:id
+   */
+  async getTrainingSessionDetails(id: string): Promise<EnhancedTrainingSession | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: EnhancedTrainingSession }>(
+        `${this.BASE_PATH}/training-sessions/${id}`
+      )
+      return response.data.data || null
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Confirm Session Attendance
+   * POST /players/training-sessions/:id/confirm
+   */
+  async confirmSessionAttendance(sessionId: string): Promise<void> {
+    try {
+      await api.post(`${this.BASE_PATH}/training-sessions/${sessionId}/confirm`)
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Request Session Excuse
+   * POST /players/training-sessions/:id/excuse
+   */
+  async requestSessionExcuse(sessionId: string, reason: string, reasonAr?: string): Promise<void> {
+    try {
+      await api.post(`${this.BASE_PATH}/training-sessions/${sessionId}/excuse`, { reason, reasonAr })
+    } catch (error) {
+      throw this.handleError(error)
     }
   }
 }
