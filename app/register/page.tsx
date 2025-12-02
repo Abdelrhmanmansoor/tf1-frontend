@@ -210,26 +210,31 @@ export default function RegisterPage() {
                   {language === 'ar' ? 'اختر دورك' : 'Select Your Role'}
                 </h2>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
                     { value: 'player', emoji: '⚽', label: language === 'ar' ? 'لاعب' : 'Player' },
                     { value: 'coach', emoji: '👨‍🏫', label: language === 'ar' ? 'مدرب' : 'Coach' },
                     { value: 'club', emoji: '🏟️', label: language === 'ar' ? 'نادي' : 'Club' },
                     { value: 'specialist', emoji: '💪', label: language === 'ar' ? 'متخصص' : 'Specialist' },
+                    { value: 'administrator', emoji: '👔', label: language === 'ar' ? 'إداري' : 'Administrator' },
+                    { value: 'age-group-supervisor', emoji: '👥', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
+                    { value: 'sports-director', emoji: '🏆', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
+                    { value: 'executive-director', emoji: '📊', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
+                    { value: 'secretary', emoji: '📋', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
                   ].map((role) => (
                     <motion.button
                       key={role.value}
                       type="button"
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{ scale: 1.05 }}
                       onClick={() => setBasicData({ ...basicData, role: role.value })}
-                      className={`p-6 rounded-xl border-2 transition-all ${
+                      className={`p-4 rounded-xl border-2 transition-all ${
                         basicData.role === role.value
                           ? 'border-blue-600 bg-blue-50'
                           : 'border-gray-200 hover:border-blue-300'
                       }`}
                     >
-                      <div className="text-4xl mb-2">{role.emoji}</div>
-                      <div className="font-semibold text-gray-900">{role.label}</div>
+                      <div className="text-3xl mb-2">{role.emoji}</div>
+                      <div className="font-semibold text-gray-900 text-sm">{role.label}</div>
                     </motion.button>
                   ))}
                 </div>
@@ -583,6 +588,34 @@ export default function RegisterPage() {
                         onChange={(e) => setRoleData({ ...roleData, specialization: e.target.value })}
                       />
                     </div>
+                  )}
+
+                  {/* Admin Roles Fields */}
+                  {['administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary'].includes(basicData.role) && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'القسم' : 'Department'}
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder={language === 'ar' ? 'مثال: الإدارة العامة' : 'E.g., General Management'}
+                          value={roleData.department || ''}
+                          onChange={(e) => setRoleData({ ...roleData, department: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'الموضع' : 'Position'}
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder={language === 'ar' ? 'مثال: مدير' : 'E.g., Manager'}
+                          value={roleData.position || ''}
+                          onChange={(e) => setRoleData({ ...roleData, position: e.target.value })}
+                        />
+                      </div>
+                    </>
                   )}
 
                   {/* Terms & Conditions */}
