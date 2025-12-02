@@ -118,7 +118,7 @@ const AgeGroupSupervisorDashboard = () => {
     { icon: Layers, label: language === 'ar' ? 'الفئات السنية' : 'Age Groups', value: stats.totalAgeGroups, color: 'from-green-500 to-emerald-500', href: '/dashboard/age-group-supervisor/age-groups' },
     { icon: Users, label: language === 'ar' ? 'إجمالي اللاعبين' : 'Total Players', value: stats.totalPlayers, color: 'from-blue-500 to-cyan-500', href: '/dashboard/age-group-supervisor/players' },
     { icon: GraduationCap, label: language === 'ar' ? 'المدربين' : 'Coaches', value: stats.totalCoaches, color: 'from-purple-500 to-pink-500', href: '/dashboard/age-group-supervisor/coaches' },
-    { icon: Trophy, label: language === 'ar' ? 'المباريات القادمة' : 'Upcoming Matches', value: stats.upcomingMatches, color: 'from-yellow-500 to-orange-500', href: '/dashboard/age-group-supervisor/schedule' },
+    { icon: Trophy, label: language === 'ar' ? 'المباريات القادمة' : 'Upcoming Matches', value: stats.upcomingMatches, color: 'from-yellow-500 to-orange-500', href: '/dashboard/age-group-supervisor/matches' },
     { icon: Activity, label: language === 'ar' ? 'التدريبات النشطة' : 'Active Trainings', value: stats.activeTrainings, color: 'from-cyan-500 to-teal-500', href: '/dashboard/age-group-supervisor/schedule' },
     { icon: UserPlus, label: language === 'ar' ? 'طلبات التسجيل' : 'Pending Registrations', value: stats.pendingRegistrations, color: 'from-red-500 to-pink-500', href: '/dashboard/age-group-supervisor/registrations' },
   ]
@@ -127,7 +127,8 @@ const AgeGroupSupervisorDashboard = () => {
     { icon: Layers, label: language === 'ar' ? 'الفئات السنية' : 'Age Groups', href: '/dashboard/age-group-supervisor/age-groups', color: 'from-green-500 to-emerald-500' },
     { icon: Users, label: language === 'ar' ? 'اللاعبين' : 'Players', href: '/dashboard/age-group-supervisor/players', color: 'from-blue-500 to-cyan-500' },
     { icon: GraduationCap, label: language === 'ar' ? 'المدربين' : 'Coaches', href: '/dashboard/age-group-supervisor/coaches', color: 'from-purple-500 to-pink-500' },
-    { icon: Calendar, label: language === 'ar' ? 'الجدول' : 'Schedule', href: '/dashboard/age-group-supervisor/schedule', color: 'from-yellow-500 to-orange-500' },
+    { icon: Trophy, label: language === 'ar' ? 'المباريات' : 'Matches', href: '/dashboard/age-group-supervisor/matches', color: 'from-yellow-500 to-orange-500' },
+    { icon: Calendar, label: language === 'ar' ? 'التدريبات' : 'Training', href: '/dashboard/age-group-supervisor/schedule', color: 'from-cyan-500 to-teal-500' },
     { icon: UserPlus, label: language === 'ar' ? 'التسجيلات' : 'Registrations', href: '/dashboard/age-group-supervisor/registrations', color: 'from-red-500 to-pink-500' },
     { icon: FileText, label: language === 'ar' ? 'التقارير' : 'Reports', href: '/dashboard/age-group-supervisor/reports', color: 'from-indigo-500 to-purple-500' },
     { icon: User, label: language === 'ar' ? 'الملف الشخصي' : 'Profile', href: '/dashboard/age-group-supervisor/profile', color: 'from-gray-500 to-gray-600' },
