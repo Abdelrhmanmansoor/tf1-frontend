@@ -1,17 +1,16 @@
 'use client'
 
-// Protected Route Component
-// Prevents unauthorized users from accessing protected pages
-
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import authService from '@/services/auth'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 
+type UserRole = 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+
 interface ProtectedRouteProps {
   children: React.ReactNode
-  allowedRoles?: ('player' | 'coach' | 'club' | 'specialist')[]
+  allowedRoles?: UserRole[]
 }
 
 export default function ProtectedRoute({
@@ -19,29 +18,34 @@ export default function ProtectedRoute({
   allowedRoles,
 }: ProtectedRouteProps) {
   const router = useRouter()
+  const [isChecking, setIsChecking] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
 
   useEffect(() => {
-    // Check if user is logged in
-    if (!authService.isAuthenticated()) {
-      // Not logged in - redirect to login
-      router.push('/login')
-      return
-    }
-
-    // Check if user has correct role (if roles specified)
-    if (allowedRoles && allowedRoles.length > 0) {
-      const userRole = authService.getUserRole()
-
-      if (userRole && !allowedRoles.includes(userRole as any)) {
-        // Wrong role - redirect to their dashboard
-        router.push(`/dashboard?role=${userRole}`)
+    const checkAuth = () => {
+      if (!authService.isAuthenticated()) {
+        const currentPath = window.location.pathname
+        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
         return
       }
+
+      if (allowedRoles && allowedRoles.length > 0) {
+        const userRole = authService.getUserRole() as UserRole
+
+        if (userRole && !allowedRoles.includes(userRole)) {
+          router.push('/dashboard')
+          return
+        }
+      }
+
+      setIsAuthorized(true)
+      setIsChecking(false)
     }
+
+    checkAuth()
   }, [router, allowedRoles])
 
-  // Check authentication before rendering
-  if (!authService.isAuthenticated()) {
+  if (isChecking || !isAuthorized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
         <motion.div
@@ -57,12 +61,11 @@ export default function ProtectedRoute({
           >
             <Loader2 className="w-12 h-12 text-blue-600" />
           </motion.div>
-          <p className="text-gray-600 text-lg">Redirecting to login...</p>
+          <p className="text-gray-600 text-lg">جاري التحقق...</p>
         </motion.div>
       </div>
     )
   }
 
-  // User is authorized - show page
   return <>{children}</>
 }
