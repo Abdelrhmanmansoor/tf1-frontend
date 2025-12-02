@@ -53,8 +53,7 @@ export default function BlogPostPage() {
           </h1>
           <Link href="/blog" className="text-blue-600 hover:underline font-semibold">
             {language === 'ar' ? 'العودة للمدونة' : 'Back to blog'}
-            </Link>
-          </div>
+          </Link>
         </div>
         <Footer />
       </div>
