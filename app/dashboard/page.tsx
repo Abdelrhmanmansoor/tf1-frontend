@@ -131,36 +131,36 @@ function DashboardContent() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
+                className="h-full"
+                onClick={() => router.push('/dashboard/administrator')}
               >
-                <Link href="/dashboard/administrator">
-                  <div className="h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
-                    <div className="flex flex-col h-full justify-between">
-                      <div>
-                        <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                          <Shield className="w-8 h-8" />
-                        </div>
-                        <h2 className="text-3xl font-bold mb-3">
-                          {language === 'ar' ? 'لوحة الإدارة' : 'Admin Panel'}
-                        </h2>
-                        <p className="text-white/80 mb-4">
-                          {language === 'ar'
-                            ? 'تحكم كامل بإدارة الموقع والمستخدمين والإعدادات'
-                            : 'Full control of site management, users and settings'
-                          }
-                        </p>
+                <div className="h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <Shield className="w-8 h-8" />
                       </div>
-                      <div className="flex items-center gap-2 text-white/80 group">
-                        <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
-                        <motion.span
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          →
-                        </motion.span>
-                      </div>
+                      <h2 className="text-3xl font-bold mb-3">
+                        {language === 'ar' ? 'لوحة الإدارة' : 'Admin Panel'}
+                      </h2>
+                      <p className="text-white/80 mb-4">
+                        {language === 'ar'
+                          ? 'تحكم كامل بإدارة الموقع والمستخدمين والإعدادات'
+                          : 'Full control of site management, users and settings'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80 group">
+                      <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.span>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             )}
 
@@ -170,36 +170,36 @@ function DashboardContent() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
+                className="h-full"
+                onClick={() => router.push('/dashboard/age-group-supervisor')}
               >
-                <Link href="/dashboard/age-group-supervisor">
-                  <div className="h-full bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
-                    <div className="flex flex-col h-full justify-between">
-                      <div>
-                        <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                          <Users className="w-8 h-8" />
-                        </div>
-                        <h2 className="text-3xl font-bold mb-3">
-                          {language === 'ar' ? 'لوحة المشرف' : 'Supervisor Panel'}
-                        </h2>
-                        <p className="text-white/80 mb-4">
-                          {language === 'ar'
-                            ? 'إدارة اللاعبين والفئات العمرية والجلسات التدريبية'
-                            : 'Manage players, age categories and training sessions'
-                          }
-                        </p>
+                <div className="h-full bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <Users className="w-8 h-8" />
                       </div>
-                      <div className="flex items-center gap-2 text-white/80 group">
-                        <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
-                        <motion.span
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          →
-                        </motion.span>
-                      </div>
+                      <h2 className="text-3xl font-bold mb-3">
+                        {language === 'ar' ? 'لوحة المشرف' : 'Supervisor Panel'}
+                      </h2>
+                      <p className="text-white/80 mb-4">
+                        {language === 'ar'
+                          ? 'إدارة اللاعبين والفئات العمرية والجلسات التدريبية'
+                          : 'Manage players, age categories and training sessions'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80 group">
+                      <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.span>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             )}
 
@@ -209,36 +209,36 @@ function DashboardContent() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
+                className="h-full"
+                onClick={() => router.push('/dashboard/age-group-supervisor')}
               >
-                <Link href="/dashboard/age-group-supervisor">
-                  <div className="h-full bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
-                    <div className="flex flex-col h-full justify-between">
-                      <div>
-                        <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                          <Users className="w-8 h-8" />
-                        </div>
-                        <h2 className="text-3xl font-bold mb-3">
-                          {language === 'ar' ? 'لوحة المشرف' : 'Supervisor Panel'}
-                        </h2>
-                        <p className="text-white/80 mb-4">
-                          {language === 'ar'
-                            ? 'إدارة اللاعبين والفئات العمرية والجلسات التدريبية'
-                            : 'Manage players, age categories and training sessions'
-                          }
-                        </p>
+                <div className="h-full bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <Users className="w-8 h-8" />
                       </div>
-                      <div className="flex items-center gap-2 text-white/80 group">
-                        <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
-                        <motion.span
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          →
-                        </motion.span>
-                      </div>
+                      <h2 className="text-3xl font-bold mb-3">
+                        {language === 'ar' ? 'لوحة المشرف' : 'Supervisor Panel'}
+                      </h2>
+                      <p className="text-white/80 mb-4">
+                        {language === 'ar'
+                          ? 'إدارة اللاعبين والفئات العمرية والجلسات التدريبية'
+                          : 'Manage players, age categories and training sessions'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80 group">
+                      <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.span>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             )}
 
@@ -247,36 +247,36 @@ function DashboardContent() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
+                className="h-full"
+                onClick={() => router.push('/dashboard/administrator')}
               >
-                <Link href="/dashboard/administrator">
-                  <div className="h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
-                    <div className="flex flex-col h-full justify-between">
-                      <div>
-                        <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                          <Shield className="w-8 h-8" />
-                        </div>
-                        <h2 className="text-3xl font-bold mb-3">
-                          {language === 'ar' ? 'لوحة الإدارة' : 'Admin Panel'}
-                        </h2>
-                        <p className="text-white/80 mb-4">
-                          {language === 'ar'
-                            ? 'تحكم كامل بإدارة الموقع والمستخدمين والإعدادات'
-                            : 'Full control of site management, users and settings'
-                          }
-                        </p>
+                <div className="h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 cursor-pointer">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                        <Shield className="w-8 h-8" />
                       </div>
-                      <div className="flex items-center gap-2 text-white/80 group">
-                        <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
-                        <motion.span
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          →
-                        </motion.span>
-                      </div>
+                      <h2 className="text-3xl font-bold mb-3">
+                        {language === 'ar' ? 'لوحة الإدارة' : 'Admin Panel'}
+                      </h2>
+                      <p className="text-white/80 mb-4">
+                        {language === 'ar'
+                          ? 'تحكم كامل بإدارة الموقع والمستخدمين والإعدادات'
+                          : 'Full control of site management, users and settings'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80 group">
+                      <span>{language === 'ar' ? 'الدخول الآن' : 'Enter Now'}</span>
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.span>
                     </div>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             )}
           </div>
