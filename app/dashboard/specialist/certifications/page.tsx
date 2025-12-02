@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/language-context'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Award } from 'lucide-react'
+import { Award } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function CertificationsPage() {

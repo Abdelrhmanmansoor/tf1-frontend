@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/language-context'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function AvailabilityPage() {
