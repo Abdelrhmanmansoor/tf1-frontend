@@ -10,6 +10,41 @@ Next.js 15 web application with React 19, TypeScript, Tailwind CSS, and various 
 
 ## Recent Changes
 
+### December 2, 2025 - Added 5 New Admin Roles with Dashboards
+- **New Roles Added to Registration:**
+  - Administrator (إداري) - General system administration
+  - Age Group Supervisor (مشرف فئات سنية) - Manages youth categories
+  - Sports Director (مدير رياضي) - Manages sports programs
+  - Executive Director (مدير تنفيذي) - High-level management
+  - Secretary (سكرتير) - Administrative support
+
+- **New Dashboard Pages:**
+  - `/dashboard/administrator` - User management, approvals, system alerts
+  - `/dashboard/age-group-supervisor` - Age groups, players, training schedules
+  - `/dashboard/sports-director` - Programs, coach performance, analytics
+  - `/dashboard/executive-director` - KPIs, initiatives, partnerships, reports
+  - `/dashboard/secretary` - Calendar, meetings, documents, messages
+
+- **Files Created:**
+  - `components/dashboards/AdministratorDashboard.tsx`
+  - `components/dashboards/AgeGroupSupervisorDashboard.tsx`
+  - `components/dashboards/SportsDirectorDashboard.tsx`
+  - `components/dashboards/ExecutiveDirectorDashboard.tsx`
+  - `components/dashboards/SecretaryDashboard.tsx`
+  - `app/dashboard/administrator/page.tsx`
+  - `app/dashboard/age-group-supervisor/page.tsx`
+  - `app/dashboard/sports-director/page.tsx`
+  - `app/dashboard/executive-director/page.tsx`
+  - `app/dashboard/secretary/page.tsx`
+
+- **Files Updated:**
+  - `app/register/page.tsx` - Added new roles to dropdown
+  - `app/dashboard/page.tsx` - Added routing for new roles
+  - `components/messaging/MessageNotificationBadge.tsx` - Extended type definitions
+
+- **Backend Documentation:**
+  - `NEW_ADMIN_ROLES_BACKEND_COMMANDS.md` - Complete API specs for all 5 roles
+
 ### November 25, 2025 - Admin Dashboard Temporarily Disabled ✅
 - **Status**: Admin panel temporarily disabled for performance optimization
 - **Access**: `/admin`, `/control`, `/dashboard/admin` show maintenance page

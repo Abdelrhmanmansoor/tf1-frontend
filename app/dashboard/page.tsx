@@ -12,6 +12,11 @@ import PlayerDashboard from '@/components/dashboards/PlayerDashboard'
 import ClubDashboard from '@/components/dashboards/ClubDashboard'
 import CoachDashboard from '@/components/dashboards/CoachDashboard'
 import SpecialistDashboard from '@/components/dashboards/SpecialistDashboard'
+import AdministratorDashboard from '@/components/dashboards/AdministratorDashboard'
+import AgeGroupSupervisorDashboard from '@/components/dashboards/AgeGroupSupervisorDashboard'
+import SportsDirectorDashboard from '@/components/dashboards/SportsDirectorDashboard'
+import ExecutiveDirectorDashboard from '@/components/dashboards/ExecutiveDirectorDashboard'
+import SecretaryDashboard from '@/components/dashboards/SecretaryDashboard'
 
 function DashboardContent() {
   const { language } = useLanguage()
@@ -69,6 +74,16 @@ function DashboardContent() {
         return <CoachDashboard />
       case 'specialist':
         return <SpecialistDashboard />
+      case 'administrator':
+        return <AdministratorDashboard />
+      case 'age-group-supervisor':
+        return <AgeGroupSupervisorDashboard />
+      case 'sports-director':
+        return <SportsDirectorDashboard />
+      case 'executive-director':
+        return <ExecutiveDirectorDashboard />
+      case 'secretary':
+        return <SecretaryDashboard />
       default:
         return <PlayerDashboard />
     }

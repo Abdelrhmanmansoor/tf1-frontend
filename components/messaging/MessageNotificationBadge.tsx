@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 
 interface MessageNotificationBadgeProps {
-  dashboardType: 'player' | 'coach' | 'club' | 'specialist'
+  dashboardType: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
 }
 
 export function MessageNotificationBadge({

@@ -35,7 +35,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'player' as 'player' | 'coach' | 'club' | 'specialist',
+    role: 'player' as 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary',
     firstName: '',
     lastName: '',
     phone: '',
@@ -49,6 +49,9 @@ export default function RegisterPage() {
       | 'sports-center',
     establishedDate: '',
     businessRegistrationNumber: '',
+    // Admin roles specific fields
+    department: '',
+    position: '',
   })
 
   const [countryCode, setCountryCode] = useState('+966') // Default to Saudi Arabia
@@ -682,6 +685,11 @@ export default function RegisterPage() {
                     {formData.role === 'coach' && '👨‍🏫'}
                     {formData.role === 'club' && '🏟️'}
                     {formData.role === 'specialist' && '💪'}
+                    {formData.role === 'administrator' && '👔'}
+                    {formData.role === 'age-group-supervisor' && '👥'}
+                    {formData.role === 'sports-director' && '🏆'}
+                    {formData.role === 'executive-director' && '📊'}
+                    {formData.role === 'secretary' && '📋'}
                     {formData.role === 'player' &&
                       (language === 'ar' ? 'لاعب/رياضي' : 'Player/Athlete')}
                     {formData.role === 'coach' &&
@@ -690,6 +698,16 @@ export default function RegisterPage() {
                       (language === 'ar' ? 'نادي/مؤسسة' : 'Club/Organization')}
                     {formData.role === 'specialist' &&
                       (language === 'ar' ? 'متخصص' : 'Specialist')}
+                    {formData.role === 'administrator' &&
+                      (language === 'ar' ? 'إداري' : 'Administrator')}
+                    {formData.role === 'age-group-supervisor' &&
+                      (language === 'ar' ? 'مشرف فئات سنية' : 'Age Group Supervisor')}
+                    {formData.role === 'sports-director' &&
+                      (language === 'ar' ? 'مدير رياضي' : 'Sports Director')}
+                    {formData.role === 'executive-director' &&
+                      (language === 'ar' ? 'مدير تنفيذي' : 'Executive Director')}
+                    {formData.role === 'secretary' &&
+                      (language === 'ar' ? 'سكرتير' : 'Secretary')}
                   </span>
                   <ChevronDown
                     className={`w-5 h-5 text-purple-500 transition-transform duration-300 ${roleDropdownOpen ? 'rotate-180' : ''}`}
@@ -729,6 +747,36 @@ export default function RegisterPage() {
                           emoji: '💪',
                           labelAr: 'متخصص',
                           labelEn: 'Specialist',
+                        },
+                        {
+                          value: 'administrator',
+                          emoji: '👔',
+                          labelAr: 'إداري',
+                          labelEn: 'Administrator',
+                        },
+                        {
+                          value: 'age-group-supervisor',
+                          emoji: '👥',
+                          labelAr: 'مشرف فئات سنية',
+                          labelEn: 'Age Group Supervisor',
+                        },
+                        {
+                          value: 'sports-director',
+                          emoji: '🏆',
+                          labelAr: 'مدير رياضي',
+                          labelEn: 'Sports Director',
+                        },
+                        {
+                          value: 'executive-director',
+                          emoji: '📊',
+                          labelAr: 'مدير تنفيذي',
+                          labelEn: 'Executive Director',
+                        },
+                        {
+                          value: 'secretary',
+                          emoji: '📋',
+                          labelAr: 'سكرتير',
+                          labelEn: 'Secretary',
                         },
                       ].map((option) => (
                         <motion.button

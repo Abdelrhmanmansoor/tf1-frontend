@@ -8,7 +8,7 @@ import API_CONFIG from '@/config/api'
 interface RegisterData {
   email: string
   password: string
-  role: 'player' | 'coach' | 'club' | 'specialist'
+  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
   firstName?: string
   lastName?: string
   phone?: string
@@ -17,6 +17,9 @@ interface RegisterData {
   organizationType?: 'club' | 'academy' | 'federation' | 'sports-center'
   establishedDate?: string
   businessRegistrationNumber?: string
+  // Admin roles specific fields
+  department?: string
+  position?: string
 }
 
 interface LoginResponse {
@@ -30,7 +33,7 @@ interface User {
   email: string
   firstName: string
   lastName: string
-  role: 'player' | 'coach' | 'club' | 'specialist'
+  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
   isEmailVerified: boolean
 }
 
