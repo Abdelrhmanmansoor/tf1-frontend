@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import ageGroupSupervisorService from '@/services/age-group-supervisor'
+import { toast } from 'sonner'
 import {
   ArrowLeft,
   Search,
@@ -18,7 +20,9 @@ import {
   Calendar,
   Phone,
   Mail,
-  User
+  User,
+  X,
+  AlertCircle
 } from 'lucide-react'
 
 interface Registration {
@@ -30,9 +34,16 @@ interface Registration {
   parentPhone: string
   parentEmail?: string
   requestedAgeGroup: string
+  requestedAgeGroupId: string
   submittedAt: string
   status: 'pending' | 'approved' | 'rejected'
   notes?: string
+}
+
+interface AgeGroup {
+  id: string
+  name: string
+  nameAr: string
 }
 
 function RegistrationsContent() {
@@ -40,10 +51,18 @@ function RegistrationsContent() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([])
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending')
+  const [showApproveModal, setShowApproveModal] = useState(false)
+  const [showRejectModal, setShowRejectModal] = useState(false)
+  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
+  const [selectedAgeGroupId, setSelectedAgeGroupId] = useState('')
+  const [rejectReason, setRejectReason] = useState('')
+  const [processing, setProcessing] = useState(false)
 
   useEffect(() => {
     fetchRegistrations()
+    fetchAgeGroups()
   }, [filter])
 
   const fetchRegistrations = async () => {
@@ -69,12 +88,113 @@ function RegistrationsContent() {
     }
   }
 
-  const handleApprove = async (id: string) => {
-    console.log('Approving:', id)
+  const fetchAgeGroups = async () => {
+    try {
+      const groups = await ageGroupSupervisorService.getAgeGroups()
+      setAgeGroups(groups)
+    } catch (error) {
+      console.error('Error fetching age groups:', error)
+      setAgeGroups([])
+    }
   }
 
-  const handleReject = async (id: string) => {
-    console.log('Rejecting:', id)
+  const openApproveModal = (registration: Registration) => {
+    setSelectedRegistration(registration)
+    setSelectedAgeGroupId(registration.requestedAgeGroupId || '')
+    setShowApproveModal(true)
+  }
+
+  const openRejectModal = (registration: Registration) => {
+    setSelectedRegistration(registration)
+    setRejectReason('')
+    setShowRejectModal(true)
+  }
+
+  const handleApprove = async () => {
+    if (!selectedRegistration || !selectedAgeGroupId) {
+      toast.error(language === 'ar' ? 'يرجى اختيار الفئة السنية' : 'Please select an age group')
+      return
+    }
+
+    try {
+      setProcessing(true)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/registrations/${selectedRegistration.id}/approve`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            ageGroupId: selectedAgeGroupId,
+            status: 'approved'
+          })
+        }
+      )
+
+      if (response.ok) {
+        toast.success(language === 'ar' ? 'تم قبول الطلب بنجاح' : 'Registration approved successfully')
+        setShowApproveModal(false)
+        setSelectedRegistration(null)
+        fetchRegistrations()
+      } else if (response.status === 404) {
+        toast.error(
+          language === 'ar' 
+            ? 'الخدمة غير متاحة - يرجى التواصل مع مطور الباك اند' 
+            : 'Service unavailable - please contact backend developer'
+        )
+      } else {
+        toast.error(language === 'ar' ? 'حدث خطأ أثناء القبول' : 'Error approving registration')
+      }
+    } catch (error) {
+      console.error('Error approving registration:', error)
+      toast.error(language === 'ar' ? 'الخدمة غير متاحة حالياً' : 'Service unavailable')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  const handleReject = async () => {
+    if (!selectedRegistration) return
+
+    try {
+      setProcessing(true)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/registrations/${selectedRegistration.id}/reject`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            status: 'rejected',
+            reason: rejectReason
+          })
+        }
+      )
+
+      if (response.ok) {
+        toast.success(language === 'ar' ? 'تم رفض الطلب' : 'Registration rejected')
+        setShowRejectModal(false)
+        setSelectedRegistration(null)
+        fetchRegistrations()
+      } else if (response.status === 404) {
+        toast.error(
+          language === 'ar' 
+            ? 'الخدمة غير متاحة - يرجى التواصل مع مطور الباك اند' 
+            : 'Service unavailable - please contact backend developer'
+        )
+      } else {
+        toast.error(language === 'ar' ? 'حدث خطأ أثناء الرفض' : 'Error rejecting registration')
+      }
+    } catch (error) {
+      console.error('Error rejecting registration:', error)
+      toast.error(language === 'ar' ? 'الخدمة غير متاحة حالياً' : 'Service unavailable')
+    } finally {
+      setProcessing(false)
+    }
   }
 
   const getStatusBadge = (status: string) => {
@@ -196,14 +316,14 @@ function RegistrationsContent() {
                   {reg.status === 'pending' && (
                     <div className="flex gap-2 pt-4 border-t">
                       <Button 
-                        onClick={() => handleApprove(reg.id)}
+                        onClick={() => openApproveModal(reg)}
                         className="flex-1 bg-green-600 text-white hover:bg-green-700"
                       >
                         <CheckCircle className="w-4 h-4 mr-2" />
                         {language === 'ar' ? 'قبول' : 'Approve'}
                       </Button>
                       <Button 
-                        onClick={() => handleReject(reg.id)}
+                        onClick={() => openRejectModal(reg)}
                         variant="outline"
                         className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
                       >
@@ -212,12 +332,155 @@ function RegistrationsContent() {
                       </Button>
                     </div>
                   )}
+
+                  {reg.status === 'rejected' && reg.notes && (
+                    <div className="pt-4 border-t">
+                      <p className="text-xs text-gray-500 mb-1">{language === 'ar' ? 'سبب الرفض' : 'Rejection Reason'}</p>
+                      <p className="text-sm text-red-600">{reg.notes}</p>
+                    </div>
+                  )}
                 </motion.div>
               )
             })}
           </div>
         )}
       </main>
+
+      {showApproveModal && selectedRegistration && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl max-w-md w-full p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                {language === 'ar' ? 'قبول طلب التسجيل' : 'Approve Registration'}
+              </h2>
+              <button onClick={() => setShowApproveModal(false)}>
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{selectedRegistration.playerName}</p>
+                  <p className="text-sm text-gray-500">{selectedRegistration.age} {language === 'ar' ? 'سنة' : 'years old'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {language === 'ar' ? 'تعيين للفئة السنية' : 'Assign to Age Group'} *
+              </label>
+              <select
+                value={selectedAgeGroupId}
+                onChange={(e) => setSelectedAgeGroupId(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">{language === 'ar' ? 'اختر الفئة' : 'Select Group'}</option>
+                {ageGroups.map(group => (
+                  <option key={group.id} value={group.id}>
+                    {language === 'ar' ? group.nameAr : group.name}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                {language === 'ar' 
+                  ? 'سيتم إضافة اللاعب تلقائياً لهذه الفئة بعد القبول'
+                  : 'Player will be automatically added to this group after approval'
+                }
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setShowApproveModal(false)} className="flex-1">
+                {language === 'ar' ? 'إلغاء' : 'Cancel'}
+              </Button>
+              <Button 
+                onClick={handleApprove}
+                disabled={processing || !selectedAgeGroupId}
+                className="flex-1 bg-green-600 text-white"
+              >
+                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                  <>
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    {language === 'ar' ? 'تأكيد القبول' : 'Confirm Approval'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showRejectModal && selectedRegistration && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl max-w-md w-full p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                {language === 'ar' ? 'رفض طلب التسجيل' : 'Reject Registration'}
+              </h2>
+              <button onClick={() => setShowRejectModal(false)}>
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{selectedRegistration.playerName}</p>
+                  <p className="text-sm text-gray-500">
+                    {language === 'ar' ? 'سيتم إشعار ولي الأمر بالرفض' : 'Parent will be notified of rejection'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {language === 'ar' ? 'سبب الرفض (اختياري)' : 'Rejection Reason (optional)'}
+              </label>
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder={language === 'ar' ? 'اكتب سبب الرفض...' : 'Enter rejection reason...'}
+                className="w-full px-3 py-2 border rounded-lg resize-none h-24"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setShowRejectModal(false)} className="flex-1">
+                {language === 'ar' ? 'إلغاء' : 'Cancel'}
+              </Button>
+              <Button 
+                onClick={handleReject}
+                disabled={processing}
+                className="flex-1 bg-red-600 text-white hover:bg-red-700"
+              >
+                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                  <>
+                    <XCircle className="w-4 h-4 mr-2" />
+                    {language === 'ar' ? 'تأكيد الرفض' : 'Confirm Rejection'}
+                  </>
+                )}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }
