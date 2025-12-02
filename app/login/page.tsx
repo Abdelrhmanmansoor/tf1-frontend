@@ -36,7 +36,9 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
+      console.log('[LOGIN] Attempting login with email:', email)
       const response = await login(email, password)
+      console.log('[LOGIN] Success:', response)
 
       if (response.requiresVerification) {
         setError(language === 'ar' ? 'يرجى تفعيل حسابك عبر البريد الإلكتروني' : 'Please verify your email first')
@@ -63,6 +65,7 @@ export default function LoginPage() {
         router.push(roleRoutes[userRole] || '/dashboard')
       }, 500)
     } catch (err: any) {
+      console.error('[LOGIN] Error:', err)
       setError(err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed'))
     } finally {
       setLoading(false)

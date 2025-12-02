@@ -228,6 +228,8 @@ class AuthService {
    * @private
    */
   private handleError(error: any): ApiError {
+    console.error('[AUTH-SERVICE] Error details:', error)
+    
     if (error.response) {
       // Server responded with error
       return {
@@ -236,10 +238,18 @@ class AuthService {
         errors: error.response.data.errors,
         status: error.response.status,
       }
+    } else if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      // Timeout error
+      return {
+        message: 'Request timeout. The server is taking too long to respond. Please try again.',
+        code: 'TIMEOUT_ERROR',
+      }
     } else if (error.request) {
       // Request made but no response
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'
+      console.error('[AUTH-SERVICE] Backend URL:', baseUrl)
       return {
-        message: 'Network error. Please check your connection.',
+        message: `Cannot connect to server. Please check your internet connection and try again. (Backend: ${baseUrl})`,
         code: 'NETWORK_ERROR',
       }
     } else {
