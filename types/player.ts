@@ -305,3 +305,216 @@ export interface UpdatePrivacyData {
   showSalary?: boolean
   profileVisibility?: 'public' | 'clubs_only' | 'private'
 }
+
+// ============================================
+// Age Category System Types
+// ============================================
+
+export interface AgeCategory {
+  id: string
+  name: string
+  nameAr: string
+  code: string // U10, U12, U15, U17, U19, U21, Senior
+  minAge: number
+  maxAge: number
+  description?: string
+  descriptionAr?: string
+  totalPlayers: number
+  maxPlayers: number
+  status: 'active' | 'inactive'
+  createdAt?: string
+}
+
+export interface PlayerAgeCategory {
+  id: string
+  ageCategory: AgeCategory
+  team: Team
+  assignedCoach: CoachInfo
+  position: string
+  positionAr?: string
+  jerseyNumber?: number
+  joinedAt: string
+  status: 'active' | 'inactive' | 'transferred'
+}
+
+export interface Team {
+  id: string
+  name: string
+  nameAr: string
+  ageCategory: string
+  ageCategoryId: string
+  coach: CoachInfo
+  assistantCoaches?: CoachInfo[]
+  totalPlayers: number
+  maxPlayers: number
+  trainingDays: string[]
+  trainingTime: string
+  homeGround?: string
+  homeGroundAr?: string
+  status: 'active' | 'inactive'
+}
+
+export interface CoachInfo {
+  id: string
+  name: string
+  nameAr?: string
+  avatar?: string
+  phone?: string
+  email?: string
+  specialization?: string
+  specializationAr?: string
+  yearsOfExperience?: number
+  rating?: number
+}
+
+export interface TrainingProgram {
+  id: string
+  name: string
+  nameAr: string
+  description?: string
+  descriptionAr?: string
+  ageCategory: string
+  ageCategoryId: string
+  type: 'fitness' | 'technical' | 'tactical' | 'mental' | 'recovery'
+  duration: number // in minutes
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
+  sessions: TrainingSession[]
+  progress: number // 0-100
+  startDate: string
+  endDate: string
+  status: 'upcoming' | 'in-progress' | 'completed'
+  coach: CoachInfo
+}
+
+export interface TrainingSession {
+  id: string
+  programId: string
+  title: string
+  titleAr: string
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+  locationAr?: string
+  type: 'group' | 'individual'
+  status: 'scheduled' | 'completed' | 'cancelled'
+  attendance?: 'present' | 'absent' | 'excused'
+  notes?: string
+  notesAr?: string
+}
+
+export interface AgeCategoryMatch {
+  id: string
+  title: string
+  titleAr: string
+  ageCategory: string
+  ageCategoryId: string
+  homeTeam: string
+  homeTeamAr?: string
+  awayTeam: string
+  awayTeamAr?: string
+  date: string
+  time: string
+  venue: string
+  venueAr?: string
+  type: 'league' | 'friendly' | 'cup' | 'tournament'
+  status: 'upcoming' | 'live' | 'completed' | 'cancelled'
+  homeScore?: number
+  awayScore?: number
+  isHomeGame: boolean
+  playerStatus?: 'starting' | 'substitute' | 'not-selected'
+}
+
+export interface PlayerPerformanceStats {
+  id: string
+  playerId: string
+  ageCategory: string
+  season: string
+  // Match stats
+  matchesPlayed: number
+  minutesPlayed: number
+  goals: number
+  assists: number
+  yellowCards: number
+  redCards: number
+  cleanSheets?: number // for goalkeepers
+  // Training stats
+  trainingsAttended: number
+  totalTrainings: number
+  attendanceRate: number
+  // Performance ratings
+  averageRating: number
+  highestRating: number
+  skillLevels: SkillLevel[]
+  // Progress
+  progressHistory: ProgressEntry[]
+  achievements: PlayerAchievement[]
+}
+
+export interface SkillLevel {
+  skill: string
+  skillAr: string
+  level: number // 1-10
+  previousLevel?: number
+  trend: 'improving' | 'stable' | 'declining'
+  lastUpdated: string
+}
+
+export interface ProgressEntry {
+  date: string
+  rating: number
+  notes?: string
+  notesAr?: string
+  evaluatedBy?: string
+}
+
+export interface PlayerAchievement {
+  id: string
+  title: string
+  titleAr: string
+  description?: string
+  descriptionAr?: string
+  type: 'mvp' | 'top-scorer' | 'best-player' | 'attendance' | 'improvement' | 'other'
+  date: string
+  icon?: string
+}
+
+export interface AgeCategoryAnnouncement {
+  id: string
+  title: string
+  titleAr: string
+  content: string
+  contentAr: string
+  ageCategory: string
+  ageCategoryId: string
+  type: 'general' | 'training' | 'match' | 'event' | 'urgent'
+  priority: 'high' | 'medium' | 'low'
+  author: string
+  authorId: string
+  publishDate: string
+  expiryDate?: string
+  attachments?: string[]
+  read: boolean
+  createdAt: string
+}
+
+export interface PlayerDashboardData {
+  playerCategory: PlayerAgeCategory | null
+  upcomingMatches: AgeCategoryMatch[]
+  trainingPrograms: TrainingProgram[]
+  upcomingTrainings: TrainingSession[]
+  performanceStats: PlayerPerformanceStats | null
+  announcements: AgeCategoryAnnouncement[]
+  teamMembers: TeamMember[]
+}
+
+export interface TeamMember {
+  id: string
+  name: string
+  nameAr?: string
+  avatar?: string
+  position: string
+  positionAr?: string
+  jerseyNumber?: number
+  isCaptain?: boolean
+}

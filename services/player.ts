@@ -18,6 +18,17 @@ import type {
   Video,
   UpdatePrivacyData,
   Privacy,
+  PlayerAgeCategory,
+  AgeCategory,
+  Team,
+  TrainingProgram,
+  TrainingSession,
+  AgeCategoryMatch,
+  PlayerPerformanceStats,
+  AgeCategoryAnnouncement,
+  PlayerDashboardData,
+  TeamMember,
+  CoachInfo,
 } from '@/types/player'
 
 interface ApiResponse<T> {
@@ -415,6 +426,256 @@ class PlayerService {
       return new Error('Network error. Please check your connection.')
     } else {
       return new Error(error.message || 'An unexpected error occurred')
+    }
+  }
+
+  // ============================================
+  // Age Category System Methods
+  // ============================================
+
+  /**
+   * Get Player's Age Category Assignment
+   * GET /players/age-category
+   */
+  async getMyAgeCategory(): Promise<PlayerAgeCategory | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: PlayerAgeCategory }>(
+        `${this.BASE_PATH}/age-category`
+      )
+      return response.data.data || null
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null
+      }
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Player's Team Info
+   * GET /players/team
+   */
+  async getMyTeam(): Promise<Team | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: Team }>(
+        `${this.BASE_PATH}/team`
+      )
+      return response.data.data || null
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null
+      }
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Team Members
+   * GET /players/team/members
+   */
+  async getTeamMembers(): Promise<TeamMember[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: TeamMember[] }>(
+        `${this.BASE_PATH}/team/members`
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch team members:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get Assigned Coach
+   * GET /players/coach
+   */
+  async getMyCoach(): Promise<CoachInfo | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: CoachInfo }>(
+        `${this.BASE_PATH}/coach`
+      )
+      return response.data.data || null
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null
+      }
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Training Programs for Player's Age Category
+   * GET /players/training-programs
+   */
+  async getTrainingPrograms(): Promise<TrainingProgram[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: TrainingProgram[] }>(
+        `${this.BASE_PATH}/training-programs`
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch training programs:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get Training Program Details
+   * GET /players/training-programs/:id
+   */
+  async getTrainingProgram(id: string): Promise<TrainingProgram | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: TrainingProgram }>(
+        `${this.BASE_PATH}/training-programs/${id}`
+      )
+      return response.data.data || null
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Upcoming Training Sessions
+   * GET /players/training-sessions
+   */
+  async getUpcomingTrainingSessions(limit?: number): Promise<TrainingSession[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: TrainingSession[] }>(
+        `${this.BASE_PATH}/training-sessions`,
+        { params: { limit, status: 'scheduled' } }
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch training sessions:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get Matches for Player's Age Category
+   * GET /players/matches
+   */
+  async getAgeCategoryMatches(status?: 'upcoming' | 'completed' | 'all'): Promise<AgeCategoryMatch[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: AgeCategoryMatch[] }>(
+        `${this.BASE_PATH}/matches`,
+        { params: { status } }
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch matches:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get Player Performance Stats
+   * GET /players/performance
+   */
+  async getPerformanceStats(): Promise<PlayerPerformanceStats | null> {
+    try {
+      const response = await api.get<{ success: boolean; data: PlayerPerformanceStats }>(
+        `${this.BASE_PATH}/performance`
+      )
+      return response.data.data || null
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null
+      }
+      console.error('Failed to fetch performance stats:', error)
+      return null
+    }
+  }
+
+  /**
+   * Get Age Category Announcements
+   * GET /players/announcements
+   */
+  async getAgeCategoryAnnouncements(): Promise<AgeCategoryAnnouncement[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: AgeCategoryAnnouncement[] }>(
+        `${this.BASE_PATH}/announcements`
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch announcements:', error)
+      return []
+    }
+  }
+
+  /**
+   * Mark Announcement as Read
+   * PATCH /players/announcements/:id/read
+   */
+  async markAnnouncementRead(id: string): Promise<void> {
+    try {
+      await api.patch(`${this.BASE_PATH}/announcements/${id}/read`)
+    } catch (error) {
+      console.error('Failed to mark announcement as read:', error)
+    }
+  }
+
+  /**
+   * Get Complete Player Dashboard Data (Age Category)
+   * This combines all age-category related data
+   * GET /players/dashboard/age-category
+   */
+  async getAgeCategoryDashboard(): Promise<PlayerDashboardData> {
+    try {
+      const response = await api.get<{ success: boolean; data: PlayerDashboardData }>(
+        `${this.BASE_PATH}/dashboard/age-category`
+      )
+      return response.data.data || {
+        playerCategory: null,
+        upcomingMatches: [],
+        trainingPrograms: [],
+        upcomingTrainings: [],
+        performanceStats: null,
+        announcements: [],
+        teamMembers: []
+      }
+    } catch (error) {
+      console.error('Failed to fetch age category dashboard:', error)
+      return {
+        playerCategory: null,
+        upcomingMatches: [],
+        trainingPrograms: [],
+        upcomingTrainings: [],
+        performanceStats: null,
+        announcements: [],
+        teamMembers: []
+      }
+    }
+  }
+
+  /**
+   * Update Training Session Attendance
+   * PATCH /players/training-sessions/:id/attendance
+   */
+  async updateSessionAttendance(
+    sessionId: string,
+    attendance: 'present' | 'absent' | 'excused'
+  ): Promise<void> {
+    try {
+      await api.patch(`${this.BASE_PATH}/training-sessions/${sessionId}/attendance`, { attendance })
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Get Progress History
+   * GET /players/progress
+   */
+  async getProgressHistory(): Promise<{ date: string; rating: number; notes?: string }[]> {
+    try {
+      const response = await api.get<{ success: boolean; data: any[] }>(
+        `${this.BASE_PATH}/progress`
+      )
+      return response.data.data || []
+    } catch (error) {
+      console.error('Failed to fetch progress history:', error)
+      return []
     }
   }
 }
