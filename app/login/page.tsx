@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -9,12 +9,13 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2 } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, CheckCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const { language } = useLanguage()
   const { login } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,6 +23,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [registrationSuccess, setRegistrationSuccess] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      setRegistrationSuccess(true)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -115,6 +123,31 @@ export default function LoginPage() {
             <p className="text-gray-600 text-sm mb-6">
               {language === 'ar' ? 'أدخل بيانات حسابك للمتابعة' : 'Enter your credentials to continue'}
             </p>
+
+            {/* Registration Success Message */}
+            {registrationSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-blue-900 mb-1">
+                      {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
+                    </h3>
+                    <p className="text-sm text-blue-700">
+                      {language === 'ar' 
+                        ? 'تم إرسال رابط التفعيل إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد أو البريد المزعج وتفعيل حسابك للمتابعة.'
+                        : 'A verification link has been sent to your email. Please check your inbox or spam folder and verify your account to continue.'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Error Message */}
             {error && (
