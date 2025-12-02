@@ -41,8 +41,17 @@ function MessagesContent() {
   const fetchConversations = async () => {
     try {
       setLoading(true)
-      const data: Conversation[] = []
-      setConversations(data)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/messages/conversations`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.ok) {
+        const result = await response.json()
+        setConversations(result.data?.conversations || [])
+      } else {
+        setConversations([])
+      }
     } catch (error) {
       console.error('Error fetching conversations:', error)
       setConversations([])

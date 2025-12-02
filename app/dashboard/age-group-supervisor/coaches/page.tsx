@@ -47,8 +47,17 @@ function CoachesContent() {
   const fetchCoaches = async () => {
     try {
       setLoading(true)
-      const data: Coach[] = []
-      setCoaches(data)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/coaches`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.ok) {
+        const result = await response.json()
+        setCoaches(result.data?.coaches || [])
+      } else {
+        setCoaches([])
+      }
     } catch (error) {
       console.error('Error fetching coaches:', error)
       setCoaches([])

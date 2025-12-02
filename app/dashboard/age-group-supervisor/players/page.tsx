@@ -55,8 +55,17 @@ function PlayersContent() {
   const fetchPlayers = async () => {
     try {
       setLoading(true)
-      const data: any[] = []
-      setPlayers(data)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/players${groupFilter ? `?ageGroupId=${groupFilter}` : ''}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.ok) {
+        const result = await response.json()
+        setPlayers(result.data?.players || [])
+      } else {
+        setPlayers([])
+      }
     } catch (error) {
       console.error('Error fetching players:', error)
       setPlayers([])

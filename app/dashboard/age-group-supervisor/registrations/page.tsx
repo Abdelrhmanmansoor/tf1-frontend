@@ -49,8 +49,18 @@ function RegistrationsContent() {
   const fetchRegistrations = async () => {
     try {
       setLoading(true)
-      const data: Registration[] = []
-      setRegistrations(data)
+      const statusParam = filter !== 'all' ? `?status=${filter}` : ''
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com/api/v1'}/age-group-supervisor/registrations${statusParam}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.ok) {
+        const result = await response.json()
+        setRegistrations(result.data?.registrations || [])
+      } else {
+        setRegistrations([])
+      }
     } catch (error) {
       console.error('Error fetching registrations:', error)
       setRegistrations([])
