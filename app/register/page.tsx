@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, Loader2, ArrowRight, X, Shield, User } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, Loader2, ArrowRight, X, Shield, User, Building, Calendar, FileText } from 'lucide-react'
 
 export default function RegisterPage() {
   const { language } = useLanguage()
@@ -35,17 +35,34 @@ export default function RegisterPage() {
     role: 'player' as string,
   })
 
+  const [roleData, setRoleData] = useState({
+    organizationName: '',
+    organizationType: 'club' as 'club' | 'academy' | 'federation' | 'sports-center',
+    establishedDate: '',
+    businessRegistrationNumber: '',
+  })
+
   const roles = [
-    { value: 'player', emoji: '⚽', label: language === 'ar' ? 'لاعب' : 'Player' },
-    { value: 'coach', emoji: '👨‍🏫', label: language === 'ar' ? 'مدرب' : 'Coach' },
-    { value: 'club', emoji: '🏟️', label: language === 'ar' ? 'نادي' : 'Club' },
-    { value: 'specialist', emoji: '💪', label: language === 'ar' ? 'متخصص' : 'Specialist' },
-    { value: 'administrator', emoji: '👔', label: language === 'ar' ? 'إداري' : 'Administrator' },
-    { value: 'age-group-supervisor', emoji: '👥', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
-    { value: 'sports-director', emoji: '🏆', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
-    { value: 'executive-director', emoji: '📊', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
-    { value: 'secretary', emoji: '📋', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
+    { value: 'player', emoji: '⚽', label: language === 'ar' ? 'لاعب' : 'Player', needsExtra: false },
+    { value: 'coach', emoji: '👨‍🏫', label: language === 'ar' ? 'مدرب' : 'Coach', needsExtra: false },
+    { value: 'club', emoji: '🏟️', label: language === 'ar' ? 'نادي' : 'Club', needsExtra: true },
+    { value: 'specialist', emoji: '💪', label: language === 'ar' ? 'متخصص' : 'Specialist', needsExtra: false },
+    { value: 'administrator', emoji: '👔', label: language === 'ar' ? 'إداري' : 'Administrator', needsExtra: false },
+    { value: 'age-group-supervisor', emoji: '👥', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor', needsExtra: false },
+    { value: 'sports-director', emoji: '🏆', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director', needsExtra: false },
+    { value: 'executive-director', emoji: '📊', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive', needsExtra: false },
+    { value: 'secretary', emoji: '📋', label: language === 'ar' ? 'سكرتير' : 'Secretary', needsExtra: false },
   ]
+
+  const organizationTypes = [
+    { value: 'club', label: language === 'ar' ? 'نادي' : 'Club' },
+    { value: 'academy', label: language === 'ar' ? 'أكاديمية' : 'Academy' },
+    { value: 'federation', label: language === 'ar' ? 'اتحاد' : 'Federation' },
+    { value: 'sports-center', label: language === 'ar' ? 'مركز رياضي' : 'Sports Center' },
+  ]
+
+  const needsExtraStep = formData.role === 'club'
+  const totalSteps = needsExtraStep ? 3 : 2
 
   const handleStep1Continue = () => {
     if (!formData.role) {
@@ -56,10 +73,7 @@ export default function RegisterPage() {
     setStep(2)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-
+  const handleStep2Continue = () => {
     if (!formData.email || !formData.password || !formData.confirmPassword || !formData.firstName || !formData.lastName || !formData.phone) {
       setError(language === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill in all fields')
       return
@@ -72,11 +86,32 @@ export default function RegisterPage() {
       setError(language === 'ar' ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters')
       return
     }
+    setError(null)
+    
+    if (needsExtraStep) {
+      setStep(3)
+    } else {
+      submitRegistration()
+    }
+  }
 
+  const handleStep3Continue = () => {
+    if (formData.role === 'club') {
+      if (!roleData.organizationName || !roleData.establishedDate || !roleData.businessRegistrationNumber) {
+        setError(language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields')
+        return
+      }
+    }
+    setError(null)
+    submitRegistration()
+  }
+
+  const submitRegistration = async () => {
     setLoading(true)
+    setError(null)
 
     try {
-      const registrationData = {
+      let registrationData: any = {
         email: formData.email,
         password: formData.password,
         firstName: formData.firstName,
@@ -85,11 +120,18 @@ export default function RegisterPage() {
         role: formData.role,
       }
 
+      if (formData.role === 'club') {
+        registrationData.organizationName = roleData.organizationName
+        registrationData.organizationType = roleData.organizationType
+        registrationData.establishedDate = roleData.establishedDate
+        registrationData.businessRegistrationNumber = roleData.businessRegistrationNumber
+      }
+
       console.log('[REGISTER] Sending data:', registrationData)
       await register(registrationData)
       
       setSuccess(true)
-      setStep(3)
+      setStep(needsExtraStep ? 4 : 3)
       
       setTimeout(() => {
         router.push('/login?registered=true')
@@ -100,8 +142,8 @@ export default function RegisterPage() {
       
       if (errorMessage.includes('Validation failed') || errorMessage.includes('validation')) {
         setError(language === 'ar' 
-          ? 'خطأ في البيانات المدخلة. تأكد من صحة البريد الإلكتروني ورقم الجوال.' 
-          : 'Invalid data. Please check your email and phone number.')
+          ? 'خطأ في البيانات المدخلة. تأكد من صحة جميع الحقول.' 
+          : 'Invalid data. Please check all fields.')
       } else if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
         setError(language === 'ar' 
           ? 'هذا البريد الإلكتروني مسجل مسبقاً. جرب تسجيل الدخول.' 
@@ -117,6 +159,57 @@ export default function RegisterPage() {
       setLoading(false)
     }
   }
+
+  const renderSuccessStep = () => (
+    <motion.div 
+      key="success" 
+      initial={{ opacity: 0, scale: 0.9 }} 
+      animate={{ opacity: 1, scale: 1 }} 
+      className="text-center py-8"
+    >
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', delay: 0.2 }}
+        className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
+      >
+        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+        </svg>
+      </motion.div>
+      
+      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+        {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
+      </h2>
+      
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <Mail className="w-6 h-6 text-blue-600" />
+          <span className="font-semibold text-blue-900">
+            {language === 'ar' ? 'تأكيد الحساب' : 'Account Verification'}
+          </span>
+        </div>
+        <p className="text-sm text-blue-700">
+          {language === 'ar' 
+            ? `تم إرسال رابط التفعيل إلى ${formData.email}. يرجى فتح بريدك الإلكتروني والضغط على الرابط لتفعيل حسابك.`
+            : `A verification link has been sent to ${formData.email}. Please check your email and click the link to activate your account.`}
+        </p>
+      </div>
+
+      <p className="text-sm text-gray-500 mb-4">
+        {language === 'ar' 
+          ? 'سيتم تحويلك لصفحة تسجيل الدخول خلال ثواني...'
+          : 'Redirecting to login page in a few seconds...'}
+      </p>
+
+      <Button
+        onClick={() => router.push('/login?registered=true')}
+        className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+      >
+        {language === 'ar' ? 'الذهاب لتسجيل الدخول' : 'Go to Login'}
+      </Button>
+    </motion.div>
+  )
 
   return (
     <div
@@ -170,24 +263,26 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {[1, 2].map((s) => (
-            <div key={s} className="flex items-center gap-2">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                  s === step
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                    : s < step
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                {s < step ? '✓' : s}
+        {!success && (
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
+              <div key={s} className="flex items-center gap-2">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                    s === step
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
+                      : s < step
+                      ? 'bg-green-500 text-white'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}
+                >
+                  {s < step ? '✓' : s}
+                </div>
+                {s < totalSteps && <div className={`w-12 h-1 ${s < step ? 'bg-green-500' : 'bg-gray-200'}`} />}
               </div>
-              {s < 2 && <div className={`w-16 h-1 ${s < step ? 'bg-green-500' : 'bg-gray-200'}`} />}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {error && (
           <motion.div
@@ -242,7 +337,7 @@ export default function RegisterPage() {
                   {language === 'ar' ? 'البيانات الأساسية' : 'Basic Information'}
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -382,7 +477,115 @@ export default function RegisterPage() {
                       {language === 'ar' ? 'رجوع' : 'Back'}
                     </Button>
                     <Button
-                      type="submit"
+                      type="button"
+                      onClick={handleStep2Continue}
+                      disabled={loading}
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-2.5 rounded-lg"
+                    >
+                      {loading && !needsExtraStep ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          {language === 'ar' ? 'جاري...' : 'Loading...'}
+                        </>
+                      ) : needsExtraStep ? (
+                        <>
+                          {language === 'ar' ? 'التالي' : 'Next'} <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      ) : (
+                        language === 'ar' ? 'إنشاء حساب' : 'Create Account'
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 3 && formData.role === 'club' && (
+              <motion.div key="step3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                  {language === 'ar' ? 'معلومات النادي/المنظمة' : 'Organization Information'}
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {language === 'ar' ? 'اسم المنظمة' : 'Organization Name'} *
+                    </label>
+                    <div className="relative">
+                      <Building className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <Input
+                        type="text"
+                        placeholder={language === 'ar' ? 'اسم النادي أو الأكاديمية' : 'Club or Academy name'}
+                        value={roleData.organizationName}
+                        onChange={(e) => setRoleData({ ...roleData, organizationName: e.target.value })}
+                        className="pl-10"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {language === 'ar' ? 'نوع المنظمة' : 'Organization Type'} *
+                    </label>
+                    <select
+                      value={roleData.organizationType}
+                      onChange={(e) => setRoleData({ ...roleData, organizationType: e.target.value as any })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      disabled={loading}
+                    >
+                      {organizationTypes.map((type) => (
+                        <option key={type.value} value={type.value}>{type.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {language === 'ar' ? 'تاريخ التأسيس' : 'Established Date'} *
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <Input
+                        type="date"
+                        value={roleData.establishedDate}
+                        onChange={(e) => setRoleData({ ...roleData, establishedDate: e.target.value })}
+                        className="pl-10"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {language === 'ar' ? 'رقم السجل التجاري' : 'Business Registration Number'} *
+                    </label>
+                    <div className="relative">
+                      <FileText className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <Input
+                        type="text"
+                        placeholder={language === 'ar' ? 'رقم السجل التجاري' : 'Registration number'}
+                        value={roleData.businessRegistrationNumber}
+                        onChange={(e) => setRoleData({ ...roleData, businessRegistrationNumber: e.target.value })}
+                        className="pl-10"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <Button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      variant="outline"
+                      className="flex-1 py-2.5 rounded-lg"
+                      disabled={loading}
+                    >
+                      {language === 'ar' ? 'رجوع' : 'Back'}
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleStep3Continue}
                       disabled={loading}
                       className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-2.5 rounded-lg"
                     >
@@ -396,63 +599,14 @@ export default function RegisterPage() {
                       )}
                     </Button>
                   </div>
-                </form>
-              </motion.div>
-            )}
-
-            {step === 3 && success && (
-              <motion.div 
-                key="step3" 
-                initial={{ opacity: 0, scale: 0.9 }} 
-                animate={{ opacity: 1, scale: 1 }} 
-                className="text-center py-8"
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', delay: 0.2 }}
-                  className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
-                >
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </motion.div>
-                
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
-                </h2>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                  <div className="flex items-center justify-center gap-3 mb-2">
-                    <Mail className="w-6 h-6 text-blue-600" />
-                    <span className="font-semibold text-blue-900">
-                      {language === 'ar' ? 'تأكيد الحساب' : 'Account Verification'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-blue-700">
-                    {language === 'ar' 
-                      ? `تم إرسال رابط التفعيل إلى ${formData.email}. يرجى فتح بريدك الإلكتروني والضغط على الرابط لتفعيل حسابك.`
-                      : `A verification link has been sent to ${formData.email}. Please check your email and click the link to activate your account.`}
-                  </p>
                 </div>
-
-                <p className="text-sm text-gray-500 mb-4">
-                  {language === 'ar' 
-                    ? 'سيتم تحويلك لصفحة تسجيل الدخول خلال ثواني...'
-                    : 'Redirecting to login page in a few seconds...'}
-                </p>
-
-                <Button
-                  onClick={() => router.push('/login?registered=true')}
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
-                >
-                  {language === 'ar' ? 'الذهاب لتسجيل الدخول' : 'Go to Login'}
-                </Button>
               </motion.div>
             )}
+
+            {success && renderSuccessStep()}
           </AnimatePresence>
 
-          {step !== 3 && (
+          {!success && (
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 {language === 'ar' ? 'لديك حساب؟' : 'Already have an account?'}{' '}
