@@ -63,9 +63,22 @@ function DashboardContent() {
     )
   }
 
+  // Redirect to role-specific dashboard for leader and team roles
+  useEffect(() => {
+    if (currentRole === 'leader') {
+      window.location.href = '/dashboard/leader'
+    } else if (currentRole === 'team') {
+      window.location.href = '/dashboard/team'
+    }
+  }, [currentRole])
+
   // Render role-specific dashboard
   const renderDashboard = () => {
     switch (currentRole) {
+      case 'leader':
+        return null // Will redirect
+      case 'team':
+        return null // Will redirect
       case 'player':
         return <PlayerDashboard />
       case 'club':
@@ -75,6 +88,7 @@ function DashboardContent() {
       case 'specialist':
         return <SpecialistDashboard />
       case 'administrator':
+      case 'administrative-officer':
         return <AdministratorDashboard />
       case 'age-group-supervisor':
         return <AgeGroupSupervisorDashboard />

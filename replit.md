@@ -45,6 +45,20 @@ The TF1 platform is built as a Next.js 15 web application utilizing the App Rout
 
 ## Recent Changes (December 2025)
 
+-   **Enterprise RBAC System**: Implemented enterprise-grade dual dashboard architecture
+    -   Leader Dashboard (`/dashboard/leader`) - Full master control with unlimited access
+    -   Team Dashboard (`/dashboard/team`) - Limited access based on assigned permissions
+    -   Role-Based Access Control with granular permissions per module
+    -   Unique access keys per team member
+    -   Audit logging system for tracking all actions
+    -   Safe fallback pages (no 404s, no forced logout on errors)
+    -   Access denied pages inside dashboard (not logout)
+-   **New Files**:
+    -   `types/rbac.ts` - RBAC types, permissions, and role definitions
+    -   `lib/rbac/permission-map.ts` - Route-permission mapping
+    -   `lib/rbac/hooks.ts` - usePermission and useAuditLog hooks
+    -   `app/dashboard/leader/*` - All Leader dashboard pages
+    -   `app/dashboard/team/*` - All Team dashboard pages
 -   **Join a Match Feature**: Added complete "Join a Match" functionality
     -   `/matches` - Main matches page with filters (region, sport, level)
     -   `/matches/my-matches` - User's joined matches page
@@ -52,6 +66,33 @@ The TF1 platform is built as a Next.js 15 web application utilizing the App Rout
     -   Types: `types/match.ts` for TypeScript definitions
 -   **Navigation**: Added "Matches" link in navbar (Arabic: المباريات)
 -   **Registration**: Added TF1 logo with gradient design and privacy policy modal
+
+## Leader Dashboard Backend Endpoints (Required)
+
+The following endpoints need to be implemented on the backend for full Leader/Team functionality:
+
+### Authentication & Access
+- `POST /api/v1/leader/auth/login` - Leader login with access key
+- `POST /api/v1/team/auth/login` - Team member login with access key
+- `GET /api/v1/leader/dashboard` - Get leader dashboard stats
+
+### Team Management
+- `GET /api/v1/leader/teams` - List all team members
+- `POST /api/v1/leader/teams` - Create new team member with permissions
+- `PUT /api/v1/leader/teams/:id/permissions` - Update team member permissions
+- `DELETE /api/v1/leader/teams/:id` - Remove team member
+- `POST /api/v1/leader/teams/:id/regenerate-key` - Regenerate access key
+
+### Audit Log
+- `GET /api/v1/leader/audit` - Get audit logs with pagination and filters
+- `POST /api/v1/audit/log` - Log an action (automatic logging)
+
+### Platform Settings
+- `GET /api/v1/admin/settings` - Get platform settings
+- `PUT /api/v1/admin/settings` - Update platform settings
+
+### Analytics
+- `GET /api/v1/admin/analytics` - Get platform analytics and statistics
 
 ## External Dependencies
 

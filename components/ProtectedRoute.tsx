@@ -1,23 +1,46 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import authService from '@/services/auth'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 
-type UserRole = 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+type UserRole = 'leader' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrative-officer' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
   allowedRoles?: UserRole[]
+  fallbackPath?: string
+}
+
+const getFallbackByRole = (role: string | null, currentPath: string): string => {
+  if (!role) return '/login'
+  
+  if (role === 'leader') {
+    if (currentPath.includes('/dashboard/leader')) {
+      return '/dashboard/leader/fallback'
+    }
+    return '/dashboard/leader'
+  }
+  
+  if (role === 'team') {
+    if (currentPath.includes('/dashboard/team')) {
+      return '/dashboard/team/access-denied'
+    }
+    return '/dashboard/team'
+  }
+  
+  return '/dashboard'
 }
 
 export default function ProtectedRoute({
   children,
   allowedRoles,
+  fallbackPath,
 }: ProtectedRouteProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [isChecking, setIsChecking] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
 
@@ -29,11 +52,12 @@ export default function ProtectedRoute({
         return
       }
 
-      if (allowedRoles && allowedRoles.length > 0) {
-        const userRole = authService.getUserRole() as UserRole
+      const userRole = authService.getUserRole() as UserRole
 
+      if (allowedRoles && allowedRoles.length > 0) {
         if (userRole && !allowedRoles.includes(userRole)) {
-          router.push('/dashboard')
+          const redirectPath = fallbackPath || getFallbackByRole(userRole, pathname)
+          router.push(redirectPath)
           return
         }
       }
@@ -43,7 +67,7 @@ export default function ProtectedRoute({
     }
 
     checkAuth()
-  }, [router, allowedRoles])
+  }, [router, allowedRoles, fallbackPath, pathname])
 
   if (isChecking || !isAuthorized) {
     return (
