@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, Loader2, ArrowRight, X, Shield, User, Building, Calendar, FileText } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, AlertCircle, Loader2, ArrowRight, X, Shield, User, Building, Calendar, FileText, Home } from 'lucide-react'
 
 export default function RegisterPage() {
   const { language } = useLanguage()
@@ -235,7 +235,15 @@ export default function RegisterPage() {
         transition={{ duration: 0.5 }}
         className="relative max-w-lg mx-auto"
       >
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
+          {/* Home Button */}
+          <Link 
+            href="/"
+            className="absolute top-0 left-0 w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-full flex items-center justify-center transition-all duration-300 group shadow-lg"
+          >
+            <Home className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+          </Link>
+          
           <motion.div 
             className="flex justify-center mb-4"
             initial={{ scale: 0.8, opacity: 0 }}

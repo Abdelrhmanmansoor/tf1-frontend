@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, CheckCircle } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, CheckCircle, Home } from 'lucide-react'
+import Image from 'next/image'
 
 function LoginContent() {
   const { language } = useLanguage()
@@ -122,9 +123,29 @@ function LoginContent() {
       >
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">TF1</h1>
-            <p className="text-blue-100 text-sm">
+          <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6 relative">
+            {/* Home Button */}
+            <Link 
+              href="/"
+              className="absolute top-4 left-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
+            >
+              <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+            </Link>
+            
+            {/* Logo */}
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
+                <Image 
+                  src="/logo.png" 
+                  alt="TF1 Logo" 
+                  width={56} 
+                  height={56}
+                  className="object-contain"
+                />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2 text-center">TF1</h1>
+            <p className="text-blue-100 text-sm text-center">
               {language === 'ar' ? 'منصة التوظيف الرياضي' : 'Sports Career Platform'}
             </p>
           </div>
