@@ -53,6 +53,7 @@
 - Body: FormData with resume file, whatsapp, portfolio, linkedin, coverLetter
 - Returns: Application confirmation with ID
 - Triggers: Real-time notification to club
+- **Important**: Resume MUST be stored properly with original filename and MIME type
 
 ### Notifications - Applicant Side
 **GET** `/api/v1/notifications/jobs?page=1&limit=20`
@@ -83,6 +84,84 @@
 
 ---
 
+## NEW: Club Applications Management Endpoints
+
+### Get All Club Applications
+**GET** `/api/v1/club/applications?page=1&limit=20`
+- Returns: List of applications for all club's jobs
+```json
+{
+  "data": {
+    "applications": [
+      {
+        "_id": "application_id",
+        "jobId": "job_id",
+        "jobTitle": "Job Title",
+        "jobTitleAr": "اسم الوظيفة",
+        "clubId": "club_id",
+        "applicantId": "applicant_id",
+        "applicantName": "John Doe",
+        "applicantEmail": "john@example.com",
+        "applicantPhone": "+1234567890",
+        "whatsapp": "+1234567890",
+        "portfolio": "https://portfolio.com",
+        "linkedin": "https://linkedin.com/in/user",
+        "coverLetter": "Letter text...",
+        "resume": {
+          "_id": "file_id",
+          "fileName": "resume.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 102400,
+          "fileUrl": "/api/v1/club/applications/{id}/resume/download",
+          "uploadedAt": "2025-12-03T10:00:00Z"
+        },
+        "status": "pending|reviewing|accepted|rejected",
+        "appliedAt": "2025-12-03T10:00:00Z",
+        "statusUpdatedAt": "2025-12-03T10:00:00Z",
+        "rejectionReason": "Optional reason",
+        "adminNotes": "Optional notes"
+      }
+    ],
+    "total": 50,
+    "page": 1,
+    "limit": 20
+  }
+}
+```
+
+### Get Job Applications
+**GET** `/api/v1/club/jobs/{jobId}/applications?page=1&limit=20`
+- Returns: Applications for specific job with same structure
+
+### Get Application Details
+**GET** `/api/v1/club/applications/{applicationId}`
+- Returns: Single application with all details (as shown above)
+
+### Download Resume (Proper Format)
+**GET** `/api/v1/club/applications/{applicationId}/resume`
+- Response: Binary file with correct MIME type and Content-Disposition header
+- Headers must include:
+  - `Content-Type: {original_file_type}`
+  - `Content-Disposition: attachment; filename="{original_filename}"`
+- Returns: Original file in original format (PDF stays PDF, DOCX stays DOCX)
+
+### Update Application Status
+**PUT** `/api/v1/club/applications/{applicationId}/status`
+- Body: `{ status: "pending|reviewing|accepted|rejected", rejectionReason?: "reason" }`
+- Returns: Updated application
+
+### Add Admin Notes
+**PUT** `/api/v1/club/applications/{applicationId}/notes`
+- Body: `{ adminNotes: "Notes text" }`
+- Returns: Updated application
+
+### Export Applications
+**GET** `/api/v1/club/applications/export?jobId={optional_jobId}`
+- Response: CSV file with all applications
+- Format: CSV with headers: Name, Email, WhatsApp, Portfolio, LinkedIn, Status, Applied Date
+
+---
+
 ## Real-time WebSocket Events
 
 **Event:** `application_submitted`
@@ -101,17 +180,39 @@
 - ✅ `services/leader.ts` - Leader dashboard API calls
 - ✅ `services/team.ts` - Team dashboard API calls
 - ✅ `services/notifications.ts` - Notification management
+- ✅ `services/club-applications.ts` - Club applications management
 - ✅ `components/JobApplicationForm.tsx` - Enhanced job application form
+- ✅ `components/ApplicationDetailsClub.tsx` - Detailed application view for clubs
 - ✅ Dashboard pages: `/dashboard/leader`, `/dashboard/team`
 - ✅ Job application page with real-time notifications
 
 ### Backend (AWAITING IMPLEMENTATION)
 - ⏳ Leader dashboard endpoints
 - ⏳ Team dashboard endpoints  
-- ⏳ Job application endpoint with validation
+- ⏳ Job application endpoint with proper resume handling
+- ⏳ Club applications management endpoints
+- ⏳ **CRITICAL**: Resume download with correct MIME type and filename
 - ⏳ Notification service with WebSocket support
 - ⏳ Notification endpoints for CRUD operations
 - ⏳ Real-time notification broadcasting via Socket.io
+
+---
+
+## Critical Issues to Fix
+
+### Resume Upload/Download
+**Problem**: Resume files downloaded in wrong format/name
+**Solution Required**:
+1. Store resume with original filename and MIME type
+2. When downloading, send proper headers:
+   - `Content-Type: {original_mime_type}`
+   - `Content-Disposition: attachment; filename="{original_filename}"`
+3. Do NOT convert to generic format - preserve original
+
+**Example Flow**:
+1. User uploads `resume.pdf` (application/pdf)
+2. Backend stores: `{ fileName: "resume.pdf", fileType: "application/pdf", fileUrl: "/api/v1/..." }`
+3. Club downloads: Receives `resume.pdf` in PDF format, not converted
 
 ---
 
@@ -123,17 +224,25 @@
    - Optional cover letter
    - Duplicate application prevention (409 status)
 
-2. **Instant Notifications**
+2. **Club Application Dashboard**
+   - View all applications with detailed applicant info
+   - Download resumes in original format
+   - Status management (pending → reviewing → accepted/rejected)
+   - Admin notes for internal discussion
+   - Export to CSV
+
+3. **Instant Notifications**
    - Applicant gets confirmation notification
    - Club gets application notification immediately
    - Real-time updates via WebSocket
 
-3. **Notification Center**
+4. **Notification Center**
    - View all job notifications
    - Mark as read / mark all as read
    - Delete notifications
    - Unread count badge
 
-4. **Bilingual Support**
+5. **Bilingual Support**
    - Arabic and English notifications
    - RTL/LTR layout support
+   - All job titles in both languages
