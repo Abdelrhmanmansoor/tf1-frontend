@@ -89,6 +89,11 @@ function LoginContent() {
     }
   }
 
+  const handleLeaderQuickLogin = () => {
+    setEmail('leader@sportx.com')
+    setPassword('Leader123456')
+  }
+
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50 flex items-center justify-center p-4"
@@ -260,6 +265,29 @@ function LoginContent() {
                   </>
                 )}
               </Button>
+
+              {/* Leader Quick Login */}
+              <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                <p className="text-xs text-gray-600 text-center font-medium">
+                  {language === 'ar' ? '🚀 جرب حساب القائد مباشرة:' : '🚀 Try admin account directly:'}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleLeaderQuickLogin}
+                  disabled={loading}
+                  className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
+                >
+                  👨‍💼 {language === 'ar' ? 'دخول كـ قائد تجريبي' : 'Login as Admin'}
+                </button>
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <p className="text-xs text-gray-600 mb-1">
+                    {language === 'ar' ? 'البريد:' : 'Email:'} <span className="font-mono font-semibold text-gray-900">leader@sportx.com</span>
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {language === 'ar' ? 'كلمة المرور:' : 'Password:'} <span className="font-mono font-semibold text-gray-900">Leader123456</span>
+                  </p>
+                </div>
+              </div>
             </form>
 
             {/* Divider */}
