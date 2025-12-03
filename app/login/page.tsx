@@ -91,8 +91,8 @@ function LoginContent() {
   }
 
   const handleLeaderQuickLogin = () => {
-    setEmail('leader@sportx.com')
-    setPassword('Leader123456')
+    setEmail('yassinegypt@tiffincrane.com')
+    setPassword('Leader@SecurePass2025')
   }
 
   return (
@@ -302,10 +302,10 @@ function LoginContent() {
                 </button>
                 <div className="bg-gray-50 rounded-lg p-3 text-center">
                   <p className="text-xs text-gray-600 mb-1">
-                    {language === 'ar' ? 'البريد:' : 'Email:'} <span className="font-mono font-semibold text-gray-900">leader@sportx.com</span>
+                    {language === 'ar' ? 'البريد:' : 'Email:'} <span className="font-mono font-semibold text-gray-900 text-[10px]">yassinegypt@tiffincrane.com</span>
                   </p>
                   <p className="text-xs text-gray-600">
-                    {language === 'ar' ? 'كلمة المرور:' : 'Password:'} <span className="font-mono font-semibold text-gray-900">Leader123456</span>
+                    {language === 'ar' ? 'كلمة المرور:' : 'Password:'} <span className="font-mono font-semibold text-gray-900">Leader@SecurePass2025</span>
                   </p>
                 </div>
               </div>
