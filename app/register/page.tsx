@@ -118,6 +118,7 @@ export default function RegisterPage() {
         lastName: formData.lastName,
         phone: formData.phone,
         role: formData.role,
+        registrationCode: '', // Backend may require this field
       }
 
       if (formData.role === 'club') {
