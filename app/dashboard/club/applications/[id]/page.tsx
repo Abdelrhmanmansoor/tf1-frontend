@@ -525,36 +525,58 @@ const ApplicationDetailPage = () => {
                   {language === 'ar' ? 'المرفقات' : 'Attachments'} ({application.attachments.length})
                 </h2>
                 <div className="space-y-3">
-                  {application.attachments.map((attachment, idx) => (
-                    <motion.a
-                      key={idx}
-                      href={attachment.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.02 }}
-                      className="flex items-center justify-between gap-4 p-5 bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 rounded-xl border border-blue-200 transition-all cursor-pointer"
-                    >
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                          <FileText className="w-6 h-6 text-blue-600" />
+                  {application.attachments.map((attachment, idx) => {
+                    // Convert URL to Google Drive Viewer for PDFs
+                    let viewUrl = attachment.url
+                    if (attachment.url && attachment.url.includes('drive.google.com')) {
+                      const fileId = attachment.url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1]
+                      if (fileId) {
+                        viewUrl = `https://drive.google.com/file/d/${fileId}/view`
+                      }
+                    }
+                    
+                    return (
+                      <motion.div key={idx} whileHover={{ scale: 1.02 }} className="flex items-center justify-between gap-4 p-5 bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 rounded-xl border border-blue-200 transition-all">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <FileText className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-gray-900">
+                              {attachment.type === 'resume'
+                                ? language === 'ar' ? 'السيرة الذاتية' : 'Resume'
+                                : attachment.name || attachment.type}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {attachment.type}
+                              {attachment.uploadedAt && (
+                                <> • {new Date(attachment.uploadedAt).toLocaleDateString()}</>
+                              )}
+                            </p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-gray-900">
-                            {attachment.type === 'resume'
-                              ? language === 'ar' ? 'السيرة الذاتية' : 'Resume'
-                              : attachment.name || attachment.type}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {attachment.type}
-                            {attachment.uploadedAt && (
-                              <> • {new Date(attachment.uploadedAt).toLocaleDateString()}</>
-                            )}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={viewUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors"
+                            title={language === 'ar' ? 'عرض' : 'View'}
+                          >
+                            👁️
+                          </a>
+                          <a
+                            href={attachment.url}
+                            download
+                            className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition-colors"
+                            title={language === 'ar' ? 'تحميل' : 'Download'}
+                          >
+                            ⬇️
+                          </a>
                         </div>
-                      </div>
-                      <Download className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    </motion.a>
-                  ))}
+                      </motion.div>
+                    )
+                  })}
                 </div>
               </motion.div>
             )}

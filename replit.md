@@ -43,7 +43,31 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 - **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
 - **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
-## Recent Changes (Dec 6, 2025)
+## Recent Changes (Dec 6, 2025 - Session 2)
+
+### Saudi Arabia Localization
+- **✅ Saudi Arabia Flag 🇸🇦**: Added to login and registration pages
+- **✅ Saudi Phone Code +966**: 
+  - Integrated with phone input fields on registration page
+  - User enters 9 digits only (without leading zero)
+  - Format: +966 5X XXX XXXX
+  - Applied to all Saudi-focused pages
+
+### Application Email System Enhancement
+- **✅ Email Data Integration**: Updated `clubService.updateApplicationStatus()` to send applicant data with emails:
+  - Sends: message, contactPhone, contactAddress with status updates
+  - Backend receives full contact info for "offered" and "hired" statuses
+  - Enables personalized email notifications to applicants
+  - Includes applicant snapshot data (phone, city, experience, age, qualification)
+
+### Attachment Handling Solution
+- **✅ Dual-button Interface for Attachments**:
+  - View button (👁️): Opens Google Drive Viewer for PDF files
+  - Download button (⬇️): Direct download link
+  - Automatically converts Google Drive URLs to shareable view format
+  - Handles multiple attachment types (resume, portfolio, etc.)
+
+## Recent Changes (Dec 6, 2025 - Session 1)
 
 ### User-Specific Notifications System
 - **✅ User Isolation Implemented**: Each user now sees ONLY their own notifications
@@ -76,8 +100,8 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 
 ## Authentication Pages
 
-- **`/login`** - General public login (blue-cyan-green gradient)
-- **`/register`** - Multi-step registration with role selection
+- **`/login`** - General public login (blue-cyan-green gradient) with Saudi flag 🇸🇦
+- **`/register`** - Multi-step registration with role selection + Saudi +966 phone format
 - **`/leader/login`** - Dedicated leader/admin/supervisor login (purple-pink gradient)
   - Restricted to admin roles (leader, administrator, sports-director, executive-director)
   - Auto-routes to appropriate dashboard on successful login

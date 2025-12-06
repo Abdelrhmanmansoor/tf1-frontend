@@ -692,42 +692,50 @@ class ClubService {
   /**
    * 26. Update Application Status
    * Uses appropriate endpoint based on status
+   * Includes optional contact info and message for email notifications
    */
   async updateApplicationStatus(
     applicationId: string,
-    status: 'new' | 'under_review' | 'interviewed' | 'offered' | 'hired' | 'rejected'
+    status: 'new' | 'under_review' | 'interviewed' | 'offered' | 'hired' | 'rejected',
+    options?: {
+      message?: string
+      contactPhone?: string
+      contactAddress?: string
+    }
   ): Promise<JobApplication> {
     try {
       let response
+      const payload = options || {}
       
       switch (status) {
         case 'under_review':
           response = await api.post<ApplicationResponse>(
-            `${this.BASE_PATH}/applications/${applicationId}/review`
+            `${this.BASE_PATH}/applications/${applicationId}/review`,
+            payload
           )
           break
         case 'interviewed':
           response = await api.post<ApplicationResponse>(
             `${this.BASE_PATH}/applications/${applicationId}/interview`,
-            { type: 'in_person' }
+            { type: 'in_person', ...payload }
           )
           break
         case 'offered':
           response = await api.post<ApplicationResponse>(
             `${this.BASE_PATH}/applications/${applicationId}/offer`,
-            {}
+            payload
           )
           break
         case 'hired':
           response = await api.post<ApplicationResponse>(
             `${this.BASE_PATH}/applications/${applicationId}/hire`,
-            { startDate: new Date().toISOString().split('T')[0] }
+            { startDate: new Date().toISOString().split('T')[0], ...payload }
           )
           break
         case 'rejected':
           response = await api.post<ApplicationResponse>(
             `${this.BASE_PATH}/applications/${applicationId}/reject`,
-            { reason: 'Status updated' }
+            { reason: payload.message || 'Status updated', ...payload }
           )
           break
         default:
