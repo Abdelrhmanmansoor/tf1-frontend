@@ -56,13 +56,13 @@ export default function MatchesPage() {
 
   const [createData, setCreateData] = useState<CreateMatchData>({
     name: '',
-    sport: '',
+    sport: 'football',
     region: '',
     city: '',
     neighborhood: '',
     date: '',
     time: '',
-    level: '',
+    level: 'amateur',
     maxPlayers: 10,
     venue: '',
   })
@@ -89,29 +89,65 @@ export default function MatchesPage() {
   const loadData = async () => {
     const defaultData: RegionsData = {
       regions: [
-        { name: 'الرياض', nameEn: 'Riyadh', cities: [{ name: 'الرياض', nameEn: 'Riyadh' }, { name: 'العليا', nameEn: 'Al Olaya' }] },
-        { name: 'مكة المكرمة', nameEn: 'Makkah', cities: [{ name: 'جدة', nameEn: 'Jeddah' }, { name: 'مكة', nameEn: 'Makkah' }] },
-        { name: 'المنطقة الشرقية', nameEn: 'Eastern', cities: [{ name: 'الدمام', nameEn: 'Dammam' }, { name: 'الخبر', nameEn: 'Khobar' }] },
+        { 
+          name: 'الرياض', 
+          nameEn: 'Riyadh', 
+          cities: [
+            { name: 'الرياض', nameEn: 'Riyadh' },
+            { name: 'العليا', nameEn: 'Al Olaya' },
+            { name: 'النخيل', nameEn: 'Al Nakheel' },
+            { name: 'الفيصلية', nameEn: 'Al Faisaliah' },
+            { name: 'الرويس', nameEn: 'Al Ruwais' },
+            { name: 'العارض', nameEn: 'Al Arid' },
+          ] 
+        },
+        { 
+          name: 'جدة', 
+          nameEn: 'Jeddah', 
+          cities: [
+            { name: 'جدة', nameEn: 'Jeddah' },
+            { name: 'الروضة', nameEn: 'Al Rowda' },
+            { name: 'البلد', nameEn: 'Al Balad' },
+            { name: 'الشرفية', nameEn: 'Al Shurfah' },
+            { name: 'أبحر', nameEn: 'Obhor' },
+          ] 
+        },
+        { 
+          name: 'مكة المكرمة', 
+          nameEn: 'Makkah', 
+          cities: [
+            { name: 'مكة', nameEn: 'Makkah' },
+            { name: 'العزيزية', nameEn: 'Al Aziziyah' },
+            { name: 'كدي', nameEn: 'Kudai' },
+          ] 
+        },
+        { 
+          name: 'المدينة المنورة', 
+          nameEn: 'Madinah', 
+          cities: [
+            { name: 'المدينة', nameEn: 'Madinah' },
+            { name: 'العنبرية', nameEn: 'Al Anbariyah' },
+          ] 
+        },
+        { 
+          name: 'الدمام', 
+          nameEn: 'Dammam', 
+          cities: [
+            { name: 'الدمام', nameEn: 'Dammam' },
+            { name: 'الخبر', nameEn: 'Khobar' },
+            { name: 'الظهران', nameEn: 'Dhahran' },
+            { name: 'القطيف', nameEn: 'Qatif' },
+          ] 
+        },
       ],
-      neighborhoods: {
-        'الرياض': ['العليا', 'النخيل', 'الفيصلية'],
-        'جدة': ['جدة', 'البلد', 'الروضة'],
-        'مكة': ['مكة', 'العزيزية'],
-        'الدمام': ['الدمام', 'الخليج'],
-        'الخبر': ['الخبر', 'الدانة'],
-      },
+      neighborhoods: {},
       leagues: [],
       positions: [],
       levels: [
-        { value: 'BEGINNER', label: 'مبتدئ', labelEn: 'Beginner' },
-        { value: 'AMATEUR', label: 'هاوي', labelEn: 'Amateur' },
-        { value: 'SEMI_PRO', label: 'شبه احترافي', labelEn: 'Semi-Pro' },
-        { value: 'PROFESSIONAL', label: 'احترافي', labelEn: 'Professional' },
+        { value: 'amateur', label: 'هاوي', labelEn: 'Amateur' },
       ],
       sports: [
-        { value: 'FOOTBALL', label: 'كرة القدم', labelEn: 'Football' },
-        { value: 'BASKETBALL', label: 'كرة السلة', labelEn: 'Basketball' },
-        { value: 'VOLLEYBALL', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
+        { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
       ],
     }
 
@@ -621,45 +657,6 @@ export default function MatchesPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {language === 'ar' ? 'الرياضة' : 'Sport'}
-                    </label>
-                    <select
-                      value={createData.sport}
-                      onChange={(e) => setCreateData({ ...createData, sport: e.target.value })}
-                      className="w-full px-3 py-2 border rounded-lg"
-                      required
-                    >
-                      <option value="">{language === 'ar' ? 'اختر' : 'Select'}</option>
-                      {regionsData?.sports.map((sport) => (
-                        <option key={sport.value} value={sport.value}>
-                          {language === 'ar' ? sport.label : sport.labelEn}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {language === 'ar' ? 'المستوى' : 'Level'}
-                    </label>
-                    <select
-                      value={createData.level}
-                      onChange={(e) => setCreateData({ ...createData, level: e.target.value })}
-                      className="w-full px-3 py-2 border rounded-lg"
-                      required
-                    >
-                      <option value="">{language === 'ar' ? 'اختر' : 'Select'}</option>
-                      {regionsData?.levels.map((level) => (
-                        <option key={level.value} value={level.value}>
-                          {language === 'ar' ? level.label : level.labelEn}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       {language === 'ar' ? 'المنطقة' : 'Region'}
                     </label>
                     <select
@@ -699,12 +696,12 @@ export default function MatchesPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {language === 'ar' ? 'الحي' : 'Neighborhood'}
+                    {language === 'ar' ? 'العنوان' : 'Address'}
                   </label>
                   <Input
                     value={createData.neighborhood}
                     onChange={(e) => setCreateData({ ...createData, neighborhood: e.target.value })}
-                    placeholder={language === 'ar' ? 'مثال: العليا' : 'E.g., Al Olaya'}
+                    placeholder={language === 'ar' ? 'مثال: شارع العليا، الملعب' : 'E.g., Al Olaya Street, Stadium'}
                     required
                   />
                 </div>
