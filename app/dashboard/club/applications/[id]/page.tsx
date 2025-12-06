@@ -44,6 +44,9 @@ const ApplicationDetailPage = () => {
   const [notes, setNotes] = useState<string>('')
   const [editingNotes, setEditingNotes] = useState(false)
   const [savingNotes, setSavingNotes] = useState(false)
+  const [statusMessage, setStatusMessage] = useState('')
+  const [clubContactPhone, setClubContactPhone] = useState('+966')
+  const [clubContactAddress, setClubContactAddress] = useState('')
 
   useEffect(() => {
     fetchApplication()
@@ -109,17 +112,38 @@ const ApplicationDetailPage = () => {
     return statusLabels[status] || { ar: status, en: status }
   }
 
+  const requiresMessage = (status: string) => {
+    return ['offered', 'hired'].includes(status)
+  }
+
   const handleStatusChange = async (newStatus: string) => {
     if (!application || newStatus === application.status) return
+    
+    if (requiresMessage(newStatus)) {
+      if (!statusMessage.trim()) {
+        toast.error(language === 'ar' ? 'يرجى كتابة رسالة للمتقدم' : 'Please write a message to the applicant')
+        return
+      }
+      if (clubContactPhone.length < 10) {
+        toast.error(language === 'ar' ? 'يرجى إدخال رقم التواصل' : 'Please enter contact number')
+        return
+      }
+    }
     
     try {
       setStatusLoading(true)
       const updatedApp = await clubService.updateApplicationStatus(
         application._id,
-        newStatus as any
+        newStatus as any,
+        {
+          message: statusMessage,
+          contactPhone: clubContactPhone,
+          contactAddress: clubContactAddress
+        }
       )
       setApplication(updatedApp)
       setSelectedStatus(updatedApp.status)
+      setStatusMessage('')
       toast.success(language === 'ar' ? 'تم تحديث الحالة بنجاح!' : 'Status updated successfully!')
     } catch (err: any) {
       console.error('Error updating status:', err)
@@ -538,11 +562,12 @@ const ApplicationDetailPage = () => {
 
           {/* Right Column - Status & Actions */}
           <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-24 space-y-6">
             {/* Status Update */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8 sticky top-24"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6"
             >
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Badge className="w-5 h-5 text-blue-600" />
@@ -560,7 +585,7 @@ const ApplicationDetailPage = () => {
               </div>
 
               {/* Status Selector */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {language === 'ar' ? 'تحديث الحالة' : 'Update Status'}
                 </label>
@@ -577,6 +602,72 @@ const ApplicationDetailPage = () => {
                   ))}
                 </select>
               </div>
+
+              {/* Message Fields for Offered/Hired Status */}
+              {requiresMessage(selectedStatus) && (
+                <div className="mb-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 space-y-4">
+                  <div className="flex items-center gap-2 text-green-700 font-semibold text-sm">
+                    <Mail className="w-4 h-4" />
+                    {language === 'ar' ? 'معلومات التواصل للمتقدم' : 'Contact Info for Applicant'}
+                  </div>
+
+                  {/* Club Contact Phone with +966 */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'رقم التواصل *' : 'Contact Number *'}
+                    </label>
+                    <div className="flex items-center gap-2" dir="ltr">
+                      <span className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">
+                        +966
+                      </span>
+                      <input
+                        type="tel"
+                        value={clubContactPhone.replace('+966', '')}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 9)
+                          setClubContactPhone('+966' + value)
+                        }}
+                        placeholder="5XXXXXXXX"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
+                        maxLength={9}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {language === 'ar' ? 'أدخل 9 أرقام بعد الكود' : 'Enter 9 digits after code'}
+                    </p>
+                  </div>
+
+                  {/* Club Address */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'العنوان' : 'Address'}
+                    </label>
+                    <input
+                      type="text"
+                      value={clubContactAddress}
+                      onChange={(e) => setClubContactAddress(e.target.value)}
+                      placeholder={language === 'ar' ? 'عنوان النادي أو مكان المقابلة' : 'Club address or meeting location'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
+                    />
+                  </div>
+
+                  {/* Message to Applicant */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'رسالة للمتقدم *' : 'Message to Applicant *'}
+                    </label>
+                    <textarea
+                      value={statusMessage}
+                      onChange={(e) => setStatusMessage(e.target.value)}
+                      placeholder={language === 'ar' 
+                        ? 'اكتب رسالة للمتقدم تتضمن تفاصيل العرض أو التوظيف...' 
+                        : 'Write a message to the applicant with offer/hiring details...'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm min-h-[100px]"
+                      rows={4}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Update Button */}
               <Button
@@ -719,6 +810,7 @@ const ApplicationDetailPage = () => {
                 </div>
               )}
             </motion.div>
+            </div>
           </div>
         </div>
       </div>
