@@ -3,110 +3,184 @@ import api from './api'
 export interface JobNotification {
   _id: string
   userId: string
-  clubId: string
-  jobId: string
-  type: 'application_received' | 'application_submitted' | 'application_accepted' | 'application_rejected'
+  recipientId?: string
+  type: 'application_received' | 'application_submitted' | 'application_accepted' | 'application_rejected' | 'application_reviewed' | 'new_job' | 'job_match' | 'urgent_job' | 'general'
   title: string
   titleAr: string
   message: string
   messageAr: string
   read: boolean
+  isRead?: boolean
   createdAt: string
+  jobId?: string
+  applicationId?: string
+  clubId?: string
+  applicantId?: string
   jobData?: {
     title: string
-    titleAr: string
-    clubName: string
-    clubNameAr: string
+    titleAr?: string
+    clubName?: string
+    clubNameAr?: string
   }
   applicantData?: {
     name: string
-    email: string
-    phone: string
+    email?: string
+    phone?: string
+  }
+  metadata?: Record<string, any>
+}
+
+export interface NotificationResponse {
+  success: boolean
+  data: {
+    notifications: JobNotification[]
+    total: number
+    page: number
+    limit: number
+    unreadCount?: number
+  }
+}
+
+export class NotificationError extends Error {
+  constructor(message: string, public originalError?: any) {
+    super(message)
+    this.name = 'NotificationError'
   }
 }
 
 const notificationService = {
-  // Send application notification
-  async sendApplicationNotification(jobId: string, applicantInfo: any): Promise<any> {
+  async getNotifications(page = 1, limit = 20): Promise<{ notifications: JobNotification[]; total: number; unreadCount: number }> {
     try {
-      const response = await api.post('/notifications/job-application', {
-        jobId,
-        applicantInfo,
+      const response = await api.get('/notifications', {
+        params: { page, limit },
       })
-      return response.data
-    } catch (error) {
-      console.error('Error sending application notification:', error)
-      throw error
+      const data = response.data.data || response.data
+      return {
+        notifications: data.notifications || data || [],
+        total: data.total || data.length || 0,
+        unreadCount: data.unreadCount || 0,
+      }
+    } catch (error: any) {
+      console.error('Error fetching notifications:', error)
+      throw new NotificationError(
+        error.response?.data?.message || 'Failed to fetch notifications',
+        error
+      )
     }
   },
 
-  // Get job notifications for user
   async getJobNotifications(page = 1, limit = 20): Promise<{ notifications: JobNotification[]; total: number }> {
     try {
-      const response = await api.get('/notifications/jobs', {
-        params: { page, limit },
+      const response = await api.get('/notifications', {
+        params: { page, limit, type: 'job' },
       })
-      return response.data.data
-    } catch (error) {
-      console.error('Error fetching notifications:', error)
-      throw error
+      const data = response.data.data || response.data
+      return {
+        notifications: data.notifications || data || [],
+        total: data.total || data.length || 0,
+      }
+    } catch (error: any) {
+      console.error('Error fetching job notifications:', error)
+      throw new NotificationError(
+        error.response?.data?.message || 'Failed to fetch job notifications',
+        error
+      )
     }
   },
 
-  // Get club notifications (for club dashboard)
   async getClubApplicationNotifications(page = 1, limit = 20): Promise<{ notifications: JobNotification[]; total: number }> {
     try {
-      const response = await api.get('/notifications/club/applications', {
-        params: { page, limit },
+      const response = await api.get('/notifications', {
+        params: { page, limit, type: 'application_received' },
       })
-      return response.data.data
-    } catch (error) {
+      const data = response.data.data || response.data
+      return {
+        notifications: data.notifications || data || [],
+        total: data.total || data.length || 0,
+      }
+    } catch (error: any) {
       console.error('Error fetching club notifications:', error)
-      throw error
+      throw new NotificationError(
+        error.response?.data?.message || 'Failed to fetch club notifications',
+        error
+      )
     }
   },
 
-  // Mark notification as read
-  async markAsRead(notificationId: string): Promise<any> {
+  async getApplicationNotifications(page = 1, limit = 20): Promise<{ notifications: JobNotification[]; total: number }> {
     try {
-      const response = await api.put(`/notifications/${notificationId}/read`)
-      return response.data
+      const response = await api.get('/notifications', {
+        params: { 
+          page, 
+          limit,
+          types: 'application_submitted,application_accepted,application_rejected,application_reviewed'
+        },
+      })
+      const data = response.data.data || response.data
+      return {
+        notifications: data.notifications || data || [],
+        total: data.total || data.length || 0,
+      }
+    } catch (error: any) {
+      console.error('Error fetching application notifications:', error)
+      throw new NotificationError(
+        error.response?.data?.message || 'Failed to fetch application notifications',
+        error
+      )
+    }
+  },
+
+  async markAsRead(notificationId: string): Promise<boolean> {
+    try {
+      await api.patch(`/notifications/${notificationId}/read`)
+      return true
     } catch (error) {
       console.error('Error marking notification as read:', error)
-      throw error
+      return false
     }
   },
 
-  // Mark all as read
-  async markAllAsRead(): Promise<any> {
+  async markAllAsRead(): Promise<boolean> {
     try {
-      const response = await api.put('/notifications/mark-all-read')
-      return response.data
+      await api.patch('/notifications/read-all')
+      return true
     } catch (error) {
       console.error('Error marking all as read:', error)
-      throw error
+      return false
     }
   },
 
-  // Get unread count
   async getUnreadCount(): Promise<number> {
     try {
       const response = await api.get('/notifications/unread-count')
-      return response.data.data.count
+      return response.data.data?.count || response.data.count || 0
     } catch (error) {
       console.error('Error fetching unread count:', error)
       return 0
     }
   },
 
-  // Delete notification
-  async deleteNotification(notificationId: string): Promise<any> {
+  async deleteNotification(notificationId: string): Promise<boolean> {
     try {
-      const response = await api.delete(`/notifications/${notificationId}`)
-      return response.data
+      await api.delete(`/notifications/${notificationId}`)
+      return true
     } catch (error) {
       console.error('Error deleting notification:', error)
-      throw error
+      return false
+    }
+  },
+
+  async sendApplicationNotification(jobId: string, applicantInfo: any): Promise<boolean> {
+    try {
+      await api.post('/notifications', {
+        type: 'application_submitted',
+        jobId,
+        applicantInfo,
+      })
+      return true
+    } catch (error) {
+      console.error('Error sending application notification:', error)
+      return false
     }
   },
 }
