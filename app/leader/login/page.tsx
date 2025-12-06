@@ -3,16 +3,16 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, CheckCircle, Home } from 'lucide-react'
-import Image from 'next/image'
+import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, Home } from 'lucide-react'
 
-function LoginContent() {
+function LeaderLoginContent() {
   const { language } = useLanguage()
   const { login } = useAuth()
   const router = useRouter()
@@ -24,13 +24,6 @@ function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [registrationSuccess, setRegistrationSuccess] = useState(false)
-
-  useEffect(() => {
-    if (searchParams.get('registered') === 'true') {
-      setRegistrationSuccess(true)
-    }
-  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,9 +38,9 @@ function LoginContent() {
     setLoading(true)
 
     try {
-      console.log('[LOGIN] Attempting login with email:', email)
+      console.log('[LEADER LOGIN] Attempting login with email:', email)
       const response = await login(email, password)
-      console.log('[LOGIN] Success:', response)
+      console.log('[LEADER LOGIN] Success:', response)
 
       if (response.requiresVerification) {
         setError(language === 'ar' ? 'يرجى تفعيل حسابك عبر البريد الإلكتروني' : 'Please verify your email first')
@@ -55,8 +48,15 @@ function LoginContent() {
         return
       }
 
-      setSuccess(true)
+      // Check if user is leader/admin
       const userRole = response.user.role
+      if (!['leader', 'administrator', 'sports-director', 'executive-director'].includes(userRole)) {
+        setError(language === 'ar' ? 'صلاحيات غير كافية للدخول' : 'You do not have permission to access this page')
+        setLoading(false)
+        return
+      }
+
+      setSuccess(true)
 
       const redirectUrl = searchParams.get('redirect') || searchParams.get('next')
       
@@ -68,28 +68,22 @@ function LoginContent() {
       }
 
       const roleRoutes: Record<string, string> = {
-        player: '/dashboard/player',
-        coach: '/dashboard/coach',
-        club: '/dashboard/club',
-        specialist: '/dashboard/specialist',
+        leader: '/dashboard/leader',
         administrator: '/dashboard/administrator',
-        'age-group-supervisor': '/dashboard/age-group-supervisor',
         'sports-director': '/dashboard/sports-director',
         'executive-director': '/dashboard/executive-director',
-        secretary: '/dashboard/secretary',
       }
 
       setTimeout(() => {
         router.push(roleRoutes[userRole] || '/dashboard')
       }, 500)
     } catch (err: any) {
-      console.error('[LOGIN] Error:', err)
+      console.error('[LEADER LOGIN] Error:', err)
       setError(err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed'))
     } finally {
       setLoading(false)
     }
   }
-
 
   return (
     <div
@@ -119,7 +113,7 @@ function LoginContent() {
       >
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6 relative">
+          <div className="bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 px-8 pt-8 pb-6 relative">
             {/* Home Button */}
             <Link 
               href="/"
@@ -141,8 +135,8 @@ function LoginContent() {
               </div>
             </div>
             <h1 className="text-3xl font-bold text-white mb-2 text-center">TF1</h1>
-            <p className="text-blue-100 text-sm text-center">
-              {language === 'ar' ? 'منصة التوظيف الرياضي' : 'Sports Career Platform'}
+            <p className="text-purple-100 text-sm text-center">
+              {language === 'ar' ? 'دخول القائد والمسؤولين' : 'Leader & Admin Login'}
             </p>
           </div>
 
@@ -152,33 +146,8 @@ function LoginContent() {
               {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
             </h2>
             <p className="text-gray-600 text-sm mb-6">
-              {language === 'ar' ? 'أدخل بيانات حسابك للمتابعة' : 'Enter your credentials to continue'}
+              {language === 'ar' ? 'أدخل بيانات حسابك الإداري للمتابعة' : 'Enter your admin credentials to continue'}
             </p>
-
-            {/* Registration Success Message */}
-            {registrationSuccess && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-blue-900 mb-1">
-                      {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
-                    </h3>
-                    <p className="text-sm text-blue-700">
-                      {language === 'ar' 
-                        ? 'تم إرسال رابط التفعيل إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد أو البريد المزعج وتفعيل حسابك للمتابعة.'
-                        : 'A verification link has been sent to your email. Please check your inbox or spam folder and verify your account to continue.'}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
 
             {/* Error Message */}
             {error && (
@@ -259,7 +228,7 @@ function LoginContent() {
                   <input type="checkbox" className="rounded" />
                   <span className="text-gray-600">{language === 'ar' ? 'تذكرني' : 'Remember me'}</span>
                 </label>
-                <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link href="/forgot-password" className="text-purple-600 hover:text-purple-700 font-medium">
                   {language === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
                 </Link>
               </div>
@@ -268,7 +237,7 @@ function LoginContent() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-2.5 rounded-lg transition-all"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-2.5 rounded-lg transition-all"
               >
                 {loading ? (
                   <>
@@ -291,11 +260,11 @@ function LoginContent() {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            {/* Sign Up Link */}
+            {/* Back to Login */}
             <p className="text-center text-gray-600">
-              {language === 'ar' ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
-              <Link href="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
-                {language === 'ar' ? 'سجل الآن' : 'Sign up'}
+              {language === 'ar' ? 'هل تبحث عن دخول عام؟' : 'Looking for regular login?'}{' '}
+              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+                {language === 'ar' ? 'اذهب للدخول' : 'Go to Login'}
               </Link>
             </p>
           </div>
@@ -310,14 +279,14 @@ function LoginContent() {
   )
 }
 
-export default function LoginPage() {
+export default function LeaderLoginPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     }>
-      <LoginContent />
+      <LeaderLoginContent />
     </Suspense>
   )
 }

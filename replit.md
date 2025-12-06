@@ -43,6 +43,22 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 - **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
 - **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
+## Recent Changes (Dec 3, 2025)
+
+- **Added separate leader login page** (`/leader/login`) with purple-pink gradient for admin/leader/supervisor access
+- **Removed red admin quick-login button** from public `/login` page for security
+- **Added home button** with back-to-home navigation on both login and register pages
+- **Added logo display** on authentication pages for brand consistency
+- **Auto-routing** after login based on user role to appropriate dashboards
+
+## Authentication Pages
+
+- **`/login`** - General public login (blue-cyan-green gradient)
+- **`/register`** - Multi-step registration with role selection
+- **`/leader/login`** - Dedicated leader/admin/supervisor login (purple-pink gradient)
+  - Restricted to admin roles (leader, administrator, sports-director, executive-director)
+  - Auto-routes to appropriate dashboard on successful login
+
 ## External Dependencies
 
 -   **Backend API**: `https://tf1-backend.onrender.com/api/v1` (configurable via `NEXT_PUBLIC_API_URL`)
