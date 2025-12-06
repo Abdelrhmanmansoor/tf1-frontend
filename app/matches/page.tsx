@@ -87,31 +87,39 @@ export default function MatchesPage() {
   }, [filters, regionsData])
 
   const loadData = async () => {
+    const defaultData: RegionsData = {
+      regions: [
+        { name: 'الرياض', nameEn: 'Riyadh', cities: [{ name: 'الرياض', nameEn: 'Riyadh' }, { name: 'العليا', nameEn: 'Al Olaya' }] },
+        { name: 'مكة المكرمة', nameEn: 'Makkah', cities: [{ name: 'جدة', nameEn: 'Jeddah' }, { name: 'مكة', nameEn: 'Makkah' }] },
+        { name: 'المنطقة الشرقية', nameEn: 'Eastern', cities: [{ name: 'الدمام', nameEn: 'Dammam' }, { name: 'الخبر', nameEn: 'Khobar' }] },
+      ],
+      neighborhoods: {
+        'الرياض': ['العليا', 'النخيل', 'الفيصلية'],
+        'جدة': ['جدة', 'البلد', 'الروضة'],
+        'مكة': ['مكة', 'العزيزية'],
+        'الدمام': ['الدمام', 'الخليج'],
+        'الخبر': ['الخبر', 'الدانة'],
+      },
+      leagues: [],
+      positions: [],
+      levels: [
+        { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
+        { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
+        { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
+      ],
+      sports: [
+        { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
+        { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
+        { value: 'volleyball', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
+      ],
+    }
+
     try {
       const data = await getRegionsData()
       setRegionsData(data)
     } catch (err) {
-      console.error('Error loading regions:', err)
-      setRegionsData({
-        regions: [
-          { name: 'الرياض', nameEn: 'Riyadh', cities: [{ name: 'الرياض', nameEn: 'Riyadh' }] },
-          { name: 'مكة المكرمة', nameEn: 'Makkah', cities: [{ name: 'جدة', nameEn: 'Jeddah' }] },
-          { name: 'المنطقة الشرقية', nameEn: 'Eastern', cities: [{ name: 'الدمام', nameEn: 'Dammam' }] },
-        ],
-        neighborhoods: {},
-        leagues: [],
-        positions: [],
-        levels: [
-          { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
-          { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
-          { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
-        ],
-        sports: [
-          { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
-          { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
-          { value: 'volleyball', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
-        ],
-      })
+      console.error('Error loading regions, using defaults:', err)
+      setRegionsData(defaultData)
     }
   }
 
@@ -155,6 +163,16 @@ export default function MatchesPage() {
 
   const handleCreateMatch = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate required fields
+    if (!createData.name || !createData.sport || !createData.region || !createData.city || !createData.neighborhood || !createData.date || !createData.time || !createData.level || !createData.venue) {
+      setMessage({
+        type: 'error',
+        text: language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill all required fields',
+      })
+      return
+    }
+
     if (!isAuthenticated) {
       router.push('/login?redirect=' + encodeURIComponent('/matches?action=create'))
       return
@@ -162,7 +180,9 @@ export default function MatchesPage() {
 
     setCreating(true)
     try {
-      await createMatch(createData)
+      console.log('Creating match with data:', createData)
+      const result = await createMatch(createData)
+      console.log('Match created:', result)
       setMessage({
         type: 'success',
         text: language === 'ar' ? 'تم إنشاء المباراة بنجاح!' : 'Match created successfully!',
@@ -182,13 +202,17 @@ export default function MatchesPage() {
       })
       loadMatches()
     } catch (err: any) {
+      console.error('Full error object:', err)
+      console.error('Error response:', err.response)
+      const errorMsg = err.response?.data?.message || err.message || (language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match')
+      console.error('Final error message:', errorMsg)
       setMessage({
         type: 'error',
-        text: err.response?.data?.message || (language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match'),
+        text: errorMsg,
       })
     } finally {
       setCreating(false)
-      setTimeout(() => setMessage(null), 3000)
+      setTimeout(() => setMessage(null), 5000)
     }
   }
 
