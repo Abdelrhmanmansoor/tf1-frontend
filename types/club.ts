@@ -331,6 +331,9 @@ export interface CreateJobData {
   numberOfPositions?: number
   applicationDeadline?: string
   expectedStartDate?: string
+  meetingDate?: string
+  meetingTime?: string
+  meetingLocation?: string
 }
 
 export interface UpdateJobData extends Partial<CreateJobData> {}
