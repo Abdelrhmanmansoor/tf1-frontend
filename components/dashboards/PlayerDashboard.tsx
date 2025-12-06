@@ -53,6 +53,7 @@ import type {
 import { calculateProfileCompletion } from '@/utils/profileCompletion'
 import JobNotifications from '@/components/notifications/JobNotifications'
 import { ActiveRequestsWidget, UpcomingSessionsWidget } from '@/components/dashboards/player'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 const PlayerDashboard = () => {
   const { language } = useLanguage()

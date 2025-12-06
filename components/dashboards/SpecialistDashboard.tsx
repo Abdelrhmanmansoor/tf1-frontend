@@ -40,6 +40,7 @@ import {
   type SpecialistProfile,
 } from '@/services/specialist'
 import JobNotifications from '@/components/notifications/JobNotifications'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 const SpecialistDashboard = () => {
   const { language } = useLanguage()

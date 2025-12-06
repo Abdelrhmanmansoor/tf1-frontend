@@ -34,6 +34,7 @@ import {
   Briefcase,
 } from 'lucide-react'
 import JobNotifications from '@/components/notifications/JobNotifications'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 const CoachDashboard = () => {
   const { language } = useLanguage()

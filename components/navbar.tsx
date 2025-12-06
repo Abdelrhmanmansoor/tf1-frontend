@@ -96,12 +96,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <LanguageSelector />
 
-          {isClient && user ? (
-            <div className="flex items-center gap-2">
-              <NotificationBell />
-            </div>
-          ) : null}
-
           {!user && (
             <>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

@@ -41,6 +41,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import administratorService from '@/services/administrator'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface DashboardStats {
   totalUsers: number

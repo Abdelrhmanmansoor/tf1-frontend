@@ -37,6 +37,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import JobNotifications from '@/components/notifications/JobNotifications'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 const ClubDashboard = () => {
   const { language } = useLanguage()
@@ -233,6 +234,7 @@ const ClubDashboard = () => {
               </Link>
               <GlobalSearchButton variant="outline" showLabel={true} />
               <LanguageSelector />
+              <NotificationBell />
               <MessageNotificationBadge dashboardType="club" />
               <Link href="/dashboard/club/profile/edit">
                 <motion.button
