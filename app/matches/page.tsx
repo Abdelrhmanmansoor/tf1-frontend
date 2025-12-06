@@ -203,8 +203,26 @@ export default function MatchesPage() {
       loadMatches()
     } catch (err: any) {
       console.error('Full error object:', err)
-      console.error('Error response:', err.response)
-      const errorMsg = err.response?.data?.message || err.message || (language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match')
+      console.error('Error status:', err.response?.status)
+      console.error('Error response:', err.response?.data)
+      
+      // Build comprehensive error message
+      let errorMsg = language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match'
+      
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        errorMsg = language === 'ar' ? 'أنت غير مصرح بإنشاء مبارة. يرجى تسجيل الدخول' : 'Unauthorized. Please login'
+      } else if (err.response?.status === 400) {
+        errorMsg = err.response?.data?.message || (language === 'ar' ? 'بيانات غير صحيحة' : 'Invalid data')
+      } else if (err.response?.status === 404) {
+        errorMsg = language === 'ar' ? 'الخدمة غير متاحة' : 'Service not available'
+      } else if (err.response?.status === 500) {
+        errorMsg = language === 'ar' ? 'خطأ في الخادم. يرجى المحاولة لاحقاً' : 'Server error. Please try again later'
+      } else if (err.message?.includes('Network')) {
+        errorMsg = language === 'ar' ? 'خطأ في الاتصال بالانترنت' : 'Network error'
+      } else {
+        errorMsg = err.response?.data?.message || err.message || errorMsg
+      }
+      
       console.error('Final error message:', errorMsg)
       setMessage({
         type: 'error',
@@ -212,7 +230,7 @@ export default function MatchesPage() {
       })
     } finally {
       setCreating(false)
-      setTimeout(() => setMessage(null), 5000)
+      setTimeout(() => setMessage(null), 6000)
     }
   }
 
