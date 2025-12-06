@@ -79,10 +79,15 @@ const clubApplicationsService = {
   // Download resume from direct URL
   async downloadResume(fileUrl: string, filename: string): Promise<Blob> {
     try {
-      const response = await api.get(fileUrl, {
-        responseType: 'blob',
+      const response = await fetch(fileUrl, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+        },
       })
-      return response.data
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      return await response.blob()
     } catch (error) {
       console.error('Error downloading resume:', error)
       throw error

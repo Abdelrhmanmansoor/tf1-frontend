@@ -13,6 +13,11 @@ import {
   ExternalLink,
   Linkedin,
   X,
+  Phone,
+  User,
+  MapPin,
+  GraduationCap,
+  Zap,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import notificationService from '@/services/notifications'
@@ -44,6 +49,11 @@ export default function JobApplicationForm({
   const [portfolio, setPortfolio] = useState('')
   const [linkedin, setLinkedin] = useState('')
   const [coverLetter, setCoverLetter] = useState('')
+  const [phone, setPhone] = useState('')
+  const [age, setAge] = useState('')
+  const [city, setCity] = useState('')
+  const [qualification, setQualification] = useState('')
+  const [experienceYears, setExperienceYears] = useState('')
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -69,7 +79,7 @@ export default function JobApplicationForm({
   }
 
   const handleApply = async () => {
-    if (!resumeFile || !whatsapp) {
+    if (!resumeFile || !whatsapp || !phone || !age || !city || !qualification || !experienceYears) {
       setUploadError(language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill all required fields')
       return
     }
@@ -81,6 +91,11 @@ export default function JobApplicationForm({
       const formData = new FormData()
       formData.append('resume', resumeFile)
       formData.append('whatsapp', whatsapp)
+      formData.append('phone', phone)
+      formData.append('age', age)
+      formData.append('city', city)
+      formData.append('qualification', qualification)
+      formData.append('experienceYears', experienceYears)
       if (coverLetter) formData.append('coverLetter', coverLetter)
       if (portfolio) formData.append('portfolio', portfolio)
       if (linkedin) formData.append('linkedin', linkedin)
@@ -113,6 +128,11 @@ export default function JobApplicationForm({
       // Reset form
       setResumeFile(null)
       setWhatsapp('')
+      setPhone('')
+      setAge('')
+      setCity('')
+      setQualification('')
+      setExperienceYears('')
       setCoverLetter('')
       setPortfolio('')
       setLinkedin('')
@@ -179,6 +199,99 @@ export default function JobApplicationForm({
                 {language === 'ar' ? 'PDF, DOC, أو DOCX (حتى 10 ميجابايت)' : 'PDF, DOC, or DOCX (up to 10MB)'}
               </p>
             </label>
+          </div>
+        </div>
+
+        {/* Personal Info Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Phone */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-3">
+              {language === 'ar' ? 'رقم الهاتف *' : 'Phone Number *'}
+            </label>
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
+              <Phone className="w-5 h-5 text-blue-500 flex-shrink-0" />
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+966 50 123 4567"
+                className="flex-1 outline-none text-sm bg-transparent"
+                disabled={applying}
+              />
+            </div>
+          </div>
+
+          {/* Age */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-3">
+              {language === 'ar' ? 'العمر *' : 'Age *'}
+            </label>
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
+              <User className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="25"
+                className="flex-1 outline-none text-sm bg-transparent"
+                disabled={applying}
+              />
+            </div>
+          </div>
+
+          {/* City */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-3">
+              {language === 'ar' ? 'المدينة *' : 'City *'}
+            </label>
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
+              <MapPin className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder={language === 'ar' ? 'الرياض' : 'Riyadh'}
+                className="flex-1 outline-none text-sm bg-transparent"
+                disabled={applying}
+              />
+            </div>
+          </div>
+
+          {/* Qualification */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-3">
+              {language === 'ar' ? 'المؤهل العلمي *' : 'Qualification *'}
+            </label>
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
+              <GraduationCap className="w-5 h-5 text-orange-500 flex-shrink-0" />
+              <input
+                type="text"
+                value={qualification}
+                onChange={(e) => setQualification(e.target.value)}
+                placeholder={language === 'ar' ? 'بكالوريوس في الرياضة' : 'Bachelor in Sports'}
+                className="flex-1 outline-none text-sm bg-transparent"
+                disabled={applying}
+              />
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-semibold text-gray-800 mb-3">
+              {language === 'ar' ? 'سنوات الخبرة *' : 'Years of Experience *'}
+            </label>
+            <div className="flex items-center gap-3 border-2 border-gray-300 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
+              <Zap className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+              <input
+                type="number"
+                value={experienceYears}
+                onChange={(e) => setExperienceYears(e.target.value)}
+                placeholder="5"
+                className="flex-1 outline-none text-sm bg-transparent"
+                disabled={applying}
+              />
+            </div>
           </div>
         </div>
 
