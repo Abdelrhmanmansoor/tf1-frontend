@@ -43,6 +43,20 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 - **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
 - **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
+## Recent Changes (Dec 6, 2025)
+
+- **Implemented notifications system** - Complete frontend notification infrastructure:
+  - Unified notifications page at `/dashboard/notifications` for all user types
+  - NotificationBell component for header integration with real-time updates
+  - Proper WebSocket event handling with cleanup to prevent duplicate notifications
+  - Polling fallback every 30 seconds for reliability
+  - Error handling that surfaces API failures to users
+  - Pagination with proper "Load More" functionality
+  - Filter options: All, Unread, Applications, Jobs
+- **Fixed applicant name display** in club applications - now shows actual `fullName` instead of "USER"
+- **Fixed resume download** - uses direct `fileUrl` from application data
+- **Created backend requirements documentation** (`BACKEND_NOTIFICATIONS_REQUIREMENTS.md`) for notification API implementation
+
 ## Recent Changes (Dec 3, 2025)
 
 - **Added separate leader login page** (`/leader/login`) with purple-pink gradient for admin/leader/supervisor access
