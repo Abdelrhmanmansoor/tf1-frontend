@@ -692,7 +692,7 @@ class ClubService {
   /**
    * 26. Update Application Status
    * Uses appropriate endpoint based on status
-   * Includes optional contact info and message for email notifications
+   * Includes optional contact info, message, and applicant data for email notifications
    */
   async updateApplicationStatus(
     applicationId: string,
@@ -701,6 +701,10 @@ class ClubService {
       message?: string
       contactPhone?: string
       contactAddress?: string
+      applicantSnapshot?: any
+      applicantName?: string
+      applicantEmail?: string
+      jobTitle?: string
     }
   ): Promise<JobApplication> {
     try {

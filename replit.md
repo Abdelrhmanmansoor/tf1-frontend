@@ -43,6 +43,23 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 - **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
 - **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
+## Recent Changes (Dec 6, 2025 - Session 3)
+
+### Complete Applicant Data with Email Notifications
+- **✅ Full Applicant Data Integration**: When updating application status to "offered" or "hired":
+  - Personal data sent with email: age, city, experience years, qualification
+  - Applicant snapshot (phone, qualification, experience, age, city) included
+  - Applicant name, email, job title sent with notification
+  - Message, contact phone, and address sent for communication
+  - Backend receives COMPLETE applicant profile for personalized email
+
+### Attachment Handling Solution (Final)
+- **✅ Dual-button Interface for Attachments**:
+  - View button (👁️): Opens Google Drive Viewer for PDF files
+  - Download button (⬇️): Direct download link
+  - Automatically converts Google Drive URLs to shareable view format
+  - Handles multiple attachment types (resume, portfolio, etc.)
+
 ## Recent Changes (Dec 6, 2025 - Session 2)
 
 ### Saudi Arabia Localization
@@ -59,13 +76,6 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
   - Backend receives full contact info for "offered" and "hired" statuses
   - Enables personalized email notifications to applicants
   - Includes applicant snapshot data (phone, city, experience, age, qualification)
-
-### Attachment Handling Solution
-- **✅ Dual-button Interface for Attachments**:
-  - View button (👁️): Opens Google Drive Viewer for PDF files
-  - Download button (⬇️): Direct download link
-  - Automatically converts Google Drive URLs to shareable view format
-  - Handles multiple attachment types (resume, portfolio, etc.)
 
 ## Recent Changes (Dec 6, 2025 - Session 1)
 

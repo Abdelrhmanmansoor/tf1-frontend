@@ -138,7 +138,12 @@ const ApplicationDetailPage = () => {
         {
           message: statusMessage,
           contactPhone: clubContactPhone,
-          contactAddress: clubContactAddress
+          contactAddress: clubContactAddress,
+          // Include applicant personal data for email notification
+          applicantSnapshot: application.applicantSnapshot,
+          applicantName: applicantName,
+          applicantEmail: applicantEmail,
+          jobTitle: jobTitle
         }
       )
       setApplication(updatedApp)
