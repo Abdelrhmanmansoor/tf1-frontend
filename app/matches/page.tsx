@@ -115,13 +115,8 @@ export default function MatchesPage() {
       ],
     }
 
-    try {
-      const data = await getRegionsData()
-      setRegionsData(data)
-    } catch (err) {
-      console.error('Error loading regions, using defaults:', err)
-      setRegionsData(defaultData)
-    }
+    // Always use default data (Backend has missing files)
+    setRegionsData(defaultData)
   }
 
   const loadMatches = async () => {
