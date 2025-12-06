@@ -175,10 +175,16 @@ const ClubApplicationsPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     {(() => {
-                      const applicantName =
-                        (typeof application.applicantId === 'object' &&
-                          application.applicantId.fullName) ||
-                        ''
+                      let applicantName = ''
+                      let email = ''
+                      
+                      if (typeof application.applicantId === 'object' && application.applicantId) {
+                        applicantName = application.applicantId.fullName || ''
+                        email = application.applicantId.email || ''
+                      }
+                      
+                      // Get job title
+                      const jobTitle = typeof application.jobId === 'object' && application.jobId?.title
                       
                       return (
                         <>
@@ -190,8 +196,7 @@ const ClubApplicationsPage = () => {
                               {applicantName || (language === 'ar' ? 'متقدم' : 'Applicant')}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              {typeof application.jobId === 'object' &&
-                                application.jobId.title}
+                              {jobTitle || (language === 'ar' ? 'بدون وظيفة' : 'No Job')}
                             </p>
                           </div>
                         </>
