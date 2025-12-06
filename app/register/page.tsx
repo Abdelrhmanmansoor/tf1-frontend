@@ -243,6 +243,11 @@ export default function RegisterPage() {
           >
             <Home className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
           </Link>
+
+          {/* Saudi Arabia Flag */}
+          <div className="absolute top-0 right-0 text-4xl">
+            🇸🇦
+          </div>
           
           <motion.div 
             className="flex justify-center mb-4"
@@ -398,17 +403,30 @@ export default function RegisterPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {language === 'ar' ? 'رقم الجوال' : 'Phone Number'} *
                     </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                      <Input
-                        type="tel"
-                        placeholder="+966 50 123 4567"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="pl-10"
-                        disabled={loading}
-                      />
+                    <div className="flex gap-2 items-center" dir="ltr">
+                      <div className="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 flex items-center gap-2 font-semibold text-gray-700 flex-shrink-0">
+                        <span>🇸🇦</span>
+                        <span>+966</span>
+                      </div>
+                      <div className="relative flex-1">
+                        <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                        <Input
+                          type="tel"
+                          placeholder="5X XXX XXXX"
+                          value={formData.phone.replace('+966', '').replace(/\D/g, '').slice(0, 9)}
+                          onChange={(e) => {
+                            const digits = e.target.value.replace(/\D/g, '').slice(0, 9)
+                            setFormData({ ...formData, phone: '+966' + digits })
+                          }}
+                          className="pl-10"
+                          disabled={loading}
+                          maxLength={9}
+                        />
+                      </div>
                     </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {language === 'ar' ? 'أدخل 9 أرقام (بدون صفر)' : 'Enter 9 digits (without leading zero)'}
+                    </p>
                   </div>
 
                   <div>

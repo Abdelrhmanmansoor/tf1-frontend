@@ -127,6 +127,11 @@ function LoginContent() {
             >
               <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
             </Link>
+
+            {/* Saudi Arabia Flag */}
+            <div className="absolute top-4 right-4 text-3xl">
+              🇸🇦
+            </div>
             
             {/* Logo */}
             <div className="flex items-center justify-center gap-3 mb-3">
