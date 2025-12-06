@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { LanguageSelector } from './language-selector'
 import { useLanguage } from '@/contexts/language-context'
+import { useAuth } from '@/contexts/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { X } from 'lucide-react'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
   activeMode: 'application' | 'recruitment'
@@ -16,8 +18,14 @@ interface NavbarProps {
 
 export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const { t } = useLanguage()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const navItems = [
     { id: 'home', label: t('home') },
@@ -88,32 +96,40 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <LanguageSelector />
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/register">
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
-              >
-                {t('register')}
-              </Button>
-            </Link>
-          </motion.div>
+          {isClient && user && (
+            <NotificationBell />
+          )}
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/login">
-              <Button
-                size="sm"
-                className={`px-3 sm:px-4 py-2 text-xs sm:text-sm ${
-                  activeMode === 'application'
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
-                    : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                } transition-all duration-300 shadow-md hover:shadow-lg`}
-              >
-                {t('login')}
-              </Button>
-            </Link>
-          </motion.div>
+          {!user && (
+            <>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/register">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
+                  >
+                    {t('register')}
+                  </Button>
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/login">
+                  <Button
+                    size="sm"
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm ${
+                      activeMode === 'application'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
+                        : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                    } transition-all duration-300 shadow-md hover:shadow-lg`}
+                  >
+                    {t('login')}
+                  </Button>
+                </Link>
+              </motion.div>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
