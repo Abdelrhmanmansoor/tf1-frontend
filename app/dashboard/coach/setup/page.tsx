@@ -70,12 +70,13 @@ const CoachSetupWizard = () => {
     { value: 'volleyball', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
     { value: 'handball', label: 'كرة اليد', labelEn: 'Handball' },
     { value: 'boxing', label: 'الملاكمة', labelEn: 'Boxing' },
-    {
-      value: 'martial_arts',
-      label: 'الفنون القتالية',
-      labelEn: 'Martial Arts',
-    },
+    { value: 'martial_arts', label: 'الفنون القتالية', labelEn: 'Martial Arts' },
     { value: 'yoga', label: 'اليوغا', labelEn: 'Yoga' },
+    { value: 'fitness', label: 'اللياقة البدنية', labelEn: 'Fitness' },
+    { value: 'karate', label: 'الكاراتيه', labelEn: 'Karate' },
+    { value: 'taekwondo', label: 'التايكوندو', labelEn: 'Taekwondo' },
+    { value: 'judo', label: 'الجودو', labelEn: 'Judo' },
+    { value: 'gymnastics', label: 'الجمباز', labelEn: 'Gymnastics' },
   ]
 
   const certificationLevels = [
@@ -83,6 +84,153 @@ const CoachSetupWizard = () => {
     { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
     { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
     { value: 'expert', label: 'خبير', labelEn: 'Expert' },
+  ]
+
+  const languageOptions = [
+    { value: 'Arabic', label: 'العربية', labelEn: 'Arabic' },
+    { value: 'English', label: 'الإنجليزية', labelEn: 'English' },
+    { value: 'French', label: 'الفرنسية', labelEn: 'French' },
+    { value: 'Spanish', label: 'الإسبانية', labelEn: 'Spanish' },
+    { value: 'German', label: 'الألمانية', labelEn: 'German' },
+    { value: 'Italian', label: 'الإيطالية', labelEn: 'Italian' },
+    { value: 'Portuguese', label: 'البرتغالية', labelEn: 'Portuguese' },
+    { value: 'Turkish', label: 'التركية', labelEn: 'Turkish' },
+    { value: 'Urdu', label: 'الأردو', labelEn: 'Urdu' },
+    { value: 'Hindi', label: 'الهندية', labelEn: 'Hindi' },
+  ]
+
+  const specialtyOptions = [
+    { value: 'youth_development', label: 'تطوير الناشئين', labelEn: 'Youth Development' },
+    { value: 'strength_conditioning', label: 'القوة واللياقة', labelEn: 'Strength & Conditioning' },
+    { value: 'tactical_training', label: 'التدريب التكتيكي', labelEn: 'Tactical Training' },
+    { value: 'goalkeeper_training', label: 'تدريب حراس المرمى', labelEn: 'Goalkeeper Training' },
+    { value: 'speed_agility', label: 'السرعة والرشاقة', labelEn: 'Speed & Agility' },
+    { value: 'rehabilitation', label: 'إعادة التأهيل', labelEn: 'Rehabilitation' },
+    { value: 'mental_coaching', label: 'التدريب الذهني', labelEn: 'Mental Coaching' },
+    { value: 'nutrition', label: 'التغذية الرياضية', labelEn: 'Sports Nutrition' },
+    { value: 'performance_analysis', label: 'تحليل الأداء', labelEn: 'Performance Analysis' },
+    { value: 'team_management', label: 'إدارة الفريق', labelEn: 'Team Management' },
+    { value: 'individual_training', label: 'التدريب الفردي', labelEn: 'Individual Training' },
+    { value: 'group_training', label: 'التدريب الجماعي', labelEn: 'Group Training' },
+  ]
+
+  const countryOptions = [
+    { value: 'Saudi Arabia', valueAr: 'المملكة العربية السعودية', label: 'المملكة العربية السعودية', labelEn: 'Saudi Arabia' },
+    { value: 'Egypt', valueAr: 'مصر', label: 'مصر', labelEn: 'Egypt' },
+    { value: 'UAE', valueAr: 'الإمارات', label: 'الإمارات', labelEn: 'UAE' },
+    { value: 'Qatar', valueAr: 'قطر', label: 'قطر', labelEn: 'Qatar' },
+    { value: 'Kuwait', valueAr: 'الكويت', label: 'الكويت', labelEn: 'Kuwait' },
+    { value: 'Bahrain', valueAr: 'البحرين', label: 'البحرين', labelEn: 'Bahrain' },
+    { value: 'Oman', valueAr: 'عمان', label: 'عمان', labelEn: 'Oman' },
+    { value: 'Jordan', valueAr: 'الأردن', label: 'الأردن', labelEn: 'Jordan' },
+    { value: 'Lebanon', valueAr: 'لبنان', label: 'لبنان', labelEn: 'Lebanon' },
+    { value: 'Morocco', valueAr: 'المغرب', label: 'المغرب', labelEn: 'Morocco' },
+    { value: 'Tunisia', valueAr: 'تونس', label: 'تونس', labelEn: 'Tunisia' },
+    { value: 'Algeria', valueAr: 'الجزائر', label: 'الجزائر', labelEn: 'Algeria' },
+    { value: 'Iraq', valueAr: 'العراق', label: 'العراق', labelEn: 'Iraq' },
+    { value: 'Sudan', valueAr: 'السودان', label: 'السودان', labelEn: 'Sudan' },
+    { value: 'Libya', valueAr: 'ليبيا', label: 'ليبيا', labelEn: 'Libya' },
+  ]
+
+  const cityOptions: Record<string, Array<{ value: string; valueAr: string; label: string; labelEn: string }>> = {
+    'Saudi Arabia': [
+      { value: 'Riyadh', valueAr: 'الرياض', label: 'الرياض', labelEn: 'Riyadh' },
+      { value: 'Jeddah', valueAr: 'جدة', label: 'جدة', labelEn: 'Jeddah' },
+      { value: 'Mecca', valueAr: 'مكة المكرمة', label: 'مكة المكرمة', labelEn: 'Mecca' },
+      { value: 'Medina', valueAr: 'المدينة المنورة', label: 'المدينة المنورة', labelEn: 'Medina' },
+      { value: 'Dammam', valueAr: 'الدمام', label: 'الدمام', labelEn: 'Dammam' },
+      { value: 'Khobar', valueAr: 'الخبر', label: 'الخبر', labelEn: 'Khobar' },
+      { value: 'Tabuk', valueAr: 'تبوك', label: 'تبوك', labelEn: 'Tabuk' },
+      { value: 'Abha', valueAr: 'أبها', label: 'أبها', labelEn: 'Abha' },
+    ],
+    'Egypt': [
+      { value: 'Cairo', valueAr: 'القاهرة', label: 'القاهرة', labelEn: 'Cairo' },
+      { value: 'Alexandria', valueAr: 'الإسكندرية', label: 'الإسكندرية', labelEn: 'Alexandria' },
+      { value: 'Giza', valueAr: 'الجيزة', label: 'الجيزة', labelEn: 'Giza' },
+      { value: 'Sharm El Sheikh', valueAr: 'شرم الشيخ', label: 'شرم الشيخ', labelEn: 'Sharm El Sheikh' },
+      { value: 'Hurghada', valueAr: 'الغردقة', label: 'الغردقة', labelEn: 'Hurghada' },
+      { value: 'Mansoura', valueAr: 'المنصورة', label: 'المنصورة', labelEn: 'Mansoura' },
+      { value: 'Tanta', valueAr: 'طنطا', label: 'طنطا', labelEn: 'Tanta' },
+    ],
+    'UAE': [
+      { value: 'Dubai', valueAr: 'دبي', label: 'دبي', labelEn: 'Dubai' },
+      { value: 'Abu Dhabi', valueAr: 'أبو ظبي', label: 'أبو ظبي', labelEn: 'Abu Dhabi' },
+      { value: 'Sharjah', valueAr: 'الشارقة', label: 'الشارقة', labelEn: 'Sharjah' },
+      { value: 'Ajman', valueAr: 'عجمان', label: 'عجمان', labelEn: 'Ajman' },
+      { value: 'Ras Al Khaimah', valueAr: 'رأس الخيمة', label: 'رأس الخيمة', labelEn: 'Ras Al Khaimah' },
+    ],
+    'Qatar': [
+      { value: 'Doha', valueAr: 'الدوحة', label: 'الدوحة', labelEn: 'Doha' },
+      { value: 'Al Wakrah', valueAr: 'الوكرة', label: 'الوكرة', labelEn: 'Al Wakrah' },
+      { value: 'Al Khor', valueAr: 'الخور', label: 'الخور', labelEn: 'Al Khor' },
+    ],
+    'Kuwait': [
+      { value: 'Kuwait City', valueAr: 'مدينة الكويت', label: 'مدينة الكويت', labelEn: 'Kuwait City' },
+      { value: 'Hawalli', valueAr: 'حولي', label: 'حولي', labelEn: 'Hawalli' },
+      { value: 'Salmiya', valueAr: 'السالمية', label: 'السالمية', labelEn: 'Salmiya' },
+    ],
+    'Bahrain': [
+      { value: 'Manama', valueAr: 'المنامة', label: 'المنامة', labelEn: 'Manama' },
+      { value: 'Riffa', valueAr: 'الرفاع', label: 'الرفاع', labelEn: 'Riffa' },
+      { value: 'Muharraq', valueAr: 'المحرق', label: 'المحرق', labelEn: 'Muharraq' },
+    ],
+    'Oman': [
+      { value: 'Muscat', valueAr: 'مسقط', label: 'مسقط', labelEn: 'Muscat' },
+      { value: 'Salalah', valueAr: 'صلالة', label: 'صلالة', labelEn: 'Salalah' },
+      { value: 'Sohar', valueAr: 'صحار', label: 'صحار', labelEn: 'Sohar' },
+    ],
+    'Jordan': [
+      { value: 'Amman', valueAr: 'عمان', label: 'عمان', labelEn: 'Amman' },
+      { value: 'Aqaba', valueAr: 'العقبة', label: 'العقبة', labelEn: 'Aqaba' },
+      { value: 'Zarqa', valueAr: 'الزرقاء', label: 'الزرقاء', labelEn: 'Zarqa' },
+      { value: 'Irbid', valueAr: 'إربد', label: 'إربد', labelEn: 'Irbid' },
+    ],
+    'Lebanon': [
+      { value: 'Beirut', valueAr: 'بيروت', label: 'بيروت', labelEn: 'Beirut' },
+      { value: 'Tripoli', valueAr: 'طرابلس', label: 'طرابلس', labelEn: 'Tripoli' },
+      { value: 'Sidon', valueAr: 'صيدا', label: 'صيدا', labelEn: 'Sidon' },
+    ],
+    'Morocco': [
+      { value: 'Casablanca', valueAr: 'الدار البيضاء', label: 'الدار البيضاء', labelEn: 'Casablanca' },
+      { value: 'Rabat', valueAr: 'الرباط', label: 'الرباط', labelEn: 'Rabat' },
+      { value: 'Marrakech', valueAr: 'مراكش', label: 'مراكش', labelEn: 'Marrakech' },
+      { value: 'Fes', valueAr: 'فاس', label: 'فاس', labelEn: 'Fes' },
+      { value: 'Tangier', valueAr: 'طنجة', label: 'طنجة', labelEn: 'Tangier' },
+    ],
+    'Tunisia': [
+      { value: 'Tunis', valueAr: 'تونس', label: 'تونس', labelEn: 'Tunis' },
+      { value: 'Sfax', valueAr: 'صفاقس', label: 'صفاقس', labelEn: 'Sfax' },
+      { value: 'Sousse', valueAr: 'سوسة', label: 'سوسة', labelEn: 'Sousse' },
+    ],
+    'Algeria': [
+      { value: 'Algiers', valueAr: 'الجزائر', label: 'الجزائر', labelEn: 'Algiers' },
+      { value: 'Oran', valueAr: 'وهران', label: 'وهران', labelEn: 'Oran' },
+      { value: 'Constantine', valueAr: 'قسنطينة', label: 'قسنطينة', labelEn: 'Constantine' },
+    ],
+    'Iraq': [
+      { value: 'Baghdad', valueAr: 'بغداد', label: 'بغداد', labelEn: 'Baghdad' },
+      { value: 'Basra', valueAr: 'البصرة', label: 'البصرة', labelEn: 'Basra' },
+      { value: 'Erbil', valueAr: 'أربيل', label: 'أربيل', labelEn: 'Erbil' },
+    ],
+    'Sudan': [
+      { value: 'Khartoum', valueAr: 'الخرطوم', label: 'الخرطوم', labelEn: 'Khartoum' },
+      { value: 'Omdurman', valueAr: 'أم درمان', label: 'أم درمان', labelEn: 'Omdurman' },
+    ],
+    'Libya': [
+      { value: 'Tripoli', valueAr: 'طرابلس', label: 'طرابلس', labelEn: 'Tripoli' },
+      { value: 'Benghazi', valueAr: 'بنغازي', label: 'بنغازي', labelEn: 'Benghazi' },
+    ],
+  }
+
+  const experienceOptions = [
+    { value: 1, label: '1 سنة', labelEn: '1 year' },
+    { value: 2, label: '2 سنة', labelEn: '2 years' },
+    { value: 3, label: '3 سنوات', labelEn: '3 years' },
+    { value: 5, label: '5 سنوات', labelEn: '5 years' },
+    { value: 7, label: '7 سنوات', labelEn: '7 years' },
+    { value: 10, label: '10 سنوات', labelEn: '10 years' },
+    { value: 15, label: '15 سنة', labelEn: '15 years' },
+    { value: 20, label: '20+ سنة', labelEn: '20+ years' },
   ]
 
   const steps = [
@@ -434,14 +582,21 @@ const CoachSetupWizard = () => {
                         : 'Years of Experience'}{' '}
                       <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="number"
+                    <select
                       name="experienceYears"
                       value={formData.experienceYears || ''}
                       onChange={handleInputChange}
-                      min="0"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
+                    >
+                      <option value="">
+                        {language === 'ar' ? 'اختر سنوات الخبرة' : 'Select experience'}
+                      </option>
+                      {experienceOptions.map((exp) => (
+                        <option key={exp.value} value={exp.value}>
+                          {language === 'ar' ? exp.label : exp.labelEn}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
@@ -451,43 +606,50 @@ const CoachSetupWizard = () => {
                         : 'Coaching Specialties'}
                     </label>
                     <div className="flex gap-2 mb-3">
-                      <input
-                        type="text"
+                      <select
                         value={specialtyInput}
                         onChange={(e) => setSpecialtyInput(e.target.value)}
-                        onKeyPress={(e) =>
-                          e.key === 'Enter' &&
-                          (e.preventDefault(), addSpecialty())
-                        }
-                        placeholder={
-                          language === 'ar' ? 'أضف تخصص...' : 'Add specialty...'
-                        }
                         className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
+                      >
+                        <option value="">
+                          {language === 'ar' ? 'اختر تخصص...' : 'Select specialty...'}
+                        </option>
+                        {specialtyOptions
+                          .filter((s) => !formData.coachingSpecialties.includes(s.value))
+                          .map((specialty) => (
+                            <option key={specialty.value} value={specialty.value}>
+                              {language === 'ar' ? specialty.label : specialty.labelEn}
+                            </option>
+                          ))}
+                      </select>
                       <button
                         type="button"
                         onClick={addSpecialty}
-                        className="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                        disabled={!specialtyInput}
+                        className="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-5 h-5" />
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {formData.coachingSpecialties.map((specialty) => (
-                        <span
-                          key={specialty}
-                          className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                        >
-                          {specialty}
-                          <button
-                            type="button"
-                            onClick={() => removeSpecialty(specialty)}
-                            className="hover:text-purple-900"
+                      {formData.coachingSpecialties.map((specialty) => {
+                        const spec = specialtyOptions.find((s) => s.value === specialty)
+                        return (
+                          <span
+                            key={specialty}
+                            className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm flex items-center gap-2"
                           >
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        </span>
-                      ))}
+                            {spec ? (language === 'ar' ? spec.label : spec.labelEn) : specialty}
+                            <button
+                              type="button"
+                              onClick={() => removeSpecialty(specialty)}
+                              className="hover:text-purple-900"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </span>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
@@ -499,156 +661,109 @@ const CoachSetupWizard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'المدينة (English)'
-                          : 'City (English)'}{' '}
+                        {language === 'ar' ? 'الدولة' : 'Country'}{' '}
                         <span className="text-red-500">*</span>
                       </label>
-                      <input
-                        type="text"
-                        value={formData.location?.city || ''}
-                        onChange={(e) =>
-                          handleLocationChange('city', e.target.value)
-                        }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'المدينة (العربية)'
-                          : 'City (Arabic)'}
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.location?.cityAr || ''}
-                        onChange={(e) =>
-                          handleLocationChange('cityAr', e.target.value)
-                        }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'المنطقة (English)'
-                          : 'Area (English)'}
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.location?.area || ''}
-                        onChange={(e) =>
-                          handleLocationChange('area', e.target.value)
-                        }
-                        placeholder={
-                          language === 'ar'
-                            ? 'مثال: مدينة نصر'
-                            : 'e.g., Nasr City'
-                        }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'المنطقة (العربية)'
-                          : 'Area (Arabic)'}
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.location?.areaAr || ''}
-                        onChange={(e) =>
-                          handleLocationChange('areaAr', e.target.value)
-                        }
-                        placeholder={
-                          language === 'ar'
-                            ? 'مثال: مدينة نصر'
-                            : 'e.g., مدينة نصر'
-                        }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'الدولة (English)'
-                          : 'Country (English)'}{' '}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
+                      <select
                         value={formData.location?.country || ''}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const selectedCountry = countryOptions.find(c => c.value === e.target.value)
                           handleLocationChange('country', e.target.value)
-                        }
+                          handleLocationChange('countryAr', selectedCountry?.valueAr || '')
+                          handleLocationChange('city', '')
+                          handleLocationChange('cityAr', '')
+                        }}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
+                      >
+                        <option value="">
+                          {language === 'ar' ? 'اختر الدولة' : 'Select country'}
+                        </option>
+                        {countryOptions.map((country) => (
+                          <option key={country.value} value={country.value}>
+                            {language === 'ar' ? country.label : country.labelEn}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar'
-                          ? 'الدولة (العربية)'
-                          : 'Country (Arabic)'}
+                        {language === 'ar' ? 'المدينة' : 'City'}{' '}
+                        <span className="text-red-500">*</span>
                       </label>
-                      <input
-                        type="text"
-                        value={formData.location?.countryAr || ''}
-                        onChange={(e) =>
-                          handleLocationChange('countryAr', e.target.value)
-                        }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-transparent"
-                      />
+                      <select
+                        value={formData.location?.city || ''}
+                        onChange={(e) => {
+                          const cities = cityOptions[formData.location?.country || ''] || []
+                          const selectedCity = cities.find(c => c.value === e.target.value)
+                          handleLocationChange('city', e.target.value)
+                          handleLocationChange('cityAr', selectedCity?.valueAr || '')
+                        }}
+                        disabled={!formData.location?.country}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      >
+                        <option value="">
+                          {language === 'ar' ? 'اختر المدينة' : 'Select city'}
+                        </option>
+                        {(cityOptions[formData.location?.country || ''] || []).map((city) => (
+                          <option key={city.value} value={city.value}>
+                            {language === 'ar' ? city.label : city.labelEn}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {language === 'ar' ? 'اللغات' : 'Languages'}{' '}
+                      {language === 'ar' ? 'اللغات التي تتحدثها' : 'Languages you speak'}{' '}
                       <span className="text-red-500">*</span>
                     </label>
                     <div className="flex gap-2 mb-3">
-                      <input
-                        type="text"
+                      <select
                         value={languageInput}
                         onChange={(e) => setLanguageInput(e.target.value)}
-                        onKeyPress={(e) =>
-                          e.key === 'Enter' &&
-                          (e.preventDefault(), addLanguage())
-                        }
-                        placeholder={
-                          language === 'ar' ? 'أضف لغة...' : 'Add language...'
-                        }
                         className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
+                      >
+                        <option value="">
+                          {language === 'ar' ? 'اختر لغة...' : 'Select language...'}
+                        </option>
+                        {languageOptions
+                          .filter((l) => !(formData.languages || []).includes(l.value))
+                          .map((lang) => (
+                            <option key={lang.value} value={lang.value}>
+                              {language === 'ar' ? lang.label : lang.labelEn}
+                            </option>
+                          ))}
+                      </select>
                       <button
                         type="button"
                         onClick={addLanguage}
-                        className="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                        disabled={!languageInput}
+                        className="bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-5 h-5" />
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {(formData.languages || []).map((lang) => (
-                        <span
-                          key={lang}
-                          className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                        >
-                          {lang}
-                          <button
-                            type="button"
-                            onClick={() => removeLanguage(lang)}
-                            className="hover:text-blue-900"
+                      {(formData.languages || []).map((lang) => {
+                        const langOption = languageOptions.find((l) => l.value === lang)
+                        return (
+                          <span
+                            key={lang}
+                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center gap-2"
                           >
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        </span>
-                      ))}
+                            {langOption ? (language === 'ar' ? langOption.label : langOption.labelEn) : lang}
+                            <button
+                              type="button"
+                              onClick={() => removeLanguage(lang)}
+                              className="hover:text-blue-900"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </span>
+                        )
+                      })}
                     </div>
                   </div>
 
