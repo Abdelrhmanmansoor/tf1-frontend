@@ -43,6 +43,29 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 - **Real-time Jobs Ticker Bar**: Displays live job events on the landing page, utilizing REST API endpoints and WebSocket events.
 - **Player Training Requests System**: Allows players to request and manage training sessions with coaches, including specific API endpoints for request creation, status tracking, and enhanced training session details.
 
+## Recent Changes (Dec 6, 2025 - Session 4)
+
+### Enhanced Session Handling & Authentication Security
+- **✅ Next.js Middleware Protection**: 
+  - Token validation for all `/dashboard/*` routes
+  - Automatic redirect to login on expired/missing tokens
+  - Role-based access control (RBAC) in middleware
+  - JWT parsing and expiration check server-side
+- **✅ Cookie + localStorage Token Storage**:
+  - Tokens saved to both cookie and localStorage for middleware access
+  - Cookies cleared on logout
+  - SameSite=Strict for security
+- **✅ Graceful Error Handling**:
+  - Network errors don't cause immediate logout
+  - Retry logic for transient API failures
+  - `/auth/me` 401 handled separately from other endpoints
+  - Session validation tolerates backend unavailability
+- **✅ Unified Role Definitions**:
+  - AuthContext, middleware, and ProtectedRoute all support: player, coach, club, specialist, administrator, age-group-supervisor, sports-director, executive-director, secretary, leader, team
+- **⚠️ Backend Coordination Needed**:
+  - Full HttpOnly cookie implementation requires backend changes
+  - Currently using client-set cookies (secure but not HttpOnly)
+
 ## Recent Changes (Dec 6, 2025 - Session 3)
 
 ### Complete Applicant Data with Email Notifications

@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import authService from '@/services/auth'
+import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ShieldAlert } from 'lucide-react'
 
-type UserRole = 'leader' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrative-officer' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+type UserRole = 'leader' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -14,24 +14,18 @@ interface ProtectedRouteProps {
   fallbackPath?: string
 }
 
-const getFallbackByRole = (role: string | null, currentPath: string): string => {
-  if (!role) return '/login'
-  
-  if (role === 'leader') {
-    if (currentPath.includes('/dashboard/leader')) {
-      return '/dashboard/leader/fallback'
-    }
-    return '/dashboard/leader'
-  }
-  
-  if (role === 'team') {
-    if (currentPath.includes('/dashboard/team')) {
-      return '/dashboard/team/access-denied'
-    }
-    return '/dashboard/team'
-  }
-  
-  return '/dashboard'
+const ROLE_DASHBOARDS: Record<string, string> = {
+  player: '/dashboard/player',
+  coach: '/dashboard/coach',
+  club: '/dashboard/club',
+  specialist: '/dashboard/specialist',
+  administrator: '/dashboard/administrator',
+  'age-group-supervisor': '/dashboard/age-group-supervisor',
+  'sports-director': '/dashboard/sports-director',
+  'executive-director': '/dashboard/executive-director',
+  secretary: '/dashboard/secretary',
+  leader: '/dashboard/leader',
+  team: '/dashboard/team',
 }
 
 export default function ProtectedRoute({
@@ -41,35 +35,66 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const { user, isAuthenticated, loading, validateSession } = useAuth()
   const [isChecking, setIsChecking] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const checkAuth = () => {
-      if (!authService.isAuthenticated()) {
-        const currentPath = window.location.pathname
-        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
-        return
-      }
+  const checkAuth = useCallback(async () => {
+    setIsChecking(true)
+    setAuthError(null)
 
-      const userRole = authService.getUserRole() as UserRole
+    // Wait for auth context to finish loading
+    if (loading) return
 
-      if (allowedRoles && allowedRoles.length > 0) {
-        if (userRole && !allowedRoles.includes(userRole)) {
-          const redirectPath = fallbackPath || getFallbackByRole(userRole, pathname)
-          router.push(redirectPath)
-          return
-        }
-      }
-
-      setIsAuthorized(true)
-      setIsChecking(false)
+    // Check if authenticated
+    if (!isAuthenticated || !user) {
+      const currentPath = pathname || window.location.pathname
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}&reason=no_session`)
+      return
     }
 
-    checkAuth()
-  }, [router, allowedRoles, fallbackPath, pathname])
+    // Validate session with backend (background check)
+    const isValid = await validateSession()
+    if (!isValid) {
+      setAuthError('session_invalid')
+      const currentPath = pathname || window.location.pathname
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}&reason=session_invalid`)
+      return
+    }
 
-  if (isChecking || !isAuthorized) {
+    // Check role-based access
+    const userRole = user.role as UserRole
+    if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+      // User doesn't have permission - redirect to their dashboard
+      const correctDashboard = fallbackPath || ROLE_DASHBOARDS[userRole] || '/dashboard'
+      setAuthError('access_denied')
+      router.push(correctDashboard)
+      return
+    }
+
+    // All checks passed
+    setIsAuthorized(true)
+    setIsChecking(false)
+  }, [loading, isAuthenticated, user, allowedRoles, fallbackPath, pathname, router, validateSession])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
+
+  // Re-check on pathname change
+  useEffect(() => {
+    if (!loading && isAuthorized) {
+      // Quick re-validation on navigation
+      if (!isAuthenticated) {
+        setIsAuthorized(false)
+        checkAuth()
+      }
+    }
+  }, [pathname, loading, isAuthenticated, isAuthorized, checkAuth])
+
+  // Loading state
+  if (loading || isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
         <motion.div
@@ -85,11 +110,35 @@ export default function ProtectedRoute({
           >
             <Loader2 className="w-12 h-12 text-blue-600" />
           </motion.div>
-          <p className="text-gray-600 text-lg">جاري التحقق...</p>
+          <p className="text-gray-600 text-lg">جاري التحقق من الجلسة...</p>
         </motion.div>
       </div>
     )
   }
 
-  return <>{children}</>
+  // Access denied state
+  if (authError === 'access_denied') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="text-center max-w-md p-8"
+        >
+          <ShieldAlert className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">غير مصرح</h2>
+          <p className="text-gray-600 mb-4">ليس لديك صلاحية للوصول إلى هذه الصفحة</p>
+          <p className="text-sm text-gray-500">جاري تحويلك إلى لوحة التحكم الخاصة بك...</p>
+        </motion.div>
+      </div>
+    )
+  }
+
+  // Authorized - render children
+  if (isAuthorized) {
+    return <>{children}</>
+  }
+
+  // Default loading fallback
+  return null
 }

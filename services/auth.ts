@@ -85,13 +85,14 @@ class AuthService {
   }
 
   /**
-   * Logout user - Clear local storage and redirect
+   * Logout user - Clear local storage, cookies, and redirect
    */
   logout(): void {
-    localStorage.removeItem(API_CONFIG.TOKEN_KEY)
-    localStorage.removeItem(API_CONFIG.USER_KEY)
-
     if (typeof window !== 'undefined') {
+      localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+      localStorage.removeItem(API_CONFIG.USER_KEY)
+      // Clear cookie
+      document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       window.location.href = '/login'
     }
   }
@@ -180,7 +181,64 @@ class AuthService {
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false
     const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-    return !!token
+    if (!token) return false
+    
+    // Check if token is expired
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const currentTime = Math.floor(Date.now() / 1000)
+      if (payload.exp && payload.exp < currentTime) {
+        // Token expired - clear storage
+        this.clearSession()
+        return false
+      }
+      return true
+    } catch {
+      return !!token
+    }
+  }
+
+  /**
+   * Validate token with backend
+   * @returns Promise with validation result
+   * @throws Error on network issues (caller should handle gracefully)
+   */
+  async validateToken(): Promise<boolean> {
+    try {
+      const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+      if (!token) return false
+      
+      const response = await api.get('/auth/me')
+      if (response.data?.user) {
+        // Update user data with fresh data from backend
+        this.saveUser(response.data.user)
+        return true
+      }
+      return false
+    } catch (error: any) {
+      // Only clear session on explicit 401 (unauthorized)
+      if (error.response?.status === 401) {
+        this.clearSession()
+        return false
+      }
+      // For network errors, timeout, etc. - throw to let caller decide
+      if (!error.response || error.code === 'ECONNABORTED' || error.message?.includes('Network')) {
+        throw new Error('Network error during validation')
+      }
+      return false
+    }
+  }
+
+  /**
+   * Clear session data without redirect
+   * @private
+   */
+  private clearSession(): void {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+      localStorage.removeItem(API_CONFIG.USER_KEY)
+      document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+    }
   }
 
   /**
@@ -204,12 +262,14 @@ class AuthService {
   }
 
   /**
-   * Save token to localStorage
+   * Save token to localStorage and cookie
    * @private
    */
   private saveToken(token: string): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(API_CONFIG.TOKEN_KEY, token)
+      // Also save to cookie for middleware access
+      document.cookie = `${API_CONFIG.TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
     }
   }
 
