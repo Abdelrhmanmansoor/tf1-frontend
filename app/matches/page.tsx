@@ -103,15 +103,15 @@ export default function MatchesPage() {
       leagues: [],
       positions: [],
       levels: [
-        { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
-        { value: 'amateur', label: 'هاوي', labelEn: 'Amateur' },
-        { value: 'semi-pro', label: 'شبه احترافي', labelEn: 'Semi-Pro' },
-        { value: 'professional', label: 'احترافي', labelEn: 'Professional' },
+        { value: 'BEGINNER', label: 'مبتدئ', labelEn: 'Beginner' },
+        { value: 'AMATEUR', label: 'هاوي', labelEn: 'Amateur' },
+        { value: 'SEMI_PRO', label: 'شبه احترافي', labelEn: 'Semi-Pro' },
+        { value: 'PROFESSIONAL', label: 'احترافي', labelEn: 'Professional' },
       ],
       sports: [
-        { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
-        { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
-        { value: 'volleyball', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
+        { value: 'FOOTBALL', label: 'كرة القدم', labelEn: 'Football' },
+        { value: 'BASKETBALL', label: 'كرة السلة', labelEn: 'Basketball' },
+        { value: 'VOLLEYBALL', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
       ],
     }
 
