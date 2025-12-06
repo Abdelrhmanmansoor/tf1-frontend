@@ -115,7 +115,7 @@ export default function JobApplicationForm({
 
       // Send notification to both user and club
       await notificationService.sendApplicationNotification(jobId, {
-        applicantName: user?.name,
+        applicantName: user ? `${user.firstName} ${user.lastName}` : 'Applicant',
         applicantEmail: user?.email,
         whatsapp,
         portfolio,

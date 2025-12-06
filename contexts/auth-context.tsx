@@ -11,7 +11,7 @@ interface User {
   email: string
   firstName: string
   lastName: string
-  role: 'leader' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrative-officer' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
   isEmailVerified: boolean
   permissions?: string[]
   accessKey?: string
