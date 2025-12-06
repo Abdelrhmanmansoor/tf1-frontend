@@ -3,10 +3,19 @@
 ## Overview
 The frontend notification system is fully implemented and ready to receive notifications from the backend. The backend MUST implement the following functionality to enable real-time notifications.
 
+## ⚠️ CRITICAL: User-Specific Notifications
+**IMPORTANT:** Each user MUST only see their own notifications. The backend MUST:
+1. Extract the `userId` from the JWT token in the Authorization header
+2. Filter ALL notifications by the authenticated user ID
+3. Return ONLY notifications where `userId` or `recipientId` matches the authenticated user
+4. Never return notifications for other users
+
 ## Required Backend Endpoints
 
 ### 1. GET /api/v1/notifications
-Fetch user's notifications with pagination.
+Fetch **CURRENT AUTHENTICATED USER'S** notifications with pagination.
+
+**AUTHENTICATION REQUIRED:** The backend extracts `userId` from JWT token and filters results automatically.
 
 **Query Parameters:**
 - `page` (number, default: 1)
@@ -192,10 +201,19 @@ Create notification for the APPLICANT based on new status:
 
 The frontend listens for the `new_notification` Socket.io event.
 
-When creating a notification, emit to the recipient's socket room:
+When creating a notification, **MUST** emit to the SPECIFIC recipient's socket room (not broadcast):
 ```javascript
+// ✅ CORRECT: Emit only to the recipient
 io.to(recipientUserId).emit('new_notification', notificationObject);
+
+// ❌ WRONG: Never broadcast to all - will show same notifications to all users
+io.emit('new_notification', notificationObject);
 ```
+
+**Socket.io Setup (Backend):**
+- User connects: `socket.join(userId)` → User joins their personal notification room
+- When notification created: Emit to user's room `io.to(userId).emit('new_notification', ...)`
+- This ensures each user receives ONLY their own notifications in real-time
 
 ## Notification Types
 
@@ -260,7 +278,19 @@ NotificationSchema.index({ recipientId: 1, createdAt: -1 });
 ## Testing
 
 After implementing, test by:
-1. Submitting a job application → Club should see notification
-2. Changing application status to "accepted" → Applicant should see notification
-3. Changing application status to "rejected" → Applicant should see notification
-4. Check /notifications endpoint returns correct data
+1. **User Isolation Test**: Log in as User A, open notifications → should ONLY see User A's notifications
+2. Log in as User B in another browser → should ONLY see User B's notifications (NOT User A's)
+3. **Real-time Test**: Submit a job application as User A → User B (club) should see notification, User C should NOT
+4. **Status Update Test**: Change application status as club (User B) → Applicant (User A) should receive notification
+5. Check that `/notifications` endpoint returns correct filtered data for authenticated user
+6. Verify WebSocket events are sent to specific user rooms only
+
+## Common Issues
+
+### Issue: All users see the same notifications
+**Cause:** Backend not filtering by authenticated user ID
+**Fix:** Extract user ID from JWT token and add `where: { userId: authenticatedUserId, recipientId: authenticatedUserId }` to query
+
+### Issue: Notifications appear for wrong user
+**Cause:** WebSocket broadcasting to all instead of specific user room
+**Fix:** Change from `io.emit()` to `io.to(userId).emit()`

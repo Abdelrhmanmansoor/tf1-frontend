@@ -45,30 +45,26 @@ The TF1 platform is a Next.js 15 web application using the App Router, TypeScrip
 
 ## Recent Changes (Dec 6, 2025)
 
-- **Implemented notifications system** - Complete frontend notification infrastructure:
-  - Unified notifications page at `/dashboard/notifications` for all user types
-  - NotificationBell component for header integration with real-time updates
-  - Proper WebSocket event handling with cleanup to prevent duplicate notifications
-  - Polling fallback every 30 seconds for reliability
-  - Error handling that surfaces API failures to users
-  - Pagination with proper "Load More" functionality
-  - Filter options: All, Unread, Applications, Jobs
-- **Fixed applicant name display** in club applications - now shows actual `fullName` instead of "USER"
-- **Fixed resume download** - uses direct `fileUrl` from application data
-- **Created backend requirements documentation** (`BACKEND_NOTIFICATIONS_REQUIREMENTS.md`) for notification API implementation
-- **Redesigned job application details page** - Professional enterprise-level display:
-  - Complete applicant information: name, age, city, contact details
-  - Professional layout with gradient cards and icons
-  - All contact methods: email, phone, WhatsApp, LinkedIn, Portfolio
-  - Personal information section: age, city, experience, qualification
-  - Cover letter and all attachments with elegant display
-  - Interview scheduling information (if exists)
-  - Admin notes section for internal communication
-  - Status management panel with real-time updates
-  - Sticky right sidebar with application controls
-  - Full bilingual support (Arabic/English) with RTL/LTR
-  - Copy-to-clipboard functionality for contact information
-  - Hover effects and animations for better UX
+### User-Specific Notifications System
+- **✅ User Isolation Implemented**: Each user now sees ONLY their own notifications
+  - NotificationBell removed from public pages (landing, login, register)
+  - NotificationBell added to all 9 dashboard types (Club, Player, Coach, Specialist, Administrator, AgeGroupSupervisor, SportsDirector, ExecutiveDirector, Secretary)
+  - Proper WebSocket filtering: Only user receives their notifications in real-time
+  - Socket.io rooms: Each user joins personal notification room (`io.to(userId).emit()`)
+
+### Backend Requirements Updated
+- **CRITICAL**: Backend MUST filter notifications by authenticated user ID from JWT token
+- GET `/api/v1/notifications` → Returns ONLY notifications for authenticated user
+- WebSocket `new_notification` → Emit to specific user room, NOT broadcast
+- See `BACKEND_NOTIFICATIONS_REQUIREMENTS.md` for implementation details
+
+### Previous Implementations
+- Unified notifications page at `/dashboard/notifications` for all user types
+- Real-time WebSocket + 30s polling fallback
+- Pagination with "Load More" functionality
+- Filter options: All, Unread, Applications, Jobs
+- Job application details page with complete applicant info
+- Professional enterprise-level UI with bilingual support
 
 ## Recent Changes (Dec 3, 2025)
 
