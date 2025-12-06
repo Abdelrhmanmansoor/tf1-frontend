@@ -567,7 +567,7 @@ export default function MatchesPage() {
               </div>
 
               {/* Modal Content */}
-              <form onSubmit={handleCreateMatch} className="p-6 overflow-y-auto max-h-[60vh] space-y-4">
+              <form onSubmit={handleCreateMatch} className="p-6 overflow-y-auto max-h-[60vh] space-y-4 flex flex-col">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {language === 'ar' ? 'اسم المباراة' : 'Match Name'}
@@ -723,33 +723,33 @@ export default function MatchesPage() {
                     />
                   </div>
                 </div>
-              </form>
 
-              {/* Modal Footer */}
-              <div className="p-4 border-t bg-gray-50 flex gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1"
-                >
-                  {language === 'ar' ? 'إلغاء' : 'Cancel'}
-                </Button>
-                <Button
-                  onClick={handleCreateMatch}
-                  disabled={creating}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
-                >
-                  {creating ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4 mr-2" />
-                      {language === 'ar' ? 'إنشاء' : 'Create'}
-                    </>
-                  )}
-                </Button>
-              </div>
+                {/* Modal Footer - Inside Form */}
+                <div className="p-4 -m-6 -mb-0 mt-4 border-t bg-gray-50 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowCreateModal(false)}
+                    className="flex-1"
+                  >
+                    {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={creating}
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
+                  >
+                    {creating ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        {language === 'ar' ? 'إنشاء' : 'Create'}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
             </motion.div>
           </motion.div>
         )}
