@@ -104,8 +104,9 @@ export default function MatchesPage() {
       positions: [],
       levels: [
         { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
-        { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
-        { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
+        { value: 'amateur', label: 'هاوي', labelEn: 'Amateur' },
+        { value: 'semi-pro', label: 'شبه احترافي', labelEn: 'Semi-Pro' },
+        { value: 'professional', label: 'احترافي', labelEn: 'Professional' },
       ],
       sports: [
         { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
