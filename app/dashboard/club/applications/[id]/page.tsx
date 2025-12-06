@@ -47,6 +47,9 @@ const ApplicationDetailPage = () => {
   const [statusMessage, setStatusMessage] = useState('')
   const [clubContactPhone, setClubContactPhone] = useState('+966')
   const [clubContactAddress, setClubContactAddress] = useState('')
+  const [meetingDate, setMeetingDate] = useState('')
+  const [meetingTime, setMeetingTime] = useState('')
+  const [meetingLocation, setMeetingLocation] = useState('')
 
   useEffect(() => {
     fetchApplication()
@@ -139,6 +142,9 @@ const ApplicationDetailPage = () => {
           message: statusMessage,
           contactPhone: clubContactPhone,
           contactAddress: clubContactAddress,
+          meetingDate: meetingDate,
+          meetingTime: meetingTime,
+          meetingLocation: meetingLocation,
           // Include applicant personal data for email notification
           applicantSnapshot: application.applicantSnapshot,
           applicantName: applicantName,
@@ -667,13 +673,54 @@ const ApplicationDetailPage = () => {
                   {/* Club Address */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
-                      {language === 'ar' ? 'العنوان' : 'Address'}
+                      {language === 'ar' ? 'عنوان النادي' : 'Club Address'}
                     </label>
                     <input
                       type="text"
                       value={clubContactAddress}
                       onChange={(e) => setClubContactAddress(e.target.value)}
-                      placeholder={language === 'ar' ? 'عنوان النادي أو مكان المقابلة' : 'Club address or meeting location'}
+                      placeholder={language === 'ar' ? 'عنوان النادي الرئيسي' : 'Main club address'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
+                    />
+                  </div>
+
+                  {/* Meeting Location */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'مكان المقابلة' : 'Meeting Location'}
+                    </label>
+                    <input
+                      type="text"
+                      value={meetingLocation}
+                      onChange={(e) => setMeetingLocation(e.target.value)}
+                      placeholder={language === 'ar' ? 'مثال: ملعب النادي، المكتب الرئيسي' : 'E.g., Club Stadium, Main Office'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
+                    />
+                  </div>
+
+                  {/* Meeting Date */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'تاريخ المقابلة' : 'Meeting Date'}
+                    </label>
+                    <input
+                      type="date"
+                      value={meetingDate}
+                      onChange={(e) => setMeetingDate(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
+                    />
+                  </div>
+
+                  {/* Meeting Time */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'وقت المقابلة' : 'Meeting Time'}
+                    </label>
+                    <input
+                      type="time"
+                      value={meetingTime}
+                      onChange={(e) => setMeetingTime(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm"
                     />
                   </div>

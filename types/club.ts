@@ -404,11 +404,31 @@ export interface MakeOfferData {
   contractType?: string
   benefits?: string[]
   expiryDate?: string
+  message?: string
+  contactPhone?: string
+  contactAddress?: string
+  meetingDate?: string
+  meetingTime?: string
+  meetingLocation?: string
+  applicantSnapshot?: any
+  applicantName?: string
+  applicantEmail?: string
+  jobTitle?: string
 }
 
 export interface HireApplicantData {
   startDate: string
   contractUrl?: string
+  message?: string
+  contactPhone?: string
+  contactAddress?: string
+  meetingDate?: string
+  meetingTime?: string
+  meetingLocation?: string
+  applicantSnapshot?: any
+  applicantName?: string
+  applicantEmail?: string
+  jobTitle?: string
 }
 
 export interface RejectApplicationData {
