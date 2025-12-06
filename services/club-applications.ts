@@ -76,10 +76,10 @@ const clubApplicationsService = {
     }
   },
 
-  // Download resume
-  async downloadResume(applicationId: string, filename: string): Promise<Blob> {
+  // Download resume from direct URL
+  async downloadResume(fileUrl: string, filename: string): Promise<Blob> {
     try {
-      const response = await api.get(`/club/applications/${applicationId}/resume`, {
+      const response = await api.get(fileUrl, {
         responseType: 'blob',
       })
       return response.data

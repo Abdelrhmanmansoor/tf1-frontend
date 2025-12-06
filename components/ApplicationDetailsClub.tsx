@@ -65,7 +65,7 @@ export default function ApplicationDetailsClub({
     try {
       setDownloading(true)
       const blob = await clubApplicationsService.downloadResume(
-        applicationId,
+        application.resume.fileUrl,
         application.resume.fileName
       )
 
