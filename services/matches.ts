@@ -5,6 +5,7 @@ import type {
   MatchesRegisterData,
   MatchesLoginResponse,
   MatchesUser,
+  MatchesRegisterResponse,
 } from '@/types/match'
 
 export interface Match {
@@ -89,13 +90,6 @@ export interface RegionsData {
     label: string
     labelEn: string
   }>
-}
-
-// Registration response interface
-export interface MatchesRegisterResponse {
-  success: boolean
-  message: string
-  user?: MatchesUser
 }
 
 // Get regions and dropdown options
@@ -196,11 +190,13 @@ export const matchesLogin = async (
  * Get current authenticated user from Matches module
  * Uses /matches/auth/me endpoint
  * Validates JWT stored in localStorage
+ * Backend response format: { user: MatchesUser }
  */
 export const matchesGetMe = async (): Promise<MatchesUser> => {
   const response = await api.get('/matches/auth/me')
 
   // Update user data in localStorage with fresh data from backend
+  // Response structure: { user: {...} }
   if (response.data?.user && typeof window !== 'undefined') {
     localStorage.setItem(
       API_CONFIG.USER_KEY,
