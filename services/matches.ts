@@ -1,6 +1,11 @@
 // Matches Service - API calls for "Join a Match" feature
 import api from './api'
 import API_CONFIG from '@/config/api'
+import type {
+  MatchesRegisterData,
+  MatchesLoginResponse,
+  MatchesUser,
+} from '@/types/match'
 
 export interface Match {
   _id: string
@@ -86,26 +91,11 @@ export interface RegionsData {
   }>
 }
 
-// Matches Auth Types
-export interface MatchesRegisterData {
-  email: string
-  password: string
-  firstName?: string
-  lastName?: string
-  phone?: string
-}
-
-export interface MatchesLoginResponse {
-  accessToken: string
-  user: MatchesUser
-}
-
-export interface MatchesUser {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  isEmailVerified: boolean
+// Registration response interface
+export interface MatchesRegisterResponse {
+  success: boolean
+  message: string
+  user?: MatchesUser
 }
 
 // Get regions and dropdown options
@@ -115,7 +105,9 @@ export const getRegionsData = async (): Promise<RegionsData> => {
 }
 
 // Get matches with filters
-export const getMatches = async (filters: MatchFilters = {}): Promise<MatchesResponse> => {
+export const getMatches = async (
+  filters: MatchFilters = {}
+): Promise<MatchesResponse> => {
   const response = await api.get('/matches', { params: filters })
   return response.data
 }
@@ -133,19 +125,26 @@ export const createMatch = async (data: CreateMatchData): Promise<Match> => {
 }
 
 // Join a match (requires authentication)
-export const joinMatch = async (matchId: string): Promise<{ success: boolean; message: string }> => {
+export const joinMatch = async (
+  matchId: string
+): Promise<{ success: boolean; message: string }> => {
   const response = await api.post(`/matches/${matchId}/join`)
   return response.data
 }
 
 // Leave a match (requires authentication)
-export const leaveMatch = async (matchId: string): Promise<{ success: boolean; message: string }> => {
+export const leaveMatch = async (
+  matchId: string
+): Promise<{ success: boolean; message: string }> => {
   const response = await api.post(`/matches/${matchId}/leave`)
   return response.data
 }
 
 // Get my matches
-export const getMyMatches = async (): Promise<{ matches: Match[]; total: number }> => {
+export const getMyMatches = async (): Promise<{
+  matches: Match[]
+  total: number
+}> => {
   const response = await api.get('/matches/my-matches')
   return response.data
 }
@@ -158,7 +157,9 @@ export const getMyMatches = async (): Promise<{ matches: Match[]; total: number 
  * Register a new user in the Matches module
  * Uses /matches/auth/register endpoint
  */
-export const matchesRegister = async (userData: MatchesRegisterData): Promise<any> => {
+export const matchesRegister = async (
+  userData: MatchesRegisterData
+): Promise<MatchesRegisterResponse> => {
   const response = await api.post('/matches/auth/register', userData)
   return response.data
 }
@@ -167,8 +168,12 @@ export const matchesRegister = async (userData: MatchesRegisterData): Promise<an
  * Login user in the Matches module
  * Uses /matches/auth/login endpoint
  * Stores JWT in localStorage with Authorization: Bearer pattern
+ * Note: Token storage logic is intentionally duplicated here for Matches module independence
  */
-export const matchesLogin = async (email: string, password: string): Promise<MatchesLoginResponse> => {
+export const matchesLogin = async (
+  email: string,
+  password: string
+): Promise<MatchesLoginResponse> => {
   const response = await api.post('/matches/auth/login', {
     email,
     password,
@@ -194,12 +199,15 @@ export const matchesLogin = async (email: string, password: string): Promise<Mat
  */
 export const matchesGetMe = async (): Promise<MatchesUser> => {
   const response = await api.get('/matches/auth/me')
-  
+
   // Update user data in localStorage with fresh data from backend
   if (response.data?.user && typeof window !== 'undefined') {
-    localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(response.data.user))
+    localStorage.setItem(
+      API_CONFIG.USER_KEY,
+      JSON.stringify(response.data.user)
+    )
   }
-  
+
   return response.data.user
 }
 

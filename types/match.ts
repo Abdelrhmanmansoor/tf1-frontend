@@ -79,3 +79,9 @@ export interface MatchesUser {
   lastName: string
   isEmailVerified: boolean
 }
+
+export interface MatchesRegisterResponse {
+  success: boolean
+  message: string
+  user?: MatchesUser
+}
