@@ -57,3 +57,25 @@ export interface SportOption {
   label: string
   labelEn: string
 }
+
+// Matches Auth Types
+export interface MatchesRegisterData {
+  email: string
+  password: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+}
+
+export interface MatchesLoginResponse {
+  accessToken: string
+  user: MatchesUser
+}
+
+export interface MatchesUser {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  isEmailVerified: boolean
+}

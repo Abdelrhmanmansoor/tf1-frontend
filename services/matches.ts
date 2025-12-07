@@ -1,5 +1,6 @@
 // Matches Service - API calls for "Join a Match" feature
 import api from './api'
+import API_CONFIG from '@/config/api'
 
 export interface Match {
   _id: string
@@ -85,6 +86,28 @@ export interface RegionsData {
   }>
 }
 
+// Matches Auth Types
+export interface MatchesRegisterData {
+  email: string
+  password: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+}
+
+export interface MatchesLoginResponse {
+  accessToken: string
+  user: MatchesUser
+}
+
+export interface MatchesUser {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  isEmailVerified: boolean
+}
+
 // Get regions and dropdown options
 export const getRegionsData = async (): Promise<RegionsData> => {
   const response = await api.get('/matches/regions')
@@ -127,6 +150,59 @@ export const getMyMatches = async (): Promise<{ matches: Match[]; total: number 
   return response.data
 }
 
+// ============================================
+// Matches Auth Methods
+// ============================================
+
+/**
+ * Register a new user in the Matches module
+ * Uses /matches/auth/register endpoint
+ */
+export const matchesRegister = async (userData: MatchesRegisterData): Promise<any> => {
+  const response = await api.post('/matches/auth/register', userData)
+  return response.data
+}
+
+/**
+ * Login user in the Matches module
+ * Uses /matches/auth/login endpoint
+ * Stores JWT in localStorage with Authorization: Bearer pattern
+ */
+export const matchesLogin = async (email: string, password: string): Promise<MatchesLoginResponse> => {
+  const response = await api.post('/matches/auth/login', {
+    email,
+    password,
+  })
+
+  const { accessToken, user } = response.data
+
+  // Save token and user data to localStorage
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
+    localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
+    // Also save to cookie for middleware access
+    document.cookie = `${API_CONFIG.TOKEN_KEY}=${accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
+  }
+
+  return response.data
+}
+
+/**
+ * Get current authenticated user from Matches module
+ * Uses /matches/auth/me endpoint
+ * Validates JWT stored in localStorage
+ */
+export const matchesGetMe = async (): Promise<MatchesUser> => {
+  const response = await api.get('/matches/auth/me')
+  
+  // Update user data in localStorage with fresh data from backend
+  if (response.data?.user && typeof window !== 'undefined') {
+    localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(response.data.user))
+  }
+  
+  return response.data.user
+}
+
 export default {
   getRegionsData,
   getMatches,
@@ -135,4 +211,8 @@ export default {
   joinMatch,
   leaveMatch,
   getMyMatches,
+  // Matches auth methods
+  matchesRegister,
+  matchesLogin,
+  matchesGetMe,
 }
