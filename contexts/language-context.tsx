@@ -22,7 +22,7 @@ const translations = {
     // Navigation
     home: 'الرئيسية',
     jobs: 'الوظائف',
-    matches: 'المباريات',
+    matches: 'مركز المباريات',
     about: 'عن المنصة',
     features: 'المزايا',
     contact: 'تواصل معنا',
@@ -81,7 +81,7 @@ const translations = {
     // Navigation
     home: 'Home',
     jobs: 'Jobs',
-    matches: 'Matches',
+    matches: 'Match Center',
     about: 'About',
     features: 'Features',
     blog: 'Blog',
