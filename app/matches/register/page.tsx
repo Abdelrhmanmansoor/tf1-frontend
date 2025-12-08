@@ -98,9 +98,7 @@ export default function MatchesRegisterPage() {
       const response = await matchesRegister({
         email: formData.email,
         password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
+        display_name: `${formData.firstName} ${formData.lastName}`.trim(),
       })
 
       setSuccess(true)
