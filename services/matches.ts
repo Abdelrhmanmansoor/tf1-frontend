@@ -155,16 +155,16 @@ export const matchesRegister = async (
   userData: MatchesRegisterData
 ): Promise<MatchesRegisterResponse> => {
   try {
-    // Try the new backward-compatible endpoint first
+    // Try primary endpoint first
     const response = await api.post('/matches/register', userData)
     return response.data
   } catch (error: any) {
-    // If we get a 404, fallback to the original signup endpoint
+    // If 404, try fallback endpoint
     if (error.response?.status === 404) {
-      const response = await api.post('/matches/auth/signup', userData)
-      return response.data
+      const fallbackResponse = await api.post('/matches/auth/signup', userData)
+      return fallbackResponse.data
     }
-    // For any other error, throw it
+    // For any other error, rethrow
     throw error
   }
 }
