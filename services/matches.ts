@@ -1,5 +1,12 @@
 // Matches Service - API calls for "Join a Match" feature
 import api from './api'
+import API_CONFIG from '@/config/api'
+import type {
+  MatchesRegisterData,
+  MatchesLoginResponse,
+  MatchesUser,
+  MatchesRegisterResponse,
+} from '@/types/match'
 
 export interface Match {
   _id: string
@@ -92,7 +99,9 @@ export const getRegionsData = async (): Promise<RegionsData> => {
 }
 
 // Get matches with filters
-export const getMatches = async (filters: MatchFilters = {}): Promise<MatchesResponse> => {
+export const getMatches = async (
+  filters: MatchFilters = {}
+): Promise<MatchesResponse> => {
   const response = await api.get('/matches', { params: filters })
   return response.data
 }
@@ -110,21 +119,92 @@ export const createMatch = async (data: CreateMatchData): Promise<Match> => {
 }
 
 // Join a match (requires authentication)
-export const joinMatch = async (matchId: string): Promise<{ success: boolean; message: string }> => {
+export const joinMatch = async (
+  matchId: string
+): Promise<{ success: boolean; message: string }> => {
   const response = await api.post(`/matches/${matchId}/join`)
   return response.data
 }
 
 // Leave a match (requires authentication)
-export const leaveMatch = async (matchId: string): Promise<{ success: boolean; message: string }> => {
+export const leaveMatch = async (
+  matchId: string
+): Promise<{ success: boolean; message: string }> => {
   const response = await api.post(`/matches/${matchId}/leave`)
   return response.data
 }
 
 // Get my matches
-export const getMyMatches = async (): Promise<{ matches: Match[]; total: number }> => {
+export const getMyMatches = async (): Promise<{
+  matches: Match[]
+  total: number
+}> => {
   const response = await api.get('/matches/my-matches')
   return response.data
+}
+
+// ============================================
+// Matches Auth Methods
+// ============================================
+
+/**
+ * Register a new user in the Matches module
+ * Uses /matches/auth/register endpoint
+ */
+export const matchesRegister = async (
+  userData: MatchesRegisterData
+): Promise<MatchesRegisterResponse> => {
+  const response = await api.post('/matches/auth/register', userData)
+  return response.data
+}
+
+/**
+ * Login user in the Matches module
+ * Uses /matches/auth/login endpoint
+ * Stores JWT in localStorage with Authorization: Bearer pattern
+ * Note: Token storage logic is intentionally duplicated here for Matches module independence
+ */
+export const matchesLogin = async (
+  email: string,
+  password: string
+): Promise<MatchesLoginResponse> => {
+  const response = await api.post('/matches/auth/login', {
+    email,
+    password,
+  })
+
+  const { accessToken, user } = response.data
+
+  // Save token and user data to localStorage
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
+    localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
+    // Also save to cookie for middleware access
+    document.cookie = `${API_CONFIG.TOKEN_KEY}=${accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
+  }
+
+  return response.data
+}
+
+/**
+ * Get current authenticated user from Matches module
+ * Uses /matches/auth/me endpoint
+ * Validates JWT stored in localStorage
+ * Backend response format: { user: MatchesUser }
+ */
+export const matchesGetMe = async (): Promise<MatchesUser> => {
+  const response = await api.get('/matches/auth/me')
+
+  // Update user data in localStorage with fresh data from backend
+  // Response structure: { user: {...} }
+  if (response.data?.user && typeof window !== 'undefined') {
+    localStorage.setItem(
+      API_CONFIG.USER_KEY,
+      JSON.stringify(response.data.user)
+    )
+  }
+
+  return response.data.user
 }
 
 export default {
@@ -135,4 +215,8 @@ export default {
   joinMatch,
   leaveMatch,
   getMyMatches,
+  // Matches auth methods
+  matchesRegister,
+  matchesLogin,
+  matchesGetMe,
 }
