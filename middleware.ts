@@ -18,37 +18,45 @@ const PUBLIC_ROUTES = [
   '/jobs',
   '/privacy',
   '/terms',
+  '/matches',
+  '/matches/login',
+  '/matches/register',
 ]
 
-const DASHBOARD_ROUTES = [
-  '/dashboard',
-]
+const DASHBOARD_ROUTES = ['/dashboard', '/matches-dashboard']
 
 const ROLE_ROUTE_MAP: Record<string, string[]> = {
-  'player': ['/dashboard/player', '/dashboard/notifications'],
-  'coach': ['/dashboard/coach', '/dashboard/notifications'],
-  'club': ['/dashboard/club', '/dashboard/notifications'],
-  'specialist': ['/dashboard/specialist', '/dashboard/notifications'],
-  'administrator': ['/dashboard/administrator', '/dashboard/notifications'],
-  'age-group-supervisor': ['/dashboard/age-group-supervisor', '/dashboard/notifications'],
+  player: ['/dashboard/player', '/dashboard/notifications'],
+  coach: ['/dashboard/coach', '/dashboard/notifications'],
+  club: ['/dashboard/club', '/dashboard/notifications'],
+  specialist: ['/dashboard/specialist', '/dashboard/notifications'],
+  administrator: ['/dashboard/administrator', '/dashboard/notifications'],
+  'age-group-supervisor': [
+    '/dashboard/age-group-supervisor',
+    '/dashboard/notifications',
+  ],
   'sports-director': ['/dashboard/sports-director', '/dashboard/notifications'],
-  'executive-director': ['/dashboard/executive-director', '/dashboard/notifications'],
-  'secretary': ['/dashboard/secretary', '/dashboard/notifications'],
-  'leader': ['/dashboard/leader', '/dashboard/notifications'],
-  'team': ['/dashboard/team', '/dashboard/notifications'],
+  'executive-director': [
+    '/dashboard/executive-director',
+    '/dashboard/notifications',
+  ],
+  secretary: ['/dashboard/secretary', '/dashboard/notifications'],
+  leader: ['/dashboard/leader', '/dashboard/notifications'],
+  team: ['/dashboard/team', '/dashboard/notifications'],
 }
 
 function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(route => 
-    pathname === route || 
-    pathname.startsWith('/api/') ||
-    pathname.startsWith('/_next/') ||
-    pathname.includes('.')
+  return PUBLIC_ROUTES.some(
+    (route) =>
+      pathname === route ||
+      pathname.startsWith('/api/') ||
+      pathname.startsWith('/_next/') ||
+      pathname.includes('.')
   )
 }
 
 function isDashboardRoute(pathname: string): boolean {
-  return DASHBOARD_ROUTES.some(route => pathname.startsWith(route))
+  return DASHBOARD_ROUTES.some((route) => pathname.startsWith(route))
 }
 
 function parseJWT(token: string): any {
@@ -81,12 +89,12 @@ function getRoleFromToken(token: string): string | null {
 
 function canAccessRoute(role: string, pathname: string): boolean {
   const allowedRoutes = ROLE_ROUTE_MAP[role] || []
-  return allowedRoutes.some(route => pathname.startsWith(route))
+  return allowedRoutes.some((route) => pathname.startsWith(route))
 }
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  
+
   // Check if website is suspended pending client delivery acceptance
   const isSuspended = process.env.DELIVERY_SUSPENDED === 'true'
   const isSuspensionPage = pathname === '/delivery-suspended'
@@ -108,7 +116,7 @@ export function middleware(request: NextRequest) {
   if (isDashboardRoute(pathname)) {
     // Try to get token from cookie first (more secure)
     let token = request.cookies.get('sportx_access_token')?.value
-    
+
     // Fallback: Check Authorization header
     if (!token) {
       const authHeader = request.headers.get('authorization')
@@ -117,8 +125,17 @@ export function middleware(request: NextRequest) {
       }
     }
 
-    // No token found - redirect to login
+    // No token found - redirect to appropriate login
     if (!token) {
+      // For matches-dashboard, redirect to matches login
+      if (pathname.startsWith('/matches-dashboard')) {
+        const loginUrl = new URL('/matches/login', request.url)
+        loginUrl.searchParams.set('redirect', pathname)
+        loginUrl.searchParams.set('reason', 'no_session')
+        return NextResponse.redirect(loginUrl)
+      }
+
+      // For regular dashboard, redirect to regular login
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', 'no_session')
@@ -127,23 +144,45 @@ export function middleware(request: NextRequest) {
 
     // Check if token is expired
     if (isTokenExpired(token)) {
+      // For matches-dashboard, redirect to matches login
+      if (pathname.startsWith('/matches-dashboard')) {
+        const loginUrl = new URL('/matches/login', request.url)
+        loginUrl.searchParams.set('redirect', pathname)
+        loginUrl.searchParams.set('reason', 'session_expired')
+
+        // Clear the expired cookie
+        const response = NextResponse.redirect(loginUrl)
+        response.cookies.delete('sportx_access_token')
+        return response
+      }
+
+      // For regular dashboard
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', 'session_expired')
-      
+
       // Clear the expired cookie
       const response = NextResponse.redirect(loginUrl)
       response.cookies.delete('sportx_access_token')
       return response
     }
 
-    // Get role from token and check access
-    const role = getRoleFromToken(token)
-    if (role && pathname !== '/dashboard' && pathname !== '/dashboard/notifications') {
-      if (!canAccessRoute(role, pathname)) {
-        // Redirect to user's correct dashboard
-        const correctDashboard = ROLE_ROUTE_MAP[role]?.[0] || '/dashboard'
-        return NextResponse.redirect(new URL(correctDashboard, request.url))
+    // Get role from token and check access (only for regular dashboard)
+    if (
+      pathname.startsWith('/dashboard') &&
+      !pathname.startsWith('/matches-dashboard')
+    ) {
+      const role = getRoleFromToken(token)
+      if (
+        role &&
+        pathname !== '/dashboard' &&
+        pathname !== '/dashboard/notifications'
+      ) {
+        if (!canAccessRoute(role, pathname)) {
+          // Redirect to user's correct dashboard
+          const correctDashboard = ROLE_ROUTE_MAP[role]?.[0] || '/dashboard'
+          return NextResponse.redirect(new URL(correctDashboard, request.url))
+        }
       }
     }
   }
@@ -152,5 +191,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.ico).*)',
+  matcher:
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.ico).*)',
 }

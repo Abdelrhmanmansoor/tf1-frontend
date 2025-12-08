@@ -52,8 +52,8 @@ export default function MatchesLoginPage() {
 
       setSuccess(true)
 
-      // Redirect to matches page or specified redirect URL
-      const redirectUrl = searchParams.get('redirect') || '/matches'
+      // Redirect to matches-dashboard or specified redirect URL
+      const redirectUrl = searchParams.get('redirect') || '/matches-dashboard'
 
       setTimeout(() => {
         router.push(redirectUrl)
