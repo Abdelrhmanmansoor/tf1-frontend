@@ -48,9 +48,7 @@ export default function MatchesLoginPage() {
     setLoading(true)
 
     try {
-      console.log('[MATCHES LOGIN] Attempting login with email:', email)
       const response = await matchesLogin(email, password)
-      console.log('[MATCHES LOGIN] Success:', response)
 
       setSuccess(true)
 
@@ -61,7 +59,6 @@ export default function MatchesLoginPage() {
         router.push(redirectUrl)
       }, 500)
     } catch (err: any) {
-      console.error('[MATCHES LOGIN] Error:', err)
       const errorMsg =
         err.response?.data?.message ||
         err.message ||

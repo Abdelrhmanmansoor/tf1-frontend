@@ -95,10 +95,6 @@ export default function MatchesRegisterPage() {
     setLoading(true)
 
     try {
-      console.log(
-        '[MATCHES REGISTER] Attempting registration with email:',
-        formData.email
-      )
       const response = await matchesRegister({
         email: formData.email,
         password: formData.password,
@@ -106,7 +102,6 @@ export default function MatchesRegisterPage() {
         lastName: formData.lastName,
         phone: formData.phone,
       })
-      console.log('[MATCHES REGISTER] Success:', response)
 
       setSuccess(true)
 
@@ -115,7 +110,6 @@ export default function MatchesRegisterPage() {
         router.push('/matches/login?registered=true')
       }, 1500)
     } catch (err: any) {
-      console.error('[MATCHES REGISTER] Error:', err)
       const errorMsg =
         err.response?.data?.message ||
         err.message ||
