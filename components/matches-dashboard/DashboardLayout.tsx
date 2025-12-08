@@ -7,6 +7,7 @@ import DashboardSidebar from './DashboardSidebar'
 import DashboardHeader from './DashboardHeader'
 import { matchesGetMe } from '@/services/matches'
 import { Loader2 } from 'lucide-react'
+import type { MatchesUser } from '@/types/match'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -14,7 +15,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<MatchesUser | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const pathname = usePathname()

@@ -5,9 +5,10 @@ import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import { getMatchHistory } from '@/services/matches'
 import { motion } from 'framer-motion'
 import { History, Calendar, MapPin, Trophy } from 'lucide-react'
+import type { MatchHistory } from '@/types/match'
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<any[]>([])
+  const [history, setHistory] = useState<MatchHistory[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

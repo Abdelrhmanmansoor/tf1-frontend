@@ -1,12 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Clock, MapPin, Users, User } from 'lucide-react'
+import { Calendar, Clock, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import type { Match } from '@/types/match'
 
 interface MatchCardProps {
-  match: any
+  match: Match
   onJoin?: (matchId: string) => void
   onLeave?: (matchId: string) => void
   isJoined?: boolean

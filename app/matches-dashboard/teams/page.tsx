@@ -7,13 +7,14 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Users, Plus, Trophy } from 'lucide-react'
+import type { Team, CreateTeamData } from '@/types/match'
 
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<any[]>([])
+  const [teams, setTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [createLoading, setCreateLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CreateTeamData>({
     name: '',
     sport: '',
   })

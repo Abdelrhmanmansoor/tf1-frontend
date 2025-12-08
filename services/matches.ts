@@ -6,6 +6,11 @@ import type {
   MatchesLoginResponse,
   MatchesUser,
   MatchesRegisterResponse,
+  Team,
+  CreateTeamData,
+  ChatMessage,
+  Notification,
+  MatchHistory,
 } from '@/types/match'
 
 export interface Match {
@@ -245,7 +250,7 @@ export const resendVerificationEmail = async (
 // ============================================
 
 export const getMyTeams = async (): Promise<{
-  teams: any[]
+  teams: Team[]
   total: number
 }> => {
   const response = await api.get('/matches/teams/my-teams')
@@ -253,8 +258,8 @@ export const getMyTeams = async (): Promise<{
 }
 
 export const createTeam = async (
-  data: any
-): Promise<{ success: boolean; team: any }> => {
+  data: CreateTeamData
+): Promise<{ success: boolean; team: Team }> => {
   const response = await api.post('/matches/teams', data)
   return response.data
 }
@@ -265,7 +270,7 @@ export const createTeam = async (
 
 export const getMatchChat = async (
   matchId: string
-): Promise<{ messages: any[] }> => {
+): Promise<{ messages: ChatMessage[] }> => {
   const response = await api.get(`/matches/${matchId}/chat`)
   return response.data
 }
@@ -273,7 +278,7 @@ export const getMatchChat = async (
 export const sendChatMessage = async (
   matchId: string,
   message: string
-): Promise<{ success: boolean; message: any }> => {
+): Promise<{ success: boolean; message: ChatMessage }> => {
   const response = await api.post(`/matches/${matchId}/chat`, { message })
   return response.data
 }
@@ -283,7 +288,7 @@ export const sendChatMessage = async (
 // ============================================
 
 export const getNotifications = async (): Promise<{
-  notifications: any[]
+  notifications: Notification[]
   total: number
 }> => {
   const response = await api.get('/matches/notifications')
@@ -304,7 +309,7 @@ export const markNotificationAsRead = async (
 // ============================================
 
 export const getMatchHistory = async (): Promise<{
-  matches: any[]
+  matches: MatchHistory[]
   total: number
 }> => {
   const response = await api.get('/matches/me/matches/history')

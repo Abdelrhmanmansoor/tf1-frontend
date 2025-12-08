@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Menu, LogOut, User } from 'lucide-react'
 import API_CONFIG from '@/config/api'
+import type { MatchesUser } from '@/types/match'
 
 interface DashboardHeaderProps {
-  user: any
+  user: MatchesUser | null
   onMenuClick: () => void
 }
 

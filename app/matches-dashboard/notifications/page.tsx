@@ -6,9 +6,10 @@ import { getNotifications, markNotificationAsRead } from '@/services/matches'
 import { motion } from 'framer-motion'
 import { Bell, CheckCircle, Calendar, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import type { Notification } from '@/types/match'
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<any[]>([])
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
