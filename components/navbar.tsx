@@ -17,7 +17,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -30,7 +30,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const navItems = [
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
-    { id: 'matches', label: t('matches') },
+    { id: 'match-center', label: t('matches'), href: '/matches' },
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
     { id: 'blog', label: t('blog') },
@@ -40,7 +40,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   return (
     <header className="bg-white shadow-sm px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-50 backdrop-blur-md bg-white/95">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
         {/* Logo - Clickable to Home */}
         <Link href="/">
           <motion.div
@@ -50,12 +49,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           >
             {/* لوجو بدون خلفية */}
             <div className="flex items-center justify-center">
-              <Image 
-                src="/logo.png"
-                alt="TF1 Logo"
-                width={60}
-                height={60}
-              />
+              <Image src="/logo.png" alt="TF1 Logo" width={60} height={60} />
             </div>
           </motion.div>
         </Link>
@@ -66,7 +60,13 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
             {navItems.map((item) => (
               <Link
                 key={item.id}
-                href={item.id === 'home' ? '/' : `/${item.id}`}
+                href={
+                  'href' in item
+                    ? item.href
+                    : item.id === 'home'
+                      ? '/'
+                      : `/${item.id}`
+                }
                 onClick={() => setActiveTab(item.id)}
                 className={`relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                   activeTab === item.id
@@ -98,7 +98,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
 
           {!user && (
             <>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Link href="/register">
                   <Button
                     variant="outline"
@@ -110,7 +113,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                 </Link>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Link href="/login">
                   <Button
                     size="sm"
@@ -141,7 +147,12 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </Button>
         </div>
@@ -171,14 +182,18 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               {/* Close + Logo */}
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center justify-center">
-                  <Image 
+                  <Image
                     src="/logo.png"
                     alt="TF1 Logo"
                     width={48}
                     height={48}
                   />
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   <X className="w-5 h-5" />
                 </Button>
               </div>
@@ -188,7 +203,13 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                 {navItems.map((item) => (
                   <Link
                     key={item.id}
-                    href={item.id === 'home' ? '/' : `/${item.id}`}
+                    href={
+                      'href' in item
+                        ? item.href
+                        : item.id === 'home'
+                          ? '/'
+                          : `/${item.id}`
+                    }
                     onClick={() => {
                       setActiveTab(item.id)
                       setMobileMenuOpen(false)
@@ -209,7 +230,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               {/* Action Buttons */}
               <div className="p-4 space-y-3 border-t mt-auto absolute bottom-0 left-0 right-0">
                 <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full border-gray-200 hover:border-gray-300 hover:bg-gray-50">
+                  <Button
+                    variant="outline"
+                    className="w-full border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                  >
                     {t('register')}
                   </Button>
                 </Link>
