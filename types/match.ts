@@ -83,3 +83,74 @@ export interface MatchesRegisterResponse {
   message: string
   user?: MatchesUser
 }
+
+// Email Verification Types
+export interface EmailVerificationResponse {
+  success: boolean
+  message: string
+}
+
+// Team Types
+export interface Team {
+  _id: string
+  name: string
+  captain: string
+  members: Array<{
+    _id: string
+    firstName: string
+    lastName: string
+    profilePicture?: string
+  }>
+  sport: string
+  createdAt: string
+}
+
+export interface CreateTeamData {
+  name: string
+  sport: string
+}
+
+// Chat Types
+export interface ChatMessage {
+  _id: string
+  matchId: string
+  sender: {
+    _id: string
+    firstName: string
+    lastName: string
+    profilePicture?: string
+  }
+  message: string
+  createdAt: string
+}
+
+export interface SendMessageData {
+  message: string
+}
+
+// Notification Types
+export interface Notification {
+  _id: string
+  type: string
+  title: string
+  message: string
+  data?: any
+  isRead: boolean
+  createdAt: string
+}
+
+// History Types
+export interface MatchHistory {
+  _id: string
+  match: Match
+  rating?: number
+  review?: string
+  completedAt: string
+}
+
+// Match Action Types
+export interface RatePlayerData {
+  playerId: string
+  rating: number
+  review?: string
+}
