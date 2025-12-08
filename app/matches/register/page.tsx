@@ -63,8 +63,7 @@ export default function MatchesRegisterPage() {
       return
     }
 
-    // While firstName and lastName are technically optional in the API,
-    // they're required in MatchesUser and needed for a complete user profile
+    // firstName and lastName are required to construct display_name for the API
     if (!formData.firstName || !formData.lastName) {
       setError(
         language === 'ar'
