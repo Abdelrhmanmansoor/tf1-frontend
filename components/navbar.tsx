@@ -16,6 +16,12 @@ interface NavbarProps {
   activePage?: string
 }
 
+interface NavItem {
+  id: string
+  label: string
+  href?: string
+}
+
 export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const { t, language } = useLanguage()
   const { user } = useAuth()
@@ -27,7 +33,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
     setIsClient(true)
   }, [])
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
     { id: 'match-center', label: t('matches'), href: '/matches' },
@@ -60,13 +66,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
             {navItems.map((item) => (
               <Link
                 key={item.id}
-                href={
-                  'href' in item
-                    ? item.href
-                    : item.id === 'home'
-                      ? '/'
-                      : `/${item.id}`
-                }
+                href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
                 onClick={() => setActiveTab(item.id)}
                 className={`relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                   activeTab === item.id
@@ -204,11 +204,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                   <Link
                     key={item.id}
                     href={
-                      'href' in item
-                        ? item.href
-                        : item.id === 'home'
-                          ? '/'
-                          : `/${item.id}`
+                      item.href || (item.id === 'home' ? '/' : `/${item.id}`)
                     }
                     onClick={() => {
                       setActiveTab(item.id)
