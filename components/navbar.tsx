@@ -23,7 +23,7 @@ interface NavItem {
 }
 
 export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
