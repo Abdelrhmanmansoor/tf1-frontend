@@ -8,7 +8,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
 import { matchesRegister } from '@/services/matches'
-import { Mail, Lock, Eye, EyeOff, UserPlus, AlertCircle, Loader2, Home, Dribbble, User, Phone } from 'lucide-react'
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  UserPlus,
+  AlertCircle,
+  Loader2,
+  Home,
+  Dribbble,
+  User,
+  Phone,
+} from 'lucide-react'
 import Image from 'next/image'
 
 export default function MatchesRegisterPage() {
@@ -42,25 +54,49 @@ export default function MatchesRegisterPage() {
     setSuccess(false)
 
     // Validation
-    if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
-      setError(language === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields')
+    if (!formData.email || !formData.password) {
+      setError(
+        language === 'ar'
+          ? 'يرجى ملء جميع الحقول المطلوبة'
+          : 'Please fill in all required fields'
+      )
+      return
+    }
+
+    if (!formData.firstName || !formData.lastName) {
+      setError(
+        language === 'ar'
+          ? 'يرجى إدخال الاسم الكامل'
+          : 'Please enter your full name'
+      )
       return
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError(language === 'ar' ? 'كلمات المرور غير متطابقة' : 'Passwords do not match')
+      setError(
+        language === 'ar'
+          ? 'كلمات المرور غير متطابقة'
+          : 'Passwords do not match'
+      )
       return
     }
 
     if (formData.password.length < 6) {
-      setError(language === 'ar' ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters')
+      setError(
+        language === 'ar'
+          ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'
+          : 'Password must be at least 6 characters'
+      )
       return
     }
 
     setLoading(true)
 
     try {
-      console.log('[MATCHES REGISTER] Attempting registration with email:', formData.email)
+      console.log(
+        '[MATCHES REGISTER] Attempting registration with email:',
+        formData.email
+      )
       const response = await matchesRegister({
         email: formData.email,
         password: formData.password,
@@ -78,7 +114,10 @@ export default function MatchesRegisterPage() {
       }, 1500)
     } catch (err: any) {
       console.error('[MATCHES REGISTER] Error:', err)
-      const errorMsg = err.response?.data?.message || err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed')
+      const errorMsg =
+        err.response?.data?.message ||
+        err.message ||
+        (language === 'ar' ? 'فشل التسجيل' : 'Registration failed')
       setError(errorMsg)
     } finally {
       setLoading(false)
@@ -115,7 +154,7 @@ export default function MatchesRegisterPage() {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6 relative">
             {/* Home Button */}
-            <Link 
+            <Link
               href="/matches"
               className="absolute top-4 left-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
             >
@@ -123,17 +162,15 @@ export default function MatchesRegisterPage() {
             </Link>
 
             {/* Saudi Arabia Flag */}
-            <div className="absolute top-4 right-4 text-3xl">
-              🇸🇦
-            </div>
-            
+            <div className="absolute top-4 right-4 text-3xl">🇸🇦</div>
+
             {/* Logo */}
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
-                <Image 
-                  src="/logo.png" 
-                  alt="TF1 Logo" 
-                  width={56} 
+                <Image
+                  src="/logo.png"
+                  alt="TF1 Logo"
+                  width={56}
                   height={56}
                   className="object-contain"
                 />
@@ -146,7 +183,9 @@ export default function MatchesRegisterPage() {
               </h1>
             </div>
             <p className="text-blue-100 text-sm text-center">
-              {language === 'ar' ? 'إنشاء حساب للانضمام للمباريات' : 'Create an account to join matches'}
+              {language === 'ar'
+                ? 'إنشاء حساب للانضمام للمباريات'
+                : 'Create an account to join matches'}
             </p>
           </div>
 
@@ -156,7 +195,9 @@ export default function MatchesRegisterPage() {
               {language === 'ar' ? 'إنشاء حساب' : 'Create Account'}
             </h2>
             <p className="text-gray-600 text-sm mb-6">
-              {language === 'ar' ? 'أدخل بياناتك لإنشاء حساب جديد' : 'Enter your information to create a new account'}
+              {language === 'ar'
+                ? 'أدخل بياناتك لإنشاء حساب جديد'
+                : 'Enter your information to create a new account'}
             </p>
 
             {/* Error Message */}
@@ -182,7 +223,9 @@ export default function MatchesRegisterPage() {
                   ✓
                 </div>
                 <p className="text-sm text-green-800">
-                  {language === 'ar' ? 'تم إنشاء الحساب بنجاح' : 'Account created successfully'}
+                  {language === 'ar'
+                    ? 'تم إنشاء الحساب بنجاح'
+                    : 'Account created successfully'}
                 </p>
               </motion.div>
             )}
@@ -200,7 +243,9 @@ export default function MatchesRegisterPage() {
                     <Input
                       type="text"
                       name="firstName"
-                      placeholder={language === 'ar' ? 'الاسم الأول' : 'First Name'}
+                      placeholder={
+                        language === 'ar' ? 'الاسم الأول' : 'First Name'
+                      }
                       value={formData.firstName}
                       onChange={handleChange}
                       className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -218,7 +263,9 @@ export default function MatchesRegisterPage() {
                     <Input
                       type="text"
                       name="lastName"
-                      placeholder={language === 'ar' ? 'الاسم الأخير' : 'Last Name'}
+                      placeholder={
+                        language === 'ar' ? 'الاسم الأخير' : 'Last Name'
+                      }
                       value={formData.lastName}
                       onChange={handleChange}
                       className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -239,7 +286,11 @@ export default function MatchesRegisterPage() {
                   <Input
                     type="email"
                     name="email"
-                    placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
+                    placeholder={
+                      language === 'ar'
+                        ? 'أدخل بريدك الإلكتروني'
+                        : 'Enter your email'
+                    }
                     value={formData.email}
                     onChange={handleChange}
                     className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -252,14 +303,20 @@ export default function MatchesRegisterPage() {
               {/* Phone Field (Optional) */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {language === 'ar' ? 'رقم الجوال (اختياري)' : 'Phone (Optional)'}
+                  {language === 'ar'
+                    ? 'رقم الجوال (اختياري)'
+                    : 'Phone (Optional)'}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                   <Input
                     type="tel"
                     name="phone"
-                    placeholder={language === 'ar' ? '+966 5xx xxx xxx' : '+966 5xx xxx xxx'}
+                    placeholder={
+                      language === 'ar'
+                        ? '+966 5xx xxx xxx'
+                        : '+966 5xx xxx xxx'
+                    }
                     value={formData.phone}
                     onChange={handleChange}
                     className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -278,7 +335,9 @@ export default function MatchesRegisterPage() {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
-                    placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}
+                    placeholder={
+                      language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'
+                    }
                     value={formData.password}
                     onChange={handleChange}
                     className="pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -290,7 +349,11 @@ export default function MatchesRegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -305,7 +368,11 @@ export default function MatchesRegisterPage() {
                   <Input
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
-                    placeholder={language === 'ar' ? 'أعد إدخال كلمة المرور' : 'Re-enter password'}
+                    placeholder={
+                      language === 'ar'
+                        ? 'أعد إدخال كلمة المرور'
+                        : 'Re-enter password'
+                    }
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className="pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -317,7 +384,11 @@ export default function MatchesRegisterPage() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -345,14 +416,21 @@ export default function MatchesRegisterPage() {
             {/* Divider */}
             <div className="my-6 flex items-center gap-4">
               <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-gray-500 text-sm">{language === 'ar' ? 'أو' : 'or'}</span>
+              <span className="text-gray-500 text-sm">
+                {language === 'ar' ? 'أو' : 'or'}
+              </span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
             {/* Sign In Link */}
             <p className="text-center text-gray-600">
-              {language === 'ar' ? 'لديك حساب بالفعل؟ ' : 'Already have an account? '}
-              <Link href="/matches/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+              {language === 'ar'
+                ? 'لديك حساب بالفعل؟ '
+                : 'Already have an account? '}
+              <Link
+                href="/matches/login"
+                className="text-blue-600 hover:text-blue-700 font-semibold"
+              >
                 {language === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
               </Link>
             </p>
