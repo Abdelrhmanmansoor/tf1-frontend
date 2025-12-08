@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -8,7 +8,17 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
 import { matchesLogin } from '@/services/matches'
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, Home, Dribbble } from 'lucide-react'
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  LogIn,
+  AlertCircle,
+  Loader2,
+  Home,
+  Dribbble,
+} from 'lucide-react'
 import Image from 'next/image'
 
 export default function MatchesLoginPage() {
@@ -29,7 +39,9 @@ export default function MatchesLoginPage() {
     setSuccess(false)
 
     if (!email || !password) {
-      setError(language === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill in all fields')
+      setError(
+        language === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill in all fields'
+      )
       return
     }
 
@@ -44,13 +56,16 @@ export default function MatchesLoginPage() {
 
       // Redirect to matches page or specified redirect URL
       const redirectUrl = searchParams.get('redirect') || '/matches'
-      
+
       setTimeout(() => {
         router.push(redirectUrl)
       }, 500)
     } catch (err: any) {
       console.error('[MATCHES LOGIN] Error:', err)
-      const errorMsg = err.response?.data?.message || err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
+      const errorMsg =
+        err.response?.data?.message ||
+        err.message ||
+        (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
       setError(errorMsg)
     } finally {
       setLoading(false)
@@ -87,7 +102,7 @@ export default function MatchesLoginPage() {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6 relative">
             {/* Home Button */}
-            <Link 
+            <Link
               href="/matches"
               className="absolute top-4 left-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
             >
@@ -95,17 +110,15 @@ export default function MatchesLoginPage() {
             </Link>
 
             {/* Saudi Arabia Flag */}
-            <div className="absolute top-4 right-4 text-3xl">
-              🇸🇦
-            </div>
-            
+            <div className="absolute top-4 right-4 text-3xl">🇸🇦</div>
+
             {/* Logo */}
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
-                <Image 
-                  src="/logo.png" 
-                  alt="TF1 Logo" 
-                  width={56} 
+                <Image
+                  src="/logo.png"
+                  alt="TF1 Logo"
+                  width={56}
                   height={56}
                   className="object-contain"
                 />
@@ -118,7 +131,9 @@ export default function MatchesLoginPage() {
               </h1>
             </div>
             <p className="text-blue-100 text-sm text-center">
-              {language === 'ar' ? 'تسجيل الدخول للانضمام للمباريات' : 'Sign in to join matches'}
+              {language === 'ar'
+                ? 'تسجيل الدخول للانضمام للمباريات'
+                : 'Sign in to join matches'}
             </p>
           </div>
 
@@ -128,7 +143,9 @@ export default function MatchesLoginPage() {
               {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
             </h2>
             <p className="text-gray-600 text-sm mb-6">
-              {language === 'ar' ? 'أدخل بيانات حسابك للمتابعة' : 'Enter your credentials to continue'}
+              {language === 'ar'
+                ? 'أدخل بيانات حسابك للمتابعة'
+                : 'Enter your credentials to continue'}
             </p>
 
             {/* Error Message */}
@@ -154,7 +171,9 @@ export default function MatchesLoginPage() {
                   ✓
                 </div>
                 <p className="text-sm text-green-800">
-                  {language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Login successful'}
+                  {language === 'ar'
+                    ? 'تم تسجيل الدخول بنجاح'
+                    : 'Login successful'}
                 </p>
               </motion.div>
             )}
@@ -170,7 +189,11 @@ export default function MatchesLoginPage() {
                   <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                   <Input
                     type="email"
-                    placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
+                    placeholder={
+                      language === 'ar'
+                        ? 'أدخل بريدك الإلكتروني'
+                        : 'Enter your email'
+                    }
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -188,7 +211,9 @@ export default function MatchesLoginPage() {
                   <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}
+                    placeholder={
+                      language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'
+                    }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white"
@@ -199,7 +224,11 @@ export default function MatchesLoginPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -227,14 +256,21 @@ export default function MatchesLoginPage() {
             {/* Divider */}
             <div className="my-6 flex items-center gap-4">
               <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-gray-500 text-sm">{language === 'ar' ? 'أو' : 'or'}</span>
+              <span className="text-gray-500 text-sm">
+                {language === 'ar' ? 'أو' : 'or'}
+              </span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
             {/* Sign Up Link */}
             <p className="text-center text-gray-600">
-              {language === 'ar' ? 'ليس لديك حساب؟ ' : "Don't have an account? "}
-              <Link href="/matches/register" className="text-blue-600 hover:text-blue-700 font-semibold">
+              {language === 'ar'
+                ? 'ليس لديك حساب؟ '
+                : "Don't have an account? "}
+              <Link
+                href="/matches/register"
+                className="text-blue-600 hover:text-blue-700 font-semibold"
+              >
                 {language === 'ar' ? 'إنشاء حساب' : 'Sign up'}
               </Link>
             </p>
