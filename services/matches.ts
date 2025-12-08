@@ -149,13 +149,24 @@ export const getMyMatches = async (): Promise<{
 
 /**
  * Register a new user in the Matches module
- * Uses /matches/auth/register endpoint
+ * Tries /matches/register first, falls back to /matches/auth/signup on 404
  */
 export const matchesRegister = async (
   userData: MatchesRegisterData
 ): Promise<MatchesRegisterResponse> => {
-  const response = await api.post('/matches/auth/register', userData)
-  return response.data
+  try {
+    // Try the new backward-compatible endpoint first
+    const response = await api.post('/matches/register', userData)
+    return response.data
+  } catch (error: any) {
+    // If we get a 404, fallback to the original signup endpoint
+    if (error.response?.status === 404) {
+      const response = await api.post('/matches/auth/signup', userData)
+      return response.data
+    }
+    // For any other error, throw it
+    throw error
+  }
 }
 
 /**
