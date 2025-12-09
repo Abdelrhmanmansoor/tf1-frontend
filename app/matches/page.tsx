@@ -113,8 +113,6 @@ export default function MatchesPage() {
         </div>
       </section>
 
-      </section>
-
       {/* Steps Section */}
       <section className="py-16 bg-white/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">

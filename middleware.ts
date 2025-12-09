@@ -122,6 +122,8 @@ export function middleware(request: NextRequest) {
     let token = request.cookies.get('matches_token')?.value
 
     // Fallback: Check sportx_access_token (for backward compatibility during transition)
+    // TODO: Remove this fallback after backend migration is complete (Target: Q1 2026)
+    // This temporary fallback allows gradual migration without breaking existing users
     if (!token) {
       token = request.cookies.get('sportx_access_token')?.value
     }

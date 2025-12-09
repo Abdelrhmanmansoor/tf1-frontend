@@ -191,10 +191,16 @@ export const matchesLogin = async (
 
   const { accessToken, user } = response.data
 
-  // Backend should set matches_token as httpOnly cookie
-  // We store user data locally for UI purposes only
+  // Backend sets matches_token as httpOnly cookie
+  // We store only minimal user data locally for UI purposes (display name, email)
+  // No sensitive data like passwords or tokens
   if (typeof window !== 'undefined' && user) {
-    localStorage.setItem('matches_user', JSON.stringify(user))
+    const minimalUserData = {
+      id: user.id,
+      name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.name || user.email,
+      email: user.email,
+    }
+    localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
   }
 
   return response.data
