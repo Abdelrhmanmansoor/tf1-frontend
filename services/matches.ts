@@ -177,8 +177,8 @@ export const matchesRegister = async (
 /**
  * Login user in the Matches module
  * Uses /matches/auth/login endpoint
- * Stores JWT in localStorage with Authorization: Bearer pattern
- * Note: Token storage logic is intentionally duplicated here for Matches module independence
+ * Backend sets matches_token as httpOnly cookie
+ * Note: Token is managed by backend via httpOnly cookie for security
  */
 export const matchesLogin = async (
   email: string,
@@ -191,12 +191,17 @@ export const matchesLogin = async (
 
   const { accessToken, user } = response.data
 
-  // Save token and user data to localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
-    localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
-    // Also save to cookie for middleware access
-    document.cookie = `${API_CONFIG.TOKEN_KEY}=${accessToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
+  // Backend sets matches_token as httpOnly cookie (implementation pending)
+  // TEMPORARY: Store minimal user data in localStorage for UI purposes during transition
+  // TODO: Remove localStorage once backend httpOnly cookie is fully implemented and tested
+  // Only non-sensitive data stored: ID, display name, email (no passwords/tokens)
+  if (typeof window !== 'undefined' && user) {
+    const minimalUserData = {
+      id: user.id,
+      name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.name || user.email,
+      email: user.email,
+    }
+    localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
   }
 
   return response.data
