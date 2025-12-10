@@ -61,6 +61,13 @@ const ClubJobsPage = () => {
     meetingLocation: '',
   })
 
+  // Additional form fields
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('Saudi Arabia')
+  const [requirementsText, setRequirementsText] = useState('')
+  const [skillsText, setSkillsText] = useState('')
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+
   useEffect(() => {
     fetchJobs()
   }, [statusFilter, categoryFilter, sportFilter])
@@ -82,7 +89,43 @@ const ClubJobsPage = () => {
     }
   }
 
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {}
+
+    if (!formData.title.trim()) {
+      errors.title = language === 'ar' ? 'المسمى الوظيفي مطلوب' : 'Job title is required'
+    }
+    if (!formData.description.trim()) {
+      errors.description = language === 'ar' ? 'الوصف مطلوب' : 'Description is required'
+    }
+    if (!city.trim()) {
+      errors.city = language === 'ar' ? 'المدينة مطلوبة' : 'City is required'
+    }
+    if (!country.trim()) {
+      errors.country = language === 'ar' ? 'الدولة مطلوبة' : 'Country is required'
+    }
+    if (formData.numberOfPositions < 1) {
+      errors.numberOfPositions = language === 'ar' ? 'عدد الوظائف يجب أن يكون 1 على الأقل' : 'Number of positions must be at least 1'
+    }
+    if (formData.applicationDeadline) {
+      const deadline = new Date(formData.applicationDeadline)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      if (deadline < today) {
+        errors.applicationDeadline = language === 'ar' ? 'تاريخ الإغلاق يجب أن يكون في المستقبل' : 'Deadline must be in the future'
+      }
+    }
+
+    setValidationErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleCreateJob = async () => {
+    if (!validateForm()) {
+      alert(language === 'ar' ? 'يرجى تصحيح الأخطاء في النموذج' : 'Please fix form errors')
+      return
+    }
+
     try {
       setCreating(true)
 
@@ -121,8 +164,18 @@ const ClubJobsPage = () => {
         delete cleanedRequirements.minimumExperience
       }
 
+      // Parse skills and requirements from text
+      const skillsArray = skillsText
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+      
+      if (skillsArray.length > 0) {
+        cleanedRequirements.skills = skillsArray
+      }
+
       // Format data for API - convert dates to ISO 8601
-      const jobData: CreateJobData = {
+      const jobData: any = {
         title: formData.title,
         titleAr: formData.titleAr || undefined,
         description: formData.description,
@@ -131,6 +184,8 @@ const ClubJobsPage = () => {
         category: formData.category,
         employmentType: formData.employmentType,
         sport: formData.sport || undefined,
+        city: city || undefined,
+        country: country || undefined,
         applicationDeadline: formData.applicationDeadline
           ? new Date(formData.applicationDeadline).toISOString()
           : undefined,
@@ -147,6 +202,12 @@ const ClubJobsPage = () => {
         meetingDate: formData.meetingDate || undefined,
         meetingTime: formData.meetingTime || undefined,
         meetingLocation: formData.meetingLocation || undefined,
+      }
+
+      // Add requirements text if provided
+      if (requirementsText.trim()) {
+        if (!jobData.requirements) jobData.requirements = {}
+        jobData.requirements.description = requirementsText
       }
 
       await clubService.createJob(jobData)
@@ -211,6 +272,11 @@ const ClubJobsPage = () => {
       meetingTime: '',
       meetingLocation: '',
     })
+    setCity('')
+    setCountry('Saudi Arabia')
+    setRequirementsText('')
+    setSkillsText('')
+    setValidationErrors({})
   }
 
   const getStatusColor = (status: string) => {
@@ -635,6 +701,113 @@ const ClubJobsPage = () => {
                   </div>
                 </div>
 
+                {/* Location Section */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    {language === 'ar' ? 'الموقع' : 'Location'}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'المدينة' : 'City'} *
+                      </label>
+                      <Input
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder={language === 'ar' ? 'الرياض' : 'Riyadh'}
+                        className={validationErrors.city ? 'border-red-500' : ''}
+                      />
+                      {validationErrors.city && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.city}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'الدولة' : 'Country'} *
+                      </label>
+                      <Input
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        placeholder={language === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia'}
+                        className={validationErrors.country ? 'border-red-500' : ''}
+                      />
+                      {validationErrors.country && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.country}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Requirements Section */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    {language === 'ar' ? 'المتطلبات' : 'Requirements'}
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'وصف المتطلبات' : 'Requirements Description'}
+                      </label>
+                      <Textarea
+                        value={requirementsText}
+                        onChange={(e) => setRequirementsText(e.target.value)}
+                        rows={3}
+                        placeholder={language === 'ar' ? 'اكتب المتطلبات الوظيفية...' : 'Enter job requirements...'}
+                        className="resize-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'سنوات الخبرة المطلوبة' : 'Minimum Experience (years)'}
+                        </label>
+                        <Input
+                          type="number"
+                          value={formData.requirements?.minimumExperience || 0}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              requirements: {
+                                ...formData.requirements,
+                                minimumExperience: parseInt(e.target.value) || 0,
+                              },
+                            })
+                          }
+                          min="0"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          {language === 'ar' ? 'المؤهل العلمي' : 'Education Level'}
+                        </label>
+                        <Input
+                          value={formData.requirements?.educationLevel || ''}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              requirements: {
+                                ...formData.requirements,
+                                educationLevel: e.target.value,
+                              },
+                            })
+                          }
+                          placeholder={language === 'ar' ? 'بكالوريوس، ماجستير...' : 'Bachelor, Master...'}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {language === 'ar' ? 'المهارات المطلوبة (افصل بفاصلة)' : 'Required Skills (comma separated)'}
+                      </label>
+                      <Input
+                        value={skillsText}
+                        onChange={(e) => setSkillsText(e.target.value)}
+                        placeholder={language === 'ar' ? 'مثال: قيادة، تواصل، تخطيط' : 'e.g., Leadership, Communication, Planning'}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -651,7 +824,11 @@ const ClubJobsPage = () => {
                           applicationDeadline: e.target.value,
                         })
                       }
+                      className={validationErrors.applicationDeadline ? 'border-red-500' : ''}
                     />
+                    {validationErrors.applicationDeadline && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.applicationDeadline}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -674,7 +851,7 @@ const ClubJobsPage = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {language === 'ar'
                         ? 'عدد الوظائف'
-                        : 'Number of Positions'}
+                        : 'Number of Positions'} *
                     </label>
                     <Input
                       type="number"
@@ -686,7 +863,11 @@ const ClubJobsPage = () => {
                         })
                       }
                       min="1"
+                      className={validationErrors.numberOfPositions ? 'border-red-500' : ''}
                     />
+                    {validationErrors.numberOfPositions && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.numberOfPositions}</p>
+                    )}
                   </div>
                 </div>
 
