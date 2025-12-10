@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import { getMatches, getMyMatches } from '@/services/matches'
+import API_CONFIG from '@/config/api'
 import {
   Calendar,
   Users,
@@ -30,8 +31,25 @@ export default function MatchesDashboardPage() {
     completedMatches: 0,
   })
   const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  // التحقق من تسجيل الدخول
+  useEffect(() => {
+    const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+    const matchesUser = localStorage.getItem('matches_user')
+    
+    if (!token || !matchesUser) {
+      // إعادة التوجيه لصفحة تسجيل الدخول
+      router.push('/matches/login?redirect=/matches/dashboard')
+      return
+    }
+    
+    setIsAuthenticated(true)
+  }, [router])
 
   useEffect(() => {
+    if (!isAuthenticated) return
+    
     const fetchStats = async () => {
       try {
         const [allMatches, myMatchesData] = await Promise.all([
@@ -57,7 +75,7 @@ export default function MatchesDashboardPage() {
     }
 
     fetchStats()
-  }, [])
+  }, [isAuthenticated])
 
   const statCards = [
     {
@@ -85,6 +103,20 @@ export default function MatchesDashboardPage() {
       color: 'from-purple-500 to-purple-600',
     },
   ]
+
+  // عرض شاشة تحميل أثناء التحقق من تسجيل الدخول
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">
+            {language === 'ar' ? 'جاري التحقق...' : 'Verifying...'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
