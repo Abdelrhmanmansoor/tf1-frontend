@@ -62,7 +62,7 @@ export interface SportOption {
 export interface MatchesRegisterData {
   email: string
   password: string
-  display_name: string
+  name: string
 }
 
 export interface MatchesLoginResponse {

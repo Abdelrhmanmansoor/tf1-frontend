@@ -106,6 +106,25 @@ export default function RegisterPage() {
     submitRegistration()
   }
 
+  // تعريف رسائل الخطأ المترجمة
+  const getErrorMessage = (errorMsg: string): string => {
+    if (language === 'ar') {
+      // ترجمة رسائل الخطأ الشائعة
+      if (errorMsg.includes('Email, password, and name are required')) {
+        return 'البريد الإلكتروني وكلمة المرور والاسم مطلوبة';
+      }
+      if (errorMsg.includes('Email already exists')) {
+        return 'البريد الإلكتروني مسجل مسبقاً';
+      }
+      if (errorMsg.includes('Invalid email format')) {
+        return 'صيغة البريد الإلكتروني غير صحيحة';
+      }
+      // إذا لم تكن الرسالة معروفة، أعد الرسالة الأصلية
+      return errorMsg;
+    }
+    return errorMsg;
+  };
+
   const submitRegistration = async () => {
     setLoading(true)
     setError(null)
@@ -304,7 +323,7 @@ export default function RegisterPage() {
             className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-800">{error}</p>
+            <p className="text-sm text-red-800">{getErrorMessage(error)}</p>
           </motion.div>
         )}
 
