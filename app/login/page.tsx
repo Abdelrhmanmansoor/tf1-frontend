@@ -62,7 +62,7 @@ function LoginContent() {
       
       if (redirectUrl) {
         setTimeout(() => {
-          router.push(redirectUrl)
+          window.location.href = redirectUrl
         }, 500)
         return
       }
@@ -80,7 +80,7 @@ function LoginContent() {
       }
 
       setTimeout(() => {
-        router.push(roleRoutes[userRole] || '/dashboard')
+        window.location.href = roleRoutes[userRole] || '/dashboard'
       }, 500)
     } catch (err: any) {
       console.error('[LOGIN] Error:', err)

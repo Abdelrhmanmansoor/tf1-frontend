@@ -58,9 +58,12 @@ export default function MatchesLoginPage() {
       // Redirect to matches/dashboard or specified redirect URL
       const redirectUrl = searchParams.get('redirect') || '/matches/dashboard'
 
+      console.log('Redirecting to:', redirectUrl)
+
+      // Use window.location.href for hard navigation to ensure state is fresh
       setTimeout(() => {
-        router.push(redirectUrl)
-      }, 500)
+        window.location.href = redirectUrl
+      }, 1500)
     } catch (err: any) {
       let errorMsg =
         err.response?.data?.message ||
