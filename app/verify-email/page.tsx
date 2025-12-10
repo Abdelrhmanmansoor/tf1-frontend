@@ -41,21 +41,36 @@ function VerifyEmailContent() {
       token.substring(0, 10) + '...'
     )
 
-    // ✅ Single API call - NO RETRIES
-    fetch(
-      `https://tf1-backend.onrender.com/api/v1/auth/verify-email?token=${token}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('[VERIFY] Response received:', data)
+    // ✅ Try main API first, then matches API as fallback
+    const tryMainApi = () => {
+      return fetch(
+        `https://tf1-backend.onrender.com/api/v1/auth/verify-email?token=${token}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then((response) => response.json())
+    }
 
-        // ✅ STOP on ANY response - success OR failure
+    const tryMatchesApi = () => {
+      return fetch(
+        `https://tf1-backend.onrender.com/api/v1/matches/auth/verify-email?token=${token}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then((response) => response.json())
+    }
+
+    // Try main API first
+    tryMainApi()
+      .then((data) => {
+        console.log('[VERIFY] Main API response:', data)
+
         if (data.success === true) {
           setStatus('success')
           setMessage(data.message || 'Email verified successfully!')
@@ -79,16 +94,27 @@ function VerifyEmailContent() {
             )
           }
         } else {
-          setStatus('error')
-          setMessage(data.message || 'Verification failed')
+          // Try matches API as fallback
+          console.log('[VERIFY] Main API failed, trying matches API...')
+          return tryMatchesApi()
         }
-        // ✅ NO RETRY - just stop here
+      })
+      .then((matchesData) => {
+        if (matchesData && matchesData.success === true) {
+          setStatus('success')
+          setMessage(matchesData.message || (language === 'ar' ? 'تم تأكيد البريد الإلكتروني بنجاح!' : 'Email verified successfully!'))
+          
+          console.log('[VERIFY] Matches API success! Redirecting to matches login...')
+          setTimeout(() => router.replace('/matches/login?verified=true'), 2000)
+        } else if (matchesData) {
+          setStatus('error')
+          setMessage(matchesData.message || 'Verification failed')
+        }
       })
       .catch((error) => {
         console.error('[VERIFY] Network error:', error)
         setStatus('error')
         setMessage(language === 'ar' ? 'خطأ في الاتصال' : 'Network error')
-        // ✅ NO RETRY - just stop here
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // ✅ EMPTY ARRAY - only run once on mount - CRITICAL to prevent retries
