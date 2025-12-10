@@ -154,24 +154,14 @@ export const getMyMatches = async (): Promise<{
 
 /**
  * Register a new user in the Matches module
- * Tries /matches/register first, falls back to /matches/auth/signup on 404
+ * POST /api/v1/matches/auth/register
+ * Required fields: email, password, name (full name)
  */
 export const matchesRegister = async (
   userData: MatchesRegisterData
 ): Promise<MatchesRegisterResponse> => {
-  try {
-    // Try primary endpoint first
-    const response = await api.post('/matches/register', userData)
-    return response.data
-  } catch (error: any) {
-    // If 404, try fallback endpoint
-    if (error.response?.status === 404) {
-      const fallbackResponse = await api.post('/matches/auth/signup', userData)
-      return fallbackResponse.data
-    }
-    // For any other error, rethrow
-    throw error
-  }
+  const response = await api.post('/matches/auth/register', userData)
+  return response.data
 }
 
 /**
@@ -245,6 +235,7 @@ export const verifyEmail = async (
 
 /**
  * Resend verification email
+ * POST /api/v1/matches/auth/resend-verification
  */
 export const resendVerificationEmail = async (
   email: string
@@ -252,6 +243,24 @@ export const resendVerificationEmail = async (
   const response = await api.post('/matches/auth/resend-verification', {
     email,
   })
+  return response.data
+}
+
+/**
+ * Logout user from Matches module
+ * POST /api/v1/matches/auth/logout
+ * Clears the matches_token cookie and local storage
+ */
+export const matchesLogout = async (): Promise<{ success: boolean; message: string }> => {
+  const response = await api.post('/matches/auth/logout')
+  
+  // Clear local storage
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+    localStorage.removeItem('matches_user')
+    localStorage.removeItem(API_CONFIG.USER_KEY)
+  }
+  
   return response.data
 }
 
@@ -372,6 +381,7 @@ export default {
   matchesGetMe,
   verifyEmail,
   resendVerificationEmail,
+  matchesLogout,
   // Teams methods
   getMyTeams,
   createTeam,
