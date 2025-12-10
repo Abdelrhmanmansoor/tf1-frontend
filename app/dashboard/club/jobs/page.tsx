@@ -56,9 +56,7 @@ const ClubJobsPage = () => {
     numberOfPositions: 1,
     applicationDeadline: '',
     expectedStartDate: '',
-    meetingDate: '',
-    meetingTime: '',
-    meetingLocation: '',
+    // تم إزالة حقول المقابلة
   })
 
   // Additional form fields
@@ -104,7 +102,7 @@ const ClubJobsPage = () => {
     if (!country.trim()) {
       errors.country = language === 'ar' ? 'الدولة مطلوبة' : 'Country is required'
     }
-    if (formData.numberOfPositions < 1) {
+    if (!formData.numberOfPositions || formData.numberOfPositions < 1) {
       errors.numberOfPositions = language === 'ar' ? 'عدد الوظائف يجب أن يكون 1 على الأقل' : 'Number of positions must be at least 1'
     }
     if (formData.applicationDeadline) {
@@ -199,9 +197,7 @@ const ClubJobsPage = () => {
           formData.responsibilities && formData.responsibilities.length > 0
             ? formData.responsibilities
             : undefined,
-        meetingDate: formData.meetingDate || undefined,
-        meetingTime: formData.meetingTime || undefined,
-        meetingLocation: formData.meetingLocation || undefined,
+        // تم إزالة حقول المقابلة
       }
 
       // Add requirements text if provided
@@ -268,9 +264,7 @@ const ClubJobsPage = () => {
       numberOfPositions: 1,
       applicationDeadline: '',
       expectedStartDate: '',
-      meetingDate: '',
-      meetingTime: '',
-      meetingLocation: '',
+      // تم إزالة حقول المقابلة
     })
     setCity('')
     setCountry('Saudi Arabia')
@@ -871,51 +865,7 @@ const ClubJobsPage = () => {
                   </div>
                 </div>
 
-                {/* Interview Details Section */}
-                <div className="border-t pt-4 mt-4">
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-green-600" />
-                    {language === 'ar' ? 'تفاصيل المقابلة' : 'Interview Details'}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar' ? 'تاريخ المقابلة' : 'Meeting Date'}
-                      </label>
-                      <Input
-                        type="date"
-                        value={formData.meetingDate}
-                        onChange={(e) =>
-                          setFormData({ ...formData, meetingDate: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar' ? 'وقت المقابلة' : 'Meeting Time'}
-                      </label>
-                      <Input
-                        type="time"
-                        value={formData.meetingTime}
-                        onChange={(e) =>
-                          setFormData({ ...formData, meetingTime: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {language === 'ar' ? 'مكان المقابلة' : 'Meeting Location'}
-                      </label>
-                      <Input
-                        value={formData.meetingLocation}
-                        onChange={(e) =>
-                          setFormData({ ...formData, meetingLocation: e.target.value })
-                        }
-                        placeholder={language === 'ar' ? 'مثال: ملعب النادي' : 'e.g., Club Stadium'}
-                      />
-                    </div>
-                  </div>
-                </div>
+                {/* تم إزالة قسم تفاصيل المقابلة */}
 
                 <div className="flex gap-3 pt-4">
                   <Button

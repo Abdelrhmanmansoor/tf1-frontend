@@ -22,6 +22,7 @@ import {
   MessageCircle,
   ExternalLink,
 } from 'lucide-react'
+import ResumeViewer from '@/components/ResumeViewer'
 import Link from 'next/link'
 import clubService from '@/services/club'
 import type { JobApplication } from '@/types/club'
@@ -31,6 +32,7 @@ const ClubApplicationsPage = () => {
   const [applications, setApplications] = useState<JobApplication[]>([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchApplications()
@@ -225,17 +227,25 @@ const ClubApplicationsPage = () => {
                         {new Date(application.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    {application.attachments && application.attachments.length > 0 && (
-                      <a
-                        href={application.attachments.find(a => a.type === 'resume')?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium"
-                      >
-                        <FileText className="w-4 h-4" />
-                        <span>{language === 'ar' ? 'عرض السيرة الذاتية' : 'View Resume'}</span>
-                        <Download className="w-3 h-3" />
-                      </a>
+                    {(application as any).resume && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setSelectedResumeId(application._id)}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>{language === 'ar' ? 'عرض السيرة الذاتية' : 'View Resume'}</span>
+                        </button>
+                        <a
+                          href={`/api/v1/clubs/applications/${application._id}/resume/download`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>{language === 'ar' ? 'تحميل' : 'Download'}</span>
+                        </a>
+                      </div>
                     )}
                   </div>
 
@@ -332,6 +342,14 @@ const ClubApplicationsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Modal لعرض السيرة الذاتية */}
+      {selectedResumeId && (
+        <ResumeViewer 
+          applicationId={selectedResumeId} 
+          onClose={() => setSelectedResumeId(null)} 
+        />
+      )}
     </div>
   )
 }

@@ -76,10 +76,10 @@ const clubApplicationsService = {
     }
   },
 
-  // Download resume from direct URL
-  async downloadResume(fileUrl: string, filename: string): Promise<Blob> {
+  // Download resume using the new endpoint
+  async downloadResume(applicationId: string): Promise<Blob> {
     try {
-      const response = await fetch(fileUrl, {
+      const response = await fetch(`/api/v1/clubs/applications/${applicationId}/resume/download`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
         },
@@ -91,6 +91,48 @@ const clubApplicationsService = {
     } catch (error) {
       console.error('Error downloading resume:', error)
       throw error
+    }
+  },
+
+  // View resume using the new endpoint
+  async viewResume(applicationId: string): Promise<void> {
+    try {
+      window.open(`/api/v1/clubs/applications/${applicationId}/resume/view`, '_blank')
+    } catch (error) {
+      console.error('Error viewing resume:', error)
+      throw error
+    }
+  },
+
+  // Check if resume exists
+  async checkResumeExists(applicationId: string): Promise<{ exists: boolean; resume?: any; message?: string }> {
+    try {
+      const response = await fetch(`/api/v1/clubs/applications/${applicationId}/resume/info`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
+      if (data.fileExists) {
+        return {
+          exists: true,
+          resume: data.resume
+        }
+      } else {
+        return {
+          exists: false,
+          message: 'الملف غير موجود على السيرفر'
+        }
+      }
+    } catch (error) {
+      console.error('Error checking resume:', error)
+      return { exists: false }
     }
   },
 

@@ -17,6 +17,7 @@ import {
   Clock,
   Loader2,
   X,
+  Eye,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import clubApplicationsService, { ApplicationData } from '@/services/club-applications'
@@ -64,10 +65,8 @@ export default function ApplicationDetailsClub({
 
     try {
       setDownloading(true)
-      const blob = await clubApplicationsService.downloadResume(
-        application.resume.fileUrl,
-        application.resume.fileName
-      )
+      // استخدام الدالة الجديدة التي تستخدم المسار الجديد
+      const blob = await clubApplicationsService.downloadResume(application._id)
 
       // Create download link
       const url = window.URL.createObjectURL(blob)
@@ -85,6 +84,18 @@ export default function ApplicationDetailsClub({
       toast.error(language === 'ar' ? 'فشل التحميل' : 'Download failed')
     } finally {
       setDownloading(false)
+    }
+  }
+
+  const handleViewResume = async () => {
+    if (!application) return
+
+    try {
+      // استخدام الدالة الجديدة لعرض السيرة الذاتية
+      await clubApplicationsService.viewResume(application._id)
+    } catch (error) {
+      console.error('Error viewing resume:', error)
+      toast.error(language === 'ar' ? 'فشل عرض السيرة الذاتية' : 'Failed to view resume')
     }
   }
 
@@ -352,20 +363,29 @@ export default function ApplicationDetailsClub({
                 </span>
               </div>
             </div>
-            <Button
-              onClick={handleDownloadResume}
-              disabled={downloading}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              {downloading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <>
-                  <Download className="w-4 h-4 mr-2" />
-                  {language === 'ar' ? 'تحميل' : 'Download'}
-                </>
-              )}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={handleViewResume}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                {language === 'ar' ? 'عرض' : 'View'}
+              </Button>
+              <Button
+                onClick={handleDownloadResume}
+                disabled={downloading}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                {downloading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    {language === 'ar' ? 'تحميل' : 'Download'}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
