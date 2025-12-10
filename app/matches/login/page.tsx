@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
-import { matchesLogin } from '@/services/matches'
+import { matchesLogin, resendVerificationEmail } from '@/services/matches'
 import {
   Mail,
   Lock,
@@ -32,6 +32,9 @@ export default function MatchesLoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [needsVerification, setNeedsVerification] = useState(false)
+  const [resendingEmail, setResendingEmail] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,13 +62,54 @@ export default function MatchesLoginPage() {
         router.push(redirectUrl)
       }, 500)
     } catch (err: any) {
-      const errorMsg =
+      let errorMsg =
         err.response?.data?.message ||
         err.message ||
         (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
+      
+      // التحقق من رسالة تأكيد البريد الإلكتروني
+      if (errorMsg.includes('Please verify your email') || errorMsg.includes('Email not verified')) {
+        setNeedsVerification(true)
+      }
+      
+      // ترجمة رسائل الخطأ الشائعة
+      if (language === 'ar') {
+        if (errorMsg.includes('Please verify your email')) {
+          errorMsg = 'يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول'
+        } else if (errorMsg.includes('Invalid credentials') || errorMsg.includes('Invalid email or password')) {
+          errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+        } else if (errorMsg.includes('User not found')) {
+          errorMsg = 'المستخدم غير موجود'
+        } else if (errorMsg.includes('Email not verified')) {
+          errorMsg = 'البريد الإلكتروني غير مؤكد'
+        }
+      }
+      
       setError(errorMsg)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // دالة إعادة إرسال رابط التحقق
+  const handleResendVerification = async () => {
+    if (!email) {
+      setError(language === 'ar' ? 'يرجى إدخال البريد الإلكتروني' : 'Please enter your email')
+      return
+    }
+    
+    setResendingEmail(true)
+    setResendSuccess(false)
+    
+    try {
+      await resendVerificationEmail(email)
+      setResendSuccess(true)
+      setError(null)
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message
+      setError(language === 'ar' ? 'فشل إرسال رابط التحقق' : errorMsg)
+    } finally {
+      setResendingEmail(false)
     }
   }
 
@@ -150,10 +194,51 @@ export default function MatchesLoginPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+                className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"
               >
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-800">{error}</p>
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+                {/* زر إعادة إرسال رابط التحقق */}
+                {needsVerification && (
+                  <Button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={resendingEmail}
+                    className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                  >
+                    {resendingEmail ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        {language === 'ar' ? 'جاري الإرسال...' : 'Sending...'}
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2" />
+                        {language === 'ar' ? 'إعادة إرسال رابط التحقق' : 'Resend Verification Email'}
+                      </>
+                    )}
+                  </Button>
+                )}
+              </motion.div>
+            )}
+
+            {/* رسالة نجاح إعادة إرسال رابط التحقق */}
+            {resendSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3"
+              >
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0 mt-0.5">
+                  ✓
+                </div>
+                <p className="text-sm text-green-800">
+                  {language === 'ar'
+                    ? 'تم إرسال رابط التحقق إلى بريدك الإلكتروني'
+                    : 'Verification email sent successfully'}
+                </p>
               </motion.div>
             )}
 
