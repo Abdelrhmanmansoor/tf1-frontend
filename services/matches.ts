@@ -225,11 +225,30 @@ export const matchesGetMe = async (): Promise<MatchesUser> => {
 
 /**
  * Verify email with token
+ * Returns accessToken and user data for auto-login after verification
  */
 export const verifyEmail = async (
   token: string
-): Promise<{ success: boolean; message: string }> => {
+): Promise<{ success: boolean; message: string; accessToken?: string; user?: MatchesUser }> => {
   const response = await api.get(`/matches/auth/verify-email?token=${token}`)
+  
+  const { accessToken, user } = response.data
+  
+  // تخزين التوكن وبيانات المستخدم للدخول التلقائي بعد التحقق
+  if (typeof window !== 'undefined' && response.data.success) {
+    if (accessToken) {
+      localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
+    }
+    if (user) {
+      const minimalUserData = {
+        id: user.id,
+        name: user.name || user.email,
+        email: user.email,
+      }
+      localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
+    }
+  }
+  
   return response.data
 }
 

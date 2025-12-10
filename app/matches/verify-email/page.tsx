@@ -49,9 +49,9 @@ function VerifyEmailContent() {
           setStatus('success')
           setMessage(data.message || (language === 'ar' ? 'تم تأكيد البريد الإلكتروني بنجاح!' : 'Email verified successfully!'))
           
-          // Redirect to login after success
+          // Redirect to dashboard after success (token is already stored by verifyEmail service)
           setTimeout(() => {
-            router.push('/matches/login?verified=true')
+            router.push('/matches/dashboard')
           }, 2000)
         } else {
           setStatus('error')
