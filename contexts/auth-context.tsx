@@ -3,22 +3,12 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import authService from '@/services/auth'
-
-interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary' | 'leader' | 'team'
-  isEmailVerified: boolean
-  permissions?: string[]
-  accessKey?: string
-}
+import { User, LoginResponse } from '@/types/auth'
 
 interface AuthContextType {
   user: User | null
   loading: boolean
-  login: (email: string, password: string) => Promise<any>
+  login: (email: string, password: string) => Promise<LoginResponse>
   logout: () => void
   register: (userData: any) => Promise<any>
   isAuthenticated: boolean
@@ -51,76 +41,57 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       if (!authService.isAuthenticated()) {
         setUser(null)
+        setLoading(false)
         return false
       }
 
-      // Try to validate with backend, but don't fail on network errors
+      // Try to validate with backend
       try {
         const isValid = await authService.validateToken()
         if (!isValid) {
-          // Only clear session on definitive 401, not network errors
+          // If validation fails explicitly (locked out, token revoked), clear user
+          // But be careful not to clear on network errors (handled by service throwing/returning false)
+          // authService.validateToken() already handles 401 cleanup
           const currentUser = authService.getCurrentUser()
-          if (!currentUser) {
-            setUser(null)
-            return false
-          }
-          // Keep local session if we have user data (backend might be temporarily unavailable)
-          return true
+          setUser(currentUser) // might be null now
+          return !!currentUser
         }
       } catch (validationError: any) {
-        // Network error or timeout - don't logout, trust local token
-        console.warn('[AUTH] Backend validation failed, trusting local session:', validationError.message)
-        const currentUser = authService.getCurrentUser()
-        if (currentUser && authService.isAuthenticated()) {
-          setUser(currentUser)
-          return true
-        }
+        console.warn('[AUTH] Session validation warning:', validationError.message)
+        // Network error? Trust local state if we have it
       }
 
       const currentUser = authService.getCurrentUser()
       setUser(currentUser)
-      return true
+      return !!currentUser
     } catch (error) {
       console.error('[AUTH] Session validation failed:', error)
-      // Don't clear session on general errors - only on explicit 401
-      return authService.isAuthenticated()
+      return false
+    } finally {
+      setLoading(false)
     }
   }, [])
 
   useEffect(() => {
     const initAuth = async () => {
-      setLoading(true)
-      
-      // First, check localStorage for quick initial load
+      // Optimistic load
       const currentUser = authService.getCurrentUser()
       if (currentUser && authService.isAuthenticated()) {
         setUser(currentUser)
-        setLoading(false)
-        
-        // Then validate with backend in background (don't block UI)
-        validateSession().then(isValid => {
-          if (!isValid && pathname?.startsWith('/dashboard')) {
-            router.push('/login?reason=session_invalid')
-          }
-          setSessionValidated(true)
-        })
-      } else {
-        setUser(null)
-        setLoading(false)
-        setSessionValidated(true)
       }
+
+      await validateSession()
+      setSessionValidated(true)
     }
 
     initAuth()
-  }, [])
+  }, [validateSession])
 
   // Re-validate session on route changes within dashboard
   useEffect(() => {
     if (sessionValidated && pathname?.startsWith('/dashboard')) {
-      // Quick local check first
       if (!authService.isAuthenticated()) {
         router.push('/login?reason=no_session')
-        return
       }
     }
   }, [pathname, sessionValidated, router])
@@ -143,14 +114,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const refreshUser = async () => {
-    try {
-      const isValid = await validateSession()
-      if (!isValid) {
-        console.warn('[AUTH] Failed to refresh user - session invalid')
-      }
-    } catch (error) {
-      console.error('[AUTH] Failed to refresh user:', error)
-    }
+    await validateSession()
   }
 
   const value: AuthContextType = {

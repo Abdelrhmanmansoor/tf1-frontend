@@ -1,14 +1,16 @@
 // Authentication Service
 // This service handles all authentication-related API calls
+// Refactored for Type Safety & Security
 
 import api from './api'
 import API_CONFIG from '@/config/api'
+import { jwtDecode } from 'jwt-decode'
+import { User, LoginResponse, UserRole } from '@/types/auth'
 
-// Types
 interface RegisterData {
   email: string
   password: string
-  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+  role: UserRole
   firstName?: string
   lastName?: string
   phone?: string
@@ -20,28 +22,6 @@ interface RegisterData {
   // Admin roles specific fields
   department?: string
   position?: string
-}
-
-interface LoginResponse {
-  accessToken: string
-  user: User
-  requiresVerification?: boolean
-}
-
-interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  role: 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
-  isEmailVerified: boolean
-}
-
-interface ApiError {
-  message: string
-  code?: string
-  errors?: any
-  status?: number
 }
 
 class AuthService {
@@ -91,8 +71,10 @@ class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(API_CONFIG.TOKEN_KEY)
       localStorage.removeItem(API_CONFIG.USER_KEY)
-      // Clear cookie
+      // Clear cookie - Ensure correct path and domain handling
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      // Use window.location only if we need a hard refresh, otherwise router.push should be used by the caller
+      // For safety and complete cleanup, a hard refresh is acceptable here until we implement a better flow
       window.location.href = '/login'
     }
   }
@@ -105,8 +87,6 @@ class AuthService {
   async verifyEmail(token: string): Promise<any> {
     try {
       const response = await api.get(`/auth/verify-email?token=${token}`)
-
-      console.log('[AUTH-SERVICE] Raw backend response:', response.data)
 
       // Backend returns: { success, message, user, accessToken, alreadyVerified? }
       const { accessToken, user, success } = response.data
@@ -176,25 +156,27 @@ class AuthService {
 
   /**
    * Check if user is logged in
-   * @returns true if user has a token
+   * @returns true if user has a valid token
    */
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false
     const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
     if (!token) return false
-    
-    // Check if token is expired
+
+    // Check if token is expired using jwt-decode
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]))
+      const decoded: any = jwtDecode(token)
       const currentTime = Math.floor(Date.now() / 1000)
-      if (payload.exp && payload.exp < currentTime) {
+      if (decoded.exp && decoded.exp < currentTime) {
         // Token expired - clear storage
         this.clearSession()
         return false
       }
       return true
-    } catch {
-      return !!token
+    } catch (e) {
+      // Invalid token format
+      console.warn('[AUTH] Invalid token format during check', e)
+      return false
     }
   }
 
@@ -207,7 +189,7 @@ class AuthService {
     try {
       const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
       if (!token) return false
-      
+
       const response = await api.get('/auth/me')
       if (response.data?.user) {
         // Update user data with fresh data from backend
@@ -249,14 +231,18 @@ class AuthService {
     if (typeof window === 'undefined') return null
 
     const userJson = localStorage.getItem(API_CONFIG.USER_KEY)
-    return userJson ? JSON.parse(userJson) : null
+    try {
+      return userJson ? JSON.parse(userJson) : null
+    } catch {
+      return null;
+    }
   }
 
   /**
    * Get user role
    * @returns User role or null
    */
-  getUserRole(): string | null {
+  getUserRole(): UserRole | null {
     const user = this.getCurrentUser()
     return user ? user.role : null
   }
@@ -287,9 +273,9 @@ class AuthService {
    * Handle API errors
    * @private
    */
-  private handleError(error: any): ApiError {
+  private handleError(error: any): any {
     console.error('[AUTH-SERVICE] Error details:', error)
-    
+
     if (error.response) {
       // Server responded with error
       return {

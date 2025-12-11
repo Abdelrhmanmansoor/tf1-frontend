@@ -6,8 +6,7 @@
 -
 ## 👋 Hello from the Developer
 
-**Name:** Hazem Salama
-**Email:** HazemSalama108@gmail.com
+**Name:** مؤسسة عبدالرحمن سليمان
 **Phone:** +201092637808
 
 I've built this platform with care and attention to detail. This document will help you understand what's been built, how it works, and how to take it forward. Feel free to reach out if you have any questions!
@@ -808,8 +807,7 @@ See `PROJECT-BRIEF.md` for detailed development phases (pages 871-1021).
 
 **Developer Contact:**
 
-- **Name:** Hazem Salama
-- **Email:** HazemSalama108@gmail.com
+- **Name:** مؤسسة عبدالرحمن سليمان
 - **Phone:** +201092637808
 - **Available:** Monday-Saturday, 9 AM - 6 PM (Egypt Time)
 
@@ -1030,8 +1028,8 @@ Thank you for choosing me to build the TF1 Platform! I've poured my heart into c
 
 If you have any questions, need help, or just want to share how the platform is doing - please don't hesitate to reach out!
 
-**Hazem Salama**
-HazemSalama108@gmail.com
+**مؤسسة عبدالرحمن سليمان**
+
 +201092637808
 
 **Let's build something amazing together! 🚀**
@@ -1104,7 +1102,7 @@ Chore: Maintenance tasks
 
 **Document Version:** 1.0
 **Date:** October 12, 2025
-**Author:** Hazem Salama
+**Author:** مؤسسة عبدالرحمن سليمان
 **Project:** TF1 Platform
 **Status:** ✅ Production Ready
 

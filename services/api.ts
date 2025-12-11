@@ -1,53 +1,73 @@
-import axios from 'axios'
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import API_CONFIG from '@/config/api'
+import { ApiError } from '@/types/auth'
 
+// Create axios instance
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true, // مهم للـ cookies
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Flag to prevent multiple redirects
+// Types for queueing failed requests
+interface RetryQueueItem {
+  resolve: (value?: any) => void
+  reject: (error?: any) => void
+  config: InternalAxiosRequestConfig
+}
+
+// Global state for auth handling to avoid race conditions
+let isRefreshing = false
+let failedQueue: RetryQueueItem[] = []
 let isRedirecting = false
 
-// Retry count for transient errors
-const MAX_RETRIES = 1
-const retryCount: Record<string, number> = {}
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error)
+    } else {
+      if (prom.config.headers && token) {
+        prom.config.headers.Authorization = `Bearer ${token}`
+      }
+      prom.resolve(api(prom.config))
+    }
+  })
+  failedQueue = []
+}
 
-// Check if token is expired locally
+// Safer token parsing function (Fallback if jwt-decode isn't used here to avoid circular dep)
 function isTokenExpired(token: string): boolean {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    )
+    const payload = JSON.parse(jsonPayload)
     const currentTime = Math.floor(Date.now() / 1000)
     return payload.exp && payload.exp < currentTime
-  } catch {
-    return false
+  } catch (error) {
+    return true // Assume expired if invalid
   }
 }
 
+// Request Interceptor
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+
       if (token) {
-        // Check if token is expired before making request
         if (isTokenExpired(token)) {
-          // Clear expired token
-          localStorage.removeItem(API_CONFIG.TOKEN_KEY)
-          localStorage.removeItem(API_CONFIG.USER_KEY)
-          document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
-          
-          // Redirect if on dashboard
-          const currentPath = window.location.pathname
-          if (currentPath.startsWith('/dashboard') && !isRedirecting) {
-            isRedirecting = true
-            const redirectUrl = encodeURIComponent(currentPath)
-            window.location.href = `/login?redirect=${redirectUrl}&reason=token_expired`
-          }
-          return Promise.reject(new Error('Token expired'))
+          // Token is expired, let the response interceptor handle the 401 or refresh logic
+          // But we can proactively clear if we know it's dead and we don't have refresh token logic
+          // For now, allow it to fail to 401 so we handle cleanup centrally
         }
         config.headers.Authorization = `Bearer ${token}`
       }
@@ -59,82 +79,63 @@ api.interceptors.request.use(
   }
 )
 
+// Response Interceptor
 api.interceptors.response.use(
-  (response) => {
-    // Reset retry count on success
-    const url = response.config.url || ''
-    if (retryCount[url]) {
-      delete retryCount[url]
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+    const url = originalRequest?.url || ''
+
+    // Prevent infinite loops
+    if (url.includes('/auth/login') || url.includes('/auth/refresh')) {
+      return Promise.reject(error)
     }
-    return response
-  },
-  (error) => {
-    const url = error.config?.url || ''
-    
+
     // Handle 401 Unauthorized
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
-      const currentPath = window.location.pathname
-      
-      // List of auth pages that should not trigger redirect
-      const authPages = [
-        '/login', 
-        '/register', 
-        '/forgot-password',
-        '/reset-password',
-        '/verify-email',
-        '/verify-email-notice',
-        '/leader/login'
-      ]
-      
-      const isAuthPage = authPages.some(page => currentPath.includes(page))
-      
-      // Skip redirect for /auth/me endpoint - let caller handle it
-      const isAuthCheck = url.includes('/auth/me')
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname
 
-      // Only redirect if:
-      // 1. Not on auth page
-      // 2. Not already redirecting
-      // 3. On a dashboard page
-      // 4. Not a background auth check
-      if (!isAuthPage && !isRedirecting && currentPath.startsWith('/dashboard') && !isAuthCheck) {
-        console.warn('[API] 401 Unauthorized - Session expired or invalid')
-        isRedirecting = true
-        
-        // Clear session data
-        localStorage.removeItem(API_CONFIG.TOKEN_KEY)
-        localStorage.removeItem(API_CONFIG.USER_KEY)
-        document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
-        
-        // Redirect with context
-        const redirectUrl = encodeURIComponent(currentPath)
-        
-        // Use setTimeout to prevent blocking
-        setTimeout(() => {
+        // Auth pages list
+        const authPages = [
+          '/login',
+          '/register',
+          '/forgot-password',
+          '/reset-password',
+          '/verify-email'
+        ]
+
+        const isAuthPage = authPages.some(page => currentPath.startsWith(page))
+
+        if (!isAuthPage && !isRedirecting) {
+
+          // If we had a refresh token flow, we would do it here.
+          // Since we don't seem to have one in the current architecture, we logout.
+
+          isRedirecting = true
+
+          // Clear session
+          localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+          localStorage.removeItem(API_CONFIG.USER_KEY)
+          document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+
+          // Redirect
+          const redirectUrl = encodeURIComponent(currentPath)
           window.location.href = `/login?redirect=${redirectUrl}&reason=session_expired`
-        }, 100)
-      }
-    }
-    
-    // Handle network errors with retry for non-auth endpoints
-    if (!error.response && error.code !== 'ECONNABORTED') {
-      // Network error - could be transient
-      const currentRetry = retryCount[url] || 0
-      if (currentRetry < MAX_RETRIES && !url.includes('/auth/')) {
-        retryCount[url] = currentRetry + 1
-        console.warn(`[API] Network error, retrying (${currentRetry + 1}/${MAX_RETRIES}):`, url)
-        return new Promise(resolve => setTimeout(resolve, 1000)).then(() => api(error.config))
+        }
       }
     }
 
-    return Promise.reject(error)
+    // Standard error format
+    const apiError: ApiError = {
+      message: (error.response?.data as any)?.message || error.message || 'Unknown Error',
+      status: error.response?.status,
+      code: (error.response?.data as any)?.code
+    }
+
+    return Promise.reject(apiError)
   }
 )
 
-// Reset redirect flag when page loads
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', () => {
-    isRedirecting = false
-  })
-}
-
 export default api
+

@@ -4,13 +4,26 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, CheckCircle, Home } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, Home } from 'lucide-react'
 import Image from 'next/image'
+import { getDashboardRoute } from '@/utils/role-routes'
+import { toast } from 'sonner' // Assuming sonner is installed as per package.json
+
+// Zod Schema for Validation
+const loginSchema = z.object({
+  email: z.string().email('Email is invalid').min(1, 'Email is required'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+type LoginFormValues = z.infer<typeof loginSchema>
 
 function LoginContent() {
   const { language } = useLanguage()
@@ -18,83 +31,79 @@ function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const [registrationSuccess, setRegistrationSuccess] = useState(false)
 
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  // Check for registration success param
   useEffect(() => {
     if (searchParams.get('registered') === 'true') {
       setRegistrationSuccess(true)
+      if (language === 'ar') {
+        toast.success('تم التسجيل بنجاح! يرجى تفعيل حسابك.')
+      } else {
+        toast.success('Registration successful! Please verify your account.')
+      }
     }
-  }, [searchParams])
+  }, [searchParams, language])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: LoginFormValues) => {
     setError(null)
-    setSuccess(false)
-
-    if (!email || !password) {
-      setError(language === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill in all fields')
-      return
-    }
-
     setLoading(true)
 
     try {
-      console.log('[LOGIN] Attempting login with email:', email)
-      const response = await login(email, password)
-      console.log('[LOGIN] Success:', response)
+      const response = await login(data.email, data.password)
 
       if (response.requiresVerification) {
-        setError(language === 'ar' ? 'يرجى تفعيل حسابك عبر البريد الإلكتروني' : 'Please verify your email first')
+        const msg = language === 'ar' ? 'يرجى تفعيل حسابك أولاً' : 'Please verify your email first'
+        setError(msg)
+        toast.warning(msg)
         setLoading(false)
         return
       }
 
-      setSuccess(true)
-      const userRole = response.user.role
+      toast.success(language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Login successful')
 
+      // Determine Redirect
       const redirectUrl = searchParams.get('redirect') || searchParams.get('next')
-      
       if (redirectUrl) {
-        setTimeout(() => {
-          window.location.href = redirectUrl
-        }, 500)
+        window.location.href = redirectUrl
         return
       }
 
-      const roleRoutes: Record<string, string> = {
-        player: '/dashboard/player',
-        coach: '/dashboard/coach',
-        club: '/dashboard/club',
-        specialist: '/dashboard/specialist',
-        administrator: '/dashboard/administrator',
-        'age-group-supervisor': '/dashboard/age-group-supervisor',
-        'sports-director': '/dashboard/sports-director',
-        'executive-director': '/dashboard/executive-director',
-        secretary: '/dashboard/secretary',
-      }
+      const roleRoute = getDashboardRoute(response.user.role)
+      // Use window.location for a fresh state on dashboard load
+      window.location.href = roleRoute
 
-      setTimeout(() => {
-        window.location.href = roleRoutes[userRole] || '/dashboard'
-      }, 500)
     } catch (err: any) {
       console.error('[LOGIN] Error:', err)
-      setError(err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed'))
-    } finally {
+      const errorMsg = err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
+      setError(errorMsg)
+      toast.error(errorMsg)
       setLoading(false)
     }
   }
 
+  const isRtl = language === 'ar'
 
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50 flex items-center justify-center p-4"
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -110,38 +119,35 @@ function LoginContent() {
         />
       </div>
 
-      {/* Main Container */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="relative w-full max-w-md"
       >
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-white/50 backdrop-blur-sm">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-8 pt-8 pb-6 relative">
-            {/* Home Button */}
-            <Link 
+            <Link
               href="/"
-              className="absolute top-4 left-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
+              className={`absolute top-4 ${isRtl ? 'left-4' : 'left-4'} w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group`}
             >
               <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
             </Link>
 
-            {/* Saudi Arabia Flag */}
-            <div className="absolute top-4 right-4 text-3xl">
+            <div className={`absolute top-4 ${isRtl ? 'right-4' : 'right-4'} text-3xl`}>
               🇸🇦
             </div>
-            
-            {/* Logo */}
+
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
-                <Image 
-                  src="/logo.png" 
-                  alt="TF1 Logo" 
-                  width={56} 
+                <Image
+                  src="/logo.png"
+                  alt="TF1 Logo"
+                  width={56}
                   height={56}
                   className="object-contain"
+                  priority
                 />
               </div>
             </div>
@@ -163,151 +169,136 @@ function LoginContent() {
             {/* Registration Success Message */}
             {registrationSuccess && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3"
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-blue-900 mb-1">
-                      {language === 'ar' ? 'تم التسجيل بنجاح!' : 'Registration Successful!'}
-                    </h3>
-                    <p className="text-sm text-blue-700">
-                      {language === 'ar' 
-                        ? 'تم إرسال رابط التفعيل إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد أو البريد المزعج وتفعيل حسابك للمتابعة.'
-                        : 'A verification link has been sent to your email. Please check your inbox or spam folder and verify your account to continue.'}
-                    </p>
-                  </div>
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-blue-600">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-blue-900">
+                    {language === 'ar' ? 'تحقق من بريدك' : 'Check your email'}
+                  </h4>
+                  <p className="text-xs text-blue-700 mt-1">
+                    {language === 'ar'
+                      ? 'تم إرسال رابط التفعيل. يرجى التحقق لتسجيل الدخول.'
+                      : 'Verification link sent. Please verify to login.'}
+                  </p>
                 </div>
               </motion.div>
             )}
 
-            {/* Error Message */}
+            {/* General Error Message */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+                className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700 text-sm"
               >
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-800">{error}</p>
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span>{error}</span>
               </motion.div>
             )}
 
-            {/* Success Message */}
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3"
-              >
-                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0 mt-0.5">
-                  ✓
-                </div>
-                <p className="text-sm text-green-800">
-                  {language === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Login successful'}
-                </p>
-              </motion.div>
-            )}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">
                   {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <Mail className={`absolute top-3 w-5 h-5 text-gray-400 ${isRtl ? 'right-3' : 'left-3'}`} />
                   <Input
+                    {...register('email')}
                     type="email"
-                    placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
+                    placeholder={language === 'ar' ? 'example@domain.com' : 'example@domain.com'}
+                    className={`${isRtl ? 'pr-10' : 'pl-10'} bg-gray-50 border-gray-200 focus:bg-white transition-colors`}
                     disabled={loading}
+                    dir="ltr" // Email is always LTR
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                )}
               </div>
 
               {/* Password Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">
                   {language === 'ar' ? 'كلمة المرور' : 'Password'}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <Lock className={`absolute top-3 w-5 h-5 text-gray-400 ${isRtl ? 'right-3' : 'left-3'}`} />
                   <Input
+                    {...register('password')}
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white"
+                    placeholder="••••••••"
+                    className={`${isRtl ? 'pr-10 pl-10' : 'pl-10 pr-10'} bg-gray-50 border-gray-200 focus:bg-white transition-colors`}
                     disabled={loading}
+                    dir="ltr"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                    className={`absolute top-3 text-gray-400 hover:text-gray-600 ${isRtl ? 'left-3' : 'right-3'}`}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500">{errors.password.message}</p>
+                )}
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded" />
-                  <span className="text-gray-600">{language === 'ar' ? 'تذكرني' : 'Remember me'}</span>
+              <div className="flex items-center justify-between text-sm pt-2">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                  <span className="text-gray-600 group-hover:text-gray-800 transition-colors">
+                    {language === 'ar' ? 'تذكرني' : 'Remember me'}
+                  </span>
                 </label>
-                <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
+                <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
                   {language === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
                 </Link>
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-2.5 rounded-lg transition-all"
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {language === 'ar' ? 'جاري...' : 'Loading...'}
+                    <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                    {language === 'ar' ? 'جاري الدخول...' : 'Signing in...'}
                   </>
                 ) : (
                   <>
-                    <LogIn className="w-4 h-4 mr-2" />
-                    {language === 'ar' ? 'دخول' : 'Sign In'}
+                    <LogIn className={`w-4 h-4 ${isRtl ? 'ml-2' : 'mr-2'}`} />
+                    {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
                   </>
                 )}
               </Button>
             </form>
 
-            {/* Divider */}
             <div className="my-6 flex items-center gap-4">
               <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-gray-500 text-sm">{language === 'ar' ? 'أو' : 'or'}</span>
+              <span className="text-gray-400 text-xs uppercase tracking-wider">{language === 'ar' ? 'أو' : 'OR'}</span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            {/* Sign Up Link */}
-            <p className="text-center text-gray-600">
+            <p className="text-center text-gray-600 text-sm">
               {language === 'ar' ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
-              <Link href="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
-                {language === 'ar' ? 'سجل الآن' : 'Sign up'}
+              <Link href="/register" className="text-blue-600 hover:text-blue-700 font-bold hover:underline">
+                {language === 'ar' ? 'سجل الآن' : 'Create Account'}
               </Link>
             </p>
           </div>
         </div>
 
-        {/* Language Selector */}
-        <div className="absolute top-4 right-4">
+        <div className={`absolute top-4 ${isRtl ? 'left-4' : 'right-4'}`}>
           <LanguageSelector />
         </div>
       </motion.div>
@@ -318,8 +309,8 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
       </div>
     }>
       <LoginContent />

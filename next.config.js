@@ -80,12 +80,6 @@ const nextConfig = {
   },
   // Disable powered-by header
   poweredByHeader: false,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 }
 
 module.exports = nextConfig

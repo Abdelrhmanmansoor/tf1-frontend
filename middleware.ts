@@ -5,7 +5,7 @@ const PUBLIC_ROUTES = [
   '/',
   '/login',
   '/register',
-  '/leader/login',
+
   '/forgot-password',
   '/reset-password',
   '/verify-email',
@@ -42,7 +42,7 @@ const ROLE_ROUTE_MAP: Record<string, string[]> = {
     '/dashboard/notifications',
   ],
   secretary: ['/dashboard/secretary', '/dashboard/notifications'],
-  leader: ['/dashboard/leader', '/dashboard/notifications'],
+  'sports-administrator': ['/dashboard/sports-admin', '/dashboard/notifications'],
   team: ['/dashboard/team', '/dashboard/notifications'],
 }
 

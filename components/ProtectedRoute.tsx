@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
 import { Loader2, ShieldAlert } from 'lucide-react'
 
-type UserRole = 'leader' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
+type UserRole = 'sports-administrator' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -24,7 +24,7 @@ const ROLE_DASHBOARDS: Record<string, string> = {
   'sports-director': '/dashboard/sports-director',
   'executive-director': '/dashboard/executive-director',
   secretary: '/dashboard/secretary',
-  leader: '/dashboard/leader',
+  'sports-administrator': '/dashboard/sports-admin',
   team: '/dashboard/team',
 }
 

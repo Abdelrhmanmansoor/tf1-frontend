@@ -30,9 +30,9 @@ function DashboardContent() {
 
     if (userRole) {
       setCurrentRole(userRole)
-      // Redirect leader and team directly to their dashboards
-      if (userRole === 'leader') {
-        window.location.href = '/dashboard/leader'
+      // Redirect sports-administrator and team directly to their dashboards
+      if (userRole === 'sports-administrator') {
+        window.location.href = '/dashboard/sports-admin'
         return
       } else if (userRole === 'team') {
         window.location.href = '/dashboard/team'
@@ -74,7 +74,7 @@ function DashboardContent() {
   // Render role-specific dashboard
   const renderDashboard = () => {
     switch (currentRole) {
-      case 'leader':
+      case 'sports-administrator':
         // Redirect handled in useEffect
         return null
       case 'team':

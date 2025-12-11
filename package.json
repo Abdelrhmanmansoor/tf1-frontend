@@ -21,16 +21,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hazem-Salama/Sports-Platform.git"
+    "url": "git+https://github.com/Abdelrahman-Soliman/Sports-Platform.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "مؤسسة عبدالرحمن سليمان",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Hazem-Salama/Sports-Platform/issues"
+    "url": "https://github.com/Abdelrahman-Soliman/Sports-Platform/issues"
   },
-  "homepage": "https://github.com/Hazem-Salama/Sports-Platform#readme",
-  "description": "",
+  "homepage": "https://github.com/Abdelrahman-Soliman/Sports-Platform#readme",
+  "description": "منصة التوظيف الرياضي - مؤسسة عبدالرحمن سليمان",
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.6.1",
     "@hookform/resolvers": "^5.2.1",
@@ -57,6 +57,7 @@
     "framer-motion": "^12.23.12",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.4",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.542.0",
     "msw": "^2.11.1",
     "msw-storybook-addon": "^2.0.5",
