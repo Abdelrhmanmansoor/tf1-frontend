@@ -186,8 +186,10 @@ export const matchesLogin = async (
     // تخزين التوكن للـ API calls
     if (accessToken) {
       localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
+      // ✅ 1. تخزين التوكن في LocalStorage (أساسي) كما هو مطلوب
+      localStorage.setItem('matches_token', accessToken)
     }
-    
+
     // تخزين بيانات المستخدم
     if (user) {
       const minimalUserData = {
@@ -231,13 +233,14 @@ export const verifyEmail = async (
   token: string
 ): Promise<{ success: boolean; message: string; accessToken?: string; user?: MatchesUser }> => {
   const response = await api.get(`/matches/auth/verify-email?token=${token}`)
-  
+
   const { accessToken, user } = response.data
-  
+
   // تخزين التوكن وبيانات المستخدم للدخول التلقائي بعد التحقق
   if (typeof window !== 'undefined' && response.data.success) {
     if (accessToken) {
       localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
+      localStorage.setItem('matches_token', accessToken)
     }
     if (user) {
       const minimalUserData = {
@@ -248,7 +251,7 @@ export const verifyEmail = async (
       localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
     }
   }
-  
+
   return response.data
 }
 
@@ -272,14 +275,15 @@ export const resendVerificationEmail = async (
  */
 export const matchesLogout = async (): Promise<{ success: boolean; message: string }> => {
   const response = await api.post('/matches/auth/logout')
-  
+
   // Clear local storage
   if (typeof window !== 'undefined') {
     localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+    localStorage.removeItem('matches_token')
     localStorage.removeItem('matches_user')
     localStorage.removeItem(API_CONFIG.USER_KEY)
   }
-  
+
   return response.data
 }
 
