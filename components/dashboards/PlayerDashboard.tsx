@@ -52,8 +52,8 @@ import type {
 } from '@/types/player'
 import { calculateProfileCompletion } from '@/utils/profileCompletion'
 import JobNotifications from '@/components/notifications/JobNotifications'
-import { ActiveRequestsWidget, UpcomingSessionsWidget } from '@/components/dashboards/player'
-import NotificationBell from '@/components/notifications/NotificationBell'
+import { ActiveRequestsWidget, UpcomingSessionsWidget 
+} from '@/components/dashboards/player'
 
 const PlayerDashboard = () => {
   const { language } = useLanguage()
@@ -62,7 +62,7 @@ const PlayerDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [_stats, setStats] = useState<DashboardStats | null>(null)
   const [profile, setProfile] = useState<PlayerProfile | null>(null)
   const [playerCategory, setPlayerCategory] = useState<PlayerAgeCategory | null>(null)
   const [trainingPrograms, setTrainingPrograms] = useState<TrainingProgram[]>([])
@@ -325,6 +325,7 @@ const PlayerDashboard = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-xl font-bold">
                     {coach.avatar ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img src={coach.avatar} alt="" className="w-full h-full rounded-xl object-cover" />
                     ) : (
                       coach.name?.charAt(0) || 'C'
@@ -629,6 +630,7 @@ const PlayerDashboard = () => {
                     <div key={member.id} className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         {member.avatar ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
                           <img src={member.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                         ) : (
                           member.name?.charAt(0) || '?'

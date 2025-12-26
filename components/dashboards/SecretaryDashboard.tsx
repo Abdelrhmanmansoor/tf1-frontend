@@ -11,9 +11,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import secretaryService from '@/services/secretary'
 import {
-  Users,
   Calendar,
-  Clock,
   CheckCircle,
   XCircle,
   Loader2,
@@ -32,12 +30,10 @@ import {
   Eye,
   Video,
   MapPin,
-  User,
   AlertTriangle
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface Meeting {
   id: string
@@ -134,7 +130,7 @@ const SecretaryDashboard = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [documents, setDocuments] = useState<Document[]>([])
   const [messages, setMessages] = useState<Message[]>([])
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [_tasks, setTasks] = useState<Task[]>([])
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [showAddMeetingModal, setShowAddMeetingModal] = useState(false)

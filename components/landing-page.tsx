@@ -4,9 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
-  MapPin,
-  Phone,
-  Mail,
   ArrowRight,
   Users,
   GraduationCap,
@@ -17,7 +14,6 @@ import {
   FolderKanban,
   Mic,
   BookOpen,
-  Settings,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -67,12 +63,8 @@ function FootballWipeText({
 
 export function LandingPage() {
   const [mode, setMode] = useState<SwitcherMode>('application')
-  const [isDragging, setIsDragging] = useState(false)
-  const [isResetting, setIsResetting] = useState(false)
   const { t, language } = useLanguage()
   const carouselRef = useRef<HTMLDivElement>(null)
-  const autoScrollIntervalRef = useRef<number | null>(null)
-  const touchStartX = useRef(0)
   const [newsIndex, setNewsIndex] = useState(0)
   
   const newsMessagesAr = [
@@ -100,57 +92,6 @@ export function LandingPage() {
     url: '/banners/banner-hero-saudi.png',
     alt: language === 'ar' ? 'معاً نصنع نجاحك خطوة بخطوة' : 'Together We Build Your Success Step by Step',
   }
-
-  const sportSpecializations = [
-    {
-      id: 1,
-      nameAr: 'كرة القدم',
-      nameEn: 'Football',
-      icon: '⚽',
-      jobs: 2400,
-      gradient: 'from-emerald-400 to-green-600',
-    },
-    {
-      id: 2,
-      nameAr: 'كرة السلة',
-      nameEn: 'Basketball',
-      icon: '🏀',
-      jobs: 1800,
-      gradient: 'from-orange-400 to-red-600',
-    },
-    {
-      id: 3,
-      nameAr: 'التنس',
-      nameEn: 'Tennis',
-      icon: '🎾',
-      jobs: 950,
-      gradient: 'from-yellow-400 to-orange-500',
-    },
-    {
-      id: 4,
-      nameAr: 'ألعاب القوى',
-      nameEn: 'Athletics',
-      icon: '🏃',
-      jobs: 890,
-      gradient: 'from-pink-400 to-red-500',
-    },
-    {
-      id: 5,
-      nameAr: 'اللياقة البدنية',
-      nameEn: 'Fitness',
-      icon: '🏋️',
-      jobs: 1200,
-      gradient: 'from-purple-400 to-blue-600',
-    },
-    {
-      id: 6,
-      nameAr: 'السباحة',
-      nameEn: 'Swimming',
-      icon: '🏊',
-      jobs: 720,
-      gradient: 'from-cyan-400 to-blue-500',
-    },
-  ]
 
   const categories = [
     {
@@ -678,8 +619,8 @@ export function LandingPage() {
       {/* Hero Banner - Optimized for All Devices */}
       <section className="relative w-full bg-white overflow-hidden">
         <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-6xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            // eslint-disable-next-line @next/next/no-img-element
             src={bannerImage.url}
             alt={bannerImage.alt}
             loading="eager"
@@ -884,7 +825,7 @@ export function LandingPage() {
 
                 {/* Content */}
                 <p className="text-gray-700 text-base leading-relaxed mb-6">
-                  "{testimonial.content}"
+                  &quot;{testimonial.content}&quot;
                 </p>
 
                 {/* User Info */}

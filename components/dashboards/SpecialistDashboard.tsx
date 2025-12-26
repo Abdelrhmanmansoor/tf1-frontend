@@ -40,7 +40,6 @@ import {
   type SpecialistProfile,
 } from '@/services/specialist'
 import JobNotifications from '@/components/notifications/JobNotifications'
-import NotificationBell from '@/components/notifications/NotificationBell'
 
 const SpecialistDashboard = () => {
   const { language } = useLanguage()
@@ -49,7 +48,7 @@ const SpecialistDashboard = () => {
 
   // State management
   const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null)
-  const [todaySessions, setTodaySessions] = useState<Session[]>([])
+  const [_todaySessions, setTodaySessions] = useState<Session[]>([])
   const [profile, setProfile] = useState<SpecialistProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

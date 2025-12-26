@@ -6,7 +6,6 @@ import {
   Dumbbell, 
   Clock, 
   MapPin,
-  User,
   Calendar,
   ChevronRight,
   Loader2,
@@ -24,7 +23,7 @@ import type { TrainingSession, EnhancedTrainingSession } from '@/types/player'
 interface UpcomingSessionsWidgetProps {
   language: 'ar' | 'en'
   sessions?: TrainingSession[]
-  onConfirmAttendance?: (sessionId: string) => void
+  onConfirmAttendance?: (_sessionId: string) => void
 }
 
 const sessionTypeLabels = {
@@ -107,26 +106,6 @@ export default function UpcomingSessionsWidget({
     } finally {
       setConfirmingId(null)
     }
-  }
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    if (date.toDateString() === today.toDateString()) {
-      return language === 'ar' ? 'اليوم' : 'Today'
-    }
-    if (date.toDateString() === tomorrow.toDateString()) {
-      return language === 'ar' ? 'غداً' : 'Tomorrow'
-    }
-
-    return new Intl.DateTimeFormat(language === 'ar' ? 'ar-SA' : 'en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    }).format(date)
   }
 
   const getTimeUntilSession = (dateStr: string, startTime: string) => {

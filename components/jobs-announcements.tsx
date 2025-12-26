@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Briefcase, TrendingUp, AlertCircle } from 'lucide-react'
+import { Briefcase, TrendingUp } from 'lucide-react'
 import { useLanguage } from '@/contexts/language-context'
+import Link from 'next/link'
 
 interface Job {
   id: string
@@ -54,8 +55,8 @@ const SAMPLE_JOBS: Job[] = [
 export function JobsAnnouncements() {
   const { language } = useLanguage()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [jobs] = useState<Job[]>(SAMPLE_JOBS)
-  const [activeCount] = useState(SAMPLE_JOBS.length)
+  const jobs = SAMPLE_JOBS
+  const activeCount = SAMPLE_JOBS.length
 
   useEffect(() => {
     const interval = setInterval(() => {
