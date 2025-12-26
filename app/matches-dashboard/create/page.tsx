@@ -7,7 +7,6 @@ import { createMatch, getRegionsData } from '@/services/matches'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Calendar, Clock, MapPin, Users, Trophy } from 'lucide-react'
 
 export default function CreateMatchPage() {
   const router = useRouter()

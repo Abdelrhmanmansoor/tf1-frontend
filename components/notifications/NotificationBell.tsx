@@ -19,7 +19,7 @@ export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   
-  const socketHandlerRef = useRef<((notification: any) => void) | null>(null)
+  const socketHandlerRef = useRef<((_notification: any) => void) | null>(null)
 
   const fetchNotifications = useCallback(async () => {
     try {

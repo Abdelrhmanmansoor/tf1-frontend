@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { LanguageSelector } from './language-selector'
 import { useLanguage } from '@/contexts/language-context'
@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { X } from 'lucide-react'
-import NotificationBell from '@/components/notifications/NotificationBell'
+// import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
   activeMode: 'application' | 'recruitment'
@@ -27,11 +27,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   const navItems: NavItem[] = [
     { id: 'home', label: t('home') },

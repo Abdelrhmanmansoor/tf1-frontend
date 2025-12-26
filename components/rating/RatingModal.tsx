@@ -26,7 +26,7 @@ export function RatingModal({
 }: RatingModalProps) {
   const { language } = useLanguage()
   const [rating, setRating] = useState(5)
-  const [hoverRating, setHoverRating] = useState(0)
+  // const [hoverRating, setHoverRating] = useState(0)
   const [title, setTitle] = useState('')
   const [titleAr, setTitleAr] = useState('')
   const [comment, setComment] = useState('')
@@ -113,7 +113,7 @@ export function RatingModal({
     onChange,
   }: {
     value: number
-    onChange: (val: number) => void
+    onChange: (_val: number) => void
   }) => {
     const [hover, setHover] = useState(0)
 
@@ -150,7 +150,7 @@ export function RatingModal({
     label: string
     labelAr: string
     value: number
-    onChange: (val: number) => void
+    onChange: (_val: number) => void
   }) => {
     return (
       <div className="flex items-center justify-between py-3 border-b border-gray-100">

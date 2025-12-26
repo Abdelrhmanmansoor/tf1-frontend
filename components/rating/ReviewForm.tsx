@@ -11,7 +11,7 @@ import type { ReviewData } from '@/services/rating'
 interface ReviewFormProps {
   revieweeId: string
   revieweeRole: 'player' | 'coach' | 'specialist' | 'club'
-  onSubmit: (data: ReviewData) => Promise<void>
+  onSubmit: (_data: ReviewData) => Promise<void>
   onCancel: () => void
 }
 

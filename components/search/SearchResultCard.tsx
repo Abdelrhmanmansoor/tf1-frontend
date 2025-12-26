@@ -10,7 +10,6 @@ import {
   MapPin,
   Calendar,
   Briefcase,
-  Users,
   Building2,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -44,7 +43,7 @@ export const PersonCard: React.FC<PersonCardProps> = ({ person }) => {
     .slice(0, 2)
 
   const handleViewProfile = () => {
-    const role = person.type || person.role
+    // const role = person.type || person.role
     router.push(`/profile/${person._id}`)
   }
 

@@ -8,7 +8,6 @@ import {
   Calendar,
   Users,
   PlusCircle,
-  MessageSquare,
   Bell,
   History,
   User,

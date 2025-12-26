@@ -32,9 +32,9 @@ const OpportunitiesPage = () => {
   // Fetch opportunities whenever filters change
   useEffect(() => {
     fetchOpportunities()
-  }, [filters])
+  }, [fetchOpportunities])
 
-  const fetchOpportunities = async () => {
+  const fetchOpportunities = useCallback(async () => {
     setLoading(true)
     try {
       const response = await searchOpportunities(filters)
@@ -47,7 +47,7 @@ const OpportunitiesPage = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters])
 
   const handleFilterChange = (newFilters: Partial<OpportunitySearchParams>) => {
     setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }))

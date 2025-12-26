@@ -23,7 +23,6 @@ import Image from 'next/image'
 
 export default function MatchesLoginPage() {
   const { language } = useLanguage()
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const [email, setEmail] = useState('')

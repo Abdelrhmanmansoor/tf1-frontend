@@ -1,6 +1,6 @@
 // Permission Map - Routes and their required permissions
 
-import { MODULES, ACTIONS } from '@/types/rbac'
+import { MODULES } from '@/types/rbac'
 
 export interface RoutePermission {
   path: string

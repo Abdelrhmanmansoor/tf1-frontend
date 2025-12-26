@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface AlertDialogProps {
   open?: boolean
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (_open: boolean) => void
   children: React.ReactNode
 }
 
@@ -41,7 +41,7 @@ interface AlertDialogCancelProps
 
 const AlertDialogContext = React.createContext<{
   open: boolean
-  onOpenChange: (open: boolean) => void
+  onOpenChange: (_open: boolean) => void
 } | null>(null)
 
 export function AlertDialog({

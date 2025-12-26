@@ -6,7 +6,7 @@ import { hasPermission as checkPermission } from './permission-map'
 import { LEADER_PERMISSIONS } from '@/types/rbac'
 
 interface UsePermissionResult {
-  hasPermission: (permissions: string | string[], requireAll?: boolean) => boolean
+  hasPermission: (_permissions: string | string[], _requireAll?: boolean) => boolean
   userPermissions: string[]
   isLeader: boolean
   isTeam: boolean

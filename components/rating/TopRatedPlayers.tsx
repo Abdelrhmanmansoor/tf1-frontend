@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { ratingService } from '@/services/rating'
@@ -28,9 +28,9 @@ export function TopRatedPlayers({
 
   useEffect(() => {
     fetchTopPlayers()
-  }, [sport])
+  }, [fetchTopPlayers])
 
-  const fetchTopPlayers = async () => {
+  const fetchTopPlayers = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -49,7 +49,7 @@ export function TopRatedPlayers({
     } finally {
       setLoading(false)
     }
-  }
+  }, [limit, sport, minReviews])
 
   if (loading) {
     return (
@@ -114,6 +114,7 @@ export function TopRatedPlayers({
 
             {/* Player Image */}
             <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-500">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={player.avatar || '/default-avatar.png'}
                 alt={player.fullName}

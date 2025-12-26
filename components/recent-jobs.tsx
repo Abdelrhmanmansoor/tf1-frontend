@@ -196,6 +196,7 @@ export function RecentJobs() {
           {/* Club Logo and Info */}
           <div className="flex items-start gap-4 mb-4">
             {job.club.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={job.club.logo}
                 alt={

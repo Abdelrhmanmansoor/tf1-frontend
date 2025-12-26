@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       try {
         const currentUser = await matchesGetMe()
         setUser(currentUser)
-      } catch (error) {
+      } catch {
         // Not authenticated, redirect to login
         router.push(`/matches/login?redirect=${encodeURIComponent(pathname)}`)
       } finally {

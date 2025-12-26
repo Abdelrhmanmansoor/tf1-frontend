@@ -9,7 +9,6 @@ import {
   Edit2,
   Trash2,
   Reply,
-  MoreVertical,
 } from 'lucide-react'
 import type { Message } from '@/services/messaging'
 import { useState } from 'react'
@@ -18,10 +17,10 @@ interface MessageBubbleProps {
   message: Message
   isOwn: boolean
   showAvatar?: boolean
-  onReact?: (messageId: string, emoji: string) => void
-  onEdit?: (messageId: string, content: string) => void
-  onDelete?: (messageId: string) => void
-  onReply?: (message: Message) => void
+  onReact?: (_messageId: string, _emoji: string) => void
+  onEdit?: (_messageId: string, _content: string) => void
+  onDelete?: (_messageId: string) => void
+  onReply?: (_message: Message) => void
 }
 
 const EMOJI_OPTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏']
@@ -130,6 +129,7 @@ export function MessageBubble({
       case 'image':
         return (
           <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={message.mediaUrl}
               alt="Image"
@@ -224,6 +224,7 @@ export function MessageBubble({
       {showAvatar && !isOwn && (
         <div className="flex-shrink-0">
           {message.senderId.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={message.senderId.avatar}
               alt={`${message.senderId.firstName} ${message.senderId.lastName}`}

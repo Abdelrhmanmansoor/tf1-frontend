@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useCallback } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { ratingService } from '@/services/rating'
-import type { Review, ReviewsResponse, ReviewData } from '@/services/rating'
+import type { ReviewsResponse, ReviewData } from '@/services/rating'
 import { RatingStatistics } from './RatingStatistics'
 import { ReviewCard } from './ReviewCard'
 import { ReviewForm } from './ReviewForm'
@@ -34,9 +34,9 @@ export function ProfileRatingSystem({
 
   useEffect(() => {
     fetchReviews()
-  }, [userId, userRole, currentPage, filterRating])
+  }, [fetchReviews])
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -72,7 +72,7 @@ export function ProfileRatingSystem({
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, userRole, currentPage, filterRating])
 
   const handleSubmitReview = async (reviewData: ReviewData) => {
     try {

@@ -10,7 +10,6 @@ import {
   Users,
   Briefcase,
   DollarSign,
-  Calendar,
 } from 'lucide-react'
 
 interface OpportunityCardProps {
@@ -63,6 +62,7 @@ const OpportunityCard = ({ opportunity }: OpportunityCardProps) => {
           {/* Club Logo */}
           <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
             {opportunity.club.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={opportunity.club.logo}
                 alt={opportunity.club.name}

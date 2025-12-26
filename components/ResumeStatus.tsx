@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import { Button } from './ui/button'
-import { Eye, Download, Loader2 } from 'lucide-react'
+import { Eye, Download } from 'lucide-react'
 import clubApplicationsService from '@/services/club-applications'
 
 interface ResumeStatusProps {

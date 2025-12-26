@@ -28,7 +28,7 @@ import {
 
 export default function MyMatchesPage() {
   const { language } = useLanguage()
-  const { user, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
   const router = useRouter()
 
   const [matches, setMatches] = useState<Match[]>([])

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -8,10 +8,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Loader2, Search, X, TrendingUp, Clock, Bookmark } from 'lucide-react'
+import { Loader2, Search, X, TrendingUp, Clock } from 'lucide-react'
 import searchService, {
   GlobalSearchResult,
   AutocompleteResult,
@@ -22,7 +22,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 
 interface GlobalSearchModalProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
+  onOpenChange: (_open: boolean) => void
 }
 
 export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({

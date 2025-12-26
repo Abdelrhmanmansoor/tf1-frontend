@@ -9,7 +9,7 @@ interface StarRatingProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   showNumber?: boolean
   interactive?: boolean
-  onChange?: (rating: number) => void
+  onChange?: (_rating: number) => void
 }
 
 export function StarRating({

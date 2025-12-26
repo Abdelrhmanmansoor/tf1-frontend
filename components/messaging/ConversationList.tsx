@@ -17,10 +17,10 @@ import { useState } from 'react'
 interface ConversationListProps {
   conversations: Conversation[]
   selectedConversationId?: string
-  onSelectConversation: (conversation: Conversation) => void
-  onMuteConversation?: (id: string) => void
-  onArchiveConversation?: (id: string) => void
-  onDeleteConversation?: (id: string) => void
+  onSelectConversation: (_conversation: Conversation) => void
+  onMuteConversation?: (_id: string) => void
+  onArchiveConversation?: (_id: string) => void
+  onDeleteConversation?: (_id: string) => void
   currentUserId?: string
   onlineUsers?: Set<string>
 }
@@ -134,6 +134,7 @@ export function ConversationList({
     if (avatar) {
       return (
         <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={avatar}
             alt={name || 'User'}

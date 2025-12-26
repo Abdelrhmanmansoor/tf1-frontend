@@ -54,8 +54,8 @@ const SAMPLE_JOBS: Job[] = [
 export function JobsAnnouncements() {
   const { language } = useLanguage()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [jobs, setJobs] = useState<Job[]>(SAMPLE_JOBS)
-  const [activeCount, setActiveCount] = useState(SAMPLE_JOBS.length)
+  const [jobs] = useState<Job[]>(SAMPLE_JOBS)
+  const [activeCount] = useState(SAMPLE_JOBS.length)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,12 +87,12 @@ export function JobsAnnouncements() {
             />
             <span className="text-sm text-white font-semibold">{activeCount}+ {language === 'ar' ? 'وظيفة' : 'Jobs'}</span>
           </div>
-          <a
+          <Link
             href="/jobs"
             className="text-xs font-bold text-white hover:text-cyan-200 transition-colors flex items-center gap-1"
           >
             {language === 'ar' ? 'شاهد الكل ←' : '→ View All'}
-          </a>
+          </Link>
         </div>
 
         {/* Scrolling Jobs */}

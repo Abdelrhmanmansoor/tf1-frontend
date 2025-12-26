@@ -130,6 +130,7 @@ export function ChatWindow({
 
     if (avatar) {
       return (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={avatar}
           alt="User"
@@ -613,6 +614,7 @@ export function ChatWindow({
                       className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
                     >
                       {avatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={avatar}
                           alt={fullName}

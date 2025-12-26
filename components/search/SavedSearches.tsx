@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
   Card,
   CardContent,
@@ -41,9 +41,9 @@ export const SavedSearches: React.FC = () => {
 
   useEffect(() => {
     loadSavedSearches()
-  }, [])
+  }, [loadSavedSearches])
 
-  const loadSavedSearches = async () => {
+  const loadSavedSearches = useCallback(async () => {
     try {
       setLoading(true)
       const searches = await searchService.getSavedSearches()
@@ -58,7 +58,7 @@ export const SavedSearches: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
   const handleDeleteSearch = async (searchId: string) => {
     try {

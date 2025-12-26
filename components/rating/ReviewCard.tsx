@@ -9,9 +9,9 @@ import type { Review } from '@/services/rating'
 
 interface ReviewCardProps {
   review: Review
-  onMarkHelpful?: (reviewId: string) => void
-  onMarkNotHelpful?: (reviewId: string) => void
-  onReport?: (reviewId: string, reason: string) => void
+  onMarkHelpful?: (_reviewId: string) => void
+  onMarkNotHelpful?: (_reviewId: string) => void
+  onReport?: (_reviewId: string, _reason: string) => void
   currentUserId?: string
 }
 
@@ -51,6 +51,7 @@ export function ReviewCard({
     >
       {/* Reviewer Info */}
       <div className="flex items-start gap-4 mb-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={review.reviewerId.profileImage || '/default-avatar.png'}
           alt={review.reviewerId.firstName}

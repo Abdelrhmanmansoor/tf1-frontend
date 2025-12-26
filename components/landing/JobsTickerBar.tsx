@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { useLanguage } from '@/contexts/language-context'
 import { useJobEvents } from '@/hooks/useJobEvents'
 import { getEventIcon, getEventLabel, getEventColor } from '@/types/job-events'
-import type { JobEvent } from '@/types/job-events'
 import { 
   Briefcase, 
   TrendingUp, 

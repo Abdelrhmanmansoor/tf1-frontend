@@ -29,7 +29,6 @@ import { RecentJobs } from './recent-jobs'
 import { TopRatedPlayers } from './rating/TopRatedPlayers'
 import { PartnersMarquee } from './partners-marquee'
 import { StatsSection } from './stats-section'
-import { JobsAnnouncements } from './jobs-announcements'
 import { JobsTickerBar } from './landing/JobsTickerBar'
 import { useLanguage } from '@/contexts/language-context'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -680,6 +679,7 @@ export function LandingPage() {
       <section className="relative w-full bg-white overflow-hidden">
         <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-6xl">
           <img
+            // eslint-disable-next-line @next/next/no-img-element
             src={bannerImage.url}
             alt={bannerImage.alt}
             loading="eager"

@@ -36,10 +36,10 @@ interface QuickSearchCardsProps {
 
 export const QuickSearchCards: React.FC<QuickSearchCardsProps> = ({ role }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [initialQuery, setInitialQuery] = useState('')
+  // const [initialQuery, setInitialQuery] = useState('')
 
-  const handleQuickSearch = (query: string) => {
-    setInitialQuery(query)
+  const handleQuickSearch = (_query: string) => {
+    // setInitialQuery(query)
     setIsSearchOpen(true)
   }
 

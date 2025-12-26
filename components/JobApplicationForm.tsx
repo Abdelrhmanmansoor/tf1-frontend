@@ -34,9 +34,9 @@ interface JobApplicationFormProps {
 
 export default function JobApplicationForm({
   jobId,
-  jobTitle,
-  clubId,
-  clubName,
+  _jobTitle,
+  _clubId,
+  _clubName,
   onSuccess,
   onCancel,
 }: JobApplicationFormProps) {

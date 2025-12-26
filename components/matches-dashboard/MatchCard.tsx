@@ -8,8 +8,8 @@ import type { Match } from '@/types/match'
 
 interface MatchCardProps {
   match: Match
-  onJoin?: (matchId: string) => void
-  onLeave?: (matchId: string) => void
+  onJoin?: (_matchId: string) => void
+  onLeave?: (_matchId: string) => void
   isJoined?: boolean
   loading?: boolean
 }

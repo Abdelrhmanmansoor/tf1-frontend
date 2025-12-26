@@ -8,7 +8,7 @@ import { useState } from 'react'
 
 interface OpportunityFiltersProps {
   filters: OpportunitySearchParams
-  onFilterChange: (filters: Partial<OpportunitySearchParams>) => void
+  onFilterChange: (_filters: Partial<OpportunitySearchParams>) => void
 }
 
 const OpportunityFilters = ({
