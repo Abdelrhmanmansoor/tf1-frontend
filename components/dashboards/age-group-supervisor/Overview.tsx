@@ -5,6 +5,7 @@ import { Alert, TeamStats } from '@/types/age-group-supervisor'
 import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
 import { Bell, Users, Activity, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { motion } from 'framer-motion'
+import EcosystemFeed from './EcosystemFeed'
 
 export default function Overview() {
   const [stats, setStats] = useState<TeamStats | null>(null)
@@ -75,7 +76,7 @@ export default function Overview() {
           value={stats?.injuredCount || 0} 
           icon={Activity} 
           color="bg-red-500"
-          trend={-10} // Negative is good for injuries? Logic depends, but let's assume red is warning
+          trend={-10} 
         />
         <StatCard 
           label="Upcoming Matches" 
@@ -85,37 +86,44 @@ export default function Overview() {
         />
       </div>
 
-      {/* Alerts Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Bell className="w-5 h-5 text-yellow-500" />
-          Early Warning System
-        </h2>
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <motion.div 
-              key={alert.id}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              className={`p-4 rounded-lg border-l-4 flex items-start justify-between ${
-                alert.severity === 'critical' ? 'bg-red-50 border-red-500' :
-                alert.severity === 'warning' ? 'bg-yellow-50 border-yellow-500' :
-                'bg-blue-50 border-blue-500'
-              }`}
-            >
-              <div>
-                <h4 className={`font-semibold ${
-                   alert.severity === 'critical' ? 'text-red-800' :
-                   alert.severity === 'warning' ? 'text-yellow-800' :
-                   'text-blue-800'
-                }`}>
-                  {alert.type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                </h4>
-                <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
-              </div>
-              <span className="text-xs text-gray-500">{alert.date}</span>
-            </motion.div>
-          ))}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Alerts Section */}
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <Bell className="w-5 h-5 text-yellow-500" />
+            Early Warning System
+          </h2>
+          <div className="space-y-4">
+            {alerts.map((alert) => (
+              <motion.div 
+                key={alert.id}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                className={`p-4 rounded-lg border-l-4 flex items-start justify-between ${
+                  alert.severity === 'critical' ? 'bg-red-50 border-red-500' :
+                  alert.severity === 'warning' ? 'bg-yellow-50 border-yellow-500' :
+                  'bg-blue-50 border-blue-500'
+                }`}
+              >
+                <div>
+                  <h4 className={`font-semibold ${
+                     alert.severity === 'critical' ? 'text-red-800' :
+                     alert.severity === 'warning' ? 'text-yellow-800' :
+                     'text-blue-800'
+                  }`}>
+                    {alert.type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                  </h4>
+                  <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
+                </div>
+                <span className="text-xs text-gray-500">{alert.date}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Ecosystem Feed */}
+        <div className="lg:col-span-1">
+          <EcosystemFeed />
         </div>
       </div>
     </div>
