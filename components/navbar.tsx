@@ -91,7 +91,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <LanguageSelector />
 
-          {!user && (
+          {(!user || user) && (
             <>
               <motion.div
                 whileHover={{ scale: 1.05 }}
