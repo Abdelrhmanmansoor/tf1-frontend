@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CheckCircle, ShieldCheck, HelpCircle } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp } from 'lucide-react'
 import { toast } from 'sonner'
 
 // Schema Definitions
@@ -203,7 +203,7 @@ export default function RegisterPage() {
               {language === 'ar' ? 'يجب توفر سجل تجاري أو ترخيص' : 'Commercial Registration or License required'}
             </li>
             <li className="flex items-center gap-2 text-sm text-blue-700">
-              <CheckCircle className="w-4 h-4 text-blue-600" />
+              <CircleCheck className="w-4 h-4 text-blue-600" />
               {language === 'ar' ? 'سيتم التحقق من الوثائق قبل التفعيل' : 'Documents will be verified before activation'}
             </li>
           </ul>
@@ -440,7 +440,7 @@ export default function RegisterPage() {
                       <Input {...register('businessRegistrationNumber')} className={`bg-gray-50 focus:bg-white ${isRtl ? 'pr-10' : 'pl-10'}`} />
                     </div>
                     <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                      <HelpCircle className="w-3 h-3" />
+                      <CircleHelp className="w-3 h-3" />
                       {language === 'ar' ? 'رقم السجل التجاري أو الترخيص الرسمي للمنشأة' : 'Commercial Registration or Official License Number'}
                     </p>
                     {errors.businessRegistrationNumber && <p className="text-xs text-red-500">{errors.businessRegistrationNumber.message}</p>}
