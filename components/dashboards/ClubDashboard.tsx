@@ -22,8 +22,6 @@ import {
   Image as ImageIcon,
   Lock,
   Loader2,
-  MapPin,
-  Eye,
   Bell,
   LogOut,
   Building2,

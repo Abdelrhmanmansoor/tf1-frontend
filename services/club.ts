@@ -767,6 +767,25 @@ class ClubService {
     }
   }
 
+  /**
+   * Add Admin Notes to Application
+   * POST /clubs/applications/:applicationId/notes
+   */
+  async addAdminNotes(
+    applicationId: string,
+    notes: string
+  ): Promise<JobApplication> {
+    try {
+      const response = await api.post<ApplicationResponse>(
+        `${this.BASE_PATH}/applications/${applicationId}/notes`,
+        { notes }
+      )
+      return response.data.application
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
   // ============================================================================
   // TEAM MANAGEMENT
   // ============================================================================

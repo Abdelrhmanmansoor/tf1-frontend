@@ -36,16 +36,11 @@ import {
   X,
   ChevronRight,
   RefreshCw,
-  Bell,
   Briefcase,
-  Edit,
-  Eye,
-  FileText,
-  CheckCircle
+  FileText
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import NotificationBell from '@/components/notifications/NotificationBell'
 
 const ExecutiveDirectorDashboard = () => {
   const { language } = useLanguage()

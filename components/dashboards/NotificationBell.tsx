@@ -20,34 +20,34 @@ export default function NotificationBell({ userRole = 'general' }: NotificationB
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true)
+        let result
+        
+        if (userRole === 'club') {
+          result = await notificationService.getClubApplicationNotifications(1, 10)
+        } else if (userRole === 'applicant') {
+          result = await notificationService.getApplicationNotifications(1, 10)
+        } else {
+          result = await notificationService.getNotifications(1, 10)
+        }
+        
+        setNotifications(result.notifications)
+        const unread = result.notifications.filter(n => !n.read && !n.isRead).length
+        setUnreadCount(unread)
+      } catch (error) {
+        console.error('Error fetching notifications:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchNotifications()
     // Poll for new notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000)
     return () => clearInterval(interval)
   }, [userRole])
-
-  const fetchNotifications = async () => {
-    try {
-      setLoading(true)
-      let result
-      
-      if (userRole === 'club') {
-        result = await notificationService.getClubApplicationNotifications(1, 10)
-      } else if (userRole === 'applicant') {
-        result = await notificationService.getApplicationNotifications(1, 10)
-      } else {
-        result = await notificationService.getNotifications(1, 10)
-      }
-      
-      setNotifications(result.notifications)
-      const unread = result.notifications.filter(n => !n.read && !n.isRead).length
-      setUnreadCount(unread)
-    } catch (error) {
-      console.error('Error fetching notifications:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleMarkAsRead = async (notificationId: string) => {
     try {

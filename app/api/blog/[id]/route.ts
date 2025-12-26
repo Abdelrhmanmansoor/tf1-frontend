@@ -113,11 +113,11 @@ ARAMCO, the Public Investment Fund, and various government agencies are driving 
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = params.id
-    const post = BLOG_POSTS[postId]
+    const { id } = await params
+    const post = BLOG_POSTS[id]
 
     if (post) {
       return NextResponse.json(

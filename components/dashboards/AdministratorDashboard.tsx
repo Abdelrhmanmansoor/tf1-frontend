@@ -11,25 +11,19 @@ import { Button } from '@/components/ui/button'
 import {
   Users,
   Settings,
-  Clock,
   CheckCircle,
   XCircle,
   Award,
   Loader2,
   LogOut,
-  Briefcase,
   AlertCircle,
-  Edit,
   Shield,
-  FileText,
   Bell,
   BarChart3,
   Building2,
   UserCheck,
-  UserX,
   ClipboardList,
-  Mail,
-  MessageSquare
+  User
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

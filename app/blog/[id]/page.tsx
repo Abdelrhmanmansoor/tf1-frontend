@@ -46,7 +46,7 @@ export default function BlogPostPage() {
   if (error || !article) {
     return (
       <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar />
+        <Navbar activeMode="application" activePage="blog" />
         <div className="max-w-4xl mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             {language === 'ar' ? 'المقالة غير موجودة' : 'Article not found'}
@@ -65,7 +65,7 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar />
+      <Navbar activeMode="application" activePage="blog" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}

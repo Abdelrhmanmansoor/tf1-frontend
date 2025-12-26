@@ -105,6 +105,10 @@ const ApplicationDetailPage = () => {
     }
   }
 
+  const requiresInterviewDetails = (status: string) => {
+    return status === 'interviewed'
+  }
+
   const getStatusLabel = (status: string) => {
     const statusLabels: Record<string, { ar: string; en: string }> = {
       new: { ar: 'جديد', en: 'New' },

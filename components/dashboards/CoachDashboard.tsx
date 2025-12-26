@@ -26,15 +26,11 @@ import {
   Activity,
   Loader2,
   User,
-  MapPin,
-  Medal,
-  Eye,
   Bell,
   LogOut,
   Briefcase,
 } from 'lucide-react'
 import JobNotifications from '@/components/notifications/JobNotifications'
-import NotificationBell from '@/components/notifications/NotificationBell'
 
 const CoachDashboard = () => {
   const { language } = useLanguage()

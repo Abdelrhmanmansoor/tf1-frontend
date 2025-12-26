@@ -126,9 +126,9 @@ export default function ViewJobPage() {
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200'
   }
 
-  const daysUntilDeadline = job
+  const daysUntilDeadline = job.applicationDeadline
     ? Math.ceil(
-        (new Date(job.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+        (new Date(job.applicationDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       )
     : 0
 
