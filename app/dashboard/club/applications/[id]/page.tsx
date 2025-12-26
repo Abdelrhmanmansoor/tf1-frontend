@@ -50,6 +50,8 @@ const ApplicationDetailPage = () => {
   const [meetingDate, setMeetingDate] = useState('')
   const [meetingTime, setMeetingTime] = useState('')
   const [meetingLocation, setMeetingLocation] = useState('')
+  const [meetingLink, setMeetingLink] = useState('')
+  const [interviewType, setInterviewType] = useState('in_person')
 
   useEffect(() => {
     fetchApplication()
@@ -635,6 +637,104 @@ const ApplicationDetailPage = () => {
                   ))}
                 </select>
               </div>
+
+              {/* Interview Details Fields */}
+              {requiresInterviewDetails(selectedStatus) && (
+                <div className="mb-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200 space-y-4">
+                  <div className="flex items-center gap-2 text-purple-700 font-semibold text-sm">
+                    <Clock className="w-4 h-4" />
+                    {language === 'ar' ? 'تفاصيل المقابلة' : 'Interview Details'}
+                  </div>
+
+                  {/* Interview Type */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'نوع المقابلة' : 'Interview Type'}
+                    </label>
+                    <select
+                      value={interviewType}
+                      onChange={(e) => setInterviewType(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                    >
+                      <option value="in_person">{language === 'ar' ? 'حضوري' : 'In-Person'}</option>
+                      <option value="online">{language === 'ar' ? 'عبر الإنترنت' : 'Online'}</option>
+                      <option value="phone">{language === 'ar' ? 'هاتف' : 'Phone'}</option>
+                    </select>
+                  </div>
+
+                  {/* Date & Time */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        {language === 'ar' ? 'التاريخ' : 'Date'}
+                      </label>
+                      <input
+                        type="date"
+                        value={meetingDate}
+                        onChange={(e) => setMeetingDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        {language === 'ar' ? 'الوقت' : 'Time'}
+                      </label>
+                      <input
+                        type="time"
+                        value={meetingTime}
+                        onChange={(e) => setMeetingTime(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location (if in-person) */}
+                  {interviewType === 'in_person' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        {language === 'ar' ? 'الموقع' : 'Location'}
+                      </label>
+                      <input
+                        type="text"
+                        value={meetingLocation}
+                        onChange={(e) => setMeetingLocation(e.target.value)}
+                        placeholder={language === 'ar' ? 'عنوان المكان' : 'Location Address'}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                      />
+                    </div>
+                  )}
+
+                  {/* Meeting Link (if online) */}
+                  {interviewType === 'online' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">
+                        {language === 'ar' ? 'رابط الاجتماع' : 'Meeting Link'}
+                      </label>
+                      <input
+                        type="url"
+                        value={meetingLink}
+                        onChange={(e) => setMeetingLink(e.target.value)}
+                        placeholder="https://zoom.us/..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm"
+                      />
+                    </div>
+                  )}
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {language === 'ar' ? 'رسالة للمتقدم' : 'Message to Applicant'}
+                    </label>
+                    <textarea
+                      value={statusMessage}
+                      onChange={(e) => setStatusMessage(e.target.value)}
+                      placeholder={language === 'ar' ? 'رسالة اختيارية...' : 'Optional message...'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm min-h-[80px]"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Message Fields for Offered/Hired Status */}
               {requiresMessage(selectedStatus) && (

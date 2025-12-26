@@ -705,11 +705,26 @@ class ClubService {
       applicantName?: string
       applicantEmail?: string
       jobTitle?: string
+      meetingDate?: string
+      meetingTime?: string
+      meetingLocation?: string
+      meetingLink?: string
+      type?: string
+      date?: string
+      time?: string
+      location?: string
     }
   ): Promise<JobApplication> {
     try {
       let response
       const payload = options || {}
+
+      // Map meetingDate/Time to date/time for interview endpoint if needed
+      if (status === 'interviewed' && payload.meetingDate) {
+        payload.date = payload.meetingDate
+        payload.time = payload.meetingTime
+        payload.location = payload.meetingLocation
+      }
       
       switch (status) {
         case 'under_review':
