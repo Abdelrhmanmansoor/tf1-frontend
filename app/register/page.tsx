@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/language-selector'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CheckCircle2, ShieldCheck, HelpCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 // Schema Definitions
@@ -179,6 +179,46 @@ export default function RegisterPage() {
 
   // --- Render Helpers ---
 
+  const renderClubInfo = () => (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 overflow-hidden"
+    >
+      <div className="flex items-start gap-3">
+        <Info className="w-6 h-6 text-blue-600 mt-1 shrink-0" />
+        <div>
+          <h3 className="font-bold text-blue-900 mb-2">
+            {language === 'ar' ? 'هام: تسجيل حساب نادي/منظمة' : 'Important: Club/Organization Registration'}
+          </h3>
+          <p className="text-sm text-blue-800 mb-3 leading-relaxed">
+            {language === 'ar' 
+              ? 'هذا الدور مخصص فقط للمؤسسات الرسمية (أندية، أكاديميات، شركات رياضية) ويتطلب وثائق رسمية.' 
+              : 'This role is for official entities only (Clubs, Academies, Sports Companies) and requires official documents.'}
+          </p>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2 text-sm text-blue-700">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              {language === 'ar' ? 'يجب توفر سجل تجاري أو ترخيص' : 'Commercial Registration or License required'}
+            </li>
+            <li className="flex items-center gap-2 text-sm text-blue-700">
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
+              {language === 'ar' ? 'سيتم التحقق من الوثائق قبل التفعيل' : 'Documents will be verified before activation'}
+            </li>
+          </ul>
+          
+          <div className="mt-3 pt-3 border-t border-blue-200 flex items-center justify-between text-xs text-blue-900">
+            <span>{language === 'ar' ? 'تواجه مشكلة في التسجيل؟' : 'Need help registering?'}</span>
+            <a href="mailto:support@tf1.com" className="font-semibold underline hover:text-blue-700 flex items-center gap-1">
+              {language === 'ar' ? 'تواصل مع الدعم الفني' : 'Contact Support'}
+            </a>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+
   const renderSuccessStep = () => (
     <motion.div
       key="success"
@@ -276,7 +316,12 @@ export default function RegisterPage() {
                     </button>
                   ))}
                 </div>
-                <Button onClick={handleStep1Continue} className="w-full mt-8 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold py-3">
+                
+                <div className="mt-6">
+                  {selectedRole === 'club' && renderClubInfo()}
+                </div>
+
+                <Button onClick={handleStep1Continue} className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold py-3">
                   {language === 'ar' ? 'التالي' : 'Next'} <ArrowRight className="w-4 h-4 mx-2" />
                 </Button>
               </motion.div>
@@ -357,6 +402,9 @@ export default function RegisterPage() {
             {step === 3 && needsExtraStep && !success && (
               <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{language === 'ar' ? 'بيانات النادي/المنظمة' : 'Organization Info'}</h2>
+                
+                {renderClubInfo()}
+
                 <div className="space-y-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'اسم المنظمة' : 'Organization Name'}</label>
@@ -391,6 +439,10 @@ export default function RegisterPage() {
                       <FileText className={`absolute top-3 w-4 h-4 text-gray-400 ${isRtl ? 'right-3' : 'left-3'}`} />
                       <Input {...register('businessRegistrationNumber')} className={`bg-gray-50 focus:bg-white ${isRtl ? 'pr-10' : 'pl-10'}`} />
                     </div>
+                    <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                      <HelpCircle className="w-3 h-3" />
+                      {language === 'ar' ? 'رقم السجل التجاري أو الترخيص الرسمي للمنشأة' : 'Commercial Registration or Official License Number'}
+                    </p>
                     {errors.businessRegistrationNumber && <p className="text-xs text-red-500">{errors.businessRegistrationNumber.message}</p>}
                   </div>
 
