@@ -10,10 +10,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
   Users,
-  Calendar,
   Settings,
-  User,
-  TrendingUp,
   Clock,
   CheckCircle,
   XCircle,
@@ -30,18 +27,13 @@ import {
   Building2,
   UserCheck,
   UserX,
-  Activity,
   ClipboardList,
   Mail,
-  MessageSquare,
-  Check,
-  X,
-  AlertTriangle
+  MessageSquare
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import administratorService from '@/services/administrator'
-import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface DashboardStats {
   totalUsers: number
@@ -89,7 +81,7 @@ const AdministratorDashboard = () => {
     systemAlerts: 0
   })
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([])
-  const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([])
+  // const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([])
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -103,9 +95,9 @@ const AdministratorDashboard = () => {
         const approvals = await administratorService.getPendingApprovals()
         setPendingApprovals(approvals)
 
-      } catch (err: any) {
-        console.error('Error fetching dashboard data:', err)
-        setError(err.message || 'Failed to load dashboard data')
+      } catch (_err: any) {
+        console.error('Error fetching dashboard data:', _err)
+        setError(_err.message || 'Failed to load dashboard data')
       } finally {
         setLoading(false)
       }
@@ -118,7 +110,7 @@ const AdministratorDashboard = () => {
     try {
       await administratorService.approveUser(userId)
       setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
-    } catch (err: any) {
+    } catch (_err: any) {
       alert(language === 'ar' ? 'فشل الموافقة على المستخدم' : 'Failed to approve user')
     }
   }
@@ -127,18 +119,20 @@ const AdministratorDashboard = () => {
     try {
       await administratorService.rejectUser(userId, 'تم الرفض')
       setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
-    } catch (err: any) {
+    } catch (_err: any) {
       alert(language === 'ar' ? 'فشل رفض المستخدم' : 'Failed to reject user')
     }
   }
 
+  /*
   const handleBlockUser = async (userId: string) => {
     try {
       await administratorService.blockUser(userId, 'تم الحظر من قبل الإدارة')
-    } catch (err: any) {
+    } catch (_err: any) {
       alert(language === 'ar' ? 'فشل حظر المستخدم' : 'Failed to block user')
     }
   }
+  */
 
   const displayName = user?.firstName || language === 'ar' ? 'الإداري' : 'Administrator'
 

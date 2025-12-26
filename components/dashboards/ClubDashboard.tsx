@@ -12,8 +12,6 @@ import authService from '@/services/auth'
 import type { DashboardStats } from '@/types/club'
 import {
   Users,
-  Calendar,
-  TrendingUp,
   Star,
   Briefcase,
   CheckCircle,
@@ -23,9 +21,7 @@ import {
   Edit,
   Image as ImageIcon,
   Lock,
-  Activity,
   Loader2,
-  User,
   MapPin,
   Eye,
   Bell,
