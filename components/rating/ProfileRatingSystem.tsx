@@ -32,10 +32,6 @@ export function ProfileRatingSystem({
   const [currentPage, setCurrentPage] = useState(1)
   const [filterRating, setFilterRating] = useState<number | null>(null)
 
-  useEffect(() => {
-    fetchReviews()
-  }, [fetchReviews])
-
   const fetchReviews = useCallback(async () => {
     try {
       setLoading(true)
@@ -73,6 +69,10 @@ export function ProfileRatingSystem({
       setLoading(false)
     }
   }, [userId, userRole, currentPage, filterRating])
+
+  useEffect(() => {
+    fetchReviews()
+  }, [fetchReviews])
 
   const handleSubmitReview = async (reviewData: ReviewData) => {
     try {

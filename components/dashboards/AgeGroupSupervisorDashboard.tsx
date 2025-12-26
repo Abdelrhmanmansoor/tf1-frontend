@@ -12,10 +12,8 @@ import ageGroupSupervisorService from '@/services/age-group-supervisor'
 import {
   Users,
   Calendar,
-  TrendingUp,
   Loader2,
   LogOut,
-  Edit,
   UserPlus,
   Trophy,
   Activity,

@@ -23,7 +23,8 @@ import {
   Building2,
   UserCheck,
   ClipboardList,
-  User
+  User,
+  Activity
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -75,6 +76,7 @@ const AdministratorDashboard = () => {
     systemAlerts: 0
   })
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([])
+  const [systemAlerts] = useState<SystemAlert[]>([])
   // const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([])
 
   useEffect(() => {
@@ -104,7 +106,7 @@ const AdministratorDashboard = () => {
     try {
       await administratorService.approveUser(userId)
       setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
-    } catch (_err: any) {
+    } catch {
       alert(language === 'ar' ? 'فشل الموافقة على المستخدم' : 'Failed to approve user')
     }
   }
@@ -113,7 +115,7 @@ const AdministratorDashboard = () => {
     try {
       await administratorService.rejectUser(userId, 'تم الرفض')
       setPendingApprovals(pendingApprovals.filter(a => a.id !== userId))
-    } catch (_err: any) {
+    } catch {
       alert(language === 'ar' ? 'فشل رفض المستخدم' : 'Failed to reject user')
     }
   }

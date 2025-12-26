@@ -26,10 +26,6 @@ export function TopRatedPlayers({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchTopPlayers()
-  }, [fetchTopPlayers])
-
   const fetchTopPlayers = useCallback(async () => {
     try {
       setLoading(true)
@@ -50,6 +46,10 @@ export function TopRatedPlayers({
       setLoading(false)
     }
   }, [limit, sport, minReviews])
+
+  useEffect(() => {
+    fetchTopPlayers()
+  }, [fetchTopPlayers])
 
   if (loading) {
     return (

@@ -9,7 +9,8 @@ export type UserRole =
   | 'executive-director'
   | 'secretary'
   | 'sports-administrator'
-  | 'team';
+  | 'team'
+  | 'leader';
 
 export interface User {
   id: string;

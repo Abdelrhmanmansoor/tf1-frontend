@@ -126,7 +126,7 @@ export default function ViewJobPage() {
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200'
   }
 
-  const daysUntilDeadline = job.applicationDeadline
+  const daysUntilDeadline = (job && job.applicationDeadline)
     ? Math.ceil(
         (new Date(job.applicationDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       )
@@ -342,7 +342,7 @@ export default function ViewJobPage() {
             )}
 
             {/* Responsibilities */}
-            {job.responsibilities && job.responsibilities.length > 0 && (
+            {job.responsibilities && Array.isArray(job.responsibilities) && job.responsibilities.length > 0 && (
               <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   {language === 'ar' ? 'المسؤوليات' : 'Responsibilities'}
@@ -351,7 +351,9 @@ export default function ViewJobPage() {
                   {job.responsibilities.map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-gray-700">
+                        {typeof item === 'string' ? item : (language === 'ar' ? item.responsibilityAr || item.responsibility : item.responsibility)}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -359,7 +361,7 @@ export default function ViewJobPage() {
             )}
 
             {/* Requirements */}
-            {job.requirements && job.requirements.length > 0 && (
+            {job.requirements && Array.isArray(job.requirements) && job.requirements.length > 0 && (
               <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   {language === 'ar' ? 'المتطلبات' : 'Requirements'}
@@ -368,7 +370,7 @@ export default function ViewJobPage() {
                   {job.requirements.map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-gray-700">{typeof item === 'string' ? item : JSON.stringify(item)}</span>
                     </li>
                   ))}
                 </ul>
@@ -401,13 +403,12 @@ export default function ViewJobPage() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
-                            {application.applicant?.name || 
-                             (typeof application.applicantId === 'object' && 
-                              (application.applicantId.fullName || application.applicantId.name)) || 
-                             (language === 'ar' ? 'متقدم' : 'Applicant')}
+                            {(typeof application.applicantId === 'object' &&
+                              (application.applicantId.fullName || (application.applicantId as any).name)) ||
+                              (language === 'ar' ? 'متقدم' : 'Applicant')}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {new Date(application.submittedAt).toLocaleDateString()}
+                            {application.submittedAt ? new Date(application.submittedAt).toLocaleDateString() : '-'}
                           </p>
                         </div>
                       </div>
@@ -439,7 +440,7 @@ export default function ViewJobPage() {
                       {language === 'ar' ? 'الموعد النهائي' : 'Deadline'}
                     </p>
                     <p className="text-gray-600">
-                      {new Date(job.deadline).toLocaleDateString()}
+                      {job.applicationDeadline ? new Date(job.applicationDeadline).toLocaleDateString() : '-'}
                     </p>
                   </div>
                 </div>
@@ -461,7 +462,7 @@ export default function ViewJobPage() {
                       {language === 'ar' ? 'تاريخ النشر' : 'Posted'}
                     </p>
                     <p className="text-gray-600">
-                      {new Date(job.postedAt).toLocaleDateString()}
+                      {new Date(job.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>

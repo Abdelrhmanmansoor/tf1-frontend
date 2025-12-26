@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   searchOpportunities,
   OpportunitySearchParams,
@@ -29,11 +29,6 @@ const OpportunitiesPage = () => {
     sortBy: 'date',
   })
 
-  // Fetch opportunities whenever filters change
-  useEffect(() => {
-    fetchOpportunities()
-  }, [fetchOpportunities])
-
   const fetchOpportunities = useCallback(async () => {
     setLoading(true)
     try {
@@ -48,6 +43,11 @@ const OpportunitiesPage = () => {
       setLoading(false)
     }
   }, [filters])
+
+  // Fetch opportunities whenever filters change
+  useEffect(() => {
+    fetchOpportunities()
+  }, [fetchOpportunities])
 
   const handleFilterChange = (newFilters: Partial<OpportunitySearchParams>) => {
     setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }))

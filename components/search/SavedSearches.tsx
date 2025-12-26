@@ -39,10 +39,6 @@ export const SavedSearches: React.FC = () => {
   const [searchToDelete, setSearchToDelete] = useState<string | null>(null)
   const { toast } = useToast()
 
-  useEffect(() => {
-    loadSavedSearches()
-  }, [loadSavedSearches])
-
   const loadSavedSearches = useCallback(async () => {
     try {
       setLoading(true)
@@ -59,6 +55,10 @@ export const SavedSearches: React.FC = () => {
       setLoading(false)
     }
   }, [toast])
+
+  useEffect(() => {
+    loadSavedSearches()
+  }, [loadSavedSearches])
 
   const handleDeleteSearch = async (searchId: string) => {
     try {

@@ -289,14 +289,17 @@ export interface JobPosting {
     certifications?: string[]
     skills?: string[]
     languages?: string[]
-  }
+  } | string[]
   responsibilities?: Array<{
     responsibility: string
     responsibilityAr?: string
-  }>
+  }> | string[]
   numberOfPositions?: number
   applicationDeadline?: string
   expectedStartDate?: string
+  location?: string
+  position?: string
+  salaryRange?: string
   status: 'draft' | 'active' | 'closed' | 'filled'
   applicationStats?: {
     totalApplications: number

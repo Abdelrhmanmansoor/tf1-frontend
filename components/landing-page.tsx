@@ -14,6 +14,7 @@ import {
   FolderKanban,
   Mic,
   BookOpen,
+  Settings,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 

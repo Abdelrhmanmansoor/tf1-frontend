@@ -5,8 +5,7 @@ import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import MatchCard from '@/components/matches-dashboard/MatchCard'
 import { getMatches, joinMatch, getRegionsData } from '@/services/matches'
 import { motion } from 'framer-motion'
-import { Search, Filter } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Filter } from 'lucide-react'
 
 export default function AllMatchesPage() {
   const [matches, setMatches] = useState<any[]>([])

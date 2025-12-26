@@ -50,6 +50,7 @@ export interface MatchFilters {
   date?: string
   page?: number
   limit?: number
+  search?: string
 }
 
 export interface CreateMatchData {

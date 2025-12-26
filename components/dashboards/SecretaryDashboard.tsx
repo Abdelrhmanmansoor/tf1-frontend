@@ -734,7 +734,7 @@ const SecretaryDashboard = () => {
                     >
                       <div className="flex items-start justify-between mb-1">
                         <span className={`font-medium ${message.read ? 'text-gray-700' : 'text-gray-900'}`}>
-                          {message.from?.name || message.from}
+                          {typeof message.from === 'string' ? message.from : message.from.name}
                         </span>
                         {message.priority === 'high' && (
                           <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs">
