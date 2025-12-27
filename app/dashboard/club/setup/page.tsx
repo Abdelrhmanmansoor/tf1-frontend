@@ -13,6 +13,7 @@ import {
   Check,
   Building2,
   Phone,
+  MapPin,
   Globe,
   FileText,
   Sparkles,
@@ -21,6 +22,7 @@ import {
   Trash2,
   Upload,
   Image as ImageIcon,
+  XCircle,
 } from 'lucide-react'
 
 const ClubSetupWizard = () => {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Shield } from 'lucide-react'
+import { Shield, Mail, Phone, MapPin } from 'lucide-react'
 import Link from 'next/link'
 
 export default function PrivacyPolicy() {

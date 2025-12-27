@@ -2,7 +2,7 @@
 
 import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import { motion } from 'framer-motion'
-import { Bell, Lock } from 'lucide-react'
+import { Bell, Lock, Globe, Palette } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function SettingsPage() {

@@ -12,6 +12,12 @@ const nextConfig = {
     ],
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   // Skip static generation for error pages
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,

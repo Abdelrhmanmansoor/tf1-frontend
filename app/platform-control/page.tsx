@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import ownerClient from '@/services/ownerApiClient';
 import { Shield, Lock, Activity, Users, FileText, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
