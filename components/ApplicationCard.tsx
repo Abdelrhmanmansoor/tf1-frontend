@@ -1,4 +1,3 @@
-import React from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import { Button } from './ui/button'
 import { Eye, Download } from 'lucide-react'

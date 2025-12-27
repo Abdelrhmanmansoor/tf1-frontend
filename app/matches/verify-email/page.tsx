@@ -58,7 +58,7 @@ function VerifyEmailContent() {
           setMessage(data.message || (language === 'ar' ? 'فشل التحقق' : 'Verification failed'))
         }
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error('[MATCHES VERIFY] Error:', error)
         setStatus('error')
         

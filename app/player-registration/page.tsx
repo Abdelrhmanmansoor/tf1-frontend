@@ -6,19 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
 import { LanguageSelector } from '@/components/language-selector'
-import Image from 'next/image'
-import Link from 'next/link'
-import { toast } from 'sonner'
 import {
   User,
-  Calendar,
   Phone,
   Mail,
-  Users,
-  Loader2,
-  CheckCircle,
   ArrowRight,
-  ArrowLeft,
   Baby,
   AlertCircle
 } from 'lucide-react'

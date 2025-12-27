@@ -7,7 +7,7 @@ import { MessageNotificationBadge } from '@/components/messaging/MessageNotifica
 import { GlobalSearchButton } from '@/components/search/GlobalSearchButton'
 import { useAuth } from '@/contexts/auth-context'
 import { Button } from '@/components/ui/button'
-import { Users, LogOut, LayoutDashboard, Calendar, Activity, ClipboardList, Stethoscope, FileText } from 'lucide-react'
+import { Users, LogOut, LayoutDashboard, Calendar, ClipboardList, Stethoscope, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 

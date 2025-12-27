@@ -1,14 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import {
   getMatchById,
   joinMatch,
   leaveMatch,
-  startMatch,
-  finishMatch,
 } from '@/services/matches'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -19,8 +17,6 @@ import {
   Users,
   User,
   MessageSquare,
-  Play,
-  CheckCircle,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -31,11 +27,7 @@ export default function MatchDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
 
-  useEffect(() => {
-    fetchMatch()
-  }, [params.id])
-
-  const fetchMatch = async () => {
+  const fetchMatch = useCallback(async () => {
     try {
       const data = await getMatchById(params.id as string)
       setMatch(data)
@@ -46,7 +38,11 @@ export default function MatchDetailsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, router])
+
+  useEffect(() => {
+    fetchMatch()
+  }, [fetchMatch])
 
   const handleJoin = async () => {
     setActionLoading(true)
@@ -71,30 +67,6 @@ export default function MatchDetailsPage() {
       await fetchMatch()
     } catch (error: any) {
       alert(error.response?.data?.message || 'فشل مغادرة المباراة')
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  const handleStart = async () => {
-    setActionLoading(true)
-    try {
-      await startMatch(match._id)
-      await fetchMatch()
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'فشل بدء المباراة')
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  const handleFinish = async () => {
-    setActionLoading(true)
-    try {
-      await finishMatch(match._id)
-      await fetchMatch()
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'فشل إنهاء المباراة')
     } finally {
       setActionLoading(false)
     }

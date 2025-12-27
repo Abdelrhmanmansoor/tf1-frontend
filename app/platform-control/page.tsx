@@ -12,17 +12,7 @@ export default function PlatformControlPage() {
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState<any>(null);
 
-    // Check session on mount
-    useEffect(() => {
-        const storedKey = sessionStorage.getItem('tf1_owner_key');
-        if (storedKey) {
-            verifyKey(storedKey);
-        } else {
-            setLoading(false);
-        }
-    }, []);
-
-    const verifyKey = async (secret: string) => {
+    const verifyKey = useCallback(async (secret: string) => {
         setLoading(true);
         try {
             // Temporarily store to test the request
@@ -47,7 +37,17 @@ export default function PlatformControlPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [key]);
+
+    // Check session on mount
+    useEffect(() => {
+        const storedKey = sessionStorage.getItem('tf1_owner_key');
+        if (storedKey) {
+            verifyKey(storedKey);
+        } else {
+            setLoading(false);
+        }
+    }, [verifyKey]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();

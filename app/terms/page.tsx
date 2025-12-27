@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { Shield, FileText, AlertCircle } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import Link from 'next/link'
 
 export default function TermsOfServicePage() {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import { getMatchChat, sendChatMessage, getMatchById } from '@/services/matches'
@@ -19,15 +19,7 @@ export default function MatchChatPage() {
   const [sending, setSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    fetchData()
-  }, [params.id])
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [matchData, chatData] = await Promise.all([
         getMatchById(params.id as string),
@@ -40,11 +32,19 @@ export default function MatchChatPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
