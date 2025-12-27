@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { SocketProvider } from '@/contexts/socket-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: ' TF1 JOPS ',
@@ -37,6 +38,7 @@ export default function RootLayout({
             <SocketProvider>
               <SmoothScrollProvider>{children}</SmoothScrollProvider>
               <ScrollToTop />
+              <Toaster richColors position="top-center" />
             </SocketProvider>
           </AuthProvider>
         </LanguageProvider>
