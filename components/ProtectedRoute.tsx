@@ -55,12 +55,15 @@ export default function ProtectedRoute({
     }
 
     // Validate session with backend (background check)
-    const isValid = await validateSession()
-    if (!isValid) {
-      setAuthError('session_invalid')
-      const currentPath = pathname || window.location.pathname
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}&reason=session_invalid`)
-      return
+    // Only if context hasn't validated it yet or if we want to be extra secure
+    if (!sessionValidated) {
+      const isValid = await validateSession()
+      if (!isValid) {
+        setAuthError('session_invalid')
+        const currentPath = pathname || window.location.pathname
+        router.push(`/login?redirect=${encodeURIComponent(currentPath)}&reason=session_invalid`)
+        return
+      }
     }
 
     // Check role-based access

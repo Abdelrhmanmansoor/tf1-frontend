@@ -190,7 +190,7 @@ class AuthService {
       const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
       if (!token) return false
 
-      const response = await api.get('/auth/me')
+      const response = await api.get('/auth/profile')
       if (response.data?.user) {
         // Update user data with fresh data from backend
         this.saveUser(response.data.user)
@@ -198,15 +198,20 @@ class AuthService {
       }
       return false
     } catch (error: any) {
+      const status = error.response?.status || error.status
+
       // Only clear session on explicit 401 (unauthorized)
-      if (error.response?.status === 401) {
+      if (status === 401) {
         this.clearSession()
         return false
       }
-      // For network errors, timeout, etc. - throw to let caller decide
-      if (!error.response || error.code === 'ECONNABORTED' || error.message?.includes('Network')) {
+
+      // For actual network errors (no response/status), throw to let caller decide
+      if ((!error.response && !error.status) || error.code === 'ECONNABORTED' || error.message?.includes('Network')) {
         throw new Error('Network error during validation')
       }
+      
+      // For other errors (like 404, 500), return false
       return false
     }
   }

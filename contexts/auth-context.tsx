@@ -126,6 +126,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isAuthenticated: !!user && authService.isAuthenticated(),
     refreshUser,
     validateSession,
+    sessionValidated,
   }
 
   return (
