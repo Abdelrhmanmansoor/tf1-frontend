@@ -17,20 +17,17 @@ import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Ca
 import { toast } from 'sonner'
 
 // Schema Definitions
-const baseSchema = z.object({
-  role: z.enum(['player', 'coach', 'club', 'specialist', 'sports-administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary', 'team']),
+const commonShape = {
   firstName: z.string().min(2, 'Name too short'),
   lastName: z.string().min(2, 'Name too short'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(9, 'Phone number invalid'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
+}
 
-const clubSchema = baseSchema.extend({
+const clubObject = z.object({
+  ...commonShape,
   role: z.literal('club'),
   organizationName: z.string().min(2, 'Organization name required'),
   organizationType: z.enum(['club', 'academy', 'federation', 'sports-center']),
@@ -38,17 +35,23 @@ const clubSchema = baseSchema.extend({
   businessRegistrationNumber: z.string().min(1, 'Registration number required'),
 })
 
+const regularObject = z.object({
+  ...commonShape,
+  role: z.enum(['player', 'coach', 'specialist', 'sports-administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary', 'team']),
+  organizationName: z.string().optional(),
+  organizationType: z.string().optional(),
+  establishedDate: z.string().optional(),
+  businessRegistrationNumber: z.string().optional(),
+})
+
 // Union schema 
 const registrationSchema = z.discriminatedUnion("role", [
-  baseSchema.extend({
-    role: z.enum(['player', 'coach', 'specialist', 'sports-administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary', 'team']),
-    organizationName: z.string().optional(),
-    organizationType: z.string().optional(),
-    establishedDate: z.string().optional(),
-    businessRegistrationNumber: z.string().optional(),
-  }),
-  clubSchema
-])
+  regularObject,
+  clubObject
+]).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+})
 
 type RegistrationFormValues = z.infer<typeof registrationSchema>
 
