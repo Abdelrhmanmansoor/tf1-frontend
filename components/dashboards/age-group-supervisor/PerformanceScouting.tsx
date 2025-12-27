@@ -7,7 +7,7 @@ import { BarChart, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function PerformanceScouting() {
-  const [playerId, setPlayerId] = useState('1') // Default to first player
+  const [playerId] = useState('1') // Default to first player
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
   const [loading, setLoading] = useState(false)
 

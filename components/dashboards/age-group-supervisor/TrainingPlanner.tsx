@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { TrainingSession } from '@/types/age-group-supervisor'
 import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
-import { Calendar, Clock, MapPin, CheckCircle, XCircle } from 'lucide-react'
+import { Clock, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function TrainingPlanner() {

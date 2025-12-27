@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Player } from '@/types/age-group-supervisor'
 import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
 import { Search, Filter, User, FileText, Activity } from 'lucide-react'
@@ -72,9 +73,14 @@ export default function SquadManagement() {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
+                      <div className="relative w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
                         {player.imageUrl ? (
-                          <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
+                          <Image 
+                            src={player.imageUrl} 
+                            alt={player.name} 
+                            fill
+                            className="object-cover"
+                          />
                         ) : (
                           <User className="w-5 h-5 m-1.5 text-gray-400" />
                         )}

@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
-import { FileText, GraduationCap, AlertTriangle } from 'lucide-react'
+import React from 'react'
+import { GraduationCap, AlertTriangle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Reports() {
