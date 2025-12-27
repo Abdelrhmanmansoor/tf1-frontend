@@ -35,7 +35,7 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, isAuthenticated, loading, validateSession } = useAuth()
+  const { user, isAuthenticated, loading, validateSession, sessionValidated } = useAuth()
   const [isChecking, setIsChecking] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
@@ -79,7 +79,7 @@ export default function ProtectedRoute({
     // All checks passed
     setIsAuthorized(true)
     setIsChecking(false)
-  }, [loading, isAuthenticated, user, allowedRoles, fallbackPath, pathname, router, validateSession])
+  }, [loading, isAuthenticated, user, allowedRoles, fallbackPath, pathname, router, validateSession, sessionValidated])
 
   useEffect(() => {
     checkAuth()

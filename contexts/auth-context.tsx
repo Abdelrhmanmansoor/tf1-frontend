@@ -14,6 +14,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   refreshUser: () => Promise<void>
   validateSession: () => Promise<boolean>
+  sessionValidated: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
