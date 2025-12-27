@@ -96,10 +96,21 @@ export default function ProtectedRoute({
     }
   }, [pathname, loading, isAuthenticated, isAuthorized, checkAuth])
 
+  // Timeout failsafe
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading || isChecking) {
+        setAuthError('timeout')
+      }
+    }, 8000) // 8 seconds timeout
+
+    return () => clearTimeout(timer)
+  }, [loading, isChecking])
+
   // Loading state
   if (loading || isChecking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 flex-col gap-4">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -115,6 +126,24 @@ export default function ProtectedRoute({
           </motion.div>
           <p className="text-gray-600 text-lg">جاري التحقق من الجلسة...</p>
         </motion.div>
+        
+        {authError === 'timeout' && (
+           <motion.div 
+             initial={{ opacity: 0 }} 
+             animate={{ opacity: 1 }}
+             className="flex flex-col gap-2 items-center"
+           >
+             <p className="text-red-500 text-sm">استغرق التحقق وقتاً أطول من المعتاد</p>
+             <button 
+               onClick={() => {
+                 window.location.href = '/login'
+               }}
+               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+             >
+               تسجيل الدخول مجدداً
+             </button>
+           </motion.div>
+        )}
       </div>
     )
   }
