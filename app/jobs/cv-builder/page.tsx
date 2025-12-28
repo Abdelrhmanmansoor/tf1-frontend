@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster, toast } from 'react-hot-toast';
+import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 import PersonalInfoForm from './components/PersonalInfoForm';
 import SummaryForm from './components/SummaryForm';
 import ExperienceForm from './components/ExperienceForm';
@@ -68,10 +70,12 @@ export default function CVBuilderPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 ${language === 'ar' ? 'rtl' : 'ltr'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Toaster position="top-center" />
+    <div className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'rtl' : 'ltr'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <Navbar activeMode="application" activePage="cv-builder" />
+      <div className="py-12 px-4 sm:px-6 lg:px-8">
+        <Toaster position="top-center" />
       
-      <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
             {language === 'ar' ? 'باني السيرة الذاتية الذكي' : 'AI CV Builder'}

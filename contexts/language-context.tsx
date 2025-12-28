@@ -22,6 +22,7 @@ const translations = {
     // Navigation
     home: 'الرئيسية',
     jobs: 'الوظائف',
+    cvBuilder: 'بناء السيرة الذاتية',
     matches: 'مركز المباريات',
     about: 'عن المنصة',
     features: 'المزايا',
@@ -81,6 +82,7 @@ const translations = {
     // Navigation
     home: 'Home',
     jobs: 'Jobs',
+    cvBuilder: 'CV Builder',
     matches: 'Match Center',
     about: 'About',
     features: 'Features',
