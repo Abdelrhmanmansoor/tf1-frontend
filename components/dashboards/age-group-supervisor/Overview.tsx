@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Alert, TeamStats } from '@/types/age-group-supervisor'
-import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
+import ageGroupSupervisorService from '@/services/age-group-supervisor'
 import { Bell, Users, Activity, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import EcosystemFeed from './EcosystemFeed'
@@ -14,13 +14,18 @@ export default function Overview() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [s, a] = await Promise.all([
-        ageGroupSupervisorMockService.getStats(),
-        ageGroupSupervisorMockService.getAlerts()
-      ])
-      setStats(s)
-      setAlerts(a)
-      setLoading(false)
+      try {
+        const s = await ageGroupSupervisorService.getDashboard()
+        setStats({
+          totalPlayers: s.totalPlayers || 0,
+          injuredCount: s.pendingRegistrations || 0, // fallback mapping
+          avgAttendance: s.activeTrainings || 0,
+          upcomingMatches: s.upcomingMatches || 0,
+        })
+        setAlerts([])
+      } finally {
+        setLoading(false)
+      }
     }
     fetchData()
   }, [])

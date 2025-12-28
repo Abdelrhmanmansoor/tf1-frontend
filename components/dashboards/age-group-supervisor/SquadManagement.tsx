@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Player } from '@/types/age-group-supervisor'
-import { ageGroupSupervisorMockService } from '@/services/age-group-supervisor-mock'
+import ageGroupSupervisorService from '@/services/age-group-supervisor'
 import { Search, Filter, User, FileText, Activity } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -14,8 +14,25 @@ export default function SquadManagement() {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const data = await ageGroupSupervisorMockService.getPlayers()
-      setPlayers(data)
+      const data = await ageGroupSupervisorService.getPlayers()
+      const mapped: Player[] = (data || []).map((p: any) => ({
+        id: p.id || p._id || '',
+        name: [p.firstName, p.lastName].filter(Boolean).join(' ') || p.name || 'Unknown',
+        dob: p.dateOfBirth || p.dob || '',
+        ageGroup: p.ageGroupDetails?.name || p.ageGroup || '',
+        position: p.position || '',
+        height: p.height || 0,
+        weight: p.weight || 0,
+        contractExpiry: p.contractExpiry || '',
+        documents: {
+          passport: !!p.documents?.passport,
+          federationCard: !!p.documents?.federationCard,
+        },
+        attendanceRate: p.attendanceRate || 0,
+        status: (p.status as any) || 'active',
+        imageUrl: p.profileImage || p.imageUrl || undefined,
+      }))
+      setPlayers(mapped)
       setLoading(false)
     }
     fetchPlayers()
@@ -127,7 +144,9 @@ export default function SquadManagement() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <button className="text-blue-600 hover:text-blue-700 text-xs font-medium">View Profile</button>
+                    <a href={`/profile/${player.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">
+                      View Profile
+                    </a>
                   </td>
                 </motion.tr>
               ))}
