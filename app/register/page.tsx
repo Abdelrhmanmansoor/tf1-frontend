@@ -21,7 +21,9 @@ const commonShape = {
   lastName: z.string().min(2, 'Name too short'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(9, 'Phone number invalid'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters long')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/, 'Password must contain uppercase, lowercase, and a number'),
   confirmPassword: z.string()
 }
 
@@ -151,7 +153,22 @@ export default function RegisterPage() {
 
     } catch (err: any) {
       console.error('Registration Error:', err)
-      const msg = err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed')
+      let msg = err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed')
+      if (Array.isArray(err.errors) && err.errors.length > 0) {
+        const first = err.errors[0]
+        const mapped = language === 'ar'
+          ? (first.message
+              .replace('Password must be at least 8 characters long', 'كلمة المرور يجب ألا تقل عن 8 أحرف')
+              .replace('Password must contain at least one uppercase letter, one lowercase letter, and one number', 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم')
+              .replace('Please provide a valid email address', 'يرجى إدخال بريد إلكتروني صالح')
+              .replace('First name is required', 'الاسم الأول مطلوب')
+              .replace('Last name is required', 'الاسم الأخير مطلوب')
+              .replace('Organization name is required', 'اسم المنظمة مطلوب')
+              .replace('Established date is required', 'تاريخ التأسيس مطلوب')
+              .replace('Business registration number is required', 'رقم السجل التجاري مطلوب'))
+          : first.message
+        msg = `${language === 'ar' ? 'فشل التحقق:' : 'Validation failed:'} ${mapped}`
+      }
       toast.error(msg)
     } finally {
       setLoading(false)
