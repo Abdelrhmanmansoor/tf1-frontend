@@ -121,7 +121,9 @@ api.interceptors.response.use(
 
           // Redirect
           const redirectUrl = encodeURIComponent(currentPath)
-          window.location.href = `/login?redirect=${redirectUrl}&reason=session_expired`
+          const isMatches = currentPath.startsWith('/matches')
+          const loginPath = isMatches ? '/matches/login' : '/login'
+          window.location.href = `${loginPath}?redirect=${redirectUrl}&reason=session_expired`
         }
       }
     }

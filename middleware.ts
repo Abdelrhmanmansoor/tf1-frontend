@@ -82,7 +82,7 @@ function parseJWT(token: string): any {
 
 function isTokenExpired(token: string): boolean {
   const payload = parseJWT(token)
-  if (!payload || !payload.exp) return true
+  if (!payload || !payload.exp) return false
   const currentTime = Math.floor(Date.now() / 1000)
   return payload.exp < currentTime
 }
