@@ -109,19 +109,41 @@ export const getMatches = async (
   filters: MatchFilters = {}
 ): Promise<MatchesResponse> => {
   const response = await api.get('/matches', { params: filters })
-  return response.data
+  const backendMatches = response.data?.data?.matches || response.data?.matches || []
+  const mapped = backendMatches.map(mapBackendMatchToFrontend)
+  return {
+    success: true,
+    matches: mapped,
+    total: mapped.length,
+    page: 1,
+    pages: 1,
+  }
 }
 
 // Get match by ID
 export const getMatchById = async (matchId: string): Promise<Match> => {
   const response = await api.get(`/matches/${matchId}`)
-  return response.data.match
+  const backendMatch = response.data?.data?.match || response.data?.match
+  return mapBackendMatchToFrontend(backendMatch)
 }
 
 // Create a new match (requires authentication)
 export const createMatch = async (data: CreateMatchData): Promise<Match> => {
-  const response = await api.post('/matches', data)
-  return response.data.match
+  const payload = {
+    title: data.name,
+    sport: data.sport,
+    city: data.city,
+    area: data.region,
+    location: data.neighborhood,
+    date: data.date,
+    time: data.time,
+    level: normalizeLevel(data.level),
+    max_players: data.maxPlayers,
+    venue: data.venue,
+  }
+  const response = await api.post('/matches', payload)
+  const backendMatch = response.data?.data?.match || response.data?.match
+  return mapBackendMatchToFrontend(backendMatch)
 }
 
 // Join a match (requires authentication)
@@ -146,7 +168,9 @@ export const getMyMatches = async (): Promise<{
   total: number
 }> => {
   const response = await api.get('/matches/my-matches')
-  return response.data
+  const joined = response.data?.data?.joined || response.data?.joined || []
+  const mapped = joined.map(mapBackendMatchToFrontend)
+  return { matches: mapped, total: mapped.length }
 }
 
 // ============================================
@@ -315,15 +339,17 @@ export const getMatchChat = async (
   matchId: string
 ): Promise<{ messages: ChatMessage[] }> => {
   const response = await api.get(`/matches/${matchId}/chat`)
-  return response.data
+  const messages = response.data?.data?.messages || response.data?.messages || []
+  return { messages }
 }
 
 export const sendChatMessage = async (
   matchId: string,
   message: string
 ): Promise<{ success: boolean; message: ChatMessage }> => {
-  const response = await api.post(`/matches/${matchId}/chat`, { message })
-  return response.data
+  const response = await api.post(`/matches/${matchId}/chat`, { body: message })
+  const data = response.data?.data?.message || response.data?.message
+  return { success: true, message: data }
 }
 
 // ============================================
@@ -391,6 +417,63 @@ export const ratePlayer = async (
   return response.data
 }
 
+function mapBackendMatchToFrontend(m: any): Match {
+  if (!m) {
+    return {
+      _id: '',
+      name: '',
+      sport: '',
+      region: '',
+      city: '',
+      neighborhood: '',
+      date: '',
+      time: '',
+      level: '',
+      maxPlayers: 0,
+      currentPlayers: 0,
+      venue: '',
+      creator: { _id: '', firstName: '', lastName: '' },
+      players: [],
+      status: 'upcoming',
+      createdAt: '',
+    }
+  }
+  return {
+    _id: m._id || m.id,
+    name: m.title || m.name || 'Match',
+    sport: m.sport || '',
+    region: m.area || m.region || '',
+    city: m.city || '',
+    neighborhood: m.location || m.neighborhood || '',
+    date: typeof m.date === 'string' ? m.date : new Date(m.date).toISOString().split('T')[0],
+    time: m.time || '',
+    level: m.level || '',
+    maxPlayers: m.max_players || m.maxPlayers || 0,
+    currentPlayers: m.current_players || m.currentPlayers || 0,
+    venue: m.venue || '',
+    creator: {
+      _id: (m.created_by?._id || m.owner_id?._id || m.creator?._id) || '',
+      firstName: m.created_by?.firstName || m.owner_id?.firstName || m.creator?.firstName || '',
+      lastName: m.created_by?.lastName || m.owner_id?.lastName || m.creator?.lastName || '',
+    },
+    players: (m.participants || m.players || []).map((p: any) => ({
+      _id: p.user_id?._id || p._id || '',
+      firstName: p.user_id?.firstName || p.firstName || '',
+      lastName: p.user_id?.lastName || p.lastName || '',
+    })),
+    status: (m.status || m.state || 'upcoming') as any,
+    createdAt: m.created_at || m.createdAt || '',
+  }
+}
+
+function normalizeLevel(level: string) {
+  const l = (level || '').toLowerCase()
+  if (l.includes('مبتد')) return 'beginner'
+  if (l.includes('متوس') || l.includes('متقدم جزئياً')) return 'intermediate'
+  if (l.includes('متقدم')) return 'advanced'
+  if (['beginner', 'intermediate', 'advanced'].includes(l)) return l
+  return 'beginner'
+}
 export default {
   getRegionsData,
   getMatches,
