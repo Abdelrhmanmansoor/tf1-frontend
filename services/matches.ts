@@ -213,6 +213,15 @@ export const matchesLogin = async (
       localStorage.setItem(API_CONFIG.TOKEN_KEY, accessToken)
       // ✅ 1. تخزين التوكن في LocalStorage (أساسي) كما هو مطلوب
       localStorage.setItem('matches_token', accessToken)
+      try {
+        const isHttps = window.location.protocol === 'https:'
+        const maxAge = 7 * 24 * 60 * 60
+        const cookieBase = `max-age=${maxAge}; path=/; samesite=lax`
+        const secureFlag = isHttps ? '; secure' : ''
+        // ✅ 2. جسر جلسة SSR عبر Cookie بنفس الدومين لتجاوز مشكلة الدومين المختلف للباك إند
+        document.cookie = `matches_token=${accessToken}; ${cookieBase}${secureFlag}`
+        document.cookie = `${API_CONFIG.TOKEN_KEY}=${accessToken}; ${cookieBase}${secureFlag}`
+      } catch {}
     }
 
     // تخزين بيانات المستخدم
