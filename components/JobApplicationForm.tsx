@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useLanguage } from '@/contexts/language-context'
-import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
 import {
   Loader2,
@@ -20,7 +19,6 @@ import {
   Zap,
 } from 'lucide-react'
 import { Button } from './ui/button'
-import notificationService from '@/services/notifications'
 import { toast } from 'sonner'
 
 interface JobApplicationFormProps {
@@ -41,7 +39,6 @@ export default function JobApplicationForm({
   onCancel,
 }: JobApplicationFormProps) {
   const { language } = useLanguage()
-  const { user } = useAuth()
   const [applying, setApplying] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
@@ -113,15 +110,7 @@ export default function JobApplicationForm({
         throw new Error('Failed to apply')
       }
 
-      // Send notification to both user and club
-      await notificationService.sendApplicationNotification(jobId, {
-        applicantName: user ? `${user.firstName} ${user.lastName}` : 'Applicant',
-        applicantEmail: user?.email,
-        whatsapp,
-        portfolio,
-        linkedin,
-        coverLetter,
-      })
+      // Notifications are handled by backend events; no frontend POST
 
       toast.success(language === 'ar' ? 'تم التقديم بنجاح!' : 'Application submitted successfully!')
 

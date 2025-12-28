@@ -71,8 +71,8 @@ const notificationService = {
 
   async getJobNotifications(page = 1, limit = 20): Promise<{ notifications: JobNotification[]; total: number }> {
     try {
-      const response = await api.get('/notifications', {
-        params: { page, limit, type: 'job' },
+      const response = await api.get('/notifications/jobs', {
+        params: { page, limit },
       })
       const data = response.data.data || response.data
       return {
@@ -171,17 +171,7 @@ const notificationService = {
   },
 
   async sendApplicationNotification(jobId: string, applicantInfo: any): Promise<boolean> {
-    try {
-      await api.post('/notifications', {
-        type: 'application_submitted',
-        jobId,
-        applicantInfo,
-      })
-      return true
-    } catch (error) {
-      console.error('Error sending application notification:', error)
-      return false
-    }
+    return true
   },
 }
 
