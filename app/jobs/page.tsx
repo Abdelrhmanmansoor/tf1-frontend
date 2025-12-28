@@ -369,6 +369,21 @@ export default function JobsPage() {
                     {language === 'ar' ? 'للشركات' : 'For Employers'}
                   </Button>
                 </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/jobs/cv-builder">
+                    <Button
+                      size="lg"
+                      className="bg-purple-600 text-white hover:bg-purple-700 px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-2"
+                    >
+                      <Sparkles className="w-5 h-5" />
+                      {language === 'ar' ? 'أنشئ سيرتك الذاتية' : 'Build Your CV'}
+                    </Button>
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
 
