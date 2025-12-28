@@ -56,14 +56,15 @@ export interface MatchFilters {
 export interface CreateMatchData {
   name: string
   sport: string
-  region: string
-  city: string
-  neighborhood: string
+  region?: string
+  city?: string
+  neighborhood?: string
   date: string
   time: string
   level: string
   maxPlayers: number
   venue: string
+  locationId?: string
 }
 
 export interface MatchesResponse {
@@ -100,8 +101,30 @@ export interface RegionsData {
 
 // Get regions and dropdown options
 export const getRegionsData = async (): Promise<RegionsData> => {
-  const response = await api.get('/matches/regions')
-  return response.data
+  const response = await api.get('/locations', { params: { level: 'region', limit: 200 } })
+  const items = response.data?.data || []
+  const regions = items.map((r: any) => ({
+    id: r.id,
+    name: r.name_ar,
+    nameEn: r.name_en,
+    cities: []
+  }))
+  return {
+    regions,
+    neighborhoods: {},
+    leagues: [],
+    positions: [],
+    levels: [
+      { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
+      { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
+      { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
+    ],
+    sports: [
+      { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
+      { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
+      { value: 'volleyball', label: 'كرة الطائرة', labelEn: 'Volleyball' },
+    ],
+  }
 }
 
 // Get matches with filters
@@ -132,9 +155,10 @@ export const createMatch = async (data: CreateMatchData): Promise<Match> => {
   const payload = {
     title: data.name,
     sport: data.sport,
-    city: data.city,
-    area: data.region,
-    location: data.neighborhood,
+    city: data.city || '',
+    area: data.region || '',
+    location: data.neighborhood || data.venue || '',
+    location_id: data.locationId,
     date: data.date,
     time: data.time,
     level: normalizeLevel(data.level),

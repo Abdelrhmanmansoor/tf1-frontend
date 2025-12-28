@@ -23,6 +23,7 @@ export default function CreateMatchPage() {
     level: '',
     maxPlayers: 10,
     venue: '',
+    locationId: ''
   })
 
   useEffect(() => {
@@ -146,6 +147,7 @@ export default function CreateMatchPage() {
                       ...formData,
                       region: e.target.value,
                       city: '',
+                      locationId: regionsData?.regions?.find((r:any)=>r.name===e.target.value)?.id || ''
                     })
                   }
                   required
