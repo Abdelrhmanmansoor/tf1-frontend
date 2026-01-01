@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
+import { useAuth } from '@/contexts/auth-context'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
@@ -13,10 +14,12 @@ import {
   CheckCircle,
   Dribbble,
   ArrowRight,
+  LayoutDashboard,
 } from 'lucide-react'
 
 export default function MatchesPage() {
   const { language } = useLanguage()
+  const { user } = useAuth()
 
   const steps = [
     {
@@ -92,22 +95,35 @@ export default function MatchesPage() {
             </p>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/matches/register">
-                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
-                  {language === 'ar'
-                    ? 'سجّل الآن في مركز المباريات'
-                    : 'Register Now in Matches Center'}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Link href="/matches/login">
-                <Button
-                  variant="outline"
-                  className="px-8 py-4 rounded-xl text-lg font-semibold border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all"
-                >
-                  {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
-                </Button>
-              </Link>
+              {user ? (
+                <Link href="/matches/login?redirect=/matches/dashboard">
+                  <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                    {language === 'ar'
+                      ? 'الذهاب إلى لوحة التحكم'
+                      : 'Go to Dashboard'}
+                    <LayoutDashboard className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/matches/register">
+                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                      {language === 'ar'
+                        ? 'سجّل الآن في مركز المباريات'
+                        : 'Register Now in Matches Center'}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Link href="/matches/login">
+                    <Button
+                      variant="outline"
+                      className="px-8 py-4 rounded-xl text-lg font-semibold border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all"
+                    >
+                      {language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         </div>
@@ -201,12 +217,21 @@ export default function MatchesPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link href="/matches/register">
-                  <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
-                    {language === 'ar' ? 'ابدأ الآن' : 'Start Now'}
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </Link>
+                {user ? (
+                  <Link href="/matches/login?redirect=/matches/dashboard">
+                    <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                      {language === 'ar' ? 'الذهاب إلى لوحة التحكم' : 'Go to Dashboard'}
+                      <LayoutDashboard className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/matches/register">
+                    <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                      {language === 'ar' ? 'ابدأ الآن' : 'Start Now'}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                )}
                 <div className="flex items-center gap-2 text-blue-50">
                   <CheckCircle className="w-5 h-5" />
                   <span>{language === 'ar' ? 'مجاني تماماً' : 'Completely Free'}</span>

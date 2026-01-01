@@ -21,9 +21,14 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 
+import { useAuth } from '@/contexts/auth-context'
+import { API_CONFIG } from '@/services/api'
+
 export default function MatchesLoginPage() {
   const { language } = useLanguage()
+  const { user } = useAuth()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,6 +39,29 @@ export default function MatchesLoginPage() {
   const [needsVerification, setNeedsVerification] = useState(false)
   const [resendingEmail, setResendingEmail] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
+
+  // Auto-login bridge from main platform
+  useEffect(() => {
+    const checkAutoLogin = () => {
+      // If user is logged in to main platform but we are on matches login page
+      if (user && typeof window !== 'undefined') {
+        const mainToken = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+        const matchesToken = localStorage.getItem('matches_token')
+        
+        // If we have main token but no matches token (or they match), we can auto-login/bridge
+        if (mainToken && !matchesToken) {
+          // Set the main token as matches token (backend middleware handles bridging)
+          localStorage.setItem('matches_token', mainToken)
+          
+          // Redirect
+          const redirectUrl = searchParams.get('redirect') || '/matches/dashboard'
+          router.push(redirectUrl)
+        }
+      }
+    }
+    
+    checkAutoLogin()
+  }, [user, searchParams, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
