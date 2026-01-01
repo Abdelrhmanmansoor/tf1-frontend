@@ -292,6 +292,22 @@ class ClubService {
     }
   }
 
+  /**
+   * Retry National Address Verification
+   * POST /clubs/profile/verify-address
+   */
+  async retryVerification(data: { buildingNumber: string; additionalNumber: string; zipCode: string }): Promise<{ success: boolean; verified: boolean; message: string; profile: ClubProfile }> {
+    try {
+      const response = await api.post(
+        `${this.BASE_PATH}/profile/verify-address`,
+        data
+      )
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
   // ============================================================================
   // SEARCH & DISCOVERY
   // ============================================================================

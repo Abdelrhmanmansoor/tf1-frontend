@@ -19,6 +19,8 @@ import {
   Eye,
   Share2,
   Bookmark,
+  Shield,
+  AlertTriangle,
 } from 'lucide-react'
 
 interface Job {
@@ -42,6 +44,9 @@ interface Job {
     phone?: string
     website?: string
     verified?: boolean
+    nationalAddress?: {
+      isVerified: boolean
+    }
   }
   jobType: string
   category: string
@@ -112,7 +117,7 @@ export default function JobDetailsPage() {
       try {
         setLoading(true)
         const response = await fetch(
-          `https://tf1-backend.onrender.com/api/v1/search/jobs/${params.id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/search/jobs/${params.id}`
         )
 
         if (!response.ok) {
@@ -265,7 +270,7 @@ export default function JobDetailsPage() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {language === 'ar' ? job.titleAr || job.title : job.title}
               </h1>
-              <p className="text-xl text-gray-700 mb-4">
+              <p className="text-xl text-gray-700 mb-2">
                 {language === 'ar'
                   ? job.club.nameAr || job.club.name
                   : job.club.name}
@@ -273,6 +278,30 @@ export default function JobDetailsPage() {
                   <CheckCircle className="w-5 h-5 text-blue-500 inline ml-2" />
                 )}
               </p>
+
+              {/* National Address Verification Badge */}
+              <div className="mb-4">
+                {job.club.nationalAddress?.isVerified ? (
+                  <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100 w-fit">
+                    <div className="relative flex items-center justify-center">
+                      <Shield className="w-4 h-4 fill-green-100" />
+                      <CheckCircle className="w-2.5 h-2.5 text-green-600 absolute" />
+                    </div>
+                    <span>{language === 'ar' ? 'العنوان الوطني موثّق' : 'National Address Verified'}</span>
+                  </div>
+                ) : (
+                  <div className="group relative w-fit">
+                    <div className="inline-flex items-center gap-1 bg-orange-50 text-orange-700 text-sm px-3 py-1 rounded-full border border-orange-100 cursor-help">
+                      <AlertTriangle className="w-4 h-4" />
+                      <span>{language === 'ar' ? 'العنوان الوطني غير موثّق' : 'National Address Not Verified'}</span>
+                    </div>
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-xl">
+                      {language === 'ar' ? 'تم تسجيل النادي بدون توثيق العنوان الوطني — ولم يتم التحقق من الموقع الجغرافي رسميًا.' : 'Club registered without national address verification — geographic location not officially verified.'}
+                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Key Info Tags */}
               <div className="flex flex-wrap gap-3">

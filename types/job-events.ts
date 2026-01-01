@@ -24,6 +24,7 @@ export interface JobEvent {
   previousDeadline?: string
   salary?: string
   isUrgent?: boolean
+  nationalAddressVerified?: boolean
 }
 
 export interface JobEventsResponse {
@@ -76,7 +77,7 @@ export const getEventColor = (eventType: JobEventType): string => {
       return 'bg-blue-500'
     case 'job_closed':
       return 'bg-gray-500'
-    case 'job_reopened':
+      case 'job_reopened':
       return 'bg-purple-500'
     case 'deadline_changed':
       return 'bg-orange-500'

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp, MapPin, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 // Schema Definitions
@@ -34,6 +34,9 @@ const clubObject = z.object({
   organizationType: z.enum(['club', 'academy', 'federation', 'sports-center']),
   establishedDate: z.string().min(1, 'Date required'),
   businessRegistrationNumber: z.string().min(1, 'Registration number required'),
+  buildingNumber: z.string().min(1, 'Required'),
+  additionalNumber: z.string().min(1, 'Required'),
+  zipCode: z.string().min(5, 'Required'),
 })
 
 const regularObject = z.object({
@@ -68,6 +71,11 @@ export default function RegisterPage() {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
   const [success, setSuccess] = useState(false)
   const [emailForSuccess, setEmailForSuccess] = useState('')
+
+  // National Address Verification
+  const [verifyingAddress, setVerifyingAddress] = useState(false)
+  const [addressStatus, setAddressStatus] = useState<'idle' | 'success' | 'failed' | 'error'>('idle')
+  const [verificationData, setVerificationData] = useState<any>(null)
 
   // Form Setup
   const {
@@ -114,8 +122,45 @@ export default function RegisterPage() {
     }
   }
 
+  const handleVerifyAddress = async () => {
+    const isValid = await trigger(['buildingNumber', 'additionalNumber', 'zipCode'])
+    if (!isValid) return
+
+    setVerifyingAddress(true)
+    setAddressStatus('idle')
+    setVerificationData(null)
+
+    const { buildingNumber, additionalNumber, zipCode } = formValues
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/club/verify-address`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ buildingNumber, additionalNumber, zipCode })
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
+        if (data.verified) {
+          setAddressStatus('success')
+        } else {
+          setAddressStatus('failed')
+        }
+        setVerificationData(data.data)
+      } else {
+        setAddressStatus('error')
+      }
+    } catch (error) {
+      console.error('Address verification error:', error)
+      setAddressStatus('error')
+    } finally {
+      setVerifyingAddress(false)
+    }
+  }
+
   const handleStep3Continue = async () => {
-    const isValid = await trigger(['organizationName', 'organizationType', 'establishedDate', 'businessRegistrationNumber'])
+    const isValid = await trigger(['organizationName', 'organizationType', 'establishedDate', 'businessRegistrationNumber', 'buildingNumber', 'additionalNumber', 'zipCode'])
     if (isValid) {
       await onSubmit(formValues)
     }
@@ -139,6 +184,17 @@ export default function RegisterPage() {
         payload.organizationType = data.organizationType
         payload.establishedDate = data.establishedDate
         payload.businessRegistrationNumber = data.businessRegistrationNumber
+        
+        // National Address
+        payload.nationalAddress = {
+          buildingNumber: data.buildingNumber,
+          additionalNumber: data.additionalNumber,
+          zipCode: data.zipCode,
+          isVerified: verificationData?.isVerified || false,
+          verifiedAt: verificationData?.verifiedAt || null,
+          verificationAttempted: verificationData ? true : false,
+          apiVersion: 'v3.1'
+        }
       }
 
       await authRegister(payload)
@@ -463,6 +519,93 @@ export default function RegisterPage() {
                       {language === 'ar' ? 'رقم السجل التجاري أو الترخيص الرسمي للمنشأة' : 'Commercial Registration or Official License Number'}
                     </p>
                     {errors.businessRegistrationNumber && <p className="text-xs text-red-500">{errors.businessRegistrationNumber.message}</p>}
+                  </div>
+
+                  {/* National Address Section */}
+                  <div className="pt-6 border-t border-gray-100">
+                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-blue-600" />
+                      {language === 'ar' ? 'العنوان الوطني' : 'National Address'}
+                    </h3>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'رقم المبنى' : 'Building Number'}</label>
+                        <Input {...register('buildingNumber')} className="bg-gray-50 focus:bg-white" placeholder="xxxx" maxLength={4} />
+                        {errors.buildingNumber && <p className="text-xs text-red-500">{errors.buildingNumber.message}</p>}
+                      </div>
+                      <div className="space-y-1">
+                         <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'الرقم الإضافي' : 'Additional Number'}</label>
+                        <Input {...register('additionalNumber')} className="bg-gray-50 focus:bg-white" placeholder="xxxx" maxLength={4} />
+                        {errors.additionalNumber && <p className="text-xs text-red-500">{errors.additionalNumber.message}</p>}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1 mb-4">
+                       <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'الرمز البريدي' : 'Zip Code'}</label>
+                      <Input {...register('zipCode')} className="bg-gray-50 focus:bg-white" placeholder="xxxxx" maxLength={5} />
+                      {errors.zipCode && <p className="text-xs text-red-500">{errors.zipCode.message}</p>}
+                    </div>
+
+                    {/* Verification Result */}
+                    {addressStatus !== 'idle' && (
+                      <div className={`mb-4 p-3 rounded-lg border flex items-start gap-3 ${
+                        addressStatus === 'success' ? 'bg-green-50 border-green-200' :
+                        addressStatus === 'failed' ? 'bg-orange-50 border-orange-200' :
+                        'bg-red-50 border-red-200'
+                      }`}>
+                        {addressStatus === 'success' ? (
+                          <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5" />
+                        ) : addressStatus === 'failed' ? (
+                          <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                        )}
+                        <div>
+                          <p className={`font-semibold text-sm ${
+                            addressStatus === 'success' ? 'text-green-800' :
+                            addressStatus === 'failed' ? 'text-orange-800' :
+                            'text-red-800'
+                          }`}>
+                            {addressStatus === 'success' 
+                              ? (language === 'ar' ? 'تم التحقق من العنوان الوطني بنجاح' : 'National Address Verified Successfully')
+                              : addressStatus === 'failed'
+                              ? (language === 'ar' ? 'تعذر التحقق من العنوان الوطني' : 'Address Verification Failed')
+                              : (language === 'ar' ? 'حدث خطأ أثناء التحقق' : 'Verification Error')
+                            }
+                          </p>
+                          <p className={`text-xs mt-1 ${
+                             addressStatus === 'success' ? 'text-green-700' :
+                             addressStatus === 'failed' ? 'text-orange-700' :
+                             'text-red-700'
+                          }`}>
+                            {addressStatus === 'success' 
+                              ? (language === 'ar' ? 'تم توثيق العنوان بنجاح وسيظهر شارة التوثيق في ملفك.' : 'Address verified. Verified badge will appear on your profile.')
+                              : addressStatus === 'failed'
+                              ? (language === 'ar' ? 'سيتم إنشاء الحساب بدون توثيق العنوان. يمكنك المحاولة لاحقاً.' : 'Account will be created without address verification.')
+                              : (language === 'ar' ? 'الخدمة غير متاحة مؤقتًا. يمكنك إكمال التسجيل.' : 'Service temporarily unavailable. You can proceed.')
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    <Button 
+                      type="button" 
+                      onClick={handleVerifyAddress}
+                      disabled={verifyingAddress || addressStatus === 'success'}
+                      variant="outline"
+                      className="w-full mb-4 border-blue-200 text-blue-700 hover:bg-blue-50"
+                    >
+                      {verifyingAddress ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          {language === 'ar' ? 'جاري التحقق...' : 'Verifying...'}
+                        </>
+                      ) : (
+                        language === 'ar' ? 'تحقق من العنوان الوطني' : 'Verify National Address'
+                      )}
+                    </Button>
                   </div>
 
                   <div className="flex gap-3 pt-4">

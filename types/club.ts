@@ -129,6 +129,16 @@ export interface Video {
 // CLUB PROFILE
 // ============================================================================
 
+export interface NationalAddress {
+  buildingNumber?: string
+  additionalNumber?: string
+  zipCode?: string
+  isVerified: boolean
+  verifiedAt?: string
+  verificationAttempted: boolean
+  apiVersion: string
+}
+
 export interface ClubProfile {
   _id: string
   userId:
@@ -155,6 +165,7 @@ export interface ClubProfile {
   sportsLicenseNumber?: string
   legalStatus?: 'licensed' | 'registered' | 'pending' | 'unlicensed'
   location: Location
+  nationalAddress?: NationalAddress
   contactInfo: ContactInfo
   facilityDetails?: FacilityDetails
   availableSports: string[]

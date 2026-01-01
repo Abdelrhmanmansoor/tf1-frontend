@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import profileService, { ProfileData } from '@/services/profile'
 import { messagingService } from '@/services/messaging'
 import { useAuth } from '@/contexts/auth-context'
+import { useLanguage } from '@/contexts/language-context'
 import {
   ArrowLeft,
   Mail,
@@ -20,6 +21,8 @@ import {
   Loader2,
   CheckCircle,
   Globe,
+  Shield,
+  AlertTriangle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -34,6 +37,7 @@ export default function ProfilePage() {
   const router = useRouter()
   const userId = params.id as string
   const { user } = useAuth()
+  const { language } = useLanguage()
 
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -253,9 +257,48 @@ export default function ProfilePage() {
                             variant="outline"
                             className="text-blue-600 border-blue-600"
                           >
-                            Verified
+                            {language === 'ar' ? 'موثق' : 'Verified'}
                           </Badge>
                         )}
+
+                        {profile.role === 'club' &&
+                          (profile.profile?.nationalAddress?.isVerified ? (
+                            <Badge
+                              variant="outline"
+                              className="text-green-600 border-green-600 flex items-center gap-1 bg-green-50"
+                            >
+                              <div className="relative flex items-center justify-center">
+                                <Shield className="h-3.5 w-3.5 fill-green-600 text-green-50" />
+                                <CheckCircle className="h-2 w-2 text-white absolute" />
+                              </div>
+                              <span>
+                                {language === 'ar'
+                                  ? 'تم تأكيد العنوان الوطني'
+                                  : 'National Address Verified'}
+                              </span>
+                            </Badge>
+                          ) : (
+                            <div className="group relative">
+                              <Badge
+                                variant="outline"
+                                className="text-orange-600 border-orange-600 flex items-center gap-1 bg-orange-50 cursor-help"
+                              >
+                                <AlertTriangle className="h-3.5 w-3.5" />
+                                <span>
+                                  {language === 'ar'
+                                    ? 'العنوان الوطني غير موثّق'
+                                    : 'Address Not Verified'}
+                                </span>
+                              </Badge>
+                              {/* Tooltip */}
+                              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-xl">
+                                {language === 'ar'
+                                  ? 'تم تسجيل النادي بدون توثيق العنوان الوطني — ولم يتم التحقق من الموقع الجغرافي رسميًا.'
+                                  : 'Club registered without national address verification — geographic location not officially verified.'}
+                                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                              </div>
+                            </div>
+                          ))}
                       </div>
 
                       {profile.location && (

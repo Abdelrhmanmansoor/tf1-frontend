@@ -17,7 +17,9 @@ import {
   WifiOff,
   Loader2,
   AlertCircle,
-  Zap
+  Zap,
+  Shield,
+  AlertTriangle
 } from 'lucide-react'
 
 interface JobsTickerBarProps {
@@ -234,6 +236,16 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
                     <span className="text-sm truncate max-w-[150px]">
                       {language === 'ar' ? currentEvent.organizationAr || currentEvent.organization : currentEvent.organization}
                     </span>
+                    {currentEvent.nationalAddressVerified ? (
+                        <div className="flex items-center gap-0.5 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20 ml-1" title={language === 'ar' ? 'العنوان الوطني موثّق' : 'National Address Verified'}>
+                            <Shield className="w-3 h-3 text-green-400 fill-green-400/10" />
+                            <span className="text-[10px] text-green-400 font-medium hidden lg:inline">{language === 'ar' ? 'موثّق' : 'Verified'}</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-0.5 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 ml-1" title={language === 'ar' ? 'العنوان الوطني غير موثّق' : 'Address Not Verified'}>
+                            <AlertTriangle className="w-3 h-3 text-amber-400" />
+                        </div>
+                    )}
                   </span>
 
                   {/* Location */}
@@ -327,8 +339,13 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
                     <p className="text-white text-sm font-medium truncate">
                       {language === 'ar' ? currentEvent.jobTitleAr || currentEvent.jobTitle : currentEvent.jobTitle}
                     </p>
-                    <p className="text-white/60 text-xs truncate">
+                    <p className="text-white/60 text-xs truncate flex items-center gap-1">
                       {language === 'ar' ? currentEvent.organizationAr || currentEvent.organization : currentEvent.organization}
+                      {currentEvent.nationalAddressVerified ? (
+                        <Shield className="w-2.5 h-2.5 text-green-400 fill-green-400/20" />
+                      ) : (
+                        <AlertTriangle className="w-2.5 h-2.5 text-amber-400/70" />
+                      )}
                     </p>
                   </div>
                   <span className="text-white/40 text-[10px] shrink-0">
@@ -383,8 +400,11 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
                       <span className={`${getEventColor(event.eventType)} text-white text-[10px] px-1 py-0.5 rounded`}>
                         {getEventIcon(event.eventType)}
                       </span>
-                      <span className="text-white text-xs font-medium truncate flex-1">
+                      <span className="text-white text-xs font-medium truncate flex-1 flex items-center gap-1">
                         {language === 'ar' ? event.jobTitleAr || event.jobTitle : event.jobTitle}
+                        {event.nationalAddressVerified && (
+                          <Shield className="w-2.5 h-2.5 text-green-400 fill-green-400/20" />
+                        )}
                       </span>
                       <span className="text-white/40 text-[10px]">
                         {formatTimeAgo(event.timestamp)}
@@ -400,6 +420,23 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
 
       {/* Scrolling Animation Bar */}
       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/10">
+        <motion.div
+          className="h-full bg-gradient-to-r from-cyan-400 to-blue-400"
+          initial={{ width: '0%' }}
+          animate={{ width: isPaused ? `${((currentIndex + 1) / displayEvents.length) * 100}%` : '100%' }}
+          transition={{ 
+            duration: isPaused ? 0 : 5, 
+            ease: 'linear',
+            repeat: isPaused ? 0 : Infinity
+          }}
+          key={isPaused ? 'paused' : currentIndex}
+        />
+      </div>
+    </div>
+  )
+}
+
+export default JobsTickerBar
         <motion.div
           className="h-full bg-gradient-to-r from-cyan-400 to-blue-400"
           initial={{ width: '0%' }}

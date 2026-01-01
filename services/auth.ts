@@ -19,6 +19,13 @@ interface RegisterData {
   organizationType?: 'club' | 'academy' | 'federation' | 'sports-center'
   establishedDate?: string
   businessRegistrationNumber?: string
+  // National Address fields
+  buildingNumber?: string
+  additionalNumber?: string
+  zipCode?: string
+  nationalAddressVerified?: boolean
+  verifiedAt?: string
+  verificationAttempted?: boolean
   // Admin roles specific fields
   department?: string
   position?: string

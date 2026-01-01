@@ -29,7 +29,11 @@ import {
   Image as ImageIcon,
   Video,
   TrendingUp,
+  AlertTriangle,
+  Info,
+  RefreshCw,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import Link from 'next/link'
 
 const ClubProfilePage = () => {
@@ -38,6 +42,7 @@ const ClubProfilePage = () => {
   const [profile, setProfile] = useState<ClubProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
     fetchProfile()
@@ -55,6 +60,49 @@ const ClubProfilePage = () => {
       setError(err.message || 'Failed to load profile')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleRetryVerification = async () => {
+    if (!profile?.nationalAddress) return
+
+    try {
+      setIsRetrying(true)
+      const { buildingNumber, additionalNumber, zipCode } =
+        profile.nationalAddress
+
+      if (!buildingNumber || !additionalNumber || !zipCode) {
+        toast.error(
+          language === 'ar'
+            ? 'بيانات العنوان الوطني ناقصة'
+            : 'Incomplete national address data'
+        )
+        return
+      }
+
+      const result = await clubService.retryVerification({
+        buildingNumber,
+        additionalNumber,
+        zipCode,
+      })
+
+      if (result.success && result.verified) {
+        toast.success(result.message)
+        setProfile(result.profile)
+      } else {
+        toast.error(result.message)
+        if (result.profile) {
+          setProfile(result.profile)
+        }
+      }
+    } catch (err: any) {
+      console.error('Retry verification error:', err)
+      toast.error(
+        err.message ||
+          (language === 'ar' ? 'حدث خطأ أثناء التحقق' : 'Error during verification')
+      )
+    } finally {
+      setIsRetrying(false)
     }
   }
 
@@ -187,10 +235,31 @@ const ClubProfilePage = () => {
                       <h2 className="text-3xl font-bold text-gray-900">
                         {profile.clubName}
                       </h2>
-                      {profile.verification?.isVerified && (
-                        <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                          <CheckCircle className="w-4 h-4" />
-                          {language === 'ar' ? 'موثق' : 'Verified'}
+                      {profile.nationalAddress?.isVerified ? (
+                        <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 border border-green-200">
+                          <div className="relative flex items-center justify-center">
+                            <Shield className="w-4 h-4 text-green-600 fill-green-100" />
+                            <CheckCircle className="w-2.5 h-2.5 text-green-600 absolute" />
+                          </div>
+                          {language === 'ar'
+                            ? 'تم تأكيد العنوان الوطني'
+                            : 'National Address Verified'}
+                        </div>
+                      ) : (
+                        <div className="group relative">
+                          <div className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 border border-orange-200 cursor-help">
+                            <AlertTriangle className="w-4 h-4" />
+                            {language === 'ar'
+                              ? 'العنوان الوطني غير موثّق بعد'
+                              : 'National Address Not Yet Verified'}
+                          </div>
+                          {/* Tooltip */}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-xl">
+                            {language === 'ar'
+                              ? 'تم تسجيل النادي بدون توثيق العنوان الوطني — ولم يتم التحقق من الموقع الجغرافي رسميًا.'
+                              : 'Club registered without national address verification — geographic location not officially verified.'}
+                            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -466,6 +535,54 @@ const ClubProfilePage = () => {
                     )}
                   </div>
                 </div>
+
+                {/* National Address */}
+                {profile.nationalAddress && (
+                  <div className="flex items-start gap-3">
+                    {profile.nationalAddress.isVerified ? (
+                      <Shield className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-orange-500 mt-1 flex-shrink-0" />
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600 mb-1">
+                          {language === 'ar'
+                            ? 'العنوان الوطني'
+                            : 'National Address'}
+                        </p>
+                        {!profile.nationalAddress.isVerified && (
+                          <button
+                            onClick={handleRetryVerification}
+                            disabled={isRetrying}
+                            className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+                          >
+                            <RefreshCw
+                              className={`w-3 h-3 ${
+                                isRetrying ? 'animate-spin' : ''
+                              }`}
+                            />
+                            {language === 'ar' ? 'إعادة التحقق' : 'Retry'}
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-gray-900 font-medium">
+                        {profile.nationalAddress.buildingNumber}
+                        {profile.nationalAddress.additionalNumber
+                          ? ` - ${profile.nationalAddress.additionalNumber}`
+                          : ''}
+                      </p>
+                      <p className="text-gray-700">
+                        {profile.nationalAddress.zipCode}
+                      </p>
+                      {!profile.nationalAddress.isVerified && (
+                        <p className="text-xs text-orange-600 mt-1">
+                          {language === 'ar' ? 'غير موثق' : 'Not Verified'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Email */}
                 <div className="flex items-start gap-3">

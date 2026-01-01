@@ -10,6 +10,9 @@ import {
   Building2,
   DollarSign,
   Clock,
+  Shield,
+  CheckCircle,
+  AlertTriangle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -29,6 +32,9 @@ interface Job {
       cityAr?: string
       country: string
       countryAr?: string
+    }
+    nationalAddress?: {
+      isVerified: boolean
     }
   }
   jobType: string
@@ -215,11 +221,33 @@ export function RecentJobs() {
               <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors line-clamp-2">
                 {language === 'ar' ? job.titleAr || job.title : job.title}
               </h3>
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm text-gray-600 font-medium mb-1">
                 {language === 'ar'
                   ? job.club.nameAr || job.club.name
                   : job.club.name}
               </p>
+              
+              {/* National Address Verification Badge */}
+              {job.club.nationalAddress?.isVerified ? (
+                <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full border border-green-100 w-fit">
+                  <div className="relative flex items-center justify-center">
+                    <Shield className="w-3 h-3 fill-green-100" />
+                    <CheckCircle className="w-2 h-2 text-green-600 absolute" />
+                  </div>
+                  <span>{language === 'ar' ? 'العنوان الوطني موثّق' : 'Address Verified'}</span>
+                </div>
+              ) : (
+                <div className="group relative w-fit">
+                  <div className="inline-flex items-center gap-1 bg-orange-50 text-orange-700 text-xs px-2 py-0.5 rounded-full border border-orange-100 cursor-help">
+                    <AlertTriangle className="w-3 h-3" />
+                    <span>{language === 'ar' ? 'العنوان غير موثّق' : 'Address Not Verified'}</span>
+                  </div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-gray-900 text-white text-[10px] rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-xl">
+                    {language === 'ar' ? 'لم يتم التحقق من العنوان الوطني رسمياً' : 'National address not officially verified'}
+                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
