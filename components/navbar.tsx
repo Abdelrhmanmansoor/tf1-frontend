@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { X, ChevronDown } from 'lucide-react'
+import { JobTicker } from './job-ticker'
 // import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
@@ -41,7 +42,9 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   ]
 
   return (
-    <header className="bg-white shadow-sm px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-50 backdrop-blur-md bg-white/95">
+    <>
+      <JobTicker />
+      <header className="bg-white shadow-sm px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-50 backdrop-blur-md bg-white/95">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo - Clickable to Home */}
         <Link href="/">
@@ -364,5 +367,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
         )}
       </AnimatePresence>
     </header>
+    </>
   )
 }

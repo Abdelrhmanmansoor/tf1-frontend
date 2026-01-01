@@ -418,6 +418,78 @@ export default function JobsPage() {
           </div>
         </section>
 
+        {/* Job Center Section (Moved & Renamed) */}
+        <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
+          {/* Decorative Background Elements */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-100 to-transparent rounded-full opacity-40 blur-3xl -ml-48 -mt-48"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-100 to-transparent rounded-full opacity-40 blur-3xl -mr-48 -mb-48"></div>
+
+          <div className="max-w-7xl mx-auto relative z-10">
+            {/* Official Notice Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mb-12 bg-blue-50 border border-blue-100 rounded-2xl p-6 sm:p-8 max-w-4xl mx-auto text-center"
+            >
+               <div className="flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-blue-900 mb-2">
+                      {language === 'ar' ? 'تنبيه للجهات الرياضية والشركات' : 'Notice for Sports Entities and Companies'}
+                    </h3>
+                    <p className="text-blue-700 leading-relaxed max-w-2xl mx-auto">
+                      {language === 'ar' 
+                        ? 'هذا القسم مخصص لإدارة واستقطاب الكفاءات الرياضية والطبية والإدارية من خلال نشر الوظائف واستقبال طلبات المتقدمين بطريقة احترافية ومنظمة عبر منصتنا.'
+                        : 'This section is dedicated to managing and attracting sports, medical, and administrative talents by posting jobs and receiving applications professionally through our platform.'}
+                    </p>
+                  </div>
+               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
+                  {language === 'ar'
+                    ? 'مركز التوظيف — TF1 Job Center'
+                    : 'TF1 Job Center'}
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+                {language === 'ar'
+                  ? 'يمكنك هنا إدارة ونشر الوظائف واستقبال طلبات الكفاءات في القطاع الرياضي'
+                  : 'Manage and post jobs, and receive applications from talents in the sports sector'}
+              </p>
+            </motion.div>
+
+            <RecentJobs />
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-center mt-12"
+            >
+              <Link href="/browse-jobs">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                  {language === 'ar' ? 'تصفح جميع الوظائف' : 'View All Jobs'}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Features Toggle Section */}
         <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
           {/* Decorative Background Elements */}
@@ -561,54 +633,6 @@ export default function JobsPage() {
                 </motion.div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Recent Jobs Section */}
-        <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
-          {/* Decorative Background Elements */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-100 to-transparent rounded-full opacity-40 blur-3xl -ml-48 -mt-48"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-blue-100 to-transparent rounded-full opacity-40 blur-3xl -mr-48 -mb-48"></div>
-
-          <div className="max-w-7xl mx-auto relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
-                  {language === 'ar'
-                    ? 'أحدث الوظائف المتاحة'
-                    : 'Latest Job Opportunities'}
-                </span>
-              </h2>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-                {language === 'ar'
-                  ? 'تصفح أحدث 3 وظائف تم إضافتها إلى المنصة'
-                  : 'Browse the latest 3 jobs added to our platform'}
-              </p>
-            </motion.div>
-
-            <RecentJobs />
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-center mt-12"
-            >
-              <Link href="/browse-jobs">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300"
-                >
-                  {language === 'ar' ? 'تصفح جميع الوظائف' : 'View All Jobs'}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </motion.div>
           </div>
         </section>
 
