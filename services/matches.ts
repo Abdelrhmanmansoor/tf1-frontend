@@ -101,14 +101,27 @@ export interface RegionsData {
 
 // Get regions and dropdown options
 export const getRegionsData = async (): Promise<RegionsData> => {
-  const response = await api.get('/locations', { params: { level: 'region', limit: 200 } })
-  const items = response.data?.data || []
-  const regions = items.map((r: any) => ({
+  // Fetch regions
+  const regionsResponse = await api.get('/locations', { params: { level: 'region', limit: 50 } })
+  const regionsData = regionsResponse.data?.data || []
+
+  // Fetch cities
+  const citiesResponse = await api.get('/locations', { params: { level: 'city', limit: 500 } })
+  const citiesData = citiesResponse.data?.data || []
+
+  const regions = regionsData.map((r: any) => ({
     id: r.id,
     name: r.name_ar,
     nameEn: r.name_en,
-    cities: []
+    cities: citiesData
+      .filter((c: any) => c.parent_id === r.id)
+      .map((c: any) => ({
+        id: c.id,
+        name: c.name_ar,
+        nameEn: c.name_en
+      }))
   }))
+
   return {
     regions,
     neighborhoods: {},

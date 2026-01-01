@@ -21,6 +21,7 @@ const PUBLIC_ROUTES = [
   '/matches',
   '/matches/login',
   '/matches/register',
+  '/matches/verify-email',
 ]
 
 const DASHBOARD_ROUTES = ['/dashboard']

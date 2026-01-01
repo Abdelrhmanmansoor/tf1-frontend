@@ -169,7 +169,13 @@ export default function CreateMatchPage() {
                 <select
                   value={formData.city}
                   onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
+                    setFormData({
+                      ...formData,
+                      city: e.target.value,
+                      locationId: regionsData?.regions
+                        ?.find((r: any) => r.name === formData.region)
+                        ?.cities?.find((c: any) => c.name === e.target.value)?.id || ''
+                    })
                   }
                   required
                   disabled={!formData.region}

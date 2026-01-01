@@ -88,13 +88,13 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               </Link>
             ))}
 
-            {/* Secondary Items - Hidden on Laptop (lg), Visible on Desktop (xl) */}
+            {/* Secondary Items - Hidden on Laptop (lg/xl), Visible on Large Desktop (2xl) */}
             {navItems.slice(4).map((item) => (
               <Link
                 key={item.id}
                 href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
                 onClick={() => setActiveTab(item.id)}
-                className={`hidden xl:block relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                className={`hidden 2xl:block relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                   activeTab === item.id
                     ? 'text-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -116,8 +116,8 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               </Link>
             ))}
 
-            {/* More Dropdown - Visible on Laptop (lg), Hidden on Desktop (xl) */}
-            <div className="relative lg:block xl:hidden">
+            {/* More Dropdown - Visible on Laptop (lg/xl), Hidden on Large Desktop (2xl) */}
+            <div className="relative lg:block 2xl:hidden">
               <button
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
                 className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 flex items-center gap-1 ${
