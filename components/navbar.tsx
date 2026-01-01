@@ -27,6 +27,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false)
 
   const navItems: NavItem[] = [
     { id: 'home', label: t('home') },
@@ -58,13 +59,14 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
 
         {/* Centered Navigation */}
         <nav className="hidden lg:flex items-center">
-          <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1">
-            {navItems.map((item) => (
+          <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
+            {/* Primary Items - Visible on all large screens */}
+            {navItems.slice(0, 4).map((item) => (
               <Link
                 key={item.id}
                 href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
                 onClick={() => setActiveTab(item.id)}
-                className={`relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                className={`relative px-4 xl:px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                   activeTab === item.id
                     ? 'text-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -85,6 +87,102 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                 <span className="relative z-10">{item.label}</span>
               </Link>
             ))}
+
+            {/* Secondary Items - Hidden on Laptop (lg), Visible on Desktop (xl) */}
+            {navItems.slice(4).map((item) => (
+              <Link
+                key={item.id}
+                href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
+                onClick={() => setActiveTab(item.id)}
+                className={`hidden xl:block relative px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  activeTab === item.id
+                    ? 'text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+              >
+                {activeTab === item.id && (
+                  <motion.div
+                    layoutId="activeBackground"
+                    className={`absolute inset-0 rounded-full ${
+                      activeMode === 'application'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500'
+                        : 'bg-gradient-to-r from-green-500 to-green-600'
+                    }`}
+                    initial={false}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
+              </Link>
+            ))}
+
+            {/* More Dropdown - Visible on Laptop (lg), Hidden on Desktop (xl) */}
+            <div className="relative lg:block xl:hidden">
+              <button
+                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 flex items-center gap-1 ${
+                  navItems.slice(4).some((item) => item.id === activeTab)
+                    ? 'text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+                aria-expanded={moreMenuOpen}
+                aria-label={t('more') || 'More'}
+              >
+                {navItems.slice(4).some((item) => item.id === activeTab) && (
+                  <motion.div
+                    layoutId="activeBackground"
+                    className={`absolute inset-0 rounded-full ${
+                      activeMode === 'application'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500'
+                        : 'bg-gradient-to-r from-green-500 to-green-600'
+                    }`}
+                    initial={false}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1">
+                  {t('more') || 'More'}
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      moreMenuOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </span>
+              </button>
+
+              <AnimatePresence>
+                {moreMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full rtl:right-0 ltr:left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 py-1"
+                    style={{ minWidth: '12rem' }}
+                  >
+                    {navItems.slice(4).map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
+                        onClick={() => {
+                          setActiveTab(item.id)
+                          setMoreMenuOpen(false)
+                        }}
+                        className={`block px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
+                          activeTab === item.id
+                            ? activeMode === 'application'
+                              ? 'text-blue-600 font-semibold bg-blue-50'
+                              : 'text-green-600 font-semibold bg-green-50'
+                            : 'text-gray-700'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </nav>
 

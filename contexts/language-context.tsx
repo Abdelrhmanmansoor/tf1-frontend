@@ -28,6 +28,7 @@ const translations = {
     features: 'المزايا',
     contact: 'تواصل معنا',
     blog: 'المدونة',
+    more: 'المزيد',
     register: 'إنشاء حساب',
     login: 'تسجيل الدخول',
 
