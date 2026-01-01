@@ -176,6 +176,7 @@ class AuthService {
     } catch (e) {
       // Invalid token format
       console.warn('[AUTH] Invalid token format during check', e)
+      this.clearSession() // Clear invalid token to prevent repeated errors
       return false
     }
   }

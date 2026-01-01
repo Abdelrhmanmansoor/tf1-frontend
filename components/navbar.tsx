@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { X } from 'lucide-react'
+import { X, ChevronDown } from 'lucide-react'
 // import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
@@ -130,7 +130,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               >
                 {navItems.slice(4).some((item) => item.id === activeTab) && (
                   <motion.div
-                    layoutId="activeBackground"
+                    layoutId="activeBackground-more"
                     className={`absolute inset-0 rounded-full ${
                       activeMode === 'application'
                         ? 'bg-gradient-to-r from-blue-600 to-blue-500'
