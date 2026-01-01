@@ -71,8 +71,14 @@ class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(API_CONFIG.TOKEN_KEY)
       localStorage.removeItem(API_CONFIG.USER_KEY)
+      // Clear matches related keys
+      localStorage.removeItem('matches_token')
+      localStorage.removeItem('matches_user')
+      
       // Clear cookie - Ensure correct path and domain handling
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      
       // Use window.location only if we need a hard refresh, otherwise router.push should be used by the caller
       // For safety and complete cleanup, a hard refresh is acceptable here until we implement a better flow
       window.location.href = '/login'

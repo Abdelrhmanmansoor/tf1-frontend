@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -52,6 +52,16 @@ export default function MatchesLoginPage() {
         if (mainToken && !matchesToken) {
           // Set the main token as matches token (backend middleware handles bridging)
           localStorage.setItem('matches_token', mainToken)
+          
+          // Set matches_user from current user data to avoid redirect loop
+          if (user) {
+            const minimalUserData = {
+              id: user.id,
+              name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.email,
+              email: user.email,
+            }
+            localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
+          }
           
           // Redirect
           const redirectUrl = searchParams.get('redirect') || '/matches/dashboard'
