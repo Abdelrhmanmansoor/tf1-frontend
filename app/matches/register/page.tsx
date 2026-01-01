@@ -82,11 +82,20 @@ export default function MatchesRegisterPage() {
       return
     }
 
-    if (formData.password.length < 6) {
+    if (formData.password.length < 8) {
       setError(
         language === 'ar'
-          ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'
-          : 'Password must be at least 6 characters'
+          ? 'كلمة المرور يجب أن تكون 8 أحرف على الأقل'
+          : 'Password must be at least 8 characters'
+      )
+      return
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      setError(
+        language === 'ar'
+          ? 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم'
+          : 'Password must contain uppercase, lowercase, and a number'
       )
       return
     }

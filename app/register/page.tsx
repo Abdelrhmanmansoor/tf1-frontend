@@ -23,7 +23,7 @@ const commonShape = {
   phone: z.string().min(9, 'Phone number invalid'),
   password: z.string()
     .min(8, 'Password must be at least 8 characters long')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/, 'Password must contain uppercase, lowercase, and a number'),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and a number'),
   confirmPassword: z.string()
 }
 

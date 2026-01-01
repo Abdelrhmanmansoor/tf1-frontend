@@ -136,11 +136,20 @@ function ResetPasswordForm() {
       return
     }
 
-    if (formData.password.length < 6) {
+    if (formData.password.length < 8) {
       setError(
         language === 'ar'
-          ? 'كلمة المرور قصيرة جداً (أقل من 6 أحرف)'
-          : 'Password is too short (minimum 6 characters)'
+          ? 'كلمة المرور يجب ألا تقل عن 8 أحرف'
+          : 'Password must be at least 8 characters long'
+      )
+      return
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      setError(
+        language === 'ar'
+          ? 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم'
+          : 'Password must contain uppercase, lowercase, and a number'
       )
       return
     }
