@@ -437,20 +437,3 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
 }
 
 export default JobsTickerBar
-        <motion.div
-          className="h-full bg-gradient-to-r from-cyan-400 to-blue-400"
-          initial={{ width: '0%' }}
-          animate={{ width: isPaused ? `${((currentIndex + 1) / displayEvents.length) * 100}%` : '100%' }}
-          transition={{ 
-            duration: isPaused ? 0 : 5, 
-            ease: 'linear',
-            repeat: isPaused ? 0 : Infinity
-          }}
-          key={isPaused ? 'paused' : currentIndex}
-        />
-      </div>
-    </div>
-  )
-}
-
-export default JobsTickerBar
