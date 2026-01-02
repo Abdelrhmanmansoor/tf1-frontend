@@ -22,56 +22,47 @@ export function PartnersMarquee() {
     { name: 'Fitness Time', logo: '/partners/fitnesstime.png' },
   ]
 
-  // Create 3 copies for seamless infinite scroll
-  const triplePartners = [...partners, ...partners, ...partners]
-
   return (
-    <section className="py-12 sm:py-16 bg-gradient-to-br from-gray-50 via-blue-50/20 to-green-50/20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 sm:mb-10">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+    <section className="py-12 sm:py-16 bg-gray-50 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-10 sm:mb-14 text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
           {language === 'ar' ? 'شركاؤنا المحتملون' : 'Our Potential Partners'}
         </h2>
+        <p className="max-w-3xl mx-auto text-gray-600 leading-relaxed text-base sm:text-lg">
+          {language === 'ar'
+            ? 'نتطلع لبناء شراكات استراتيجية مع الأندية الرياضية والأكاديميات والاتحادات ومراكز التأهيل الرياضي، بما يدعم تطوير القطاع الرياضي ويعزز من جودة الخدمات المقدمة عبر منصتنا.'
+            : 'We look forward to building strategic partnerships with sports clubs, academies, federations, and sports rehabilitation centers, supporting the development of the sports sector and enhancing the quality of services provided through our platform.'}
+        </p>
       </div>
-      
-      <div className="relative w-full overflow-hidden">
-        {/* Infinite scrolling container */}
-        <div className="flex animate-infinite-scroll hover:pause-animation">
-          {triplePartners.map((partner, index) => (
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+          {partners.map((partner, index) => (
             <div
               key={`${partner.name}-${index}`}
-              className="flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 mx-3 sm:mx-4 flex items-center justify-center bg-white rounded-xl p-4 sm:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
+              className="group flex items-center justify-center bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-32 sm:h-40 relative"
             >
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                width={120}
-                height={120}
-                className="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
-              />
+              <div className="relative w-full h-full p-2 transition-opacity duration-300 group-hover:opacity-80">
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100px, 150px"
+                />
+              </div>
             </div>
           ))}
         </div>
+
+        <div className="mt-12 text-center border-t border-gray-100 pt-8">
+          <p className="text-gray-500 font-medium">
+            {language === 'ar'
+              ? 'يسعدنا انضمامكم لشركائنا ودعم مسيرة التطوير في القطاع الرياضي.'
+              : 'We are happy to have you join our partners and support the development journey in the sports sector.'}
+          </p>
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes infinite-scroll {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(calc(-100% / 3));
-          }
-        }
-
-        .animate-infinite-scroll {
-          animation: infinite-scroll 40s linear infinite;
-          display: flex;
-        }
-
-        .pause-animation:hover .animate-infinite-scroll {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   )
 }

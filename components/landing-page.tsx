@@ -637,6 +637,65 @@ export function LandingPage() {
       {/* Stats Section */}
       <StatsSection />
 
+      {/* TF1 Job Center Section - Relocated */}
+      {mode === 'application' && (
+        <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-8 sm:mb-12"
+            >
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
+                  {language === 'ar'
+                    ? 'مركز التوظيف — TF1 Job Center'
+                    : 'TF1 Job Center'}
+                </span>
+              </h2>
+            </motion.div>
+
+             {/* Official Banner */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mb-10 bg-gradient-to-br from-gray-50 to-blue-50/20 border border-blue-100 rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden shadow-sm"
+            >
+               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500"></div>
+               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">
+                 {language === 'ar' ? 'تنبيه للجهات الرياضية والشركات:' : 'Notice to Sports Organizations and Companies:'}
+               </h3>
+               <p className="text-gray-600 leading-relaxed max-w-3xl mx-auto text-base sm:text-lg">
+                 {language === 'ar' 
+                   ? 'يتيح لكم مركز التوظيف عبر منصة TF1 نشر الوظائف واستقطاب الكفاءات الرياضية والطبية والإدارية بشكل احترافي ومنظم، مع إمكانية إدارة طلبات المتقدمين بسهولة وأمان.'
+                   : 'The TF1 Job Center allows you to post jobs and attract sports, medical, and administrative talents professionally and organized, with the ability to manage applicant requests easily and securely.'}
+               </p>
+            </motion.div>
+
+            <RecentJobs />
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-center mt-8 sm:mt-12"
+            >
+              <Link href="/jobs">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-base sm:text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
+                >
+                  {language === 'ar' ? 'عرض جميع الوظائف' : 'View All Jobs'}
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
       {/* Partners Marquee Section */}
       <PartnersMarquee />
 
@@ -714,51 +773,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Recent Jobs Section - Only for Application Mode */}
-      {mode === 'application' && (
-        <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-8 sm:mb-12"
-            >
-              <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
-                  {language === 'ar'
-                    ? 'الفرص الوظيفية المتاحة'
-                    : 'Available Job Opportunities'}
-                </span>
-              </h2>
-              <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                {language === 'ar'
-                  ? 'اكتشف أحدث الوظائف في المجال الرياضي'
-                  : 'Discover the latest jobs in the sports field'}
-              </p>
-            </motion.div>
 
-            <RecentJobs />
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-center mt-8 sm:mt-12"
-            >
-              <Link href="/jobs">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-base sm:text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
-                >
-                  {language === 'ar' ? 'عرض جميع الوظائف' : 'View All Jobs'}
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-      )}
 
       {/* Top Rated Players Section - Only for Application Mode */}
       {mode === 'application' && (
