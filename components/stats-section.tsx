@@ -43,7 +43,7 @@ export function StatsSection() {
   ]
 
   return (
-    <section className="py-12 sm:py-16 bg-white overflow-hidden">
+    <section className="py-16 sm:py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Title */}
         <motion.div

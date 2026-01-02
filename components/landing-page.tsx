@@ -680,12 +680,12 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-center mt-8 sm:mt-12"
+              className="text-center mt-12 sm:mt-16"
             >
               <Link href="/jobs">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-base sm:text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
+                  className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
                 >
                   {language === 'ar' ? 'عرض جميع الوظائف' : 'View All Jobs'}
                   <ArrowRight className="w-5 h-5" />
