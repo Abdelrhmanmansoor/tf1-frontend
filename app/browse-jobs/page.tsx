@@ -70,6 +70,15 @@ export default function BrowseJobsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const getSportEmoji = (sport?: string) => {
+    const s = (sport || '').toLowerCase()
+    if (s.includes('foot')) return '⚽'
+    if (s.includes('basket')) return '🏀'
+    if (s.includes('swim')) return '🏊'
+    if (s.includes('tennis')) return '🎾'
+    if (s.includes('fitness')) return '🏋️'
+    return '🏅'
+  }
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -205,6 +214,9 @@ export default function BrowseJobsPage() {
             <Filter className="w-4 h-4" />
             {language === 'ar' ? 'تصفية' : 'Filters'}
           </Button>
+          <Button variant="outline" onClick={() => setSearchTerm('')}>
+            {language === 'ar' ? 'إعادة التعيين' : 'Reset Filters'}
+          </Button>
         </div>
 
         {/* Jobs Grid */}
@@ -270,6 +282,10 @@ export default function BrowseJobsPage() {
                           ? job.club.nameAr || job.club.name
                           : job.club.name}
                       </p>
+                      <div className="inline-flex items-center gap-2 text-xs text-gray-600 mt-1">
+                        <span className="text-base">{getSportEmoji(job.sport)}</span>
+                        <span className="font-mono">{job._id.slice(0, 8)}</span>
+                      </div>
 
                       {/* National Address Verification Badge */}
                       {job.club.nationalAddress?.isVerified ? (

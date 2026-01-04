@@ -195,7 +195,7 @@ const ClubApplicationsPage = () => {
                           </div>
                           <div>
                             <h3 className="text-lg font-bold text-gray-900">
-                              {applicantName || (language === 'ar' ? 'متقدم' : 'Applicant')}
+                              {applicantName || (language === 'ar' ? 'الاسم غير متاح' : 'Name Not Available')}
                             </h3>
                             <p className="text-sm text-gray-600">
                               {jobTitle || (language === 'ar' ? 'بدون وظيفة' : 'No Job')}

@@ -18,6 +18,7 @@ import {
   Eye,
   Edit,
   XCircle,
+  Clock,
 } from 'lucide-react'
 import Link from 'next/link'
 import clubService from '@/services/club'
@@ -29,6 +30,7 @@ const ClubJobsPage = () => {
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [creating, setCreating] = useState(false)
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({})
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -85,6 +87,24 @@ const ClubJobsPage = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const activeCount = jobs.filter(j => j.status === 'active').length
+  const closedCount = jobs.filter(j => j.status === 'closed').length
+  const expiredCount = jobs.filter(
+    j => j.status === 'active' && j.applicationDeadline && new Date(j.applicationDeadline) < new Date()
+  ).length
+  const totalApplicants = jobs.reduce((sum, j) => sum + (j.applicationStats?.totalApplications || 0), 0)
+  const pendingRequests = jobs.reduce((sum, j) => sum + (j.applicationStats?.newApplications || 0), 0)
+
+  const getSportEmoji = (sport?: string) => {
+    const s = (sport || '').toLowerCase()
+    if (s.includes('foot')) return '⚽'
+    if (s.includes('basket')) return '🏀'
+    if (s.includes('swim')) return '🏊'
+    if (s.includes('tennis')) return '🎾'
+    if (s.includes('fitness')) return '🏋️'
+    return '🏅'
   }
 
   const validateForm = (): boolean => {
@@ -325,6 +345,57 @@ const ClubJobsPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6"
+        >
+          <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Briefcase className="w-5 h-5 text-blue-600" />
+              <div>
+                <div className="text-2xl font-bold">{activeCount}</div>
+                <div className="text-sm text-gray-600">{language === 'ar' ? 'وظائف نشطة' : 'Active Jobs'}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <XCircle className="w-5 h-5 text-red-600" />
+              <div>
+                <div className="text-2xl font-bold">{closedCount}</div>
+                <div className="text-sm text-gray-600">{language === 'ar' ? 'وظائف مغلقة' : 'Closed Jobs'}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-orange-600" />
+              <div>
+                <div className="text-2xl font-bold">{expiredCount}</div>
+                <div className="text-sm text-gray-600">{language === 'ar' ? 'وظائف منتهية' : 'Expired Jobs'}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-green-600" />
+              <div>
+                <div className="text-2xl font-bold">{totalApplicants}</div>
+                <div className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي المتقدمين' : 'Total Applicants'}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-purple-600" />
+              <div>
+                <div className="text-2xl font-bold">{pendingRequests}</div>
+                <div className="text-sm text-gray-600">{language === 'ar' ? 'طلبات معلقة' : 'Pending Requests'}</div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -336,6 +407,19 @@ const ClubJobsPage = () => {
             <h2 className="text-lg font-bold text-gray-900">
               {language === 'ar' ? 'تصفية' : 'Filters'}
             </h2>
+            <div className="ms-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setStatusFilter('all')
+                  setCategoryFilter('all')
+                  setSportFilter('all')
+                }}
+              >
+                {language === 'ar' ? 'إعادة التعيين' : 'Reset Filters'}
+              </Button>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -400,18 +484,20 @@ const ClubJobsPage = () => {
           </div>
         </motion.div>
 
-        {/* Jobs List */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.map((job) => (
             <motion.div
               key={job._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition flex flex-col"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl">
+                      {getSportEmoji(job.sport)}
+                    </div>
                     <h3 className="text-xl font-bold text-gray-900">
                       {language === 'ar' && job.titleAr
                         ? job.titleAr
@@ -447,6 +533,15 @@ const ClubJobsPage = () => {
                         </span>
                       </div>
                     )}
+                    {typeof job.views === 'number' && (
+                      <div className="flex items-center gap-1">
+                        <Eye className="w-4 h-4" />
+                        <span>
+                          {job.views}{' '}
+                          {language === 'ar' ? 'مشاهدة' : 'views'}
+                        </span>
+                      </div>
+                    )}
                     {job.applicationDeadline && (
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
@@ -457,6 +552,14 @@ const ClubJobsPage = () => {
                         </span>
                       </div>
                     )}
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-500">
+                        {language === 'ar' ? 'كود الوظيفة' : 'Job Code'}
+                      </span>
+                      <span className="font-mono text-gray-700">
+                        {job._id.slice(0, 8)}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -478,6 +581,32 @@ const ClubJobsPage = () => {
                     </Button>
                   )}
                 </div>
+              </div>
+              <div className="mt-auto">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-blue-600 hover:text-blue-700"
+                  onClick={() =>
+                    setExpandedDescriptions({
+                      ...expandedDescriptions,
+                      [job._id]: !expandedDescriptions[job._id],
+                    })
+                  }
+                >
+                  {expandedDescriptions[job._id]
+                    ? language === 'ar'
+                      ? 'إخفاء الوصف'
+                      : 'Hide Description'
+                    : language === 'ar'
+                      ? 'عرض المزيد'
+                      : 'Show More'}
+                </Button>
+                {expandedDescriptions[job._id] && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    {language === 'ar' && job.descriptionAr ? job.descriptionAr : job.description}
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
@@ -535,6 +664,9 @@ const ClubJobsPage = () => {
                 </button>
               </div>
               <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {language === 'ar' ? 'معلومات الوظيفة' : 'Job Information'}
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -570,6 +702,9 @@ const ClubJobsPage = () => {
                 </div>
 
                 <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">
+                    {language === 'ar' ? 'الوصف' : 'Description'}
+                  </h3>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {language === 'ar'
                       ? 'الوصف (إنجليزي)'
@@ -803,6 +938,11 @@ const ClubJobsPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="col-span-3">
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      {language === 'ar' ? 'تفاصيل النشر' : 'Posting Details'}
+                    </h3>
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {language === 'ar'

@@ -230,7 +230,7 @@ const ApplicationDetailPage = () => {
 
   const applicantName =
     (typeof application.applicantId === 'object' && application.applicantId.fullName) ||
-    (language === 'ar' ? 'متقدم' : 'Applicant')
+    (language === 'ar' ? 'الاسم غير متاح' : 'Name Not Available')
 
   const applicantEmail =
     (typeof application.applicantId === 'object' && application.applicantId.email) || ''

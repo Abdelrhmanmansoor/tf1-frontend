@@ -23,7 +23,6 @@ export function PartnersMarquee() {
     { name: 'Fitness Time', logo: '/partners/fitnesstime.png' },
   ]
 
-  // Duplicate partners for infinite loop
   const marqueePartners = [...partners, ...partners]
 
   return (
@@ -40,7 +39,6 @@ export function PartnersMarquee() {
       </div>
 
       <div className="relative w-full overflow-hidden">
-        {/* Gradient Masks for smooth fade edges */}
         <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 z-10 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none"></div>
         <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 z-10 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none"></div>
 
@@ -50,16 +48,8 @@ export function PartnersMarquee() {
           transition={{
             repeat: Infinity,
             ease: 'linear',
-            duration: 40, // Slow and smooth
+            duration: 40,
           }}
-          whileHover={{ animationPlayState: 'paused' }} // Note: Framer Motion handles hover differently, but for simple pause we might need state or css. 
-          // Actually Framer Motion doesn't support 'animationPlayState' in whileHover directly for the animate prop in this way easily without layout shifts.
-          // Let's try a different approach for hover pause if strictly needed, or just rely on slow speed.
-          // User asked for "pause مفاجئ" (sudden pause) to be AVOIDED? 
-          // "بدون pause مفاجئ" -> "No sudden pause". 
-          // "تأثير Hover بسيط مثل: شفافية خفيفة أو ظل بسيط جدًا" -> "Simple hover effect like slight opacity or shadow".
-          // It didn't explicitly ask to PAUSE on hover. It asked for Hover EFFECT.
-          // So I will skip pause to ensure smoothness as requested "بدون pause مفاجئ".
         >
           {marqueePartners.map((partner, index) => (
             <div
