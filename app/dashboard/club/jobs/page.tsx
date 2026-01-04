@@ -19,6 +19,8 @@ import {
   Edit,
   XCircle,
   Clock,
+  TrendingUp,
+  FileText,
 } from 'lucide-react'
 import Link from 'next/link'
 import clubService from '@/services/club'
@@ -345,6 +347,70 @@ const ClubJobsPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hiring Overview - KPI Card */}
+        <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 text-white bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 shadow-xl mb-6">
+          {/* Decorative floating icons */}
+          <div className="absolute -top-4 -left-4 opacity-20 floatYSlow">
+            <Briefcase className="w-16 h-16" />
+          </div>
+          <div className="absolute top-6 -right-4 opacity-20 floatY">
+            <Users className="w-14 h-14" />
+          </div>
+          <div className="absolute bottom-6 -left-4 opacity-20 floatY">
+            <TrendingUp className="w-14 h-14" />
+          </div>
+          <div className="absolute -bottom-4 right-6 opacity-20 floatYSlow">
+            <FileText className="w-16 h-16" />
+          </div>
+
+          {/* Active badge - top-left */}
+          <div className="absolute top-4 left-4">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 border border-white/30">
+              {language === 'ar' ? `نشطة: ${activeCount}` : `Active: ${activeCount}`}
+            </span>
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-xl flex items-center justify-center">
+              <Briefcase className="w-7 h-7" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold">
+                {language === 'ar' ? 'طلبات التوظيف' : 'Hiring Requests'}
+              </h3>
+              <div className="text-4xl sm:text-5xl font-black leading-tight">
+                {totalApplicants}
+              </div>
+            </div>
+          </div>
+
+          {/* Pending - bottom */}
+          <div className="relative z-10 mt-4">
+            <span className="text-sm font-semibold bg-white/15 px-3 py-1 rounded-lg">
+              {language === 'ar' ? `معلّق: ${pendingRequests}` : `Pending: ${pendingRequests}`}
+            </span>
+          </div>
+
+          {/* Subtle overlay for premium feel */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/10 pointer-events-none"></div>
+
+          {/* CSS keyframes (styled-jsx) for subtle float animation */}
+          <style jsx>{`
+            @keyframes floatY {
+              0% { transform: translateY(0); }
+              50% { transform: translateY(-6px); }
+              100% { transform: translateY(0); }
+            }
+            .floatY {
+              animation: floatY 8s ease-in-out infinite;
+            }
+            .floatYSlow {
+              animation: floatY 10s ease-in-out infinite;
+            }
+          `}</style>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
