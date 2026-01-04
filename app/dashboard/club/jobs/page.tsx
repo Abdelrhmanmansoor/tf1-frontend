@@ -348,7 +348,7 @@ const ClubJobsPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hiring Overview - KPI Card */}
-        <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 text-white bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 shadow-xl mb-6">
+        <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 text-white bg-gradient-to-br from-purple-600 via-indigo-600 to-violet-700 shadow-xl mb-6">
           {/* Decorative floating icons */}
           <div className="absolute -top-4 -left-4 opacity-20 floatYSlow">
             <Briefcase className="w-16 h-16" />
@@ -366,8 +366,13 @@ const ClubJobsPage = () => {
           {/* Active badge - top-left */}
           <div className="absolute top-4 left-4">
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 border border-white/30">
-              {language === 'ar' ? `نشطة: ${activeCount}` : `Active: ${activeCount}`}
+              {language === 'ar' ? `نشط ${activeCount}` : `Active ${activeCount}`}
             </span>
+          </div>
+
+          {/* Bag icon - top-right inside subtle circle */}
+          <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/15 border border-white/30 flex items-center justify-center">
+            <Briefcase className="w-5 h-5" />
           </div>
 
           {/* Content */}
@@ -379,17 +384,21 @@ const ClubJobsPage = () => {
               <h3 className="text-lg sm:text-xl font-bold">
                 {language === 'ar' ? 'طلبات التوظيف' : 'Hiring Requests'}
               </h3>
-              <div className="text-4xl sm:text-5xl font-black leading-tight">
+              <div className="text-5xl sm:text-6xl font-black leading-tight">
                 {totalApplicants}
               </div>
             </div>
           </div>
 
-          {/* Pending - bottom */}
-          <div className="relative z-10 mt-4">
-            <span className="text-sm font-semibold bg-white/15 px-3 py-1 rounded-lg">
-              {language === 'ar' ? `معلّق: ${pendingRequests}` : `Pending: ${pendingRequests}`}
-            </span>
+          {/* Divider */}
+          <div className="relative z-10 my-4 border-t border-white/20" />
+
+          {/* Pending - bottom row */}
+          <div className="relative z-10 flex items-center justify-between text-white/90">
+            <div className="text-base font-bold">{pendingRequests}</div>
+            <div className="text-sm font-semibold">
+              {language === 'ar' ? 'معلّق' : 'Pending'}
+            </div>
           </div>
 
           {/* Subtle overlay for premium feel */}
