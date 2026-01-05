@@ -31,6 +31,7 @@ const translations = {
     more: 'المزيد',
     register: 'إنشاء حساب',
     login: 'تسجيل الدخول',
+    applicant: 'باحث عن وظيفة',
 
     // Switcher
     application: 'التقديم',
@@ -91,6 +92,7 @@ const translations = {
     contact: 'Contact Us',
     register: 'Register',
     login: 'Login',
+    applicant: 'Job Seeker',
 
     // Switcher
     application: 'Application',

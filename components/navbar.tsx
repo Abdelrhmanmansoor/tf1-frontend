@@ -34,6 +34,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
     { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' },
+    { id: 'applicant', label: t('applicant'), href: '/dashboard/applicant' },
     // { id: 'match-center', label: t('matches'), href: '/matches' }, // Hidden as requested
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
