@@ -91,7 +91,7 @@ function ApplicantDashboardContent() {
               <div className="font-medium">
                 {language === 'ar' ? 'حسابك غير مفعل — يرجى تفعيل البريد الإلكتروني' : 'Your account is not verified — please verify your email'}
               </div>
-              <Link href="/verify-email">
+              <Link href="/auth/verify-email">
                 <Button variant="outline" size="sm" className="border-yellow-300">
                   {language === 'ar' ? 'تفعيل الآن' : 'Verify Now'}
                 </Button>

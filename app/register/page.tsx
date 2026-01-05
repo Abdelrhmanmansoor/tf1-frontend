@@ -41,7 +41,7 @@ const clubObject = z.object({
 
 const regularObject = z.object({
   ...commonShape,
-  role: z.enum(['player', 'coach', 'specialist', 'sports-administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary', 'team']),
+  role: z.enum(['player', 'coach', 'specialist', 'sports-administrator', 'age-group-supervisor', 'sports-director', 'executive-director', 'secretary', 'team', 'applicant']),
   organizationName: z.string().optional(),
   organizationType: z.string().optional(),
   establishedDate: z.string().optional(),
@@ -242,6 +242,7 @@ export default function RegisterPage() {
     { value: 'sports-director', emoji: '🏆', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
     { value: 'executive-director', emoji: '📊', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
     { value: 'secretary', emoji: '📋', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
+    { value: 'applicant', emoji: '🧑‍💼', label: language === 'ar' ? 'باحث عن وظيفة' : 'Job Seeker' },
   ]
   const organizationTypes = [
     { value: 'club', label: language === 'ar' ? 'نادي' : 'Club' },
