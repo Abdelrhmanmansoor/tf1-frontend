@@ -46,7 +46,28 @@ class AuthService {
       const response = await api.post('/auth/register', payload)
       return response.data
     } catch (error) {
-      throw this.handleError(error)
+      const err = this.handleError(error)
+      // Fallbacks for legacy/backward-compatible backends
+      if (err.status === 404) {
+        try {
+          const alt1 = await api.post('/auth/signin', { email, password })
+          const { accessToken, user } = alt1.data
+          this.saveToken(accessToken)
+          this.saveUser(user)
+          return alt1.data
+        } catch (_) {
+          try {
+            const alt2 = await api.post('/users/login', { email, password })
+            const { accessToken, user } = alt2.data
+            this.saveToken(accessToken)
+            this.saveUser(user)
+            return alt2.data
+          } catch (e2) {
+            throw err
+          }
+        }
+      }
+      throw err
     }
   }
 
