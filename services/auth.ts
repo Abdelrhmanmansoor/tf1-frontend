@@ -39,7 +39,11 @@ class AuthService {
    */
   async register(userData: RegisterData): Promise<any> {
     try {
-      const response = await api.post('/auth/register', userData)
+      const payload = {
+        ...userData,
+        role: userData.role === 'applicant' ? ('player' as UserRole) : userData.role,
+      }
+      const response = await api.post('/auth/register', payload)
       return response.data
     } catch (error) {
       throw this.handleError(error)

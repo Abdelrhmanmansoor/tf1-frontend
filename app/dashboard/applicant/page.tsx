@@ -12,7 +12,7 @@ import { Briefcase, FileText, Bell, ListChecks, Sparkles, User, Loader2 } from '
 
 export default function ApplicantDashboardPage() {
   return (
-    <ProtectedRoute allowedRoles={['applicant']}>
+    <ProtectedRoute allowedRoles={['applicant', 'player', 'coach', 'specialist']}>
       <ApplicantDashboardContent />
     </ProtectedRoute>
   )

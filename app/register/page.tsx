@@ -199,6 +199,10 @@ export default function RegisterPage() {
 
       await authRegister(payload)
 
+      if (data.role === 'applicant' && typeof window !== 'undefined') {
+        localStorage.setItem('sportx_ui_role', 'applicant')
+      }
+
       setEmailForSuccess(data.email)
       setSuccess(true)
       toast.success(language === 'ar' ? 'تم التسجيل بنجاح' : 'Registration successful')
