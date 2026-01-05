@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
 import { Button } from '@/components/ui/button'
+import JobApplicationForm from '@/components/JobApplicationForm'
 import {
   MapPin,
   Calendar,
@@ -111,6 +112,7 @@ export default function JobDetailsPage() {
   const [job, setJob] = useState<Job | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showApplyForm, setShowApplyForm] = useState(false)
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -380,7 +382,10 @@ export default function JobDetailsPage() {
 
           {/* Apply Button */}
           <div className="mt-6">
-            <Button className="w-full bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white font-semibold py-6 text-lg rounded-xl">
+            <Button 
+              onClick={() => setShowApplyForm(true)}
+              className="w-full bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white font-semibold py-6 text-lg rounded-xl"
+            >
               {language === 'ar' ? 'التقديم الآن' : 'Apply Now'}
             </Button>
           </div>
@@ -694,6 +699,21 @@ export default function JobDetailsPage() {
           </div>
         </div>
       </div>
+      {/* Apply Form Modal */}
+      {showApplyForm && job && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowApplyForm(false)}>
+          <div className="max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+            <JobApplicationForm
+              jobId={job._id}
+              jobTitle={language === 'ar' ? job.titleAr || job.title : job.title}
+              clubId={job.club._id}
+              clubName={language === 'ar' ? job.club.nameAr || job.club.name : job.club.name}
+              onSuccess={() => setShowApplyForm(false)}
+              onCancel={() => setShowApplyForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
