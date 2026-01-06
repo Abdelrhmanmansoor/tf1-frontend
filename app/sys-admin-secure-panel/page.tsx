@@ -590,8 +590,13 @@ export default function SysAdminSecurePanelPage() {
           </div>
         )}
 
+        {/* Site Content Management */}
+        {currentPage === 'settings' && (
+          <SiteContentManager adminKey={adminKey} apiCall={apiCall} />
+        )}
+
         {/* Other pages placeholders */}
-        {currentPage !== 'overview' && (
+        {currentPage !== 'overview' && currentPage !== 'settings' && (
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
             <h3 className="text-lg font-bold mb-4">
               {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Management
@@ -600,6 +605,187 @@ export default function SysAdminSecurePanelPage() {
           </div>
         )}
       </main>
+    </div>
+  )
+}
+
+// Site Content Manager Component
+function SiteContentManager({ adminKey, apiCall }: { adminKey: string; apiCall: any }) {
+  const [content, setContent] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [editing, setEditing] = useState<string | null>(null)
+  const [formData, setFormData] = useState({ type: 'header', key: '', content: '', language: 'ar' })
+
+  useEffect(() => {
+    fetchContent()
+  }, [])
+
+  const fetchContent = async () => {
+    setLoading(true)
+    try {
+      const data = await apiCall('/site-content', adminKey)
+      setContent(data.data || [])
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to fetch content')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      await apiCall('/site-content', adminKey, {
+        method: 'PUT',
+        body: JSON.stringify(formData),
+      })
+      toast.success('Content updated successfully')
+      setEditing(null)
+      fetchContent()
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update content')
+    }
+  }
+
+  const contentTypes = [
+    { value: 'header', label: 'Header' },
+    { value: 'footer', label: 'Footer' },
+    { value: 'text', label: 'Text' },
+    { value: 'banner', label: 'Banner' },
+    { value: 'notification', label: 'Notification' },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Settings className="w-6 h-6 text-blue-500" />
+            Site Content Management
+          </h2>
+          <button
+            onClick={() => setEditing('new')}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+          >
+            Add New Content
+          </button>
+        </div>
+
+        {editing === 'new' && (
+          <div className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
+            <h3 className="text-lg font-semibold mb-4">Add/Edit Content</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Type</label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-lg"
+                >
+                  {contentTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Key (Identifier)</label>
+                <input
+                  type="text"
+                  value={formData.key}
+                  onChange={(e) => setFormData({ ...formData, key: e.target.value })}
+                  className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-lg"
+                  placeholder="e.g., main-header, footer-links"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Content</label>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-lg h-32"
+                  placeholder="Enter content (HTML, JSON, or plain text)"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Language</label>
+                <select
+                  value={formData.language}
+                  onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                  className="w-full bg-gray-900 border border-gray-700 text-white px-3 py-2 rounded-lg"
+                >
+                  <option value="ar">Arabic</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSave}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => {
+                    setEditing(null)
+                    setFormData({ type: 'header', key: '', content: '', language: 'ar' })
+                  }}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {content.length === 0 ? (
+              <p className="text-gray-400 text-center py-8">No content found. Add new content to get started.</p>
+            ) : (
+              content.map((item: any) => (
+                <div key={item._id} className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <span className="text-xs text-gray-500 uppercase">{item.type}</span>
+                      <span className="mx-2 text-gray-600">•</span>
+                      <span className="text-sm font-mono text-gray-400">{item.key}</span>
+                      <span className="mx-2 text-gray-600">•</span>
+                      <span className="text-xs text-gray-500">{item.language}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setEditing(item._id)
+                        setFormData({
+                          type: item.type,
+                          key: item.key,
+                          content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
+                          language: item.language,
+                        })
+                      }}
+                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <div className="text-sm text-gray-300 mt-2">
+                    {typeof item.content === 'string' ? (
+                      <pre className="whitespace-pre-wrap">{item.content}</pre>
+                    ) : (
+                      <pre>{JSON.stringify(item.content, null, 2)}</pre>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
