@@ -101,24 +101,9 @@ class AuthService {
    */
   async verifyEmail(token: string): Promise<any> {
     try {
-      const response = await api.get(`/auth/verify-email?token=${token}`)
-
-      // Backend returns: { success, message, user, accessToken, alreadyVerified? }
-      const { accessToken, user, success } = response.data
-
-      // Save token and user data after verification (if provided)
-      if (accessToken && user) {
-        this.saveToken(accessToken)
-        this.saveUser(user)
-      }
-
-      // Return the full response including success flag
-      return {
-        success: success !== false, // Default to true if not specified
-        ...response.data,
-      }
+      const response = await api.post('/auth/verify-email', { token })
+      return response.data
     } catch (error) {
-      console.error('[AUTH-SERVICE] Verify email error:', error)
       throw this.handleError(error)
     }
   }
@@ -138,202 +123,104 @@ class AuthService {
   }
 
   /**
-   * Send forgot password email
-   * @param email - User email
-   * @returns Promise with response
+   * Get current user profile
+   * @returns Promise with user profile
    */
-  async forgotPassword(email: string): Promise<any> {
+  async getProfile(): Promise<User> {
     try {
-      const response = await api.post('/auth/forgot-password', { email })
-      return response.data
+      const response = await api.get('/auth/me')
+      return response.data.user
     } catch (error) {
       throw this.handleError(error)
     }
   }
 
   /**
-   * Reset password with token from email
-   * @param token - Reset token from email
-   * @param newPassword - New password
-   * @returns Promise with response
+   * Save token to local storage and cookie
+   * @param token - JWT access token
    */
-  async resetPassword(token: string, newPassword: string): Promise<any> {
-    try {
-      const response = await api.post('/auth/reset-password', {
-        token,
-        password: newPassword,
-      })
-      return response.data
-    } catch (error) {
-      throw this.handleError(error)
+  private saveToken(token: string): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(API_CONFIG.TOKEN_KEY, token)
+      // Set cookie for middleware support - secure in production
+      const secure = window.location.protocol === 'https:' ? '; Secure' : ''
+      document.cookie = `${API_CONFIG.TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}${secure}; SameSite=Strict`
     }
   }
 
   /**
-   * Check if user is logged in
-   * @returns true if user has a valid token
+   * Save user data to local storage
+   * @param user - User object
+   */
+  private saveUser(user: User): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
+    }
+  }
+
+  /**
+   * Handle API errors consistently
+   * @param error - Axios error object
+   * @returns Error object with message
+   */
+  private handleError(error: any): Error {
+    if (error.response) {
+      // Server responded with error status
+      const message = error.response.data.message || 'An error occurred'
+      return new Error(message)
+    } else if (error.request) {
+      // Request made but no response
+      return new Error('No response from server. Please check your connection.')
+    } else {
+      // Request setup error
+      return new Error(error.message || 'An unexpected error occurred')
+    }
+  }
+
+  /**
+   * Check if user is authenticated
+   * @returns boolean
    */
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false
+    
     const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
     if (!token) return false
-
-    // Check if token is expired using jwt-decode
+    
     try {
       const decoded: any = jwtDecode(token)
-      const currentTime = Math.floor(Date.now() / 1000)
-      if (decoded.exp && decoded.exp < currentTime) {
-        // Token expired - clear storage
-        this.clearSession()
-        return false
-      }
-      return true
+      const currentTime = Date.now() / 1000
+      return decoded.exp > currentTime
     } catch (e) {
-      // Invalid token format
-      console.warn('[AUTH] Invalid token format during check', e)
-      this.clearSession() // Clear invalid token to prevent repeated errors
       return false
     }
   }
 
   /**
-   * Validate token with backend
-   * @returns Promise with validation result
-   * @throws Error on network issues (caller should handle gracefully)
-   */
-  async validateToken(): Promise<boolean> {
-    try {
-      const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-      if (!token) return false
-
-      // Use shorter timeout for validation (axios already has default timeout)
-      const response = await api.get('/auth/profile', {
-        timeout: 3000 // 3 second timeout for validation
-      })
-      
-      if (response.data?.user) {
-        // Update user data with fresh data from backend
-        this.saveUser(response.data.user)
-        return true
-      }
-      return false
-    } catch (error: any) {
-      const status = error.response?.status || error.status
-
-      // Only clear session on explicit 401 (unauthorized)
-      if (status === 401) {
-        this.clearSession()
-        return false
-      }
-
-      // For timeout or network errors, throw to let caller handle gracefully
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout') ||
-          (!error.response && !error.status) || error.message?.includes('Network')) {
-        throw new Error('Network error during validation')
-      }
-      
-      // For other errors (like 404, 500), return false
-      return false
-    }
-  }
-
-  /**
-   * Clear session data without redirect
-   * @private
-   */
-  private clearSession(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(API_CONFIG.TOKEN_KEY)
-      localStorage.removeItem(API_CONFIG.USER_KEY)
-      document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
-    }
-  }
-
-  /**
-   * Get stored user data
+   * Get current user from local storage
    * @returns User object or null
    */
   getCurrentUser(): User | null {
     if (typeof window === 'undefined') return null
-
-    const userJson = localStorage.getItem(API_CONFIG.USER_KEY)
+    
+    const userStr = localStorage.getItem(API_CONFIG.USER_KEY)
+    if (!userStr) return null
+    
     try {
-      return userJson ? JSON.parse(userJson) : null
-    } catch {
-      return null;
+      return JSON.parse(userStr)
+    } catch (e) {
+      return null
     }
   }
-
+  
   /**
-   * Get user role
-   * @returns User role or null
+   * Get user role from local storage or token
    */
   getUserRole(): UserRole | null {
     const user = this.getCurrentUser()
     return user ? user.role : null
   }
-
-  /**
-   * Save token to localStorage and cookie
-   * @private
-   */
-  private saveToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(API_CONFIG.TOKEN_KEY, token)
-      // Also save to cookie for middleware access
-      document.cookie = `${API_CONFIG.TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
-    }
-  }
-
-  /**
-   * Save user data to localStorage
-   * @private
-   */
-  private saveUser(user: User): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
-      // Role is stored in user object, no need for separate localStorage
-    }
-  }
-
-  /**
-   * Handle API errors
-   * @private
-   */
-  private handleError(error: any): any {
-    console.error('[AUTH-SERVICE] Error details:', error)
-
-    if (error.response) {
-      // Server responded with error
-      return {
-        message: error.response.data.message || 'An error occurred',
-        code: error.response.data.code,
-        errors: error.response.data.errors,
-        status: error.response.status,
-      }
-    } else if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-      // Timeout error
-      return {
-        message: 'Request timeout. The server is taking too long to respond. Please try again.',
-        code: 'TIMEOUT_ERROR',
-      }
-    } else if (error.request) {
-      // Request made but no response
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'
-      console.error('[AUTH-SERVICE] Backend URL:', baseUrl)
-      return {
-        message: `Cannot connect to server. Please check your internet connection and try again. (Backend: ${baseUrl})`,
-        code: 'NETWORK_ERROR',
-      }
-    } else {
-      // Something else happened
-      return {
-        message: error.message || 'An unexpected error occurred',
-        code: 'UNKNOWN_ERROR',
-      }
-    }
-  }
 }
 
-// Export singleton instance
-export default new AuthService()
+export const authService = new AuthService()
+export default authService
