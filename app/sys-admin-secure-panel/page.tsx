@@ -41,7 +41,8 @@ interface ComprehensiveStats {
   }
   applications?: {
     total: number
-    pending: number
+    new: number
+    underReview: number
     accepted: number
     rejected: number
     today: number
@@ -510,7 +511,8 @@ export default function SysAdminSecurePanelPage() {
               
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <StatCard label="Total" value={stats.applications?.total || 0} icon={FileCheck} color="blue" />
-                <StatCard label="Pending" value={stats.applications?.pending || 0} icon={Clock} color="yellow" />
+                <StatCard label="New" value={stats.applications?.new || 0} icon={Clock} color="yellow" />
+                <StatCard label="Under Review" value={stats.applications?.underReview || 0} icon={Clock} color="yellow" />
                 <StatCard label="Accepted" value={stats.applications?.accepted || 0} icon={CheckCircle} color="green" />
                 <StatCard label="Rejected" value={stats.applications?.rejected || 0} icon={XCircle} color="red" />
                 <StatCard label="Today" value={stats.applications?.today || 0} icon={TrendingUp} color="purple" />
