@@ -83,15 +83,15 @@ export function LandingPage() {
   const [newsIndex, setNewsIndex] = useState(0)
   
   const newsMessagesAr = [
-    { title: '✓ ابدأ رحلتك الرياضية اليوم!', desc: 'انضم إلى آلاف المحترفين الذين وثقوا بنا' },
-    { title: '🏆 اكتشف أفضل الفرص', desc: 'وظائف رياضية في أفضل الأكاديميات والأندية' },
-    { title: '🚀 اتصل بأفضل المواهب', desc: 'نساعد الشركات في إيجاد أفضل كفاءات المجال الرياضي' },
+    { title: 'ابدأ رحلتك الرياضية اليوم', desc: 'انضم إلى آلاف المحترفين الذين وثقوا بنا' },
+    { title: 'اكتشف أفضل الفرص', desc: 'وظائف رياضية في أفضل الأكاديميات والأندية' },
+    { title: 'اتصل بأفضل المواهب', desc: 'نساعد الشركات في إيجاد أفضل كفاءات المجال الرياضي' },
   ]
   
   const newsMessagesEn = [
-    { title: '✓ Start Your Sports Journey Today!', desc: 'Join thousands of professionals who trust us' },
-    { title: '🏆 Discover Best Opportunities', desc: 'Sports jobs in top academies and clubs' },
-    { title: '🚀 Connect with Top Talent', desc: 'We help companies find the best sports professionals' },
+    { title: 'Start Your Sports Journey Today', desc: 'Join thousands of professionals who trust us' },
+    { title: 'Discover Best Opportunities', desc: 'Sports jobs in top academies and clubs' },
+    { title: 'Connect with Top Talent', desc: 'We help companies find the best sports professionals' },
   ]
 
   const newsMessages = language === 'ar' ? newsMessagesAr : newsMessagesEn
@@ -792,8 +792,14 @@ export function LandingPage() {
       </motion.section>
 
       {/* Hero Banner - Optimized for All Devices */}
-      <section className="relative w-full bg-white overflow-hidden">
-        <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto my-8 sm:my-12 px-4 sm:px-6 max-w-6xl">
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="relative w-full bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden py-8 sm:py-12"
+      >
+        <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto px-4 sm:px-6 max-w-6xl shadow-2xl border border-gray-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={bannerImage.url}
@@ -806,7 +812,7 @@ export function LandingPage() {
             }}
           />
         </div>
-      </section>
+      </motion.section>
 
       {/* Stats Section */}
       <StatsSection />
@@ -874,7 +880,7 @@ export function LandingPage() {
       <PartnersMarquee />
 
       {/* Target Categories Section */}
-      <section className="py-20 lg:py-28 px-4 sm:px-6 bg-white">
+      <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-white via-blue-50/30 to-white">
         <div className="max-w-7xl mx-auto">
           <motion.h3
             initial={{ opacity: 0, y: 20 }}
@@ -977,7 +983,7 @@ export function LandingPage() {
       )}
 
       {/* Testimonials Section - Clean Premium Design */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gray-50">
+      <section className="py-20 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-gray-50 via-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12 sm:mb-16">
@@ -1042,7 +1048,7 @@ export function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-white via-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <FootballWipeText
@@ -1167,6 +1173,274 @@ export function LandingPage() {
         </div>
       </motion.section>
 
+      {/* How It Works Section - Professional */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-white"
+        role="region"
+        aria-labelledby="how-it-works-heading"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2
+              id="how-it-works-heading"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            >
+              {language === 'ar' 
+                ? 'كيف يعمل النظام؟' 
+                : 'How It Works?'}
+            </motion.h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'ثلاث خطوات بسيطة للوصول إلى وظيفة أحلامك'
+                : 'Three simple steps to reach your dream job'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                step: 1,
+                icon: Search,
+                title: language === 'ar' ? 'استكشف الوظائف' : 'Explore Jobs',
+                description: language === 'ar'
+                  ? 'تصفح آلاف الوظائف المتاحة من أفضل الشركات والمؤسسات الرياضية'
+                  : 'Browse thousands of available jobs from top companies and sports organizations',
+                color: 'from-blue-500 to-cyan-600'
+              },
+              {
+                step: 2,
+                icon: FileCheck,
+                title: language === 'ar' ? 'قدم طلبك' : 'Apply Now',
+                description: language === 'ar'
+                  ? 'املأ نموذج التقديم الاحترافي وأرفق سيرتك الذاتية'
+                  : 'Fill out the professional application form and attach your resume',
+                color: 'from-purple-500 to-pink-600'
+              },
+              {
+                step: 3,
+                icon: Send,
+                title: language === 'ar' ? 'احصل على الوظيفة' : 'Get Hired',
+                description: language === 'ar'
+                  ? 'تابع طلبك وتواصل مع أصحاب العمل مباشرة'
+                  : 'Track your application and communicate directly with employers',
+                color: 'from-green-500 to-emerald-600'
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                className="relative"
+              >
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full">
+                  {/* Step Number */}
+                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                    {step.step}
+                  </div>
+                  
+                  {/* Icon */}
+                  <div className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-xl flex items-center justify-center mb-6`}>
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+                  
+                  {/* Content */}
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Security & Trust Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50"
+        role="region"
+        aria-labelledby="security-trust-heading"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2
+              id="security-trust-heading"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            >
+              {language === 'ar' 
+                ? 'الأمان والثقة أولويتنا' 
+                : 'Security & Trust Our Priority'}
+            </motion.h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'نضمن حماية بياناتك وأمان معاملاتك بأعلى معايير الأمان'
+                : 'We ensure your data protection and transaction security with the highest security standards'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: Shield,
+                title: language === 'ar' ? 'حماية البيانات' : 'Data Protection',
+                description: language === 'ar'
+                  ? 'تشفير SSL 256-bit لحماية جميع البيانات'
+                  : '256-bit SSL encryption to protect all data',
+                color: 'from-green-500 to-emerald-600'
+              },
+              {
+                icon: Lock,
+                title: language === 'ar' ? 'خصوصية كاملة' : 'Complete Privacy',
+                description: language === 'ar'
+                  ? 'بياناتك محمية ولا يتم مشاركتها مع أي طرف ثالث'
+                  : 'Your data is protected and not shared with any third party',
+                color: 'from-blue-500 to-cyan-600'
+              },
+              {
+                icon: CheckCircle,
+                title: language === 'ar' ? 'موثق رسمياً' : 'Officially Verified',
+                description: language === 'ar'
+                  ? 'سجل تجاري رقم 7037626640 معتمد من وزارة التجارة'
+                  : 'Commercial Registration 7037626640 certified by Ministry of Commerce',
+                color: 'from-purple-500 to-pink-600'
+              },
+              {
+                icon: Globe,
+                title: language === 'ar' ? 'متوافق مع المعايير' : 'Standards Compliant',
+                description: language === 'ar'
+                  ? 'متوافق مع معايير الأمان الدولية واللوائح السعودية'
+                  : 'Compliant with international security standards and Saudi regulations',
+                color: 'from-orange-500 to-red-600'
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
+              >
+                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-4`}>
+                  <feature.icon className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Our Achievements Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-white"
+        role="region"
+        aria-labelledby="achievements-heading"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2
+              id="achievements-heading"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            >
+              {language === 'ar' 
+                ? 'إنجازاتنا في أرقام' 
+                : 'Our Achievements in Numbers'}
+            </motion.h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'نفخر بإنجازاتنا ومساهمتنا في تطوير القطاع الرياضي'
+                : 'We are proud of our achievements and contribution to the development of the sports sector'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                icon: Users,
+                value: '50K+',
+                label: language === 'ar' ? 'مستخدم نشط' : 'Active Users',
+                description: language === 'ar' ? 'من جميع أنحاء المملكة' : 'From across the Kingdom',
+                color: 'from-blue-500 to-cyan-600'
+              },
+              {
+                icon: Building2,
+                value: '500+',
+                label: language === 'ar' ? 'شريك استراتيجي' : 'Strategic Partners',
+                description: language === 'ar' ? 'أندية واتحادات ومؤسسات' : 'Clubs, federations & organizations',
+                color: 'from-purple-500 to-pink-600'
+              },
+              {
+                icon: Briefcase,
+                value: '10K+',
+                label: language === 'ar' ? 'وظيفة متاحة' : 'Available Jobs',
+                description: language === 'ar' ? 'في مختلف التخصصات' : 'In various specializations',
+                color: 'from-green-500 to-emerald-600'
+              },
+              {
+                icon: Award,
+                value: '98%',
+                label: language === 'ar' ? 'معدل النجاح' : 'Success Rate',
+                description: language === 'ar' ? 'رضا العملاء' : 'Client Satisfaction',
+                color: 'from-orange-500 to-red-600'
+              }
+            ].map((achievement, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
+              >
+                <div className={`w-16 h-16 bg-gradient-to-br ${achievement.color} rounded-xl flex items-center justify-center mx-auto mb-4`}>
+                  <achievement.icon className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-gray-900 mb-2">
+                  {achievement.value}
+                </div>
+                <div className="text-lg font-semibold text-gray-700 mb-1">
+                  {achievement.label}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {achievement.description}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
       {/* Live Status Section - Simplified & Premium */}
       <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
         <div className="max-w-4xl mx-auto">
@@ -1238,9 +1512,10 @@ export function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/30 to-blue-500/30 border border-purple-400/50 rounded-full px-6 py-3 mb-8"
               >
+                <Zap className="w-4 h-4 text-purple-300" />
                 <div className="w-2.5 h-2.5 bg-purple-400 rounded-full animate-pulse"></div>
                 <span className="text-sm font-bold">
-                  {language === 'ar' ? '🤖 الذكاء الاصطناعي قريباً' : '🤖 AI Coming Soon'}
+                  {language === 'ar' ? 'الذكاء الاصطناعي قريباً' : 'AI Coming Soon'}
                 </span>
               </motion.div>
             </div>
@@ -1251,19 +1526,23 @@ export function LandingPage() {
                 <Link href="/register">
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 text-lg font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-3 text-lg font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto inline-flex items-center gap-2"
                   >
-                    {language === 'ar' ? '🚀 ابدأ الآن' : '🚀 Get Started'}
+                    <Zap className="w-5 h-5" />
+                    {language === 'ar' ? 'ابدأ الآن' : 'Get Started'}
                   </Button>
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  size="lg"
-                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 text-lg font-bold rounded-lg border border-white/30 transition-all duration-300 w-full sm:w-auto"
-                >
-                  {language === 'ar' ? '📖 اعرف المزيد' : '📖 Learn More'}
-                </Button>
+                <Link href="/about">
+                  <Button
+                    size="lg"
+                    className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 text-lg font-bold rounded-lg border border-white/30 transition-all duration-300 w-full sm:w-auto inline-flex items-center gap-2"
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    {language === 'ar' ? 'اعرف المزيد' : 'Learn More'}
+                  </Button>
+                </Link>
               </motion.div>
             </div>
           </motion.div>
