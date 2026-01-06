@@ -61,7 +61,17 @@ function isTokenExpired(token: string): boolean {
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+      // Try matches_token first for matches routes, then fall back to main token
+      const url = config.url || ''
+      const isMatchesRoute = url.includes('/matches')
+      
+      let token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
+      const matchesToken = localStorage.getItem('matches_token')
+      
+      // For matches routes, prefer matches_token if available
+      if (isMatchesRoute && matchesToken) {
+        token = matchesToken
+      }
 
       if (token) {
         if (isTokenExpired(token)) {

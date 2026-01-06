@@ -33,7 +33,7 @@ export default function CreateMatchPage() {
     neighborhood: '',
     date: '',
     time: '',
-    level: 'amateur',
+    level: 'beginner',
     maxPlayers: 10,
     venue: '',
   })
@@ -307,6 +307,45 @@ export default function CreateMatchPage() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Sport Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {language === 'ar' ? 'الرياضة' : 'Sport'}
+              </label>
+              <select
+                value={formData.sport}
+                onChange={(e) =>
+                  setFormData({ ...formData, sport: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg bg-white"
+                required
+              >
+                <option value="football">{language === 'ar' ? 'كرة القدم' : 'Football'}</option>
+                <option value="basketball">{language === 'ar' ? 'كرة السلة' : 'Basketball'}</option>
+                <option value="volleyball">{language === 'ar' ? 'كرة الطائرة' : 'Volleyball'}</option>
+                <option value="tennis">{language === 'ar' ? 'التنس' : 'Tennis'}</option>
+              </select>
+            </div>
+
+            {/* Level Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {language === 'ar' ? 'المستوى' : 'Level'}
+              </label>
+              <select
+                value={formData.level}
+                onChange={(e) =>
+                  setFormData({ ...formData, level: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg bg-white"
+                required
+              >
+                <option value="beginner">{language === 'ar' ? 'مبتدئ' : 'Beginner'}</option>
+                <option value="intermediate">{language === 'ar' ? 'متوسط' : 'Intermediate'}</option>
+                <option value="advanced">{language === 'ar' ? 'متقدم' : 'Advanced'}</option>
+              </select>
             </div>
 
             {/* Max Players */}
