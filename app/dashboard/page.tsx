@@ -30,12 +30,16 @@ function DashboardContent() {
 
     if (userRole) {
       setCurrentRole(userRole)
-      // Redirect sports-administrator and team directly to their dashboards
-      if (userRole === 'sports-administrator') {
-        window.location.href = '/dashboard/sports-admin'
-        return
-      } else if (userRole === 'team') {
-        window.location.href = '/dashboard/team'
+      // Redirect specific roles directly to their dashboards
+      const redirectMap: Record<string, string> = {
+        'sports-administrator': '/dashboard/sports-admin',
+        'team': '/dashboard/team',
+        'applicant': '/dashboard/applicant',
+        'job-publisher': '/dashboard/job-publisher'
+      }
+      
+      if (redirectMap[userRole]) {
+        window.location.href = redirectMap[userRole]
         return
       }
     } else {

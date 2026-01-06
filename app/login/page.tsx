@@ -85,8 +85,8 @@ function LoginContent() {
         return
       }
 
-      const uiRole = typeof window !== 'undefined' ? localStorage.getItem('sportx_ui_role') : null
-      const roleRoute = uiRole === 'applicant' ? '/dashboard/applicant' : getDashboardRoute(response.user.role)
+      // Use the role from the response directly
+      const roleRoute = getDashboardRoute(response.user.role)
       // Use window.location for a fresh state on dashboard load
       window.location.href = roleRoute
 
