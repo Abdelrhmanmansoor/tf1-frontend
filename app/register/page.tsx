@@ -218,23 +218,57 @@ export default function RegisterPage() {
 
     } catch (err: any) {
       console.error('Registration Error:', err)
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        errors: err.errors
+      })
+      
       let msg = err.message || (language === 'ar' ? 'فشل التسجيل' : 'Registration failed')
-      if (Array.isArray(err.errors) && err.errors.length > 0) {
-        const first = err.errors[0]
-        const mapped = language === 'ar'
-          ? (first.message
-              .replace('Password must be at least 8 characters long', 'كلمة المرور يجب ألا تقل عن 8 أحرف')
-              .replace('Password must contain at least one uppercase letter, one lowercase letter, and one number', 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم')
-              .replace('Please provide a valid email address', 'يرجى إدخال بريد إلكتروني صالح')
-              .replace('Please provide a valid phone number', 'يرجى إدخال رقم جوال صالح')
-              .replace('First name is required', 'الاسم الأول مطلوب')
-              .replace('Last name is required', 'الاسم الأخير مطلوب')
-              .replace('Organization name is required', 'اسم المنظمة مطلوب')
-              .replace('Established date is required', 'تاريخ التأسيس مطلوب')
-              .replace('Business registration number is required', 'رقم السجل التجاري مطلوب'))
-          : first.message
-        msg = `${language === 'ar' ? 'فشل التحقق:' : 'Validation failed:'} ${mapped}`
+      
+      // Handle validation errors from backend
+      if (err.response?.data?.code === 'VALIDATION_ERROR' || err.response?.data?.errors) {
+        const errorData = err.response.data
+        const errors = errorData.errors || []
+        
+        if (errors.length > 0) {
+          const first = errors[0]
+          const fieldName = first.field || ''
+          const errorMsg = first.message || ''
+          
+          // Map common validation errors
+          const errorMap: Record<string, { ar: string; en: string }> = {
+            'firstName': { ar: 'الاسم الأول مطلوب', en: 'First name is required' },
+            'lastName': { ar: 'الاسم الأخير مطلوب', en: 'Last name is required' },
+            'email': { ar: 'يرجى إدخال بريد إلكتروني صالح', en: 'Please provide a valid email address' },
+            'password': { 
+              ar: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف كبير وصغير ورقم', 
+              en: 'Password must be at least 8 characters with uppercase, lowercase, and number' 
+            },
+            'phone': { ar: 'يرجى إدخال رقم جوال صالح', en: 'Please provide a valid phone number' },
+            'role': { ar: 'يجب اختيار دور صالح', en: 'Please select a valid role' }
+          }
+          
+          const mapped = errorMap[fieldName] 
+            ? (language === 'ar' ? errorMap[fieldName].ar : errorMap[fieldName].en)
+            : (language === 'ar' ? errorData.messageAr || errorMsg : errorMsg)
+          
+          msg = mapped
+        } else if (errorData.messageAr && language === 'ar') {
+          msg = errorData.messageAr
+        } else if (errorData.message) {
+          msg = errorData.message
+        }
+      } else if (err.message) {
+        // Handle other error types
+        if (language === 'ar') {
+          msg = err.message
+            .replace('First name and last name are required', 'الاسم الأول والأخير مطلوبان')
+            .replace('Missing required fields', 'حقول مطلوبة مفقودة')
+            .replace('Email address is already registered', 'البريد الإلكتروني مسجل بالفعل')
+        }
       }
+      
       toast.error(msg)
     } finally {
       setLoading(false)
