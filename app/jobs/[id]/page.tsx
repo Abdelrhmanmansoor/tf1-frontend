@@ -118,29 +118,44 @@ export default function JobDetailsPage() {
     const fetchJobDetails = async () => {
       try {
         setLoading(true)
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/search/jobs/${params.id}`
-        )
+        setError(null)
+        
+        // Try both endpoints
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+        let response = await fetch(`${apiUrl}/search/jobs/${params.id}`, {
+          credentials: 'include'
+        })
+
+        // If search endpoint fails, try jobs endpoint
+        if (!response.ok) {
+          response = await fetch(`${apiUrl}/jobs/${params.id}`, {
+            credentials: 'include'
+          })
+        }
 
         if (!response.ok) {
-          throw new Error('Failed to fetch job details')
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.message || 'Failed to fetch job details')
         }
 
         const data = await response.json()
 
         if (data.success && data.job) {
           setJob(data.job)
+        } else if (data.job) {
+          // Handle case where job is returned directly
+          setJob(data.job)
         } else {
           setError(
             language === 'ar' ? 'الوظيفة غير موجودة' : 'Job not found'
           )
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching job details:', err)
         setError(
-          language === 'ar'
+          err.message || (language === 'ar'
             ? 'فشل في تحميل تفاصيل الوظيفة'
-            : 'Failed to load job details'
+            : 'Failed to load job details')
         )
       } finally {
         setLoading(false)

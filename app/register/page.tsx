@@ -217,6 +217,7 @@ export default function RegisterPage() {
               .replace('Password must be at least 8 characters long', 'كلمة المرور يجب ألا تقل عن 8 أحرف')
               .replace('Password must contain at least one uppercase letter, one lowercase letter, and one number', 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم')
               .replace('Please provide a valid email address', 'يرجى إدخال بريد إلكتروني صالح')
+              .replace('Please provide a valid phone number', 'يرجى إدخال رقم جوال صالح')
               .replace('First name is required', 'الاسم الأول مطلوب')
               .replace('Last name is required', 'الاسم الأخير مطلوب')
               .replace('Organization name is required', 'اسم المنظمة مطلوب')

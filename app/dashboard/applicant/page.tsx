@@ -173,7 +173,7 @@ export default function ApplicantDashboardPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <Link href="/jobs">
+                <Link href="/browse-jobs">
                   <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700">
                     <Search className="w-4 h-4 mr-2" />
                     {language === 'ar' ? 'استكشاف الوظائف' : 'Explore Jobs'}
@@ -344,7 +344,7 @@ export default function ApplicantDashboardPage() {
                         <p className="text-gray-500">
                           {language === 'ar' ? 'لا توجد طلبات بعد' : 'No applications yet'}
                         </p>
-                        <Link href="/jobs">
+                        <Link href="/browse-jobs">
                           <Button variant="outline" size="sm" className="mt-4">
                             {language === 'ar' ? 'استكشف الوظائف' : 'Explore Jobs'}
                           </Button>
@@ -364,7 +364,7 @@ export default function ApplicantDashboardPage() {
                     <h2 className="text-xl font-semibold text-gray-900">
                       {language === 'ar' ? 'وظائف موصى بها' : 'Recommended Jobs'}
                     </h2>
-                    <Link href="/jobs">
+                    <Link href="/browse-jobs">
                       <Button variant="ghost" size="sm">
                         {language === 'ar' ? 'عرض الكل' : 'View All'}
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -442,7 +442,7 @@ export default function ApplicantDashboardPage() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   {language === 'ar' ? 'الوظائف المتاحة' : 'Available Jobs'}
                 </h2>
-                <Link href="/jobs">
+                <Link href="/browse-jobs">
                   <Button className="w-full">
                     {language === 'ar' ? 'استكشف جميع الوظائف' : 'Explore All Jobs'}
                     <Search className="w-4 h-4 ml-2" />
