@@ -27,6 +27,7 @@ const ROLE_DASHBOARDS: Record<string, string> = {
   'sports-administrator': '/dashboard/sports-admin',
   team: '/dashboard/team',
   applicant: '/dashboard/applicant',
+  'job-publisher': '/dashboard/job-publisher',
 }
 
 export default function ProtectedRoute({

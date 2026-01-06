@@ -46,6 +46,7 @@ const ROLE_ROUTE_MAP: Record<string, string[]> = {
   'sports-administrator': ['/dashboard/sports-admin', '/dashboard/notifications'],
   team: ['/dashboard/team', '/dashboard/notifications'],
   applicant: ['/dashboard/applicant', '/dashboard/notifications'],
+  'job-publisher': ['/dashboard/job-publisher', '/dashboard/notifications'],
 }
 
 function isPublicRoute(pathname: string): boolean {

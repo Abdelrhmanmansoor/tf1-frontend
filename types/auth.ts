@@ -11,7 +11,8 @@ export type UserRole =
   | 'sports-administrator'
   | 'team'
   | 'leader'
-  | 'applicant';
+  | 'applicant'
+  | 'job-publisher';
 
 export interface User {
   id: string;

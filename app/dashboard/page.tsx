@@ -99,6 +99,12 @@ function DashboardContent() {
         return <ExecutiveDirectorDashboard />
       case 'secretary':
         return <SecretaryDashboard />
+      case 'applicant':
+        window.location.href = '/dashboard/applicant'
+        return null
+      case 'job-publisher':
+        window.location.href = '/dashboard/job-publisher'
+        return null
       default:
         return <PlayerDashboard />
     }

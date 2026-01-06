@@ -13,7 +13,8 @@ export const ROLE_DASHBOARD_ROUTES: Record<UserRole, string> = {
     'sports-administrator': '/dashboard/sports-admin',
     team: '/dashboard/team',
     leader: '/dashboard/leader',
-    applicant: '/dashboard/applicant'
+    applicant: '/dashboard/applicant',
+    'job-publisher': '/dashboard/job-publisher'
 };
 
 export function getDashboardRoute(role: UserRole): string {
