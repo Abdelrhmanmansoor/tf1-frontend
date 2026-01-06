@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useLanguage } from '@/contexts/language-context'
+import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
+import notificationService from '@/services/notifications'
 import { 
   Briefcase, 
   FileText, 
@@ -23,7 +26,10 @@ import {
   User,
   AlertCircle,
   ArrowRight,
-  BarChart3
+  BarChart3,
+  Bell,
+  LogOut,
+  X
 } from 'lucide-react'
 import { toast } from 'sonner'
 
