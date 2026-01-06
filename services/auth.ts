@@ -287,10 +287,7 @@ class AuthService {
   private saveUser(user: User): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
-      const uiRole = localStorage.getItem('sportx_ui_role')
-      if (uiRole === 'applicant') {
-        document.cookie = `sportx_ui_role=applicant; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
-      }
+      // Role is stored in user object, no need for separate localStorage
     }
   }
 
