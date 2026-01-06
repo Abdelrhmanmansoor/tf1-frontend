@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Shield, Lock, Activity, Users, FileText, LogOut, Eye, EyeOff, Settings, Database, BarChart3, AlertCircle } from 'lucide-react'
+import { Shield, Lock, Activity, Users, FileText, LogOut, Eye, EyeOff, Settings, BarChart3, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
+import API_CONFIG from '@/config/api'
 
 interface OverviewData {
   failureRate?: {
@@ -20,7 +20,6 @@ interface OverviewData {
 }
 
 export default function SysAdminSecurePanelPage() {
-  const router = useRouter()
   const [adminKey, setAdminKey] = useState('')
   const [showKey, setShowKey] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -29,10 +28,19 @@ export default function SysAdminSecurePanelPage() {
   const [overview, setOverview] = useState<OverviewData | null>(null)
   const [currentPage, setCurrentPage] = useState('overview')
 
-  // Use full URL for API calls (Next.js will proxy or use absolute URL)
-  const API_BASE_URL = typeof window !== 'undefined' 
-    ? `${window.location.origin}/sys-admin-secure-panel/api`
-    : '/sys-admin-secure-panel/api'
+  // Get base URL for admin panel API
+  // Backend serves admin panel at /sys-admin-secure-panel/api (not under /api/v1)
+  const getApiBaseUrl = () => {
+    if (typeof window === 'undefined') return '/sys-admin-secure-panel/api'
+    
+    // Extract base URL from API_CONFIG (remove /api/v1)
+    const baseUrl = API_CONFIG.BASE_URL.replace('/api/v1', '')
+    
+    // Construct admin panel API URL
+    return `${baseUrl}/sys-admin-secure-panel/api`
+  }
+  
+  const API_BASE_URL = getApiBaseUrl()
 
   // Check if already authenticated on mount
   useEffect(() => {
