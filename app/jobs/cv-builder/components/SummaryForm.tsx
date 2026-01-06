@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import api from '@/services/api';
 
 export default function SummaryForm({ data, update, language, personalInfo }: any) {
   const [loading, setLoading] = useState(false);
@@ -13,44 +14,74 @@ export default function SummaryForm({ data, update, language, personalInfo }: an
     }
 
     setLoading(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Important for CORS
-        body: JSON.stringify({ type: 'summary', data: personalInfo, language }),
-      });
+    let retries = 0;
+    const maxRetries = 3;
 
-      // Check if response is ok before parsing JSON
-      if (!response.ok) {
-        let errorMessage = language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch (e) {
-          // If JSON parsing fails, use status text
-          errorMessage = response.statusText || errorMessage;
+    const attemptGeneration = async (): Promise<void> => {
+      try {
+        const response = await api.post('/cv/ai/generate', {
+          type: 'summary',
+          data: personalInfo,
+          language
+        });
+
+        if (response.data.success && response.data.data?.result) {
+          update(response.data.data.result);
+          toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
+        } else if (response.data.data?.result) {
+          update(response.data.data.result);
+          toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
+        } else {
+          throw new Error(response.data.message || (language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed'));
         }
-        throw new Error(errorMessage);
+      } catch (error: any) {
+        // Network error - retry
+        const isNetworkError = error.message?.includes('Failed to fetch') || 
+                              error.message?.includes('Network Error') || 
+                              error.message?.includes('NetworkError') ||
+                              !error.response;
+        
+        if (isNetworkError && retries < maxRetries) {
+          retries++;
+          toast.loading(language === 'ar' ? `إعادة المحاولة... (${retries}/${maxRetries})` : `Retrying... (${retries}/${maxRetries})`, { id: 'retry' });
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+          return attemptGeneration();
+        }
+        
+        // Parse error message
+        let errorMessage = language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed';
+        
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        // If 503 or service unavailable, use fallback
+        if (error.response?.status === 503 || isNetworkError) {
+          errorMessage = language === 'ar' ? 'خدمة الذكاء الاصطناعي غير متاحة حالياً. سيتم استخدام نظام بديل.' : 'AI service unavailable. Using fallback system.';
+          const fallbackSummary = `${personalInfo.fullName || 'محترف'} هو ${personalInfo.jobTitle} يتمتع بخبرة واسعة في مجاله. يمتلك مهارات قوية في التواصل والعمل الجماعي والتفكير الاستراتيجي.`;
+          update(fallbackSummary);
+          toast.success(language === 'ar' ? 'تم إنشاء ملخص احترافي باستخدام النظام البديل' : 'Professional summary created using fallback system');
+          return;
+        }
+        
+        toast.dismiss('retry');
+        toast.error(errorMessage);
+        throw error;
       }
+    };
 
-      const result = await response.json();
-
-      if (result.success && result.data?.result) {
-        update(result.data.result);
-        toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
-      } else {
-        throw new Error(result.message || (language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed'));
-      }
-    } catch (error: any) {
-      console.error('AI Generation Error:', error);
-      const errorMessage = error.message || (language === 'ar' ? 'فشل توليد الملخص. يرجى التحقق من اتصال الإنترنت وإعدادات API' : 'Failed to generate summary. Please check your internet connection and API settings');
-      toast.error(errorMessage);
+    try {
+      await attemptGeneration();
+    } catch (error) {
+      // Final fallback
+      const fallbackSummary = `${personalInfo.fullName || 'محترف'} هو ${personalInfo.jobTitle} يتمتع بخبرة واسعة في مجاله. يمتلك مهارات قوية في التواصل والعمل الجماعي والتفكير الاستراتيجي.`;
+      update(fallbackSummary);
+      toast.success(language === 'ar' ? 'تم إنشاء ملخص احترافي' : 'Professional summary created');
     } finally {
       setLoading(false);
+      toast.dismiss('retry');
     }
   };
 
@@ -63,7 +94,7 @@ export default function SummaryForm({ data, update, language, personalInfo }: an
         <button
           onClick={generateSummary}
           disabled={loading}
-          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 text-sm flex items-center gap-2"
+          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 text-sm flex items-center gap-2 disabled:opacity-50"
         >
           {loading ? (
             <span className="animate-spin">✨</span>

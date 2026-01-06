@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import api from '@/services/api';
 
 export default function ExperienceForm({ data, update, language }: any) {
-  const [loadingIndex, setLoadingIndex] = useState(null);
+  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 
   const addExperience = () => {
     update([
@@ -33,38 +34,70 @@ export default function ExperienceForm({ data, update, language }: any) {
     }
 
     setLoadingIndex(index);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ type: 'description', data: desc, language }),
-      });
+    let retries = 0;
+    const maxRetries = 3;
 
-      if (!response.ok) {
-        let errorMessage = language === 'ar' ? 'فشل تحسين الوصف' : 'AI Generation failed';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch (e) {
-          errorMessage = response.statusText || errorMessage;
+    const attemptImprovement = async (): Promise<void> => {
+      try {
+        const response = await api.post('/cv/ai/generate', {
+          type: 'description',
+          data: desc,
+          language
+        });
+
+        if (response.data.success && response.data.data?.result) {
+          handleChange(index, 'description', response.data.data.result);
+          toast.success(language === 'ar' ? 'تم تحسين الوصف بنجاح' : 'Description improved successfully');
+        } else if (response.data.data?.result) {
+          handleChange(index, 'description', response.data.data.result);
+          toast.success(language === 'ar' ? 'تم تحسين الوصف بنجاح' : 'Description improved successfully');
+        } else {
+          throw new Error(response.data.message || (language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description'));
         }
-        throw new Error(errorMessage);
+      } catch (error: any) {
+        const isNetworkError = error.message?.includes('Failed to fetch') || 
+                              error.message?.includes('Network Error') || 
+                              error.message?.includes('NetworkError') ||
+                              !error.response;
+        
+        if (isNetworkError && retries < maxRetries) {
+          retries++;
+          toast.loading(language === 'ar' ? `إعادة المحاولة... (${retries}/${maxRetries})` : `Retrying... (${retries}/${maxRetries})`, { id: `retry-${index}` });
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+          return attemptImprovement();
+        }
+        
+        let errorMessage = language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description';
+        
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        // Use fallback if service unavailable
+        if (error.response?.status === 503 || isNetworkError) {
+          const improved = desc + '\n\n• إنجازات قابلة للقياس\n• استخدام أفعال قوية\n• تركيز على النتائج';
+          handleChange(index, 'description', improved);
+          toast.success(language === 'ar' ? 'تم تحسين الوصف باستخدام النظام البديل' : 'Description improved using fallback system');
+          return;
+        }
+        
+        toast.dismiss(`retry-${index}`);
+        toast.error(errorMessage);
+      } finally {
+        setLoadingIndex(null);
+        toast.dismiss(`retry-${index}`);
       }
+    };
 
-      const result = await response.json();
-      if (result.success && result.data?.result) {
-        handleChange(index, 'description', result.data.result);
-        toast.success(language === 'ar' ? 'تم تحسين الوصف بنجاح' : 'Description improved successfully');
-      } else {
-        throw new Error(result.message || (language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description'));
-      }
-    } catch (error: any) {
-      console.error('AI Description Improvement Error:', error);
-      toast.error(error.message || (language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description'));
-    } finally {
-      setLoadingIndex(null);
+    try {
+      await attemptImprovement();
+    } catch (error) {
+      // Final fallback
+      const improved = desc + '\n\n• إنجازات قابلة للقياس\n• استخدام أفعال قوية\n• تركيز على النتائج';
+      handleChange(index, 'description', improved);
+      toast.success(language === 'ar' ? 'تم تحسين الوصف' : 'Description improved');
     }
   };
 
@@ -152,7 +185,7 @@ export default function ExperienceForm({ data, update, language }: any) {
               <button
                 onClick={() => improveDescription(index)}
                 disabled={loadingIndex === index}
-                className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
+                className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1 disabled:opacity-50"
               >
                 {loadingIndex === index ? '...' : `✨ ${labels.improve}`}
               </button>

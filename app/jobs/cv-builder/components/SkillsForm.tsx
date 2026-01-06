@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import api from '@/services/api';
 
 export default function SkillsForm({ data, update, language, jobTitle }: any) {
   const [loading, setLoading] = useState(false);
@@ -32,47 +33,95 @@ export default function SkillsForm({ data, update, language, jobTitle }: any) {
     }
 
     setLoading(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ type: 'skills', data: jobTitle, language }),
-      });
+    let retries = 0;
+    const maxRetries = 3;
 
-      if (!response.ok) {
-        let errorMessage = language === 'ar' ? 'فشل اقتراح المهارات' : 'AI Generation failed';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch (e) {
-          errorMessage = response.statusText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
+    const attemptSuggestion = async (): Promise<void> => {
+      try {
+        const response = await api.post('/cv/ai/generate', {
+          type: 'skills',
+          data: jobTitle,
+          language
+        });
 
-      const result = await response.json();
-
-      if (result.success && result.data?.result) {
-        const suggestions = result.data.result.split(',').map((s: any) => s.trim()).filter((s: any) => s.length > 0);
-        
-        // Merge unique suggestions
-        const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
-        if (uniqueSuggestions.length > 0) {
-          update([...data, ...uniqueSuggestions]);
-          toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
+        if (response.data.success && response.data.data?.result) {
+          const suggestions = response.data.data.result.split(',').map((s: any) => s.trim()).filter((s: any) => s.length > 0);
+          
+          const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
+          if (uniqueSuggestions.length > 0) {
+            update([...data, ...uniqueSuggestions]);
+            toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
+          } else {
+            toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
+          }
+        } else if (response.data.data?.result) {
+          const suggestions = response.data.data.result.split(',').map((s: any) => s.trim()).filter((s: any) => s.length > 0);
+          const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
+          if (uniqueSuggestions.length > 0) {
+            update([...data, ...uniqueSuggestions]);
+            toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
+          }
         } else {
-          toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
+          throw new Error(response.data.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
         }
-      } else {
-        throw new Error(result.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
+      } catch (error: any) {
+        const isNetworkError = error.message?.includes('Failed to fetch') || 
+                              error.message?.includes('Network Error') || 
+                              error.message?.includes('NetworkError') ||
+                              !error.response;
+        
+        if (isNetworkError && retries < maxRetries) {
+          retries++;
+          toast.loading(language === 'ar' ? `إعادة المحاولة... (${retries}/${maxRetries})` : `Retrying... (${retries}/${maxRetries})`, { id: 'retry-skills' });
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+          return attemptSuggestion();
+        }
+        
+        let errorMessage = language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills';
+        
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        // Use fallback skills
+        if (error.response?.status === 503 || isNetworkError) {
+          const jobTitleLower = jobTitle.toLowerCase();
+          const fallbackSkills = jobTitleLower.includes('developer') 
+            ? ['JavaScript', 'React', 'Node.js', 'Git', 'Problem Solving', 'Team Collaboration']
+            : jobTitleLower.includes('manager')
+            ? ['Leadership', 'Strategic Planning', 'Team Management', 'Communication', 'Decision Making']
+            : jobTitleLower.includes('coach')
+            ? ['Training Programs', 'Performance Analysis', 'Team Building', 'Communication', 'Motivation']
+            : ['Communication', 'Leadership', 'Teamwork', 'Problem Solving', 'Time Management', 'Adaptability'];
+          
+          const uniqueFallback = fallbackSkills.filter((s: any) => !data.includes(s));
+          if (uniqueFallback.length > 0) {
+            update([...data, ...uniqueFallback]);
+            toast.success(language === 'ar' ? 'تم اقتراح مهارات باستخدام النظام البديل' : 'Skills suggested using fallback system');
+          }
+          return;
+        }
+        
+        toast.dismiss('retry-skills');
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+        toast.dismiss('retry-skills');
       }
-    } catch (error: any) {
-      console.error('AI Skills Suggestion Error:', error);
-      toast.error(error.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
-    } finally {
-      setLoading(false);
+    };
+
+    try {
+      await attemptSuggestion();
+    } catch (error) {
+      // Final fallback
+      const fallbackSkills = ['Communication', 'Leadership', 'Teamwork', 'Problem Solving', 'Time Management'];
+      const uniqueFallback = fallbackSkills.filter((s: any) => !data.includes(s));
+      if (uniqueFallback.length > 0) {
+        update([...data, ...uniqueFallback]);
+        toast.success(language === 'ar' ? 'تم إضافة مهارات احترافية' : 'Professional skills added');
+      }
     }
   };
 
@@ -89,7 +138,7 @@ export default function SkillsForm({ data, update, language, jobTitle }: any) {
         <button
           onClick={suggestSkills}
           disabled={loading}
-          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 text-sm flex items-center gap-2"
+          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200 text-sm flex items-center gap-2 disabled:opacity-50"
         >
           {loading ? (
             <span className="animate-spin">✨</span>

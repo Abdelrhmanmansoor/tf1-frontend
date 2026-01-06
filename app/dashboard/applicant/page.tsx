@@ -86,11 +86,17 @@ interface Job {
 
 export default function ApplicantDashboardPage() {
   const { language } = useLanguage()
+  const { logout, user } = useAuth()
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [recentApplications, setRecentApplications] = useState<Application[]>([])
   const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'applications' | 'jobs'>('overview')
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [loadingNotifications, setLoadingNotifications] = useState(false)
 
   useEffect(() => {
     fetchDashboardData()
