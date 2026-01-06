@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp, MapPin, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
+import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp, MapPin, AlertTriangle, CheckCircle2, XCircle, Briefcase, TrendingUp, Users, BarChart3 } from 'lucide-react'
 import { toast } from 'sonner'
 
 // Schema Definitions
@@ -233,17 +233,17 @@ export default function RegisterPage() {
 
   // --- Constants ---
   const roles = [
-    { value: 'player', emoji: '⚽', label: language === 'ar' ? 'لاعب' : 'Player' },
-    { value: 'coach', emoji: '👨‍🏫', label: language === 'ar' ? 'مدرب' : 'Coach' },
-    { value: 'club', emoji: '🏟️', label: language === 'ar' ? 'نادي' : 'Club' },
-    { value: 'specialist', emoji: '💪', label: language === 'ar' ? 'متخصص' : 'Specialist' },
-    { value: 'sports-administrator', emoji: '👔', label: language === 'ar' ? 'إداري رياضي' : 'Sports Administrator' },
-    { value: 'age-group-supervisor', emoji: '👥', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
-    { value: 'sports-director', emoji: '🏆', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
-    { value: 'executive-director', emoji: '📊', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
-    { value: 'secretary', emoji: '📋', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
-    { value: 'applicant', emoji: '🧑‍💼', label: language === 'ar' ? 'باحث عن وظيفة' : 'Job Seeker' },
-    { value: 'job-publisher', emoji: '📢', label: language === 'ar' ? 'ناشر وظائف' : 'Job Publisher' },
+    { value: 'player', icon: 'sports', label: language === 'ar' ? 'لاعب' : 'Player' },
+    { value: 'coach', icon: 'coach', label: language === 'ar' ? 'مدرب' : 'Coach' },
+    { value: 'club', icon: 'stadium', label: language === 'ar' ? 'نادي' : 'Club' },
+    { value: 'specialist', icon: 'fitness', label: language === 'ar' ? 'متخصص' : 'Specialist' },
+    { value: 'sports-administrator', icon: 'admin', label: language === 'ar' ? 'إداري رياضي' : 'Sports Administrator' },
+    { value: 'age-group-supervisor', icon: 'supervisor', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
+    { value: 'sports-director', icon: 'director', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
+    { value: 'executive-director', icon: 'executive', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
+    { value: 'secretary', icon: 'secretary', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
+    { value: 'applicant', icon: 'briefcase', label: language === 'ar' ? 'باحث عن وظيفة' : 'Job Seeker' },
+    { value: 'job-publisher', icon: 'publish', label: language === 'ar' ? 'ناشر وظائف' : 'Job Publisher' },
   ]
   const organizationTypes = [
     { value: 'club', label: language === 'ar' ? 'نادي' : 'Club' },
@@ -351,7 +351,6 @@ export default function RegisterPage() {
           <Link href="/" className={`absolute top-0 w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform ${isRtl ? 'left-0' : 'left-0'}`}>
             <Home className="w-6 h-6" />
           </Link>
-          <div className={`absolute top-0 text-4xl ${isRtl ? 'right-0' : 'right-0'}`}>🇸🇦</div>
 
           <div className="flex justify-center mb-4">
             <div className="w-24 h-24 bg-white rounded-2xl shadow-lg p-2 flex items-center justify-center">
@@ -381,17 +380,37 @@ export default function RegisterPage() {
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{language === 'ar' ? 'اختر دورك' : 'Select Your Role'}</h2>
                 <div className="grid grid-cols-3 gap-3">
-                  {roles.map((role: any) => (
-                    <button
-                      key={role.value}
-                      type="button"
-                      onClick={() => setValue('role', role.value)}
-                      className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${selectedRole === role.value ? 'border-blue-600 bg-blue-50 shadow-md ring-2 ring-blue-100' : 'border-gray-100 hover:border-blue-300 hover:bg-gray-50'}`}
-                    >
-                      <span className="text-2xl">{role.emoji}</span>
-                      <span className="text-xs font-semibold text-gray-700 text-center">{role.label}</span>
-                    </button>
-                  ))}
+                  {roles.map((role: any) => {
+                    const getIcon = (iconType: string) => {
+                      const icons: Record<string, any> = {
+                        sports: <Briefcase className="w-6 h-6" />,
+                        coach: <User className="w-6 h-6" />,
+                        stadium: <Building className="w-6 h-6" />,
+                        fitness: <TrendingUp className="w-6 h-6" />,
+                        admin: <ShieldCheck className="w-6 h-6" />,
+                        supervisor: <Users className="w-6 h-6" />,
+                        director: <BarChart3 className="w-6 h-6" />,
+                        executive: <FileText className="w-6 h-6" />,
+                        secretary: <FileText className="w-6 h-6" />,
+                        briefcase: <Briefcase className="w-6 h-6" />,
+                        publish: <FileText className="w-6 h-6" />,
+                      }
+                      return icons[iconType] || <User className="w-6 h-6" />
+                    }
+                    return (
+                      <button
+                        key={role.value}
+                        type="button"
+                        onClick={() => setValue('role', role.value)}
+                        className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${selectedRole === role.value ? 'border-blue-600 bg-blue-50 shadow-md ring-2 ring-blue-100' : 'border-gray-100 hover:border-blue-300 hover:bg-gray-50'}`}
+                      >
+                        <span className={`${selectedRole === role.value ? 'text-blue-600' : 'text-gray-600'}`}>
+                          {getIcon(role.icon)}
+                        </span>
+                        <span className="text-xs font-semibold text-gray-700 text-center">{role.label}</span>
+                      </button>
+                    )
+                  })}
                 </div>
                 
                 <div className="mt-6">

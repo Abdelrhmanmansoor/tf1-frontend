@@ -136,9 +136,6 @@ function LoginContent() {
               <Home className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
             </Link>
 
-            <div className={`absolute top-4 ${isRtl ? 'right-4' : 'right-4'} text-3xl`}>
-              🇸🇦
-            </div>
 
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center overflow-hidden">
