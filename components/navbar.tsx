@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { X, ChevronDown } from 'lucide-react'
+import { X, ChevronDown, Shield } from 'lucide-react'
 import { JobTicker } from './job-ticker'
 import { getDashboardRoute } from '@/utils/role-routes'
 // import NotificationBell from '@/components/notifications/NotificationBell'
@@ -25,7 +25,7 @@ interface NavItem {
 }
 
 export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -71,18 +71,33 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
       <header className="bg-white shadow-sm px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-50 backdrop-blur-md bg-white/95">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo - Clickable to Home */}
-        <Link href="/">
+        <div className="flex items-center gap-3">
+          <Link href="/">
+            <motion.div
+              className="flex items-center cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            >
+              {/* لوجو بدون خلفية */}
+              <div className="flex items-center justify-center">
+                <Image src="/logo.png" alt="TF1 Logo" width={60} height={60} />
+              </div>
+            </motion.div>
+          </Link>
+
+          {/* Official Badge */}
           <motion.div
-            className="flex items-center cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="hidden md:flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1.5 rounded-full border border-green-200"
           >
-            {/* لوجو بدون خلفية */}
-            <div className="flex items-center justify-center">
-              <Image src="/logo.png" alt="TF1 Logo" width={60} height={60} />
-            </div>
+            <Shield className="w-4 h-4 text-green-600" />
+            <span className="text-xs font-semibold text-green-700">
+              {t('verified') || (language === 'ar' ? 'موثق رسمياً' : 'Verified')}
+            </span>
           </motion.div>
-        </Link>
+        </div>
 
         {/* Centered Navigation */}
         <nav className="hidden lg:flex items-center">

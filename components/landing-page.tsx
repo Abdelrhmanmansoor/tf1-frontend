@@ -15,6 +15,12 @@ import {
   Mic,
   BookOpen,
   Settings,
+  Shield,
+  CheckCircle,
+  Lock,
+  TrendingUp,
+  Award,
+  Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -567,6 +573,59 @@ export function LandingPage() {
                 </h1>
               </FootballWipeText>
 
+              {/* Live Job Statistics */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8"
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
+                >
+                  <div className="text-3xl font-bold text-gray-900 mb-1">1,234+</div>
+                  <div className="text-sm text-gray-600">
+                    {language === 'ar' ? 'وظيفة متاحة' : 'Available Jobs'}
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
+                >
+                  <div className="text-3xl font-bold text-gray-900 mb-1">567+</div>
+                  <div className="text-sm text-gray-600">
+                    {language === 'ar' ? 'شركة مسجلة' : 'Registered Companies'}
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.9 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
+                >
+                  <div className="text-3xl font-bold text-gray-900 mb-1">8,901+</div>
+                  <div className="text-sm text-gray-600">
+                    {language === 'ar' ? 'باحث عن عمل' : 'Job Seekers'}
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.0 }}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20"
+                >
+                  <div className="text-3xl font-bold text-gray-900 mb-1">92%</div>
+                  <div className="text-sm text-gray-600">
+                    {language === 'ar' ? 'معدل النجاح' : 'Success Rate'}
+                  </div>
+                </motion.div>
+              </motion.div>
+
               <motion.div
                 className="flex flex-col gap-3 sm:gap-4 justify-center w-full sm:w-auto"
                 initial={{ opacity: 0, y: 20 }}
@@ -613,6 +672,100 @@ export function LandingPage() {
                 </motion.div>
               </motion.div>
             </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Trust & Verification Badges Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="py-8 bg-white border-b border-gray-100"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+            {/* Official Registration Badge */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center gap-3 bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-2 rounded-lg border border-green-200"
+            >
+              <Shield className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-xs text-gray-600">
+                  {language === 'ar' ? 'سجل تجاري' : 'Commercial Registration'}
+                </p>
+                <p className="text-sm font-bold text-green-700">7037626640</p>
+              </div>
+            </motion.div>
+
+            {/* Verified Platform Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-2 rounded-lg border border-blue-200"
+            >
+              <CheckCircle className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="text-xs text-gray-600">
+                  {language === 'ar' ? 'منصة موثقة' : 'Verified Platform'}
+                </p>
+                <p className="text-sm font-bold text-blue-700">
+                  {language === 'ar' ? 'معتمد رسمياً' : 'Officially Certified'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Secure & Safe Badge */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center gap-3 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-lg border border-purple-200"
+            >
+              <Lock className="w-5 h-5 text-purple-600" />
+              <div>
+                <p className="text-xs text-gray-600">
+                  {language === 'ar' ? 'آمن ومحمي' : 'Secure & Protected'}
+                </p>
+                <p className="text-sm font-bold text-purple-700">
+                  {language === 'ar' ? 'SSL مشفر' : 'SSL Encrypted'}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Featured Jobs Banner */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 py-6 px-4"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Briefcase className="w-6 h-6 text-white" />
+              <h3 className="text-white font-bold text-lg">
+                {language === 'ar' ? 'وظائف مميزة متاحة الآن' : 'Featured Jobs Available Now'}
+              </h3>
+            </div>
+            <Link
+              href="/browse-jobs"
+              className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              {language === 'ar' ? 'استكشف الوظائف' : 'Explore Jobs'}
+            </Link>
           </div>
         </div>
       </motion.section>
@@ -909,6 +1062,83 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Why Choose Us - Professional Job Platform Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-blue-50"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            >
+              {language === 'ar' 
+                ? 'لماذا تختار منصة TF1 للوظائف؟' 
+                : 'Why Choose TF1 Job Platform?'}
+            </motion.h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              {language === 'ar'
+                ? 'منصة التوظيف الرائدة في المملكة العربية السعودية - موثقة رسمياً ومعتمدة'
+                : 'Leading job platform in Saudi Arabia - Officially verified and certified'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Shield,
+                title: language === 'ar' ? 'موثقة رسمياً' : 'Officially Verified',
+                description: language === 'ar' 
+                  ? 'سجل تجاري رقم 7037626640 - معتمدة من وزارة التجارة'
+                  : 'Commercial Registration 7037626640 - Certified by Ministry of Commerce',
+                color: 'from-green-500 to-emerald-600'
+              },
+              {
+                icon: Users,
+                title: language === 'ar' ? 'شبكة واسعة' : 'Wide Network',
+                description: language === 'ar'
+                  ? 'آلاف الوظائف من أفضل الشركات والمؤسسات الرياضية'
+                  : 'Thousands of jobs from top companies and sports organizations',
+                color: 'from-blue-500 to-cyan-600'
+              },
+              {
+                icon: Zap,
+                title: language === 'ar' ? 'تطابق ذكي' : 'Smart Matching',
+                description: language === 'ar'
+                  ? 'نظام ذكاء اصطناعي لمطابقة المهارات مع الوظائف المناسبة'
+                  : 'AI-powered system to match skills with suitable jobs',
+                color: 'from-purple-500 to-pink-600'
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
+              >
+                <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6`}>
+                  <feature.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
 
       {/* Live Status Section - Simplified & Premium */}
       <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">

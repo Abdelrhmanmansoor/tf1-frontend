@@ -10,7 +10,8 @@ import {
   Facebook, 
   Twitter, 
   Instagram, 
-  Linkedin 
+  Linkedin,
+  FileText
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -202,75 +203,104 @@ export function Footer() {
 
         {/* Government Logos Section */}
         <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-row flex-nowrap items-center justify-center gap-2 sm:gap-4 lg:gap-6">
-            {/* Ministry of Commerce Logo */}
-            <a 
-              href="https://mc.gov.sa" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex-shrink-0"
+          <div className="flex flex-col items-center gap-6">
+            {/* Official Registration Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center space-y-2"
             >
-              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
-                <Image 
-                  src="/ministry-commerce.png"
-                  alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-contain"
-                  priority
-                />
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <FileText className="w-5 h-5 text-blue-400" />
+                <p className="text-gray-400 text-sm font-medium">
+                  {language === 'ar' ? 'السجل التجاري' : 'Commercial Registration'}
+                </p>
               </div>
-            </a>
+              <p className="text-white font-bold text-xl sm:text-2xl tracking-wider">
+                7037626640
+              </p>
+            </motion.div>
 
-            {/* Business Center Logo */}
-            <a 
-              href="https://maroof.sa" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex-shrink-0"
-            >
-              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
-                <Image 
-                  src="/business-center.png"
-                  alt={language === 'ar' ? 'مركز الأعمال السعودي' : 'Saudi Business Center'}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
-            </a>
+            {/* Government Logos - Smaller sizes */}
+            <div className="flex flex-row flex-wrap items-center justify-center gap-3 sm:gap-4">
+              {/* Ministry of Commerce Logo */}
+              <a 
+                href="https://mc.gov.sa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex-shrink-0"
+              >
+                <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
+                  <Image 
+                    src="/ministry-commerce.png"
+                    alt={language === 'ar' ? 'وزارة التجارة' : 'Ministry of Commerce'}
+                    width={60}
+                    height={60}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </div>
+              </a>
 
-            {/* Vision 2030 Logo */}
-            <a 
-              href="https://www.vision2030.gov.sa" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex-shrink-0"
-            >
-              <div className="bg-white rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:shadow-lg hover:scale-110 w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 flex items-center justify-center shadow-sm">
-                <Image 
-                  src="/vision-2030.png"
-                  alt={language === 'ar' ? 'رؤية المملكة 2030' : 'Saudi Vision 2030'}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
-            </a>
+              {/* Saudi Business Center Logo - Updated */}
+              <a 
+                href="https://maroof.sa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex-shrink-0"
+              >
+                <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
+                  <Image 
+                    src="/saudi-business-center.png"
+                    alt={language === 'ar' ? 'المركز السعودي للأعمال' : 'Saudi Business Center'}
+                    width={60}
+                    height={60}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </div>
+              </a>
+
+              {/* Vision 2030 Logo */}
+              <a 
+                href="https://www.vision2030.gov.sa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex-shrink-0"
+              >
+                <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
+                  <Image 
+                    src="/vision-2030.png"
+                    alt={language === 'ar' ? 'رؤية المملكة 2030' : 'Saudi Vision 2030'}
+                    width={60}
+                    height={60}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Copyright Bar */}
+      {/* Copyright Bar - Enhanced with Registration Number */}
       <div className="border-t border-gray-800 bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <p className="text-center text-gray-500 text-xs sm:text-sm">
-            {language === 'ar'
-              ? '© 2025 منصة TF1. جميع الحقوق محفوظة.'
-              : '© 2025 TF1 Platform. All rights reserved.'}
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-gray-500 text-xs sm:text-sm">
+            <p>
+              {language === 'ar'
+                ? '© 2025 منصة TF1. جميع الحقوق محفوظة.'
+                : '© 2025 TF1 Platform. All rights reserved.'}
+            </p>
+            <p className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span>{language === 'ar' ? 'السجل التجاري:' : 'CR:'}</span>
+              <span className="font-semibold text-gray-400">7037626640</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
