@@ -23,7 +23,8 @@ export default function CVBuilderPage() {
     education: [],
     skills: [],
     languages: [],
-    courses: []
+    courses: [],
+    meta: { template: 'standard' }
   });
 
   const steps = [
@@ -45,7 +46,9 @@ export default function CVBuilderPage() {
   const generatePDF = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/cv/generate-pdf`, {
+      const tpl = cvData?.meta?.template || 'standard';
+      const base = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}`;
+      const response = await fetch(`${base}/cv/generate-pdf?template=${encodeURIComponent(tpl)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...cvData, language }),
@@ -121,7 +124,32 @@ export default function CVBuilderPage() {
               {step === 3 && <ExperienceForm data={cvData.experience} update={(d: any) => updateData('experience', d)} language={language} />}
               {step === 4 && <EducationForm data={cvData.education} update={(d: any) => updateData('education', d)} language={language} />}
               {step === 5 && <SkillsForm data={cvData.skills} update={(d: any) => updateData('skills', d)} language={language} jobTitle={cvData.personalInfo.jobTitle} />}
-              {step === 6 && <CVPreview data={cvData} language={language} onDownload={generatePDF} loading={loading} />}
+              {step === 6 && (
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    <span className="text-sm font-medium text-gray-700">{language === 'ar' ? 'القالب:' : 'Template:'}</span>
+                    {['standard','modern','classic','creative','minimal','executive'].map(t => (
+                      <button
+                        key={t}
+                        onClick={() => setCVData((prev) => ({ ...prev, meta: { ...(prev.meta || {}), template: t } }))}
+                        className={`px-3 py-1 rounded-md text-sm border ${cvData?.meta?.template === t ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                      >
+                        {language === 'ar' ? (
+                          t === 'standard' ? 'قياسي' :
+                          t === 'modern' ? 'حديث' :
+                          t === 'classic' ? 'كلاسيكي' :
+                          t === 'creative' ? 'إبداعي' :
+                          t === 'minimal' ? 'مبسّط' :
+                          t === 'executive' ? 'تنفيذي' : t
+                        ) : (
+                          t.charAt(0).toUpperCase() + t.slice(1)
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <CVPreview data={cvData} language={language} onDownload={generatePDF} loading={loading} />
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>

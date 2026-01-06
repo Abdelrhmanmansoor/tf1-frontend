@@ -127,26 +127,40 @@ export default function SysAdminSecurePanelPage() {
     return () => clearInterval(interval)
   }, [isAuthenticated, autoRefresh, refreshInterval, adminKey])
 
-  const apiCall = async (endpoint: string, key: string) => {
+  const apiCall = async (endpoint: string, key: string, options: RequestInit = {}) => {
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        method: 'GET',
+      const url = `${API_BASE_URL}${endpoint}`
+      
+      const response = await fetch(url, {
+        method: options.method || 'GET',
         headers: {
           'Content-Type': 'application/json',
           'x-admin-key': key,
+          ...options.headers,
         },
         credentials: 'include',
+        ...options,
       })
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
         if (response.status === 401) {
-          throw new Error('Invalid admin key')
+          throw new Error(errorData.message || 'Invalid admin key')
         }
-        throw new Error(`API Error: ${response.status}`)
+        if (response.status === 403) {
+          throw new Error(errorData.message || 'Access denied')
+        }
+        if (response.status === 429) {
+          throw new Error(errorData.message || 'Too many requests. Please wait.')
+        }
+        throw new Error(errorData.message || `API Error: ${response.status}`)
       }
 
       return await response.json()
     } catch (err: any) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('Network error: Cannot connect to server. Please check your connection and try again.')
+      }
       throw new Error(err.message || 'API request failed')
     }
   }
@@ -160,10 +174,14 @@ export default function SysAdminSecurePanelPage() {
     } catch (err: any) {
       setError(err.message)
       console.error('Error fetching comprehensive stats:', err)
+      toast.error(err.message || 'Failed to fetch statistics')
     } finally {
       setLoading(false)
     }
   }
+
+  // Test admin key (for development)
+  const TEST_ADMIN_KEY = 'sk_admin_2a2097d2dbf949c50e3a5f2eaa231e81c4f5d2fb1128443165a6198201b758eb'
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -242,6 +260,18 @@ export default function SysAdminSecurePanelPage() {
                   {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminKey(TEST_ADMIN_KEY)
+                    toast.info('Test key loaded (Development only)')
+                  }}
+                  className="mt-2 text-xs text-gray-500 hover:text-gray-400 underline"
+                >
+                  Use Test Key (Dev Only)
+                </button>
+              )}
             </div>
             <button
               type="submit"
