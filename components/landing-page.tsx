@@ -791,29 +791,6 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Hero Banner - Optimized for All Devices */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="relative w-full bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden py-8 sm:py-12"
-      >
-        <div className="w-full h-60 sm:h-72 md:h-96 lg:h-[32rem] relative rounded-2xl mx-auto px-4 sm:px-6 max-w-6xl shadow-2xl border border-gray-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={bannerImage.url}
-            alt={bannerImage.alt}
-            loading="eager"
-            className="w-full h-full object-contain rounded-2xl"
-            style={{
-              objectPosition: 'center',
-              backfaceVisibility: 'hidden',
-            }}
-          />
-        </div>
-      </motion.section>
-
       {/* Stats Section */}
       <StatsSection />
 

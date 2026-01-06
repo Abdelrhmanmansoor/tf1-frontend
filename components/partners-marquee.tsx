@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Building2, Award, TrendingUp, Users, Briefcase, MapPin, ExternalLink } from 'lucide-react'
+import { Building2, Award, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
 
 export function PartnersMarquee() {
@@ -82,10 +82,9 @@ export function PartnersMarquee() {
     { name: 'Fitness Time', logo: '/partners/fitnesstime.png', category: 'fitness', verified: true },
   ], [])
 
-  // إنشاء نسخ متعددة للشريط المستمر
+  // إنشاء نسخ متعددة للشريط المستمر - نكرر 3 مرات
   const marqueePartners = useMemo(() => {
-    // نكرر 5 مرات لضمان استمرارية الحركة
-    return [...allPartners, ...allPartners, ...allPartners, ...allPartners, ...allPartners]
+    return [...allPartners, ...allPartners, ...allPartners]
   }, [allPartners])
   
   const stats = useMemo(() => [
@@ -96,7 +95,7 @@ export function PartnersMarquee() {
   ], [language, allPartners.length])
 
   return (
-    <section className="relative py-24 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden">
+    <section className="relative py-24 bg-gradient-to-b from-white via-gray-50 to-white" style={{ minHeight: '600px' }}>
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl"></div>
@@ -154,34 +153,35 @@ export function PartnersMarquee() {
           </div>
         </motion.div>
 
-        {/* Main Marquee - Enhanced Design with Continuous Scroll */}
-        <div className="relative">
+        {/* Main Marquee - Fixed Continuous Scroll */}
+        <div className="relative my-12" style={{ minHeight: '320px' }}>
           {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-r from-white via-white/90 to-transparent pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-l from-white via-white/90 to-transparent pointer-events-none"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-r from-white via-white/95 to-transparent pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-l from-white via-white/95 to-transparent pointer-events-none"></div>
 
           {/* First Row - Large Cards - Continuous Scroll */}
-          <div className="relative overflow-hidden mb-8">
+          <div className="relative overflow-hidden mb-8" style={{ height: '180px', width: '100%' }}>
             <motion.div
-              className="flex items-center gap-6 w-max"
+              className="flex items-center gap-6"
               animate={{ 
-                x: ['0%', `-${(allPartners.length * 100) / 5}%`]
+                x: ['0%', '-33.333%']
               }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: allPartners.length * 3, // مدة أطول للحركة السلسة
+                duration: 60,
               }}
+              style={{ width: 'max-content' }}
             >
               {marqueePartners.map((partner, index) => (
-                <motion.div
+                <div
                   key={`${partner.name}-${index}`}
-                  className="flex-shrink-0 group"
+                  className="flex-shrink-0 group relative"
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  whileHover={{ y: -8 }}
+                  style={{ width: '224px', height: '160px' }}
                 >
-                  <div className="relative w-56 h-40 bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-100 hover:border-blue-300 transition-all duration-300 overflow-hidden">
+                  <div className="relative w-full h-full bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-100 hover:border-blue-300 transition-all duration-300 overflow-hidden">
                     {/* Gradient Background on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     
@@ -196,13 +196,11 @@ export function PartnersMarquee() {
 
                     {/* Logo Container */}
                     <div className="relative w-full h-full flex items-center justify-center">
-                      <motion.div
-                        className="relative w-32 h-32"
-                        animate={{
-                          scale: hoveredIndex === index ? 1.1 : 1,
-                          rotate: hoveredIndex === index ? 2 : 0,
+                      <div
+                        className="relative w-32 h-32 transition-transform duration-300"
+                        style={{
+                          transform: hoveredIndex === index ? 'scale(1.1) rotate(2deg)' : 'scale(1) rotate(0deg)'
                         }}
-                        transition={{ duration: 0.3 }}
                       >
                         <Image
                           src={partner.logo}
@@ -216,49 +214,45 @@ export function PartnersMarquee() {
                             target.src = '/logo.png'
                           }}
                         />
-                      </motion.div>
+                      </div>
                     </div>
 
                     {/* Partner Info - Shows on Hover */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{
-                        opacity: hoveredIndex === index ? 1 : 0,
-                        y: hoveredIndex === index ? 0 : 10,
-                      }}
-                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/90 to-transparent p-4 rounded-b-2xl"
-                    >
-                      <h3 className="text-white font-bold text-sm mb-1 line-clamp-1">{partner.name}</h3>
-                      <div className="flex items-center gap-2 text-xs text-gray-300">
-                        <span className="capitalize">{partner.category}</span>
+                    {hoveredIndex === index && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/90 to-transparent p-4 rounded-b-2xl">
+                        <h3 className="text-white font-bold text-sm mb-1 line-clamp-1">{partner.name}</h3>
+                        <div className="flex items-center gap-2 text-xs text-gray-300">
+                          <span className="capitalize">{partner.category}</span>
+                        </div>
                       </div>
-                    </motion.div>
+                    )}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </motion.div>
           </div>
 
           {/* Second Row - Smaller Cards (Reverse Direction) - Continuous Scroll */}
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden" style={{ height: '120px' }}>
             <motion.div
-              className="flex items-center gap-4 w-max"
+              className="flex items-center gap-4"
               animate={{ 
-                x: [`-${(allPartners.length * 100) / 5}%`, '0%']
+                x: ['-33.333%', '0%']
               }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: allPartners.length * 2.5,
+                duration: 50,
               }}
+              style={{ width: 'max-content' }}
             >
               {marqueePartners.slice().reverse().map((partner, index) => (
-                <motion.div
+                <div
                   key={`reverse-${partner.name}-${index}`}
                   className="flex-shrink-0 group"
-                  whileHover={{ scale: 1.05 }}
+                  style={{ width: '160px', height: '112px' }}
                 >
-                  <div className="w-40 h-28 bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:border-blue-200 transition-all duration-300 flex items-center justify-center">
+                  <div className="w-full h-full bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:border-blue-200 transition-all duration-300 flex items-center justify-center">
                     <div className="relative w-24 h-24 opacity-70 group-hover:opacity-100 transition-opacity">
                       <Image
                         src={partner.logo}
@@ -274,7 +268,7 @@ export function PartnersMarquee() {
                       />
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </motion.div>
           </div>
