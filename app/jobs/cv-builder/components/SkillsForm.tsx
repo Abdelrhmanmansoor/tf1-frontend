@@ -3,22 +3,22 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function SkillsForm({ data, update, language, jobTitle }) {
+export default function SkillsForm({ data, update, language, jobTitle }: any) {
   const [loading, setLoading] = useState(false);
   const [newSkill, setNewSkill] = useState('');
 
-  const addSkill = (skill) => {
+  const addSkill = (skill: any) => {
     if (skill && !data.includes(skill)) {
       update([...data, skill]);
       setNewSkill('');
     }
   };
 
-  const removeSkill = (skillToRemove) => {
-    update(data.filter(skill => skill !== skillToRemove));
+  const removeSkill = (skillToRemove: any) => {
+    update(data.filter((skill: any) => skill !== skillToRemove));
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: any) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       addSkill(newSkill);
@@ -42,15 +42,15 @@ export default function SkillsForm({ data, update, language, jobTitle }) {
       if (!response.ok) throw new Error('AI Generation failed');
 
       const result = await response.json();
-      const suggestions = result.data.result.split(',').map(s => s.trim());
+      const suggestions = result.data.result.split(',').map((s: any) => s.trim());
       
       // Merge unique suggestions
-      const uniqueSuggestions = suggestions.filter(s => !data.includes(s));
+      const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
       if (uniqueSuggestions.length > 0) {
         update([...data, ...uniqueSuggestions]);
         toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
       } else {
-        toast.info(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills');
+        toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
       }
     } catch (error) {
       toast.error(language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills');
@@ -94,7 +94,7 @@ export default function SkillsForm({ data, update, language, jobTitle }) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {data.map((skill, index) => (
+        {data.map((skill: any, index: any) => (
           <span
             key={index}
             className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"

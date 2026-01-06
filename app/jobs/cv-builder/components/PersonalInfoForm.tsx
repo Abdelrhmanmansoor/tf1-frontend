@@ -1,7 +1,7 @@
 'use client';
 
-export default function PersonalInfoForm({ data, update, language }) {
-  const handleChange = (e) => {
+export default function PersonalInfoForm({ data, update, language }: any) {
+  const handleChange = (e: any) => {
     update({ ...data, [e.target.name]: e.target.value });
   };
 

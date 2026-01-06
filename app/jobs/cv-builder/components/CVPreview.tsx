@@ -1,6 +1,6 @@
 'use client';
 
-export default function CVPreview({ data, language, onDownload, loading }) {
+export default function CVPreview({ data, language, onDownload, loading }: any) {
   const isRTL = language === 'ar';
 
   return (
@@ -48,7 +48,7 @@ export default function CVPreview({ data, language, onDownload, loading }) {
               {isRTL ? 'الخبرة العملية' : 'Experience'}
             </h3>
             <div className="space-y-4">
-              {data.experience.map((exp, index) => (
+              {data.experience.map((exp: any, index: any) => (
                 <div key={index}>
                   <div className="flex justify-between items-baseline mb-1">
                     <h4 className="font-bold text-gray-800">{exp.title}</h4>
@@ -71,7 +71,7 @@ export default function CVPreview({ data, language, onDownload, loading }) {
               {isRTL ? 'التعليم' : 'Education'}
             </h3>
             <div className="space-y-3">
-              {data.education.map((edu, index) => (
+              {data.education.map((edu: any, index: any) => (
                 <div key={index}>
                   <div className="flex justify-between items-baseline">
                     <h4 className="font-bold text-gray-800">{edu.institution}</h4>
@@ -95,7 +95,7 @@ export default function CVPreview({ data, language, onDownload, loading }) {
               {isRTL ? 'المهارات' : 'Skills'}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {data.skills.map((skill, index) => (
+              {data.skills.map((skill: any, index: any) => (
                 <span key={index} className="text-sm text-gray-700 bg-gray-100 px-2 py-1 rounded">
                   {skill}
                 </span>

@@ -22,7 +22,7 @@ import {
 import Image from 'next/image'
 
 import { useAuth } from '@/contexts/auth-context'
-import { API_CONFIG } from '@/services/api'
+import API_CONFIG from '@/config/api'
 
 export default function MatchesLoginPage() {
   const { language } = useLanguage()

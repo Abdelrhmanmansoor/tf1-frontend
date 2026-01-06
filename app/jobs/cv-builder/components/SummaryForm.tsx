@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function SummaryForm({ data, update, language, personalInfo }) {
+export default function SummaryForm({ data, update, language, personalInfo }: any) {
   const [loading, setLoading] = useState(false);
 
   const generateSummary = async () => {

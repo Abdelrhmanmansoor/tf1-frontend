@@ -89,6 +89,7 @@ const translations = {
     about: 'About',
     features: 'Features',
     blog: 'Blog',
+    more: 'More',
     contact: 'Contact Us',
     register: 'Register',
     login: 'Login',

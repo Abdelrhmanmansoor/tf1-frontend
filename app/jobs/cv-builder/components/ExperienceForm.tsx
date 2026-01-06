@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function ExperienceForm({ data, update, language }) {
+export default function ExperienceForm({ data, update, language }: any) {
   const [loadingIndex, setLoadingIndex] = useState(null);
 
   const addExperience = () => {
@@ -13,19 +13,19 @@ export default function ExperienceForm({ data, update, language }) {
     ]);
   };
 
-  const removeExperience = (index) => {
+  const removeExperience = (index: any) => {
     const newData = [...data];
     newData.splice(index, 1);
     update(newData);
   };
 
-  const handleChange = (index, field, value) => {
+  const handleChange = (index: any, field: any, value: any) => {
     const newData = [...data];
     newData[index][field] = value;
     update(newData);
   };
 
-  const improveDescription = async (index) => {
+  const improveDescription = async (index: any) => {
     const desc = data[index].description;
     if (!desc || desc.length < 10) {
       toast.error(language === 'ar' ? 'يرجى كتابة وصف أولي ليتم تحسينه' : 'Please write a basic description first');
@@ -69,7 +69,7 @@ export default function ExperienceForm({ data, update, language }) {
         {language === 'ar' ? 'الخبرة العملية' : 'Work Experience'}
       </h2>
 
-      {data.map((exp, index) => (
+      {data.map((exp: any, index: any) => (
         <div key={index} className="p-4 border rounded-md bg-gray-50 relative">
           <button
             onClick={() => removeExperience(index)}

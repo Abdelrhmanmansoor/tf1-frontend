@@ -38,7 +38,7 @@ export default function CVBuilderPage() {
   const handleNext = () => setStep((prev) => Math.min(prev + 1, steps.length));
   const handlePrev = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  const updateData = (section, data) => {
+  const updateData = (section: string, data: any) => {
     setCVData((prev) => ({ ...prev, [section]: data }));
   };
 
@@ -116,11 +116,11 @@ export default function CVBuilderPage() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
             >
-              {step === 1 && <PersonalInfoForm data={cvData.personalInfo} update={(d) => updateData('personalInfo', d)} language={language} />}
-              {step === 2 && <SummaryForm data={cvData.summary} update={(d) => updateData('summary', d)} language={language} personalInfo={cvData.personalInfo} />}
-              {step === 3 && <ExperienceForm data={cvData.experience} update={(d) => updateData('experience', d)} language={language} />}
-              {step === 4 && <EducationForm data={cvData.education} update={(d) => updateData('education', d)} language={language} />}
-              {step === 5 && <SkillsForm data={cvData.skills} update={(d) => updateData('skills', d)} language={language} jobTitle={cvData.personalInfo.jobTitle} />}
+              {step === 1 && <PersonalInfoForm data={cvData.personalInfo} update={(d: any) => updateData('personalInfo', d)} language={language} />}
+              {step === 2 && <SummaryForm data={cvData.summary} update={(d: any) => updateData('summary', d)} language={language} personalInfo={cvData.personalInfo} />}
+              {step === 3 && <ExperienceForm data={cvData.experience} update={(d: any) => updateData('experience', d)} language={language} />}
+              {step === 4 && <EducationForm data={cvData.education} update={(d: any) => updateData('education', d)} language={language} />}
+              {step === 5 && <SkillsForm data={cvData.skills} update={(d: any) => updateData('skills', d)} language={language} jobTitle={cvData.personalInfo.jobTitle} />}
               {step === 6 && <CVPreview data={cvData} language={language} onDownload={generatePDF} loading={loading} />}
             </motion.div>
           </AnimatePresence>

@@ -1,6 +1,6 @@
 'use client';
 
-export default function EducationForm({ data, update, language }) {
+export default function EducationForm({ data, update, language }: any) {
   const addEducation = () => {
     update([
       ...data,
@@ -8,13 +8,13 @@ export default function EducationForm({ data, update, language }) {
     ]);
   };
 
-  const removeEducation = (index) => {
+  const removeEducation = (index: any) => {
     const newData = [...data];
     newData.splice(index, 1);
     update(newData);
   };
 
-  const handleChange = (index, field, value) => {
+  const handleChange = (index: any, field: any, value: any) => {
     const newData = [...data];
     newData[index][field] = value;
     update(newData);
@@ -34,7 +34,7 @@ export default function EducationForm({ data, update, language }) {
         {language === 'ar' ? 'التعليم' : 'Education'}
       </h2>
 
-      {data.map((edu, index) => (
+      {data.map((edu: any, index: any) => (
         <div key={index} className="p-4 border rounded-md bg-gray-50 relative">
           <button
             onClick={() => removeEducation(index)}

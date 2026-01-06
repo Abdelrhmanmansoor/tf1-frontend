@@ -130,7 +130,7 @@ export default function RegisterPage() {
     setAddressStatus('idle')
     setVerificationData(null)
 
-    const { buildingNumber, additionalNumber, zipCode } = formValues
+    const { buildingNumber, additionalNumber, zipCode } = formValues as any
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/club/verify-address`, {
@@ -537,19 +537,19 @@ export default function RegisterPage() {
                       <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'رقم المبنى' : 'Building Number'}</label>
                         <Input {...register('buildingNumber')} className="bg-gray-50 focus:bg-white" placeholder="xxxx" maxLength={4} />
-                        {errors.buildingNumber && <p className="text-xs text-red-500">{errors.buildingNumber.message}</p>}
+                        {(errors as any).buildingNumber && <p className="text-xs text-red-500">{(errors as any).buildingNumber.message}</p>}
                       </div>
                       <div className="space-y-1">
                          <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'الرقم الإضافي' : 'Additional Number'}</label>
                         <Input {...register('additionalNumber')} className="bg-gray-50 focus:bg-white" placeholder="xxxx" maxLength={4} />
-                        {errors.additionalNumber && <p className="text-xs text-red-500">{errors.additionalNumber.message}</p>}
+                        {(errors as any).additionalNumber && <p className="text-xs text-red-500">{(errors as any).additionalNumber.message}</p>}
                       </div>
                     </div>
                     
                     <div className="space-y-1 mb-4">
                        <label className="text-sm font-medium text-gray-700">{language === 'ar' ? 'الرمز البريدي' : 'Zip Code'}</label>
                       <Input {...register('zipCode')} className="bg-gray-50 focus:bg-white" placeholder="xxxxx" maxLength={5} />
-                      {errors.zipCode && <p className="text-xs text-red-500">{errors.zipCode.message}</p>}
+                      {(errors as any).zipCode && <p className="text-xs text-red-500">{(errors as any).zipCode.message}</p>}
                     </div>
 
                     {/* Verification Result */}
