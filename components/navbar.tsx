@@ -49,11 +49,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   }
 
   useEffect(() => {
-    const uiRole = typeof window !== 'undefined' ? localStorage.getItem('sportx_ui_role') : null
-    if (uiRole === 'applicant') {
-      setEffectiveRole('applicant')
-      return
-    }
     if (user?.role) {
       setEffectiveRole(user.role)
     }
@@ -63,7 +58,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
     { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' },
-    { id: 'applicant', label: t('applicant'), href: '/dashboard/applicant' },
     // { id: 'match-center', label: t('matches'), href: '/matches' }, // Hidden as requested
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },

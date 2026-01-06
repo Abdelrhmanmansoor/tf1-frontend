@@ -206,7 +206,11 @@ class AuthService {
       const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
       if (!token) return false
 
-      const response = await api.get('/auth/profile')
+      // Use shorter timeout for validation (axios already has default timeout)
+      const response = await api.get('/auth/profile', {
+        timeout: 3000 // 3 second timeout for validation
+      })
+      
       if (response.data?.user) {
         // Update user data with fresh data from backend
         this.saveUser(response.data.user)
@@ -222,8 +226,9 @@ class AuthService {
         return false
       }
 
-      // For actual network errors (no response/status), throw to let caller decide
-      if ((!error.response && !error.status) || error.code === 'ECONNABORTED' || error.message?.includes('Network')) {
+      // For timeout or network errors, throw to let caller handle gracefully
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout') ||
+          (!error.response && !error.status) || error.message?.includes('Network')) {
         throw new Error('Network error during validation')
       }
       

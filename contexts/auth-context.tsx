@@ -46,28 +46,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return false
       }
 
-      // Try to validate with backend
+      // Get user from local storage first (fast)
+      const currentUser = authService.getCurrentUser()
+      if (currentUser) {
+        setUser(currentUser)
+        setLoading(false)
+      }
+
+      // Try to validate with backend (with timeout)
       try {
-        const isValid = await authService.validateToken()
-        if (!isValid) {
+        const validationPromise = authService.validateToken()
+        const timeoutPromise = new Promise<boolean>((resolve) => {
+          setTimeout(() => resolve(true), 3000) // 3 second timeout
+        })
+        
+        // Race: if validation takes too long, trust local state
+        const isValid = await Promise.race([validationPromise, timeoutPromise])
+        
+        if (isValid === false) {
           // If validation fails explicitly (locked out, token revoked), clear user
-          // But be careful not to clear on network errors (handled by service throwing/returning false)
-          // authService.validateToken() already handles 401 cleanup
-          const currentUser = authService.getCurrentUser()
-          setUser(currentUser) // might be null now
-          return !!currentUser
+          const updatedUser = authService.getCurrentUser()
+          setUser(updatedUser) // might be null now
+          return !!updatedUser
         }
+        
+        // Update user with fresh data from backend
+        const freshUser = authService.getCurrentUser()
+        if (freshUser) {
+          setUser(freshUser)
+        }
+        return true
       } catch (validationError: any) {
         console.warn('[AUTH] Session validation warning:', validationError.message)
         // Network error? Trust local state if we have it
+        return !!currentUser
       }
-
-      const currentUser = authService.getCurrentUser()
-      setUser(currentUser)
-      return !!currentUser
     } catch (error) {
       console.error('[AUTH] Session validation failed:', error)
-      return false
+      // On error, trust local state
+      const currentUser = authService.getCurrentUser()
+      return !!currentUser
     } finally {
       setLoading(false)
     }

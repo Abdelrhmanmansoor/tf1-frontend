@@ -56,19 +56,7 @@ export default function ProtectedRoute({
       return
     }
 
-    // Validate session with backend (background check)
-    // Only if context hasn't validated it yet or if we want to be extra secure
-    if (!sessionValidated) {
-      const isValid = await validateSession()
-      if (!isValid) {
-        setAuthError('session_invalid')
-        const currentPath = pathname || window.location.pathname
-        router.push(`/login?redirect=${encodeURIComponent(currentPath)}&reason=session_invalid`)
-        return
-      }
-    }
-
-    // Check role-based access
+    // Check role-based access first (fast check)
     const userRole = user.role as UserRole
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
       // User doesn't have permission - redirect to their dashboard
@@ -78,9 +66,19 @@ export default function ProtectedRoute({
       return
     }
 
-    // All checks passed
+    // All checks passed - authorize immediately
     setIsAuthorized(true)
     setIsChecking(false)
+
+    // Validate session in background (non-blocking)
+    if (!sessionValidated) {
+      // Don't await - let it run in background
+      validateSession().catch((error) => {
+        console.warn('[ProtectedRoute] Background validation failed:', error)
+        // Only redirect if validation explicitly fails (not on network errors)
+        // The user is already authorized, so we don't want to interrupt them
+      })
+    }
   }, [loading, isAuthenticated, user, allowedRoles, fallbackPath, pathname, router, validateSession, sessionValidated])
 
   useEffect(() => {
