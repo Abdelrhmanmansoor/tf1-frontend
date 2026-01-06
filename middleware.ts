@@ -22,6 +22,8 @@ const PUBLIC_ROUTES = [
   '/matches/login',
   '/matches/register',
   '/matches/verify-email',
+  '/sys-admin-secure-panel',
+  '/platform-control',
 ]
 
 const DASHBOARD_ROUTES = ['/dashboard']
