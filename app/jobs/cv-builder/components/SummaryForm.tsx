@@ -14,22 +14,41 @@ export default function SummaryForm({ data, update, language, personalInfo }: an
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/cv/ai/generate`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important for CORS
         body: JSON.stringify({ type: 'summary', data: personalInfo, language }),
       });
 
-      const result = await response.json();
-
+      // Check if response is ok before parsing JSON
       if (!response.ok) {
-        throw new Error(result.message || (language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed'));
+        let errorMessage = language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch (e) {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      update(result.data.result);
-      toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
+      const result = await response.json();
+
+      if (result.success && result.data?.result) {
+        update(result.data.result);
+        toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
+      } else {
+        throw new Error(result.message || (language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed'));
+      }
     } catch (error: any) {
-      toast.error(error.message || (language === 'ar' ? 'فشل توليد الملخص' : 'Failed to generate summary'));
+      console.error('AI Generation Error:', error);
+      const errorMessage = error.message || (language === 'ar' ? 'فشل توليد الملخص. يرجى التحقق من اتصال الإنترنت وإعدادات API' : 'Failed to generate summary. Please check your internet connection and API settings');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

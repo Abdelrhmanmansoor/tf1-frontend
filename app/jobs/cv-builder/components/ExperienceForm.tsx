@@ -34,19 +34,35 @@ export default function ExperienceForm({ data, update, language }: any) {
 
     setLoadingIndex(index);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/cv/ai/generate`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ type: 'description', data: desc, language }),
       });
 
-      if (!response.ok) throw new Error('AI Generation failed');
+      if (!response.ok) {
+        let errorMessage = language === 'ar' ? 'فشل تحسين الوصف' : 'AI Generation failed';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch (e) {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
 
       const result = await response.json();
-      handleChange(index, 'description', result.data.result);
-      toast.success(language === 'ar' ? 'تم تحسين الوصف بنجاح' : 'Description improved successfully');
-    } catch (error) {
-      toast.error(language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description');
+      if (result.success && result.data?.result) {
+        handleChange(index, 'description', result.data.result);
+        toast.success(language === 'ar' ? 'تم تحسين الوصف بنجاح' : 'Description improved successfully');
+      } else {
+        throw new Error(result.message || (language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description'));
+      }
+    } catch (error: any) {
+      console.error('AI Description Improvement Error:', error);
+      toast.error(error.message || (language === 'ar' ? 'فشل تحسين الوصف' : 'Failed to improve description'));
     } finally {
       setLoadingIndex(null);
     }

@@ -47,26 +47,58 @@ export default function CVBuilderPage() {
     try {
       setLoading(true);
       const tpl = cvData?.meta?.template || 'standard';
-      const base = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}`;
-      const response = await fetch(`${base}/cv/generate-pdf?template=${encodeURIComponent(tpl)}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+      
+      toast.loading(language === 'ar' ? 'جاري إنشاء ملف PDF...' : 'Generating PDF...', { id: 'pdf-gen' });
+      
+      const response = await fetch(`${apiUrl}/cv/generate-pdf?template=${encodeURIComponent(tpl)}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
         body: JSON.stringify({ ...cvData, language }),
       });
 
-      if (!response.ok) throw new Error('Failed to generate PDF');
+      if (!response.ok) {
+        let errorMessage = language === 'ar' ? 'فشل إنشاء ملف PDF' : 'Failed to generate PDF';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch (e) {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Check if response is actually a PDF
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/pdf')) {
+        throw new Error(language === 'ar' ? 'الاستجابة ليست ملف PDF صالح' : 'Response is not a valid PDF file');
+      }
 
       const blob = await response.blob();
+      
+      // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `CV-${cvData.personalInfo.fullName || 'User'}.pdf`;
+      const fileName = `CV-${cvData.personalInfo.fullName?.replace(/\s+/g, '-') || 'User'}-${new Date().getTime()}.pdf`;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
-      toast.success(language === 'ar' ? 'تم تحميل السيرة الذاتية بنجاح' : 'CV downloaded successfully');
-    } catch (error) {
-      toast.error(language === 'ar' ? 'حدث خطأ أثناء التحميل' : 'Error downloading CV');
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+      
+      toast.success(language === 'ar' ? 'تم تحميل السيرة الذاتية بنجاح' : 'CV downloaded successfully', { id: 'pdf-gen' });
+    } catch (error: any) {
+      console.error('PDF Generation Error:', error);
+      const errorMessage = error.message || (language === 'ar' ? 'حدث خطأ أثناء التحميل. يرجى المحاولة مرة أخرى' : 'Error downloading CV. Please try again');
+      toast.error(errorMessage, { id: 'pdf-gen' });
     } finally {
       setLoading(false);
     }
@@ -125,28 +157,41 @@ export default function CVBuilderPage() {
               {step === 4 && <EducationForm data={cvData.education} update={(d: any) => updateData('education', d)} language={language} />}
               {step === 5 && <SkillsForm data={cvData.skills} update={(d: any) => updateData('skills', d)} language={language} jobTitle={cvData.personalInfo.jobTitle} />}
               {step === 6 && (
-                <div className="space-y-4">
-                  <div className="flex flex-wrap items-center gap-2 mb-4">
-                    <span className="text-sm font-medium text-gray-700">{language === 'ar' ? 'القالب:' : 'Template:'}</span>
-                    {['standard','modern','classic','creative','minimal','executive'].map(t => (
-                      <button
-                        key={t}
-                        onClick={() => setCVData((prev) => ({ ...prev, meta: { ...(prev.meta || {}), template: t } }))}
-                        className={`px-3 py-1 rounded-md text-sm border ${cvData?.meta?.template === t ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-                      >
-                        {language === 'ar' ? (
-                          t === 'standard' ? 'قياسي' :
-                          t === 'modern' ? 'حديث' :
-                          t === 'classic' ? 'كلاسيكي' :
-                          t === 'creative' ? 'إبداعي' :
-                          t === 'minimal' ? 'مبسّط' :
-                          t === 'executive' ? 'تنفيذي' : t
-                        ) : (
-                          t.charAt(0).toUpperCase() + t.slice(1)
-                        )}
-                      </button>
-                    ))}
+                <div className="space-y-6">
+                  {/* Template Selection - Enhanced */}
+                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border border-indigo-200">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      {language === 'ar' ? 'اختر قالب السيرة الذاتية' : 'Choose CV Template'}
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                      {[
+                        { id: 'standard', name: language === 'ar' ? 'قياسي' : 'Standard', icon: '📄', desc: language === 'ar' ? 'قالب تقليدي احترافي' : 'Traditional professional' },
+                        { id: 'modern', name: language === 'ar' ? 'حديث' : 'Modern', icon: '✨', desc: language === 'ar' ? 'تصميم عصري وجذاب' : 'Modern and attractive' },
+                        { id: 'classic', name: language === 'ar' ? 'كلاسيكي' : 'Classic', icon: '🎩', desc: language === 'ar' ? 'أناقة كلاسيكية' : 'Classic elegance' },
+                        { id: 'creative', name: language === 'ar' ? 'إبداعي' : 'Creative', icon: '🎨', desc: language === 'ar' ? 'تصميم إبداعي مميز' : 'Unique creative design' },
+                        { id: 'minimal', name: language === 'ar' ? 'مبسّط' : 'Minimal', icon: '⚪', desc: language === 'ar' ? 'بساطة وأناقة' : 'Simplicity and elegance' },
+                        { id: 'executive', name: language === 'ar' ? 'تنفيذي' : 'Executive', icon: '💼', desc: language === 'ar' ? 'للقادة والمديرين' : 'For leaders and managers' },
+                      ].map(template => (
+                        <button
+                          key={template.id}
+                          onClick={() => setCVData((prev) => ({ ...prev, meta: { ...(prev.meta || {}), template: template.id } }))}
+                          className={`p-4 rounded-lg border-2 transition-all ${
+                            cvData?.meta?.template === template.id
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg scale-105'
+                              : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400 hover:shadow-md'
+                          }`}
+                        >
+                          <div className="text-2xl mb-2">{template.icon}</div>
+                          <div className="font-semibold text-sm mb-1">{template.name}</div>
+                          <div className={`text-xs ${cvData?.meta?.template === template.id ? 'text-indigo-100' : 'text-gray-500'}`}>
+                            {template.desc}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                  
+                  {/* Preview */}
                   <CVPreview data={cvData} language={language} onDownload={generatePDF} loading={loading} />
                 </div>
               )}

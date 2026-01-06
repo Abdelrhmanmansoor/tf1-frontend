@@ -33,29 +33,43 @@ export default function SkillsForm({ data, update, language, jobTitle }: any) {
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/cv/ai/generate`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+      const response = await fetch(`${apiUrl}/cv/ai/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ type: 'skills', data: jobTitle, language }),
       });
 
+      if (!response.ok) {
+        let errorMessage = language === 'ar' ? 'فشل اقتراح المهارات' : 'AI Generation failed';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch (e) {
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
       const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'AI Generation failed'));
-      }
-
-      const suggestions = result.data.result.split(',').map((s: any) => s.trim());
-      
-      // Merge unique suggestions
-      const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
-      if (uniqueSuggestions.length > 0) {
-        update([...data, ...uniqueSuggestions]);
-        toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
+      if (result.success && result.data?.result) {
+        const suggestions = result.data.result.split(',').map((s: any) => s.trim()).filter((s: any) => s.length > 0);
+        
+        // Merge unique suggestions
+        const uniqueSuggestions = suggestions.filter((s: any) => !data.includes(s));
+        if (uniqueSuggestions.length > 0) {
+          update([...data, ...uniqueSuggestions]);
+          toast.success(language === 'ar' ? 'تم اقتراح مهارات جديدة' : 'New skills suggested');
+        } else {
+          toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
+        }
       } else {
-        toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
+        throw new Error(result.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
       }
     } catch (error: any) {
+      console.error('AI Skills Suggestion Error:', error);
       toast.error(error.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
     } finally {
       setLoading(false);
