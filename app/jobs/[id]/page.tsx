@@ -242,11 +242,63 @@ export default function JobDetailsPage() {
     )
   }
 
+  // Generate JobPosting Schema for SEO
+  const jobPostingSchema = job ? {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": language === 'ar' ? job.titleAr || job.title : job.title,
+    "description": language === 'ar' ? job.descriptionAr || job.description : job.description,
+    "identifier": {
+      "@type": "PropertyValue",
+      "name": "Job ID",
+      "value": job._id
+    },
+    "datePosted": job.createdAt,
+    "validThrough": job.deadline,
+    "employmentType": job.employmentType,
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": language === 'ar' ? job.club.nameAr || job.club.name : job.club.name,
+      "logo": job.club.logo || "https://www.tf1one.com/logo.png",
+      "sameAs": job.club.website
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": language === 'ar' ? job.club.location.cityAr || job.club.location.city : job.club.location.city,
+        "addressCountry": language === 'ar' ? job.club.location.countryAr || job.club.location.country : job.club.location.country
+      }
+    },
+    "baseSalary": job.salary ? {
+      "@type": "MonetaryAmount",
+      "currency": job.salary.currency || "SAR",
+      "value": {
+        "@type": "QuantitativeValue",
+        "minValue": job.salary.min,
+        "maxValue": job.salary.max,
+        "unitText": "MONTH"
+      }
+    } : undefined,
+    "workHours": job.workHours,
+    "qualifications": job.requirements?.join(", "),
+    "skills": job.skills?.join(", ")
+  } : null
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
+      {/* JobPosting Structured Data */}
+      {jobPostingSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jobPostingSchema),
+          }}
+        />
+      )}
       <div className="max-w-5xl mx-auto">
         {/* Back Button */}
         <Button

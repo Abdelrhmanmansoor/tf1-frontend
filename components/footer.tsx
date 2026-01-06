@@ -211,14 +211,16 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               className="text-center space-y-2"
+              role="region"
+              aria-label={language === 'ar' ? 'معلومات السجل التجاري' : 'Commercial Registration Information'}
             >
               <div className="flex items-center justify-center gap-2 mb-2">
-                <FileText className="w-5 h-5 text-blue-400" />
+                <FileText className="w-5 h-5 text-blue-400" aria-hidden="true" />
                 <p className="text-gray-400 text-sm font-medium">
                   {language === 'ar' ? 'السجل التجاري' : 'Commercial Registration'}
                 </p>
               </div>
-              <p className="text-white font-bold text-xl sm:text-2xl tracking-wider">
+              <p className="text-white font-bold text-xl sm:text-2xl tracking-wider" aria-label="Commercial Registration Number: 7037626640">
                 7037626640
               </p>
             </motion.div>
@@ -231,6 +233,7 @@ export function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex-shrink-0"
+                aria-label={language === 'ar' ? 'زيارة موقع وزارة التجارة' : 'Visit Ministry of Commerce website'}
               >
                 <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
                   <Image 
@@ -250,6 +253,7 @@ export function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex-shrink-0"
+                aria-label={language === 'ar' ? 'زيارة موقع المركز السعودي للأعمال' : 'Visit Saudi Business Center website'}
               >
                 <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
                   <Image 
@@ -269,6 +273,7 @@ export function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex-shrink-0"
+                aria-label={language === 'ar' ? 'زيارة موقع رؤية المملكة 2030' : 'Visit Saudi Vision 2030 website'}
               >
                 <div className="bg-white rounded-lg p-2 sm:p-3 transition-all duration-300 hover:shadow-lg hover:scale-105 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-sm">
                   <Image 
