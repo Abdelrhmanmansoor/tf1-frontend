@@ -94,6 +94,17 @@ function VerifyEmailContent() {
             )
           }
         } else {
+          if (data && (data.code === 'TOKEN_EXPIRED' || data.code === 'INVALID_TOKEN')) {
+            return fetch(`https://tf1-backend.onrender.com/api/v1/auth/resend-verification-by-token`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token })
+            }).then(r => r.json()).then(resend => {
+              setStatus('error')
+              setMessage((language === 'ar' ? resend.messageAr : resend.message) || (language === 'ar' ? 'تم إرسال رابط جديد إلى بريدك' : 'A new verification link has been sent'))
+              return null
+            }).catch(() => null)
+          }
           // Try matches API as fallback
           console.log('[VERIFY] Main API failed, trying matches API...')
           return tryMatchesApi()

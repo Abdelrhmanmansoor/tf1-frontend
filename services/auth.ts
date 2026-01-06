@@ -113,9 +113,16 @@ class AuthService {
   async verifyEmail(token: string): Promise<any> {
     try {
       const response = await api.post('/auth/verify-email', { token })
-      return response.data
+      if (response.data?.success) return response.data
+      const alt = await api.get('/auth/verify-email', { params: { token } })
+      return alt.data
     } catch (error) {
-      throw this.handleError(error)
+      try {
+        const alt = await api.get('/auth/verify-email', { params: { token } })
+        return alt.data
+      } catch (err2) {
+        throw this.handleError(err2)
+      }
     }
   }
 
