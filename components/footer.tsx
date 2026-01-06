@@ -86,20 +86,37 @@ export function Footer() {
           
           {/* Brand & Description */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block">
-              <Image 
-                src="/logo.png"
-                alt="TF1 Logo"
-                width={80}
-                height={80}
-                className="hover:scale-105 transition-transform duration-200"
-              />
+            <Link href="/" className="inline-block group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"></div>
+                <div className="relative bg-white rounded-xl p-3 shadow-lg border-2 border-gray-200 group-hover:border-blue-400 transition-all duration-300">
+                  <Image 
+                    src="/logo.png"
+                    alt="TF1 Jobs - منصة التوظيف الرياضية"
+                    width={120}
+                    height={120}
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
+                    priority
+                  />
+                </div>
+              </div>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {language === 'ar'
-                ? 'منصة التوظيف الرياضية الرائدة في المملكة العربية السعودية. نربط المواهب بالفرص في القطاع الرياضي.'
-                : 'Leading sports recruitment platform in Saudi Arabia. Connecting talent with opportunities in the sports sector.'}
-            </p>
+            <div className="space-y-2">
+              <h3 className="text-white font-bold text-lg">
+                {language === 'ar' ? 'TF1 Jobs' : 'TF1 Jobs'}
+              </h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                {language === 'ar'
+                  ? 'منصة التوظيف الرياضية الرائدة في المملكة العربية السعودية. نربط المواهب بالفرص في القطاع الرياضي.'
+                  : 'Leading sports recruitment platform in Saudi Arabia. Connecting talent with opportunities in the sports sector.'}
+              </p>
+              <div className="flex items-center gap-2 pt-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-gray-500">
+                  {language === 'ar' ? 'متصل الآن' : 'Online Now'}
+                </span>
+              </div>
+            </div>
             
             {/* Social Media - Beautiful Modern Design */}
             <div className="flex gap-4 pt-4">

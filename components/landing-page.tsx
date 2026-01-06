@@ -21,6 +21,14 @@ import {
   TrendingUp,
   Award,
   Zap,
+  Search,
+  FileCheck,
+  Send,
+  Star,
+  Globe,
+  Clock,
+  BarChart3,
+  Target,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -761,18 +769,21 @@ export function LandingPage() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
         className="bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 py-6 px-4"
+        role="region"
+        aria-label={language === 'ar' ? 'وظائف مميزة متاحة' : 'Featured Jobs Available'}
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Briefcase className="w-6 h-6 text-white" />
+              <Briefcase className="w-6 h-6 text-white" aria-hidden="true" />
               <h3 className="text-white font-bold text-lg">
                 {language === 'ar' ? 'وظائف مميزة متاحة الآن' : 'Featured Jobs Available Now'}
               </h3>
             </div>
             <Link
               href="/browse-jobs"
-              className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
+              aria-label={language === 'ar' ? 'استكشف الوظائف المميزة' : 'Explore Featured Jobs'}
             >
               {language === 'ar' ? 'استكشف الوظائف' : 'Explore Jobs'}
             </Link>
@@ -1080,10 +1091,13 @@ export function LandingPage() {
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
         className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-blue-50"
+        role="region"
+        aria-labelledby="why-choose-us-heading"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <motion.h2
+              id="why-choose-us-heading"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1100,7 +1114,7 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8" role="list">
             {[
               {
                 icon: Shield,
@@ -1133,10 +1147,13 @@ export function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2"
+                role="listitem"
+                tabIndex={0}
+                aria-label={feature.title}
               >
                 <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6`}>
-                  <feature.icon className="w-8 h-8 text-white" />
+                  <feature.icon className="w-8 h-8 text-white" aria-hidden="true" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   {feature.title}

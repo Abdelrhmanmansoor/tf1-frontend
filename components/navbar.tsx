@@ -91,8 +91,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             className="hidden md:flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1.5 rounded-full border border-green-200"
+            role="status"
+            aria-label={language === 'ar' ? 'منصة موثقة رسمياً' : 'Officially Verified Platform'}
           >
-            <Shield className="w-4 h-4 text-green-600" />
+            <Shield className="w-4 h-4 text-green-600" aria-hidden="true" />
             <span className="text-xs font-semibold text-green-700">
               {t('verified') || (language === 'ar' ? 'موثق رسمياً' : 'Verified')}
             </span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -11,75 +11,89 @@ export function PartnersMarquee() {
   const { language } = useLanguage()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  const partners = [
-    { 
-      name: 'Al Hilal', 
-      logo: '/partners/hilal.png',
-      category: 'club',
-      verified: true,
-      jobs: 45,
-      location: 'Riyadh'
-    },
-    { 
-      name: 'Al Nassr', 
-      logo: '/partners/nassr.png',
-      category: 'club',
-      verified: true,
-      jobs: 38,
-      location: 'Riyadh'
-    },
-    { 
-      name: 'Al Ahli', 
-      logo: '/partners/ahli.png',
-      category: 'club',
-      verified: true,
-      jobs: 32,
-      location: 'Jeddah'
-    },
-    { 
-      name: 'Al Shabab', 
-      logo: '/partners/shabab.png',
-      category: 'club',
-      verified: true,
-      jobs: 28,
-      location: 'Riyadh'
-    },
-    { 
-      name: 'Al Taawon', 
-      logo: '/partners/taawon.png',
-      category: 'club',
-      verified: true,
-      jobs: 25,
-      location: 'Buraydah'
-    },
-    { 
-      name: 'Fitness Time', 
-      logo: '/partners/fitnesstime.png',
-      category: 'fitness',
-      verified: true,
-      jobs: 67,
-      location: 'Multiple'
-    },
-    { 
-      name: 'Diriyah Club', 
-      logo: '/partners/diriyah.png',
-      category: 'club',
-      verified: true,
-      jobs: 19,
-      location: 'Diriyah'
-    },
-    { 
-      name: 'Al Fateh', 
-      logo: '/partners/fateh.png',
-      category: 'club',
-      verified: true,
-      jobs: 22,
-      location: 'Al-Ahsa'
-    },
-  ]
+  // جميع اللوجوهات من مجلد partners
+  const allPartners = useMemo(() => [
+    // الأندية الرياضية
+    { name: 'Al Hilal', logo: '/partners/hilal.png', category: 'club', verified: true },
+    { name: 'Al Nassr', logo: '/partners/nassr.png', category: 'club', verified: true },
+    { name: 'Al Ahli', logo: '/partners/ahli.png', category: 'club', verified: true },
+    { name: 'Al Shabab', logo: '/partners/shabab.png', category: 'club', verified: true },
+    { name: 'Al Taawon', logo: '/partners/taawon.png', category: 'club', verified: true },
+    { name: 'Al Fateh', logo: '/partners/fateh.png', category: 'club', verified: true },
+    { name: 'Al Fateh SC', logo: '/partners/Al Fateh SC-01.png', category: 'club', verified: true },
+    { name: 'Al Ittifaq', logo: '/partners/Al Ittifaq-01.png', category: 'club', verified: true },
+    { name: 'AlAdalah Club', logo: '/partners/AlAdalah Club-01.png', category: 'club', verified: true },
+    { name: 'AlHazem Saudi Club', logo: '/partners/AlHazem Saudi Club-01.png', category: 'club', verified: true },
+    { name: 'Alraed SFC', logo: '/partners/Alraed SFC-01.png', category: 'club', verified: true },
+    { name: 'Abha Club', logo: '/partners/Abha Club.png', category: 'club', verified: true },
+    { name: 'Al Qadisiya', logo: '/partners/qadisiya.png', category: 'club', verified: true },
+    { name: 'Qadsiah', logo: '/partners/Qadsiah-04.png', category: 'club', verified: true },
+    { name: 'Al Orouba', logo: '/partners/orouba.png', category: 'club', verified: true },
+    { name: 'Al Fayha', logo: '/partners/fayha.png', category: 'club', verified: true },
+    { name: 'Damak', logo: '/partners/damak.png', category: 'club', verified: true },
+    { name: 'Diriyah Club', logo: '/partners/diriyah.png', category: 'club', verified: true },
+    { name: 'Al Khulood', logo: '/partners/khulood.png', category: 'club', verified: true },
+    
+    // الاتحادات الرياضية
+    { name: 'SAFF', logo: '/partners/SAFF-02.png', category: 'federation', verified: true },
+    { name: 'Saudi Arabian Athletic Federation', logo: '/partners/SAUDI ARABIAN ATHLETIC FEDERATION-01.png', category: 'federation', verified: true },
+    { name: 'Saudi Tennis Federation', logo: '/partners/Saudi Tennis Federation.png', category: 'federation', verified: true },
+    { name: 'Saudi Jiu-Jitsu Federation', logo: '/partners/Saudi Jiu-Jitsu Federation2.png', category: 'federation', verified: true },
+    { name: 'Saudi Esport', logo: '/partners/Saudi Esport-02.png', category: 'federation', verified: true },
+    { name: 'Saudi Bowling Federation', logo: '/partners/Saudi Bowling Federation2.png', category: 'federation', verified: true },
+    { name: 'Saudi-Federation-of-Mass-Participation', logo: '/partners/Saudi-Federation-of-Mass-Participation-01.png', category: 'federation', verified: true },
+    { name: 'Saudi arabian equestrian federation', logo: '/partners/Saudi arabian equestrian federation.png', category: 'federation', verified: true },
+    { name: 'Saudi Arabian Hot Air Ballooning Federation', logo: '/partners/Saudi Arabian Hot Air Ballooning Federation-01.png', category: 'federation', verified: true },
+    { name: 'saudi archery federation', logo: '/partners/saudi archery federation.png', category: 'federation', verified: true },
+    { name: 'Saudi badminton federation', logo: '/partners/Saudi badminton federation (2).png', category: 'federation', verified: true },
+    { name: 'saudi baseball and softball federation', logo: '/partners/saudi baseball and softball federation.png', category: 'federation', verified: true },
+    { name: 'Saudi climbing and hiking federation', logo: '/partners/Saudi climbing and hiking federation.png', category: 'federation', verified: true },
+    { name: 'saudi cycling', logo: '/partners/saudi cycling.png', category: 'federation', verified: true },
+    { name: 'saudi dodgeball federation', logo: '/partners/saudi dodgeball federation.png', category: 'federation', verified: true },
+    { name: 'Saudi hockey federation', logo: '/partners/Saudi hockey federation.png', category: 'federation', verified: true },
+    { name: 'Saudi kickboxing federation', logo: '/partners/Saudi kickboxing federation.png', category: 'federation', verified: true },
+    { name: 'Saudi muaythai federation', logo: '/partners/Saudi muaythai federation.png', category: 'federation', verified: true },
+    { name: 'Saudi polo federation', logo: '/partners/Saudi polo federation.png', category: 'federation', verified: true },
+    { name: 'Saudi rowing federation', logo: '/partners/Saudi rowing federation.png', category: 'federation', verified: true },
+    { name: 'Saudi Sailing Federation', logo: '/partners/Saudi Sailing Federation.png', category: 'federation', verified: true },
+    { name: 'Saudi Water Sports & Diving Federation', logo: '/partners/Saudi Water Sports & Diving Federation.png', category: 'federation', verified: true },
+    
+    // الدوري والمنظمات
+    { name: 'Roshn Saudi League', logo: '/partners/Roshn Saudi League-01.png', category: 'league', verified: true },
+    { name: 'National Transformation Program', logo: '/partners/National Transformation Program.png', category: 'organization', verified: true },
+    { name: 'National Events Center', logo: '/partners/National Events Center-01.png', category: 'organization', verified: true },
+    { name: 'Saudi Events', logo: '/partners/Saudi Events-01.png', category: 'organization', verified: true },
+    
+    // المستشفيات والرعاية الصحية
+    { name: 'King Faisal Specialist Hospital & Research Centre', logo: '/partners/King Faisal Specialist Hospital & Research Centre.png', category: 'healthcare', verified: true },
+    { name: 'Saudi German Health', logo: '/partners/Saudi German Health.png', category: 'healthcare', verified: true },
+    { name: 'AlMoosa Hospital', logo: '/partners/AlMoosa Hospital.png', category: 'healthcare', verified: true },
+    { name: 'almoosa health', logo: '/partners/almoosa health.png', category: 'healthcare', verified: true },
+    
+    // الوزارات
+    { name: 'Ministry of Commerce and Investment', logo: '/partners/Minisrty-of-Commerce-and-Investment-01.png', category: 'ministry', verified: true },
+    { name: 'Ministry of Education', logo: '/partners/Minisrty-of-Education-01-1-1.png', category: 'ministry', verified: true },
+    { name: 'Ministry of Labor and Social Development', logo: '/partners/Ministry-of-Labor-and-Social-Development.png', category: 'ministry', verified: true },
+    
+    // مراكز الأعمال
+    { name: 'Saudi Business Center', logo: '/partners/Saudi Business Center-01.png', category: 'business', verified: true },
+    
+    // مراكز اللياقة
+    { name: 'Fitness Time', logo: '/partners/fitnesstime.png', category: 'fitness', verified: true },
+  ], [])
 
-  // Duplicate for seamless loop
-  const marqueePartners = [...partners, ...partners, ...partners]
+  // إنشاء نسخ متعددة للشريط المستمر
+  const marqueePartners = useMemo(() => {
+    // نكرر 5 مرات لضمان استمرارية الحركة
+    return [...allPartners, ...allPartners, ...allPartners, ...allPartners, ...allPartners]
+  }, [allPartners])
+  
+  const stats = useMemo(() => [
+    { icon: Building2, value: `${allPartners.length}+`, label: language === 'ar' ? 'شريك' : 'Partners' },
+    { icon: TrendingUp, value: '500+', label: language === 'ar' ? 'وظيفة نشطة' : 'Active Jobs' },
+    { icon: Users, value: '10K+', label: language === 'ar' ? 'باحث عن عمل' : 'Job Seekers' },
+    { icon: Award, value: '95%', label: language === 'ar' ? 'معدل الرضا' : 'Satisfaction' },
+  ], [language, allPartners.length])
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden">
@@ -115,18 +129,13 @@ export function PartnersMarquee() {
           
           <p className="max-w-3xl mx-auto text-gray-600 leading-relaxed text-lg sm:text-xl">
             {language === 'ar'
-              ? 'نفخر بشراكاتنا الاستراتيجية مع الأندية الرياضية الرائدة والمراكز المتخصصة في المملكة العربية السعودية'
-              : 'We are proud of our strategic partnerships with leading sports clubs and specialized centers in Saudi Arabia'}
+              ? 'نفخر بشراكاتنا الاستراتيجية مع الأندية الرياضية الرائدة والاتحادات والمراكز المتخصصة في المملكة العربية السعودية'
+              : 'We are proud of our strategic partnerships with leading sports clubs, federations, and specialized centers in Saudi Arabia'}
           </p>
 
           {/* Stats */}
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto" role="list" aria-label={language === 'ar' ? 'إحصائيات الشركاء' : 'Partners Statistics'}>
-            {[
-              { icon: Building2, value: '50+', label: language === 'ar' ? 'شريك' : 'Partners' },
-              { icon: TrendingUp, value: '500+', label: language === 'ar' ? 'وظيفة نشطة' : 'Active Jobs' },
-              { icon: Users, value: '10K+', label: language === 'ar' ? 'باحث عن عمل' : 'Job Seekers' },
-              { icon: Award, value: '95%', label: language === 'ar' ? 'معدل الرضا' : 'Satisfaction' },
-            ].map((stat, index) => (
+            {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -145,21 +154,23 @@ export function PartnersMarquee() {
           </div>
         </motion.div>
 
-        {/* Main Marquee - Enhanced Design */}
+        {/* Main Marquee - Enhanced Design with Continuous Scroll */}
         <div className="relative">
           {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-r from-white via-white/90 to-transparent pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-32 z-20 bg-gradient-to-l from-white via-white/90 to-transparent pointer-events-none"></div>
 
-          {/* First Row - Large Cards */}
+          {/* First Row - Large Cards - Continuous Scroll */}
           <div className="relative overflow-hidden mb-8">
             <motion.div
               className="flex items-center gap-6 w-max"
-              animate={{ x: ['0%', '-50%'] }}
+              animate={{ 
+                x: ['0%', `-${(allPartners.length * 100) / 5}%`]
+              }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: 60,
+                duration: allPartners.length * 3, // مدة أطول للحركة السلسة
               }}
             >
               {marqueePartners.map((partner, index) => (
@@ -202,7 +213,7 @@ export function PartnersMarquee() {
                           loading="lazy"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement
-                            target.src = '/logo.png' // Fallback image
+                            target.src = '/logo.png'
                           }}
                         />
                       </motion.div>
@@ -217,10 +228,9 @@ export function PartnersMarquee() {
                       }}
                       className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/90 to-transparent p-4 rounded-b-2xl"
                     >
-                      <h3 className="text-white font-bold text-sm mb-1">{partner.name}</h3>
+                      <h3 className="text-white font-bold text-sm mb-1 line-clamp-1">{partner.name}</h3>
                       <div className="flex items-center gap-2 text-xs text-gray-300">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>{partner.jobs} {language === 'ar' ? 'وظيفة متاحة' : 'Jobs Available'}</span>
+                        <span className="capitalize">{partner.category}</span>
                       </div>
                     </motion.div>
                   </div>
@@ -229,15 +239,17 @@ export function PartnersMarquee() {
             </motion.div>
           </div>
 
-          {/* Second Row - Smaller Cards (Reverse Direction) */}
+          {/* Second Row - Smaller Cards (Reverse Direction) - Continuous Scroll */}
           <div className="relative overflow-hidden">
             <motion.div
               className="flex items-center gap-4 w-max"
-              animate={{ x: ['-50%', '0%'] }}
+              animate={{ 
+                x: [`-${(allPartners.length * 100) / 5}%`, '0%']
+              }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: 50,
+                duration: allPartners.length * 2.5,
               }}
             >
               {marqueePartners.slice().reverse().map((partner, index) => (
@@ -257,7 +269,7 @@ export function PartnersMarquee() {
                         loading="lazy"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
-                          target.src = '/logo.png' // Fallback image
+                          target.src = '/logo.png'
                         }}
                       />
                     </div>
