@@ -73,7 +73,7 @@ function VerifyEmailContent() {
 
         if (data.success === true) {
           setStatus('success')
-          setMessage(data.message || 'Email verified successfully!')
+          setMessage((language === 'ar' ? data.messageAr : data.message) || 'Email verified successfully!')
 
           if (data.accessToken) {
             localStorage.setItem('sportx_access_token', data.accessToken)
@@ -102,13 +102,13 @@ function VerifyEmailContent() {
       .then((matchesData) => {
         if (matchesData && matchesData.success === true) {
           setStatus('success')
-          setMessage(matchesData.message || (language === 'ar' ? 'تم تأكيد البريد الإلكتروني بنجاح!' : 'Email verified successfully!'))
+          setMessage((language === 'ar' ? matchesData.messageAr : matchesData.message) || (language === 'ar' ? 'تم تأكيد البريد الإلكتروني بنجاح!' : 'Email verified successfully!'))
           
           console.log('[VERIFY] Matches API success! Redirecting to matches login...')
           setTimeout(() => router.replace('/matches/login?verified=true'), 2000)
         } else if (matchesData) {
           setStatus('error')
-          setMessage(matchesData.message || 'Verification failed')
+          setMessage((language === 'ar' ? matchesData.messageAr : matchesData.message) || 'Verification failed')
         }
       })
       .catch((error) => {
