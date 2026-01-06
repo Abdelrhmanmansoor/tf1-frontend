@@ -62,6 +62,7 @@ export default function SysAdminSecurePanelPage() {
           'Content-Type': 'application/json',
           'x-admin-key': key,
         },
+        credentials: 'include', // Include cookies for CORS
       })
 
       if (!response.ok) {
