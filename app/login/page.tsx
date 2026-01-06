@@ -92,7 +92,28 @@ function LoginContent() {
 
     } catch (err: any) {
       console.error('[LOGIN] Error:', err)
-      const errorMsg = err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
+      
+      // Extract error message
+      let errorMsg = err.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed')
+      
+      // Handle validation errors
+      if (errorMsg.includes('Validation failed') || errorMsg.includes('validation')) {
+        errorMsg = language === 'ar' 
+          ? 'يرجى التحقق من صحة البيانات المدخلة' 
+          : 'Please check your input data'
+      }
+      
+      // Handle specific error messages
+      if (language === 'ar') {
+        if (errorMsg.includes('Invalid email or password') || errorMsg.includes('Invalid credentials')) {
+          errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
+        } else if (errorMsg.includes('Email not verified') || errorMsg.includes('verify')) {
+          errorMsg = 'يرجى تفعيل حسابك أولاً'
+        } else if (errorMsg.includes('Account locked') || errorMsg.includes('blocked')) {
+          errorMsg = 'تم حظر حسابك. يرجى الاتصال بالدعم'
+        }
+      }
+      
       setError(errorMsg)
       toast.error(errorMsg)
       setLoading(false)

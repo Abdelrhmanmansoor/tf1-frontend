@@ -39,6 +39,18 @@ class AuthService {
    */
   async register(userData: RegisterData): Promise<any> {
     try {
+      // Ensure required fields are present
+      if (!userData.email || !userData.password || !userData.role) {
+        throw new Error('Missing required fields: email, password, and role are required')
+      }
+      
+      // For applicant and job-publisher roles, ensure firstName and lastName are present
+      if (['applicant', 'job-publisher'].includes(userData.role)) {
+        if (!userData.firstName || !userData.lastName) {
+          throw new Error('First name and last name are required for this role')
+        }
+      }
+      
       const response = await api.post('/auth/register', userData)
       return response.data
     } catch (error) {
@@ -54,22 +66,21 @@ class AuthService {
    * @returns Promise with login response
    */
   async login(email: string, password: string): Promise<LoginResponse> {
-    const endpoints = ['/auth/login', '/auth/signin', '/users/login']
-    for (const endpoint of endpoints) {
-      try {
-        const response = await api.post(endpoint, { email, password })
-        const { accessToken, user } = response.data
-        this.saveToken(accessToken)
-        this.saveUser(user)
-        return response.data
-      } catch (error: any) {
-        const status = error.response?.status
-        if (status !== 404) {
-          throw this.handleError(error)
-        }
+    try {
+      const response = await api.post('/auth/login', { email, password })
+      const { accessToken, user } = response.data
+      
+      if (!accessToken || !user) {
+        throw new Error('Invalid response from server')
       }
+      
+      this.saveToken(accessToken)
+      this.saveUser(user)
+      return response.data
+    } catch (error: any) {
+      // Re-throw with better error handling
+      throw this.handleError(error)
     }
-    throw new Error('Login endpoints not available')
   }
 
   /**
@@ -166,7 +177,21 @@ class AuthService {
   private handleError(error: any): Error {
     if (error.response) {
       // Server responded with error status
-      const message = error.response.data.message || 'An error occurred'
+      const data = error.response.data
+      
+      // Handle validation errors specifically
+      if (data.code === 'VALIDATION_ERROR' || data.message === 'Validation failed') {
+        const errors = data.errors || []
+        if (errors.length > 0) {
+          // Format validation errors into a readable message
+          const errorMessages = errors.map((err: any) => err.message || err.msg).join(', ')
+          return new Error(errorMessages || 'Validation failed. Please check your input.')
+        }
+        return new Error('Validation failed. Please check your input.')
+      }
+      
+      // Handle other error types
+      const message = data.message || data.error || 'An error occurred'
       return new Error(message)
     } else if (error.request) {
       // Request made but no response

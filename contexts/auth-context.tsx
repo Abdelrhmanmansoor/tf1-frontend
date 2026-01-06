@@ -116,10 +116,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [pathname, sessionValidated, router])
 
   const login = async (email: string, password: string) => {
-    const response = await authService.login(email, password)
-    setUser(response.user)
-    setSessionValidated(true)
-    return response
+    try {
+      const response = await authService.login(email, password)
+      setUser(response.user)
+      setSessionValidated(true)
+      return response
+    } catch (error: any) {
+      // Re-throw to let the component handle it
+      throw error
+    }
   }
 
   const logout = () => {

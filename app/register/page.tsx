@@ -169,14 +169,23 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegistrationFormValues) => {
     setLoading(true)
     try {
-      // Prepare payload
+      // Prepare payload - Ensure all required fields are included
       const payload: any = {
         email: data.email,
         password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phone: data.phone,
-        role: data.role
+        role: data.role,
+        firstName: data.firstName?.trim(),
+        lastName: data.lastName?.trim(),
+        phone: data.phone?.trim()
+      }
+      
+      // Validate required fields for applicant and job-publisher
+      if (['applicant', 'job-publisher'].includes(data.role)) {
+        if (!payload.firstName || !payload.lastName) {
+          toast.error(language === 'ar' ? 'الاسم الأول والأخير مطلوبان' : 'First name and last name are required')
+          setLoading(false)
+          return
+        }
       }
 
       if (data.role === 'club') {

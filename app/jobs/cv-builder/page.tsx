@@ -11,6 +11,7 @@ import ExperienceForm from './components/ExperienceForm';
 import EducationForm from './components/EducationForm';
 import SkillsForm from './components/SkillsForm';
 import CVPreview from './components/CVPreview';
+import api from '@/services/api';
 
 export default function CVBuilderPage() {
   const [step, setStep] = useState(1);
