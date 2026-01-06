@@ -164,12 +164,13 @@ export function PartnersMarquee() {
             <motion.div
               className="flex items-center gap-6"
               animate={{ 
-                x: ['0%', '-33.333%']
+                x: [0, -(224 * allPartners.length + 24 * (allPartners.length - 1))]
               }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: 60,
+                duration: 40,
+                repeatType: 'loop',
               }}
               style={{ width: 'max-content' }}
             >
@@ -237,12 +238,13 @@ export function PartnersMarquee() {
             <motion.div
               className="flex items-center gap-4"
               animate={{ 
-                x: ['-33.333%', '0%']
+                x: [-(160 * allPartners.length + 16 * (allPartners.length - 1)), 0]
               }}
               transition={{
                 repeat: Infinity,
                 ease: 'linear',
-                duration: 50,
+                duration: 35,
+                repeatType: 'loop',
               }}
               style={{ width: 'max-content' }}
             >

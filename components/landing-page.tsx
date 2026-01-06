@@ -37,7 +37,6 @@ import { Footer } from './footer'
 import { ArabicSwitcher } from './arabic-switcher'
 import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
-import { TopRatedPlayers } from './rating/TopRatedPlayers'
 import { PartnersMarquee } from './partners-marquee'
 import { StatsSection } from './stats-section'
 import { JobsTickerBar } from './landing/JobsTickerBar'
@@ -932,32 +931,6 @@ export function LandingPage() {
 
 
 
-      {/* Top Rated Players Section - Only for Application Mode */}
-      {mode === 'application' && (
-        <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gradient-to-br from-purple-50 via-white to-blue-50">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-8 sm:mb-12"
-            >
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent mb-3 sm:mb-4">
-                {language === 'ar'
-                  ? ' أفضل الكوادر تقييماً'
-                  : 'Top Rated Players'}
-              </h2>
-              <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
-                {language === 'ar'
-                  ? 'اكتشف نخبة الكفاءات الرياضية والطبية والإدارية ذات الأداء العالي '
-                  : 'Meet our top-rated professional players with excellent reviews'}
-              </p>
-            </motion.div>
-
-            <TopRatedPlayers limit={3} minReviews={1} />
-          </div>
-        </section>
-      )}
 
       {/* Testimonials Section - Clean Premium Design */}
       <section className="py-20 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-gray-50 via-white to-gray-50">
