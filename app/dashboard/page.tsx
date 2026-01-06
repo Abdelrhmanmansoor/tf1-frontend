@@ -104,10 +104,10 @@ function DashboardContent() {
       case 'secretary':
         return <SecretaryDashboard />
       case 'applicant':
-        window.location.href = '/dashboard/applicant'
+        // Redirect handled in useEffect
         return null
       case 'job-publisher':
-        window.location.href = '/dashboard/job-publisher'
+        // Redirect handled in useEffect
         return null
       default:
         return <PlayerDashboard />
