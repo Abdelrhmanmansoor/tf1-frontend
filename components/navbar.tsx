@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { LanguageSelector } from './language-selector'
 import { useLanguage } from '@/contexts/language-context'
@@ -10,6 +10,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { X, ChevronDown } from 'lucide-react'
 import { JobTicker } from './job-ticker'
+import { getDashboardRoute } from '@/utils/role-routes'
 // import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
@@ -29,6 +30,34 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
   const [activeTab, setActiveTab] = useState(activePage)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [moreMenuOpen, setMoreMenuOpen] = useState(false)
+  const [effectiveRole, setEffectiveRole] = useState<string | null>(null)
+
+  const roleLabels: Record<string, string> = {
+    applicant: t('applicant'),
+    player: t('player'),
+    coach: t('coach'),
+    club: t('club'),
+    specialist: t('specialist'),
+    administrator: t('administrator'),
+    'age-group-supervisor': t('age-group-supervisor'),
+    'sports-director': t('sports-director'),
+    'executive-director': t('executive-director'),
+    secretary: t('secretary'),
+    'sports-administrator': t('sports-administrator'),
+    team: 'Team',
+    leader: 'Leader',
+  }
+
+  useEffect(() => {
+    const uiRole = typeof window !== 'undefined' ? localStorage.getItem('sportx_ui_role') : null
+    if (uiRole === 'applicant') {
+      setEffectiveRole('applicant')
+      return
+    }
+    if (user?.role) {
+      setEffectiveRole(user.role)
+    }
+  }, [user])
 
   const navItems: NavItem[] = [
     { id: 'home', label: t('home') },
@@ -213,7 +242,21 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <LanguageSelector />
 
-          {(!user || user) && (
+          {user && effectiveRole && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href={effectiveRole === 'applicant' ? '/dashboard/applicant' : getDashboardRoute(effectiveRole as any)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
+                >
+                  {roleLabels[effectiveRole] || t('login')}
+                </Button>
+              </Link>
+            </motion.div>
+          )}
+
+          {!user && (
             <>
               <motion.div
                 whileHover={{ scale: 1.05 }}

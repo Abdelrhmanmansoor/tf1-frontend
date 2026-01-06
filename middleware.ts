@@ -45,6 +45,7 @@ const ROLE_ROUTE_MAP: Record<string, string[]> = {
   secretary: ['/dashboard/secretary', '/dashboard/notifications'],
   'sports-administrator': ['/dashboard/sports-admin', '/dashboard/notifications'],
   team: ['/dashboard/team', '/dashboard/notifications'],
+  applicant: ['/dashboard/applicant', '/dashboard/notifications'],
 }
 
 function isPublicRoute(pathname: string): boolean {
@@ -189,7 +190,11 @@ export function middleware(request: NextRequest) {
     }
 
     // Get role from token and check access (only for regular dashboard)
-    const role = getRoleFromToken(token)
+    let role = getRoleFromToken(token)
+    const uiRole = request.cookies.get('sportx_ui_role')?.value
+    if (uiRole) {
+      role = uiRole
+    }
     if (
       role &&
       pathname !== '/dashboard' &&

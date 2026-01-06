@@ -47,26 +47,6 @@ class AuthService {
       return response.data
     } catch (error) {
       const err = this.handleError(error)
-      // Fallbacks for legacy/backward-compatible backends
-      if (err.status === 404) {
-        try {
-          const alt1 = await api.post('/auth/signin', { email, password })
-          const { accessToken, user } = alt1.data
-          this.saveToken(accessToken)
-          this.saveUser(user)
-          return alt1.data
-        } catch (_) {
-          try {
-            const alt2 = await api.post('/users/login', { email, password })
-            const { accessToken, user } = alt2.data
-            this.saveToken(accessToken)
-            this.saveUser(user)
-            return alt2.data
-          } catch (e2) {
-            throw err
-          }
-        }
-      }
       throw err
     }
   }
@@ -78,22 +58,22 @@ class AuthService {
    * @returns Promise with login response
    */
   async login(email: string, password: string): Promise<LoginResponse> {
-    try {
-      const response = await api.post('/auth/login', {
-        email,
-        password,
-      })
-
-      const { accessToken, user } = response.data
-
-      // Save token and user data to localStorage
-      this.saveToken(accessToken)
-      this.saveUser(user)
-
-      return response.data
-    } catch (error) {
-      throw this.handleError(error)
+    const endpoints = ['/auth/login', '/auth/signin', '/users/login']
+    for (const endpoint of endpoints) {
+      try {
+        const response = await api.post(endpoint, { email, password })
+        const { accessToken, user } = response.data
+        this.saveToken(accessToken)
+        this.saveUser(user)
+        return response.data
+      } catch (error: any) {
+        const status = error.response?.status
+        if (status !== 404) {
+          throw this.handleError(error)
+        }
+      }
     }
+    throw new Error('Login endpoints not available')
   }
 
   /**
@@ -110,6 +90,7 @@ class AuthService {
       // Clear cookie - Ensure correct path and domain handling
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      document.cookie = `sportx_ui_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       
       // Use window.location only if we need a hard refresh, otherwise router.push should be used by the caller
       // For safety and complete cleanup, a hard refresh is acceptable here until we implement a better flow
@@ -310,6 +291,10 @@ class AuthService {
   private saveUser(user: User): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
+      const uiRole = localStorage.getItem('sportx_ui_role')
+      if (uiRole === 'applicant') {
+        document.cookie = `sportx_ui_role=applicant; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`
+      }
     }
   }
 
