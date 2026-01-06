@@ -97,6 +97,8 @@ export function PartnersMarquee() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
+          role="region"
+          aria-labelledby="partners-heading"
         >
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-200 mb-6">
             <Award className="w-5 h-5 text-blue-600" />
@@ -105,7 +107,7 @@ export function PartnersMarquee() {
             </span>
           </div>
           
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+          <h2 id="partners-heading" className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
             {language === 'ar' 
               ? 'نعمل مع أفضل المؤسسات الرياضية' 
               : 'Working with Top Sports Organizations'}
@@ -118,7 +120,7 @@ export function PartnersMarquee() {
           </p>
 
           {/* Stats */}
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto" role="list" aria-label={language === 'ar' ? 'إحصائيات الشركاء' : 'Partners Statistics'}>
             {[
               { icon: Building2, value: '50+', label: language === 'ar' ? 'شريك' : 'Partners' },
               { icon: TrendingUp, value: '500+', label: language === 'ar' ? 'وظيفة نشطة' : 'Active Jobs' },
@@ -132,9 +134,11 @@ export function PartnersMarquee() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
+                role="listitem"
+                aria-label={`${stat.value} ${stat.label}`}
               >
-                <stat.icon className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                <stat.icon className="w-6 h-6 text-blue-600 mx-auto mb-2" aria-hidden="true" />
+                <div className="text-2xl font-bold text-gray-900" aria-label={stat.value}>{stat.value}</div>
                 <div className="text-sm text-gray-600">{stat.label}</div>
               </motion.div>
             ))}
@@ -286,7 +290,8 @@ export function PartnersMarquee() {
               href="/contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
+              aria-label={language === 'ar' ? 'تواصل معنا للانضمام كشريك' : 'Contact us to become a partner'}
             >
               {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
             </motion.a>
