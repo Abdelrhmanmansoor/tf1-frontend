@@ -48,37 +48,33 @@ export default function CVBuilderPage() {
     try {
       setLoading(true);
       const tpl = cvData?.meta?.template || 'standard';
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
       
       toast.loading(language === 'ar' ? 'جاري إنشاء ملف PDF...' : 'Generating PDF...', { id: 'pdf-gen' });
       
-      const response = await fetch(`${apiUrl}/cv/generate-pdf?template=${encodeURIComponent(tpl)}`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ ...cvData, language }),
-      });
-
-      if (!response.ok) {
-        let errorMessage = language === 'ar' ? 'فشل إنشاء ملف PDF' : 'Failed to generate PDF';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorData.error?.message || errorMessage;
-        } catch (e) {
-          errorMessage = response.statusText || errorMessage;
+      // Use api service with responseType: 'blob' for binary PDF data
+      const response = await api.post(
+        `/cv/generate-pdf?template=${encodeURIComponent(tpl)}`,
+        { ...cvData, language },
+        {
+          responseType: 'blob', // Critical for binary PDF data
         }
-        throw new Error(errorMessage);
-      }
+      );
 
       // Check if response is actually a PDF
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers['content-type'] || response.headers['Content-Type'];
       if (!contentType || !contentType.includes('application/pdf')) {
-        throw new Error(language === 'ar' ? 'الاستجابة ليست ملف PDF صالح' : 'Response is not a valid PDF file');
+        // Try to parse error message if response is JSON
+        try {
+          const text = await new Response(response.data).text();
+          const errorData = JSON.parse(text);
+          throw new Error(errorData.message || (language === 'ar' ? 'فشل إنشاء ملف PDF' : 'Failed to generate PDF'));
+        } catch (parseError) {
+          throw new Error(language === 'ar' ? 'الاستجابة ليست ملف PDF صالح' : 'Response is not a valid PDF file');
+        }
       }
 
-      const blob = await response.blob();
+      // Create blob from response data
+      const blob = new Blob([response.data], { type: 'application/pdf' });
       
       // Create download link
       const url = window.URL.createObjectURL(blob);
@@ -97,8 +93,33 @@ export default function CVBuilderPage() {
       
       toast.success(language === 'ar' ? 'تم تحميل السيرة الذاتية بنجاح' : 'CV downloaded successfully', { id: 'pdf-gen' });
     } catch (error: any) {
-      console.error('PDF Generation Error:', error);
-      const errorMessage = error.message || (language === 'ar' ? 'حدث خطأ أثناء التحميل. يرجى المحاولة مرة أخرى' : 'Error downloading CV. Please try again');
+      console.error('[PDF Generation] Error:', error);
+      
+      let errorMessage = language === 'ar' ? 'حدث خطأ أثناء التحميل. يرجى المحاولة مرة أخرى' : 'Error downloading CV. Please try again';
+      
+      if (error.response?.data) {
+        // Try to extract error message from blob response
+        try {
+          const text = await new Response(error.response.data).text();
+          const errorData = JSON.parse(text);
+          errorMessage = errorData.message || errorData.error?.message || errorMessage;
+        } catch (parseError) {
+          // If not JSON, use default message
+          if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          }
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      // Handle network errors
+      if (error.message?.includes('Network Error') || error.message?.includes('Failed to fetch') || !error.response) {
+        errorMessage = language === 'ar' 
+          ? 'خطأ في الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.'
+          : 'Network error. Please check your internet connection and try again.';
+      }
+      
       toast.error(errorMessage, { id: 'pdf-gen' });
     } finally {
       setLoading(false);
