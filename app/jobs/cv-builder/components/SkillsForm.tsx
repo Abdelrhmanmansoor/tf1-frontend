@@ -39,9 +39,12 @@ export default function SkillsForm({ data, update, language, jobTitle }: any) {
         body: JSON.stringify({ type: 'skills', data: jobTitle, language }),
       });
 
-      if (!response.ok) throw new Error('AI Generation failed');
-
       const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'AI Generation failed'));
+      }
+
       const suggestions = result.data.result.split(',').map((s: any) => s.trim());
       
       // Merge unique suggestions
@@ -52,8 +55,8 @@ export default function SkillsForm({ data, update, language, jobTitle }: any) {
       } else {
         toast(language === 'ar' ? 'لديك بالفعل هذه المهارات' : 'You already have these skills', { icon: 'ℹ️' });
       }
-    } catch (error) {
-      toast.error(language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills');
+    } catch (error: any) {
+      toast.error(error.message || (language === 'ar' ? 'فشل اقتراح المهارات' : 'Failed to suggest skills'));
     } finally {
       setLoading(false);
     }

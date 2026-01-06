@@ -20,13 +20,16 @@ export default function SummaryForm({ data, update, language, personalInfo }: an
         body: JSON.stringify({ type: 'summary', data: personalInfo, language }),
       });
 
-      if (!response.ok) throw new Error('AI Generation failed');
-
       const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || (language === 'ar' ? 'فشل توليد الملخص' : 'AI Generation failed'));
+      }
+
       update(result.data.result);
       toast.success(language === 'ar' ? 'تم توليد الملخص بنجاح' : 'Summary generated successfully');
-    } catch (error) {
-      toast.error(language === 'ar' ? 'فشل توليد الملخص' : 'Failed to generate summary');
+    } catch (error: any) {
+      toast.error(error.message || (language === 'ar' ? 'فشل توليد الملخص' : 'Failed to generate summary'));
     } finally {
       setLoading(false);
     }
