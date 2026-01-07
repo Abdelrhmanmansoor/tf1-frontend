@@ -58,7 +58,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
     { id: 'home', label: t('home') },
     { id: 'jobs', label: t('jobs') },
     { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' },
-    // { id: 'match-center', label: t('matches'), href: '/matches' }, // Hidden as requested
+    { id: 'matches', label: language === 'ar' ? 'مركز المباريات' : 'Matches Center', href: '/matches/dashboard' },
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
     { id: 'blog', label: t('blog') },

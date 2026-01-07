@@ -17,6 +17,12 @@ import {
   Filter,
   MapPin,
   Loader2,
+  Sparkles,
+  BarChart3,
+  UserPlus,
+  Star,
+  TrendingUp,
+  Zap
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -185,7 +191,26 @@ export default function MatchesDashboardPage() {
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             {language === 'ar' ? 'إجراءات سريعة' : 'Quick Actions'}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Discover - جديد! */}
+            <Link href="/matches/discover">
+              <div className="p-4 border-2 border-gradient-to-r from-purple-500 to-pink-500 rounded-xl hover:shadow-lg transition-all cursor-pointer bg-gradient-to-br from-purple-50 to-pink-50">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-8 h-8 text-purple-600" />
+                  <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">جديد!</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  {language === 'ar' ? 'اكتشف المباريات' : 'Discover Matches'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {language === 'ar'
+                    ? 'اسحب واكتشف مباريات مخصصة لك! 🎯'
+                    : 'Swipe & discover personalized matches!'}
+                </p>
+              </div>
+            </Link>
+
+            {/* Browse */}
             <Link href="/matches/dashboard/browse">
               <div className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer">
                 <Search className="w-8 h-8 text-blue-600 mb-2" />
@@ -200,6 +225,7 @@ export default function MatchesDashboardPage() {
               </div>
             </Link>
 
+            {/* Create */}
             <Link href="/matches/create">
               <div className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all cursor-pointer">
                 <Plus className="w-8 h-8 text-green-600 mb-2" />
@@ -214,6 +240,7 @@ export default function MatchesDashboardPage() {
               </div>
             </Link>
 
+            {/* My Matches */}
             <Link href="/matches/dashboard/my-matches">
               <div className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all cursor-pointer">
                 <Trophy className="w-8 h-8 text-purple-600 mb-2" />
@@ -224,6 +251,42 @@ export default function MatchesDashboardPage() {
                   {language === 'ar'
                     ? 'راجع وأدِر مبارياتك'
                     : 'Review and manage your matches'}
+                </p>
+              </div>
+            </Link>
+
+            {/* Analytics - جديد! */}
+            <Link href="/matches/stats">
+              <div className="p-4 border-2 border-orange-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all cursor-pointer">
+                <div className="flex items-center gap-2 mb-2">
+                  <BarChart3 className="w-8 h-8 text-orange-600" />
+                  <Zap className="w-4 h-4 text-orange-500" />
+                </div>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  {language === 'ar' ? 'إحصائياتي' : 'My Stats'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {language === 'ar'
+                    ? 'نقاطك، مستواك، شاراتك وإنجازاتك'
+                    : 'Points, level, badges & achievements'}
+                </p>
+              </div>
+            </Link>
+
+            {/* Social - جديد! */}
+            <Link href="/matches/social">
+              <div className="p-4 border-2 border-cyan-200 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 transition-all cursor-pointer">
+                <div className="flex items-center gap-2 mb-2">
+                  <UserPlus className="w-8 h-8 text-cyan-600" />
+                  <Star className="w-4 h-4 text-yellow-500" />
+                </div>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  {language === 'ar' ? 'الأصدقاء' : 'Friends'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {language === 'ar'
+                    ? 'تواصل مع اللاعبين واكتسب أصدقاء جدد'
+                    : 'Connect with players & make friends'}
                 </p>
               </div>
             </Link>
