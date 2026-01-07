@@ -227,25 +227,21 @@ export default function CreateMatchPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
                   }
-                  className="w-full px-3 py-2 border rounded-lg bg-white"
+                  className="w-full px-3 py-2 border rounded-lg bg-white disabled:bg-gray-100"
+                  disabled={!formData.region}
                   required
                 >
                   <option value="">
                     {language === 'ar' ? 'اختر المدينة' : 'Select City'}
                   </option>
-                  <option value="">{language === 'ar' ? 'اختر المدينة' : 'Select City'}</option>
                   {selectedRegion?.cities?.map((city: any) => (
-                    <option key={city.name || city} value={city.name || city}>
-                      {city.name || city}
+                    <option key={city.name} value={city.name}>
+                      {language === 'ar' ? city.name : city.nameEn || city.name}
                     </option>
                   ))}
                   {!selectedRegion && formData.region && (
                     <option value="" disabled>{language === 'ar' ? 'لا توجد مدن متاحة' : 'No cities available'}</option>
                   )}
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  ))}
                 </select>
               </div>
             </div>
