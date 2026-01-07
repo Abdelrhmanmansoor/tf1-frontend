@@ -52,7 +52,11 @@ export default function DiscoverPage() {
 
   const fetchMatches = async () => {
     try {
-      const token = localStorage.getItem('token')
+      // Try multiple token sources
+      const token = localStorage.getItem('token') || 
+                   localStorage.getItem('matches_token') ||
+                   localStorage.getItem('auth_token')
+      
       if (!token) {
         router.push('/matches/login')
         return
@@ -62,7 +66,8 @@ export default function DiscoverPage() {
         `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/swipe/discover?limit=20`,
         {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           },
           credentials: 'include'
         }
@@ -71,6 +76,11 @@ export default function DiscoverPage() {
       if (res.ok) {
         const data = await res.json()
         setMatches(data.data.matches || [])
+      } else if (res.status === 401) {
+        // Unauthorized - redirect to login
+        toast.error('انتهت الجلسة، يرجى تسجيل الدخول مرة أخرى')
+        localStorage.clear()
+        router.push('/matches/login')
       } else {
         toast.error('فشل في تحميل المباريات')
       }

@@ -22,7 +22,9 @@ import {
   UserPlus,
   Star,
   TrendingUp,
-  Zap
+  Zap,
+  LogOut,
+  User as UserIcon
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -38,19 +40,44 @@ export default function MatchesDashboardPage() {
   })
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  
+  const handleLogout = () => {
+    // Clear all tokens
+    localStorage.removeItem('token')
+    localStorage.removeItem('matches_token')
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('matches_user')
+    localStorage.removeItem('user')
+    
+    // Clear cookies
+    document.cookie = 'matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    
+    toast.success('تم تسجيل الخروج بنجاح')
+    router.push('/matches/login')
+  }
 
   // التحقق من تسجيل الدخول
   useEffect(() => {
-    const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-    const matchesUser = localStorage.getItem('matches_user')
+    const token = localStorage.getItem(API_CONFIG.TOKEN_KEY) ||
+                 localStorage.getItem('token') ||
+                 localStorage.getItem('matches_token')
+    const matchesUser = localStorage.getItem('matches_user') ||
+                       localStorage.getItem('user')
     
-    if (!token || !matchesUser) {
-      // إعادة التوجيه لصفحة تسجيل الدخول
+    if (!token) {
       router.push('/matches/login?redirect=/matches/dashboard')
       return
     }
     
-    setIsAuthenticated(true)
+    try {
+      const user = matchesUser ? JSON.parse(matchesUser) : null
+      setCurrentUser(user)
+      setIsAuthenticated(true)
+    } catch {
+      setIsAuthenticated(true)
+    }
   }, [router])
 
   useEffect(() => {
@@ -131,26 +158,51 @@ export default function MatchesDashboardPage() {
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {language === 'ar'
-                ? 'مرحباً بك في لوحة تحكم المباريات'
-                : 'Welcome to Matches Dashboard'}
-            </h1>
-            <p className="text-gray-600">
-              {language === 'ar'
-                ? 'إدارة مبارياتك وفرقك والتواصل مع اللاعبين'
-                : 'Manage your matches, teams, and connect with players'}
-            </p>
-          </motion.div>
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {language === 'ar'
+                  ? 'مرحباً بك في لوحة تحكم المباريات'
+                  : 'Welcome to Matches Dashboard'}
+              </h1>
+              <p className="text-gray-600">
+                {language === 'ar'
+                  ? 'إدارة مبارياتك وفرقك والتواصل مع اللاعبين'
+                  : 'Manage your matches, teams, and connect with players'}
+              </p>
+            </motion.div>
 
-          <Link href="/matches/create">
-            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              {language === 'ar' ? 'إنشاء مباراة' : 'Create Match'}
-            </Button>
-          </Link>
+            <div className="flex items-center gap-3">
+              {currentUser && (
+                <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-2 shadow-sm">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white font-bold">
+                    {currentUser.name?.charAt(0) || <UserIcon className="w-5 h-5" />}
+                  </div>
+                  <div className="text-right hidden sm:block">
+                    <p className="text-sm font-medium text-gray-900">{currentUser.name || 'مستخدم'}</p>
+                    <p className="text-xs text-gray-500">{currentUser.email}</p>
+                  </div>
+                </div>
+              )}
+              
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">خروج</span>
+              </Button>
+              
+              <Link href="/matches/create">
+                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
+                  <Plus className="w-4 h-4 mr-2" />
+                  {language === 'ar' ? 'إنشاء مباراة' : 'Create Match'}
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Stats Grid */}

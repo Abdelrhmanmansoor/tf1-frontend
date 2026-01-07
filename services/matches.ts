@@ -165,20 +165,27 @@ export const getMatchById = async (matchId: string): Promise<Match> => {
 
 // Create a new match (requires authentication)
 export const createMatch = async (data: CreateMatchData): Promise<Match> => {
+  // Build proper payload with all required fields
   const payload = {
-    title: data.name,
-    sport: data.sport,
-    city: data.city || '',
-    area: data.region || '',
-    location: data.neighborhood || data.venue || '',
-    location_id: data.locationId,
+    title: data.name || 'مباراة جديدة',
+    sport: data.sport || 'Football',
+    city: data.city || data.region || 'الرياض',
+    area: data.neighborhood || data.city || 'منطقة',
+    location: data.venue || data.neighborhood || 'ملعب رياضي',
+    location_id: data.locationId || undefined,
     date: data.date,
     time: data.time,
     level: normalizeLevel(data.level),
-    max_players: data.maxPlayers,
-    venue: data.venue,
+    max_players: Number(data.maxPlayers) || 10,
+    cost_per_player: 0,
+    currency: 'SAR',
+    venue: data.venue || '',
+    notes: ''
   }
-  const response = await api.post('/matches', payload)
+  
+  console.log('Creating match with payload:', payload)
+  
+  const response = await api.post('/matches/api/matches', payload)
   const backendMatch = response.data?.data?.match || response.data?.match
   return mapBackendMatchToFrontend(backendMatch)
 }
