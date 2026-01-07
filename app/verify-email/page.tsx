@@ -94,6 +94,7 @@ function VerifyEmailContent() {
             )
           }
         } else {
+          // Handle specific error codes
           if (data && (data.code === 'TOKEN_EXPIRED' || data.code === 'INVALID_TOKEN')) {
             return fetch(`https://tf1-backend.onrender.com/api/v1/auth/resend-verification-by-token`, {
               method: 'POST',
@@ -105,7 +106,15 @@ function VerifyEmailContent() {
               return null
             }).catch(() => null)
           }
-          // Try matches API as fallback
+          
+          // Handle VERIFICATION_FAILED error with proper Arabic message
+          if (data && data.code === 'VERIFICATION_FAILED') {
+            setStatus('error')
+            setMessage((language === 'ar' ? data.messageAr : data.message) || (language === 'ar' ? 'فشل التحقق من البريد الإلكتروني' : 'Verification failed'))
+            return null
+          }
+          
+          // Try matches API as fallback only if it's not a known error
           console.log('[VERIFY] Main API failed, trying matches API...')
           return tryMatchesApi()
         }
@@ -119,7 +128,12 @@ function VerifyEmailContent() {
           setTimeout(() => router.replace('/matches/login?verified=true'), 2000)
         } else if (matchesData) {
           setStatus('error')
-          setMessage((language === 'ar' ? matchesData.messageAr : matchesData.message) || 'Verification failed')
+          const errorMessage = (language === 'ar' ? matchesData.messageAr : matchesData.message) || (language === 'ar' ? 'فشل التحقق من البريد الإلكتروني' : 'Verification failed')
+          setMessage(errorMessage)
+        } else {
+          // If no matchesData and no success, show generic error
+          setStatus('error')
+          setMessage(language === 'ar' ? 'فشل التحقق من البريد الإلكتروني' : 'Verification failed')
         }
       })
       .catch((error) => {
