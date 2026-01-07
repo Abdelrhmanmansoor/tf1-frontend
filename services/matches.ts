@@ -349,7 +349,14 @@ export const matchesGetMe = async (): Promise<MatchesUser> => {
     )
   }
 
-  return response.data.user
+  const u: MatchesUser = response.data.user
+  if (u && u.profilePicture) {
+    const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+    if (!/^https?:\/\//.test(u.profilePicture)) {
+      u.profilePicture = (u.profilePicture.startsWith('/') ? origin + u.profilePicture : origin + '/' + u.profilePicture)
+    }
+  }
+  return u
 }
 
 /**
@@ -540,7 +547,14 @@ export const uploadProfilePicture = async (file: File): Promise<{
     },
   })
 
-  return response.data
+  const data = response.data
+  if (data?.profilePicture) {
+    const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+    if (!/^https?:\/\//.test(data.profilePicture)) {
+      data.profilePicture = (data.profilePicture.startsWith('/') ? origin + data.profilePicture : origin + '/' + data.profilePicture)
+    }
+  }
+  return data
 }
 
 /**
@@ -553,7 +567,15 @@ export const updateProfile = async (data: {
   phone?: string
 }): Promise<{ success: boolean; user: MatchesUser }> => {
   const response = await api.put('/matches/auth/profile', data)
-  return response.data
+  const res = response.data
+  if (res?.user?.profilePicture) {
+    const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+    const pic = res.user.profilePicture
+    if (!/^https?:\/\//.test(pic)) {
+      res.user.profilePicture = (pic.startsWith('/') ? origin + pic : origin + '/' + pic)
+    }
+  }
+  return res
 }
 
 function mapBackendMatchToFrontend(m: any): Match {
