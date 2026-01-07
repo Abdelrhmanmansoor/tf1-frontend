@@ -42,35 +42,73 @@ export default function SocialPage() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token')
+      // Get token from localStorage (matches_token or sportx_access_token)
+      const token = localStorage.getItem('matches_token') || 
+                    localStorage.getItem('sportx_access_token') ||
+                    localStorage.getItem('token')
+      
       if (!token) {
-        router.push('/matches/login')
+        toast.error('يجب تسجيل الدخول أولاً')
+        router.push('/matches/login?redirect=/matches/social')
         return
       }
 
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'
       const [friendsRes, suggestionsRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/social/friends`, {
-          headers: { 'Authorization': `Bearer ${token}` },
+        fetch(`${apiBaseUrl}/matches/api/social/friends`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           credentials: 'include'
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/social/friends/suggestions`, {
-          headers: { 'Authorization': `Bearer ${token}` },
+        fetch(`${apiBaseUrl}/matches/api/social/friends/suggestions`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           credentials: 'include'
         })
       ])
 
+      // Handle 401 Unauthorized - token expired or invalid
+      if (friendsRes.status === 401 || suggestionsRes.status === 401) {
+        // Clear invalid token
+        localStorage.removeItem('matches_token')
+        localStorage.removeItem('sportx_access_token')
+        localStorage.removeItem('token')
+        
+        toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى')
+        router.push('/matches/login?redirect=/matches/social&reason=session_expired')
+        return
+      }
+
       if (friendsRes.ok) {
         const data = await friendsRes.json()
-        setFriends(data.data.friends || [])
+        setFriends(data.data?.friends || data.friends || [])
+      } else if (!friendsRes.ok) {
+        const errorData = await friendsRes.json().catch(() => ({}))
+        console.error('Friends fetch error:', errorData)
+        // Don't show error for empty friends list
+        if (friendsRes.status !== 404) {
+          toast.error(errorData.message || 'فشل في تحميل قائمة الأصدقاء')
+        }
       }
 
       if (suggestionsRes.ok) {
         const data = await suggestionsRes.json()
-        setSuggestions(data.data || [])
+        setSuggestions(data.data || data.suggestions || [])
+      } else if (!suggestionsRes.ok && suggestionsRes.status !== 404) {
+        const errorData = await suggestionsRes.json().catch(() => ({}))
+        console.error('Suggestions fetch error:', errorData)
+        // Don't show error for empty suggestions
       }
     } catch (error) {
-      console.error('Error:', error)
-      toast.error('فشل في تحميل البيانات')
+      console.error('Error fetching social data:', error)
+      // Only show error if it's not a navigation/redirect
+      if (!(error instanceof Error && error.message.includes('redirect'))) {
+        toast.error('فشل في تحميل البيانات')
+      }
     } finally {
       setLoading(false)
     }
@@ -78,9 +116,19 @@ export default function SocialPage() {
 
   const sendFriendRequest = async (friendId: string) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('matches_token') || 
+                    localStorage.getItem('sportx_access_token') ||
+                    localStorage.getItem('token')
+      
+      if (!token) {
+        toast.error('يجب تسجيل الدخول أولاً')
+        router.push('/matches/login?redirect=/matches/social')
+        return
+      }
+
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/social/friends/request`,
+        `${apiBaseUrl}/matches/api/social/friends/request`,
         {
           method: 'POST',
           headers: {
@@ -92,15 +140,30 @@ export default function SocialPage() {
         }
       )
 
+      // Handle 401 Unauthorized
+      if (res.status === 401) {
+        localStorage.removeItem('matches_token')
+        localStorage.removeItem('sportx_access_token')
+        localStorage.removeItem('token')
+        toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى')
+        router.push('/matches/login?redirect=/matches/social&reason=session_expired')
+        return
+      }
+
       if (res.ok) {
-        toast.success('تم إرسال طلب الصداقة!')
+        const data = await res.json()
+        toast.success(data.message || 'تم إرسال طلب الصداقة!')
         // Remove from suggestions
         setSuggestions(suggestions.filter(s => s.user._id !== friendId))
+        // Refresh friends list
+        fetchData()
       } else {
-        toast.error('فشل في إرسال الطلب')
+        const errorData = await res.json().catch(() => ({}))
+        toast.error(errorData.message || 'فشل في إرسال الطلب')
       }
     } catch (error) {
-      toast.error('حدث خطأ')
+      console.error('Error sending friend request:', error)
+      toast.error('حدث خطأ أثناء إرسال الطلب')
     }
   }
 

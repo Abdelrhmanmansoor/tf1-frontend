@@ -45,35 +45,101 @@ export default function StatsPage() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token')
+      // Get token from localStorage (matches_token or sportx_access_token)
+      const token = localStorage.getItem('matches_token') || 
+                    localStorage.getItem('sportx_access_token') ||
+                    localStorage.getItem('token')
+      
       if (!token) {
-        router.push('/matches/login')
+        toast.error('يجب تسجيل الدخول أولاً')
+        router.push('/matches/login?redirect=/matches/stats')
         return
       }
 
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'
       const [achievementsRes, leaderboardRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/analytics/me/achievements`, {
-          headers: { 'Authorization': `Bearer ${token}` },
+        fetch(`${apiBaseUrl}/matches/api/analytics/user`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           credentials: 'include'
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://tf1-backend.onrender.com'}/matches/api/analytics/leaderboard?type=points&limit=10`, {
-          headers: { 'Authorization': `Bearer ${token}` },
+        fetch(`${apiBaseUrl}/matches/api/analytics/leaderboard?type=points&limit=10`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           credentials: 'include'
         })
       ])
 
+      // Handle 401 Unauthorized - token expired or invalid
+      if (achievementsRes.status === 401 || leaderboardRes.status === 401) {
+        // Clear invalid token
+        localStorage.removeItem('matches_token')
+        localStorage.removeItem('sportx_access_token')
+        localStorage.removeItem('token')
+        
+        toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى')
+        router.push('/matches/login?redirect=/matches/stats&reason=session_expired')
+        return
+      }
+
       if (achievementsRes.ok) {
         const data = await achievementsRes.json()
-        setAchievements(data.data)
+        // Transform the response to match the expected format
+        if (data.data) {
+          const stats = data.data.stats || {}
+          const performance = data.data.performance || {}
+          
+          // Calculate level from points (simple: 1 point = 1 level, or 100 points per level)
+          const points = stats.points || stats.total_points || 0
+          const level = Math.floor(points / 100) + 1
+          const pointsToNextLevel = 100 - (points % 100)
+          
+          setAchievements({
+            level: stats.level || level,
+            points: points,
+            points_to_next_level: stats.points_to_next_level || pointsToNextLevel,
+            badges: stats.badges || [],
+            current_streak: stats.current_streak || stats.streak || 0,
+            longest_streak: stats.longest_streak || stats.max_streak || 0,
+            matches: {
+              created: stats.matches_created || stats.created_matches || 0,
+              joined: stats.matches_joined || stats.joined_matches || 0,
+              completed: stats.matches_completed || stats.completed_matches || 0
+            },
+            ratings: {
+              average: performance.average_rating || stats.average_rating || 0,
+              total: stats.total_ratings || stats.ratings_count || 0
+            },
+            reliability: performance.reliability_score || stats.reliability_score || 100
+          })
+        }
+      } else if (!achievementsRes.ok && achievementsRes.status !== 404) {
+        const errorData = await achievementsRes.json().catch(() => ({}))
+        console.error('Achievements fetch error:', errorData)
+        // Don't show error for empty data
+        if (achievementsRes.status !== 400) {
+          toast.error(errorData.message || 'فشل في تحميل الإنجازات')
+        }
       }
 
       if (leaderboardRes.ok) {
         const data = await leaderboardRes.json()
-        setLeaderboard(data.data.leaderboard || [])
+        setLeaderboard(data.data?.leaderboard || data.leaderboard || [])
+      } else if (!leaderboardRes.ok && leaderboardRes.status !== 404) {
+        const errorData = await leaderboardRes.json().catch(() => ({}))
+        console.error('Leaderboard fetch error:', errorData)
+        // Don't show error for empty leaderboard
       }
     } catch (error) {
-      console.error('Error:', error)
-      toast.error('فشل في تحميل الإحصائيات')
+      console.error('Error fetching stats:', error)
+      // Only show error if it's not a navigation/redirect
+      if (!(error instanceof Error && error.message.includes('redirect'))) {
+        toast.error('فشل في تحميل الإحصائيات')
+      }
     } finally {
       setLoading(false)
     }
@@ -226,11 +292,11 @@ export default function StatsPage() {
             <div className="text-center py-6">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <p className="text-5xl font-black text-yellow-600">
-                  {achievements?.ratings.average.toFixed(1) || '0.0'}
+                  {achievements?.ratings?.average?.toFixed(1) || '0.0'}
                 </p>
                 <Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />
               </div>
-              <p className="text-gray-600">من {achievements?.ratings.total || 0} تقييم</p>
+              <p className="text-gray-600">من {achievements?.ratings?.total || 0} تقييم</p>
             </div>
           </motion.div>
 
