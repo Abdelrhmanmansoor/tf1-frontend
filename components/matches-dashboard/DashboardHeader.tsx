@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Menu, LogOut, User } from 'lucide-react'
 import API_CONFIG from '@/config/api'
 import type { MatchesUser } from '@/types/match'
+import Image from 'next/image'
+import Link from 'next/link'
 
 interface DashboardHeaderProps {
   user: MatchesUser | null
@@ -69,18 +71,22 @@ export default function DashboardHeader({
               </p>
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
-            {user?.profilePicture ? (
-              <img
-                src={user.profilePicture}
-                alt={`${user.firstName} ${user.lastName}`}
-                className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-green-500 flex items-center justify-center text-white font-bold">
-                {(user.firstName?.[0] || user.name?.[0] || user.email?.[0] || '').toUpperCase()}
-                {(user.lastName?.[0] || '').toUpperCase()}
-              </div>
-            )}
+            <Link href="/matches-dashboard/profile" className="hover:opacity-80 transition-opacity">
+              {user?.profilePicture ? (
+                <Image
+                  src={user.profilePicture}
+                  alt={`${user.firstName || ''} ${user.lastName || ''}`}
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 shadow-md hover:shadow-lg transition-shadow"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-green-500 flex items-center justify-center text-white font-bold shadow-md hover:shadow-lg transition-shadow">
+                  {(user.firstName?.[0] || user.name?.[0] || user.email?.[0] || '').toUpperCase()}
+                  {(user.lastName?.[0] || '').toUpperCase()}
+                </div>
+              )}
+            </Link>
           </div>
         )}
 

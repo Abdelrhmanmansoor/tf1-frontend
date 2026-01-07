@@ -101,11 +101,55 @@ export interface RegionsData {
 
 // Get regions and dropdown options
 export const getRegionsData = async (): Promise<RegionsData> => {
-  // Fetch regions
+  try {
+    // Try to get complete data from new endpoint first
+    const completeResponse = await api.get('/matches/locations/complete')
+    if (completeResponse.data?.success && completeResponse.data?.regions) {
+      return {
+        regions: completeResponse.data.regions.map((r: any) => ({
+          id: r.id,
+          name: r.nameAr,
+          nameEn: r.nameEn,
+          cities: r.cities?.map((c: any) => ({
+            id: c.id,
+            name: c.nameAr,
+            nameEn: c.nameEn,
+            neighborhoods: c.neighborhoods || []
+          })) || []
+        })),
+        neighborhoods: {},
+        leagues: [],
+        positions: [],
+        levels: completeResponse.data.levels || [
+          { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
+          { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
+          { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
+          { value: 'amateur', label: 'هاوي', labelEn: 'Amateur' },
+          { value: 'semi-pro', label: 'شبه محترف', labelEn: 'Semi-Professional' },
+          { value: 'professional', label: 'محترف', labelEn: 'Professional' },
+        ],
+        sports: completeResponse.data.sports || [
+          { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
+          { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
+          { value: 'volleyball', label: 'الكرة الطائرة', labelEn: 'Volleyball' },
+          { value: 'tennis', label: 'التنس', labelEn: 'Tennis' },
+          { value: 'handball', label: 'كرة اليد', labelEn: 'Handball' },
+          { value: 'badminton', label: 'الريشة الطائرة', labelEn: 'Badminton' },
+          { value: 'swimming', label: 'السباحة', labelEn: 'Swimming' },
+          { value: 'hockey', label: 'الهوكي', labelEn: 'Hockey' },
+          { value: 'gymnastics', label: 'الجمباز', labelEn: 'Gymnastics' },
+          { value: 'shooting', label: 'الرماية', labelEn: 'Shooting' },
+        ],
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to fetch complete regions data, falling back to database:', error)
+  }
+
+  // Fallback to database query
   const regionsResponse = await api.get('/locations', { params: { level: 'region', limit: 50 } })
   const regionsData = regionsResponse.data?.data || []
 
-  // Fetch cities
   const citiesResponse = await api.get('/locations', { params: { level: 'city', limit: 500 } })
   const citiesData = citiesResponse.data?.data || []
 
@@ -131,11 +175,16 @@ export const getRegionsData = async (): Promise<RegionsData> => {
       { value: 'beginner', label: 'مبتدئ', labelEn: 'Beginner' },
       { value: 'intermediate', label: 'متوسط', labelEn: 'Intermediate' },
       { value: 'advanced', label: 'متقدم', labelEn: 'Advanced' },
+      { value: 'amateur', label: 'هاوي', labelEn: 'Amateur' },
+      { value: 'semi-pro', label: 'شبه محترف', labelEn: 'Semi-Professional' },
+      { value: 'professional', label: 'محترف', labelEn: 'Professional' },
     ],
     sports: [
       { value: 'football', label: 'كرة القدم', labelEn: 'Football' },
       { value: 'basketball', label: 'كرة السلة', labelEn: 'Basketball' },
       { value: 'volleyball', label: 'كرة الطائرة', labelEn: 'Volleyball' },
+      { value: 'tennis', label: 'التنس', labelEn: 'Tennis' },
+      { value: 'handball', label: 'كرة اليد', labelEn: 'Handball' },
     ],
   }
 }

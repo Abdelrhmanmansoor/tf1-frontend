@@ -6,10 +6,14 @@ import { matchesGetMe, uploadProfilePicture, updateProfile } from '@/services/ma
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User, Camera, Save, Loader2 } from 'lucide-react'
+import { User, Camera, Save, Loader2, CheckCircle2, AlertCircle, Upload } from 'lucide-react'
 import type { MatchesUser } from '@/types/match'
+import { toast } from 'sonner'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function ProfilePage() {
+  const router = useRouter()
   const [user, setUser] = useState<MatchesUser | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -50,13 +54,13 @@ export default function ProfilePage() {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('الرجاء اختيار ملف صورة')
+      toast.error('الرجاء اختيار ملف صورة صالح (JPG, PNG, GIF)')
       return
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('حجم الملف يجب أن يكون أقل من 5 ميجابايت')
+      toast.error('حجم الملف يجب أن يكون أقل من 5 ميجابايت')
       return
     }
 
@@ -71,11 +75,15 @@ export default function ProfilePage() {
     setUploading(true)
     try {
       const result = await uploadProfilePicture(file)
-      setUser((prev) => prev ? { ...prev, profilePicture: result.profilePicture } : null)
-      alert('تم رفع الصورة بنجاح')
+      if (result.success) {
+        setUser((prev) => prev ? { ...prev, profilePicture: result.profilePicture } : null)
+        toast.success('تم رفع الصورة الشخصية بنجاح!')
+      } else {
+        throw new Error(result.message || 'فشل رفع الصورة')
+      }
     } catch (error: any) {
       console.error('Upload error:', error)
-      alert(error.response?.data?.message || 'فشل رفع الصورة')
+      toast.error(error.response?.data?.message || error.message || 'فشل رفع الصورة. يرجى المحاولة مرة أخرى.')
       setPreview(user?.profilePicture || null)
     } finally {
       setUploading(false)
@@ -88,11 +96,15 @@ export default function ProfilePage() {
 
     try {
       const result = await updateProfile(formData)
-      setUser(result.user)
-      alert('تم تحديث الملف الشخصي بنجاح')
+      if (result.success) {
+        setUser(result.user)
+        toast.success('تم تحديث الملف الشخصي بنجاح!')
+      } else {
+        throw new Error(result.message || 'فشل تحديث الملف الشخصي')
+      }
     } catch (error: any) {
       console.error('Update error:', error)
-      alert(error.response?.data?.message || 'فشل تحديث الملف الشخصي')
+      toast.error(error.response?.data?.message || error.message || 'فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى.')
     } finally {
       setSaving(false)
     }
@@ -130,20 +142,28 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl shadow-md p-8 mb-6"
+          className="bg-white rounded-xl shadow-lg p-8 mb-6 border border-gray-100"
         >
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-600" />
             الصورة الشخصية
           </h2>
 
           <div className="flex flex-col items-center gap-6">
-            <div className="relative">
+            <div className="relative group">
               {preview ? (
-                <img
-                  src={preview}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-lg"
-                />
+                <div className="relative">
+                  <Image
+                    src={preview}
+                    alt="Profile Picture"
+                    width={128}
+                    height={128}
+                    className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-lg transition-transform group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                    <Camera className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </div>
               ) : (
                 <div className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-600 to-green-500 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
                   {(user?.firstName?.[0] || user?.name?.[0] || user?.email?.[0] || 'U').toUpperCase()}
@@ -153,31 +173,48 @@ export default function ProfilePage() {
 
               <label
                 htmlFor="avatar-upload"
-                className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-3 cursor-pointer hover:bg-blue-700 transition-colors shadow-lg"
+                className={`absolute bottom-0 right-0 rounded-full p-3 cursor-pointer transition-all shadow-lg ${
+                  uploading
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 hover:scale-110'
+                }`}
+                title="اضغط لرفع صورة شخصية"
               >
                 {uploading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
                 ) : (
-                  <Camera className="w-5 h-5" />
+                  <Camera className="w-5 h-5 text-white" />
                 )}
               </label>
               <input
                 id="avatar-upload"
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                 onChange={handleFileChange}
                 className="hidden"
                 disabled={uploading}
               />
             </div>
 
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-1">
-                الصور الموصى بها: JPG, PNG أو GIF
-              </p>
-              <p className="text-xs text-gray-500">
-                الحجم الأقصى: 5 ميجابايت
-              </p>
+            <div className="text-center space-y-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById('avatar-upload')?.click()}
+                disabled={uploading}
+                className="gap-2"
+              >
+                <Upload className="w-4 h-4" />
+                {uploading ? 'جاري الرفع...' : 'رفع صورة جديدة'}
+              </Button>
+              <div>
+                <p className="text-sm text-gray-600 mb-1">
+                  الصور الموصى بها: JPG, PNG, GIF, WebP
+                </p>
+                <p className="text-xs text-gray-500">
+                  الحجم الأقصى: 5 ميجابايت
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -187,9 +224,10 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl shadow-md p-8"
+          className="bg-white rounded-xl shadow-lg p-8 border border-gray-100"
         >
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-600" />
             المعلومات الشخصية
           </h2>
 
@@ -256,11 +294,19 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className="flex justify-end pt-4">
+            <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push('/matches-dashboard')}
+                className="gap-2"
+              >
+                إلغاء
+              </Button>
               <Button
                 type="submit"
-                disabled={saving}
-                className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 gap-2 min-w-[120px]"
+                disabled={saving || uploading}
+                className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 gap-2 min-w-[140px]"
               >
                 {saving ? (
                   <>
