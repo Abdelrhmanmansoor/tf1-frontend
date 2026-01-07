@@ -34,7 +34,7 @@ export default function MatchDetailsPage() {
     } catch (error) {
       console.error('Error fetching match:', error)
       alert('فشل تحميل تفاصيل المباراة')
-      router.back()
+      router.push('/matches-dashboard/matches')
     } finally {
       setLoading(false)
     }
@@ -99,10 +99,13 @@ export default function MatchDetailsPage() {
       <div className="max-w-5xl mx-auto">
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
-          className="mb-6 text-blue-600 hover:text-blue-700 flex items-center gap-2"
+          onClick={() => router.push('/matches-dashboard/matches')}
+          className="mb-6 text-blue-600 hover:text-blue-700 flex items-center gap-2 font-medium transition-colors"
         >
-          ← رجوع
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          رجوع إلى قائمة المباريات
         </button>
 
         {/* Match Header */}

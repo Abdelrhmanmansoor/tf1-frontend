@@ -36,6 +36,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     checkAuth()
   }, [pathname, router])
 
+  // Prevent browser back button from leaving the dashboard
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      // Check if we're in the matches dashboard
+      if (pathname.startsWith('/matches-dashboard')) {
+        // Push current route again to prevent navigation away
+        window.history.pushState(null, '', pathname)
+        // Optionally show a message
+        // You can customize this behavior
+      }
+    }
+
+    // Push initial state
+    window.history.pushState(null, '', pathname)
+
+    window.addEventListener('popstate', handlePopState)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [pathname])
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
@@ -59,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50" dir="rtl">
       <DashboardSidebar
         open={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}

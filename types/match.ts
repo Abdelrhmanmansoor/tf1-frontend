@@ -73,9 +73,17 @@ export interface MatchesLoginResponse {
 export interface MatchesUser {
   id: string
   email: string
-  firstName: string
-  lastName: string
-  isEmailVerified: boolean
+  name?: string
+  firstName?: string
+  lastName?: string
+  phone?: string
+  profilePicture?: string
+  verified?: boolean
+  isEmailVerified?: boolean
+  role?: string
+  is_admin?: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 export interface MatchesRegisterResponse {

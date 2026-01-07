@@ -470,6 +470,43 @@ export const ratePlayer = async (
   return response.data
 }
 
+// ============================================
+// Profile Methods
+// ============================================
+
+/**
+ * Upload profile picture
+ * POST /matches/auth/profile/avatar
+ */
+export const uploadProfilePicture = async (file: File): Promise<{
+  success: boolean
+  profilePicture: string
+}> => {
+  const formData = new FormData()
+  formData.append('avatar', file)
+
+  const response = await api.post('/matches/auth/profile/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
+  return response.data
+}
+
+/**
+ * Update profile
+ * PUT /matches/auth/profile
+ */
+export const updateProfile = async (data: {
+  firstName?: string
+  lastName?: string
+  phone?: string
+}): Promise<{ success: boolean; user: MatchesUser }> => {
+  const response = await api.put('/matches/auth/profile', data)
+  return response.data
+}
+
 function mapBackendMatchToFrontend(m: any): Match {
   if (!m) {
     return {

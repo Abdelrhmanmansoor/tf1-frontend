@@ -17,16 +17,31 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const router = useRouter()
 
-  const handleLogout = () => {
-    // Clear authentication
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(API_CONFIG.TOKEN_KEY)
-      localStorage.removeItem(API_CONFIG.USER_KEY)
-      document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
-    }
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear server-side session
+      const { matchesLogout } = await import('@/services/matches')
+      await matchesLogout()
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Continue with client-side cleanup even if API call fails
+    } finally {
+      // Clear all client-side storage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(API_CONFIG.TOKEN_KEY)
+        localStorage.removeItem(API_CONFIG.USER_KEY)
+        localStorage.removeItem('matches_token')
+        localStorage.removeItem('matches_user')
+        
+        // Clear all cookies
+        document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+        document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+        document.cookie = `sportx_ui_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      }
 
-    // Redirect to login
-    router.push('/matches/login')
+      // Redirect to login
+      router.push('/matches/login')
+    }
   }
 
   return (
@@ -48,13 +63,24 @@ export default function DashboardHeader({
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-medium text-gray-900">
-                {user.firstName} {user.lastName}
+                {user.firstName && user.lastName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.name || user.email}
               </p>
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-green-500 flex items-center justify-center text-white font-bold">
-              <User className="w-5 h-5" />
-            </div>
+            {user?.profilePicture ? (
+              <img
+                src={user.profilePicture}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-green-500 flex items-center justify-center text-white font-bold">
+                {(user.firstName?.[0] || user.name?.[0] || user.email?.[0] || '').toUpperCase()}
+                {(user.lastName?.[0] || '').toUpperCase()}
+              </div>
+            )}
           </div>
         )}
 
@@ -62,7 +88,7 @@ export default function DashboardHeader({
           variant="outline"
           size="sm"
           onClick={handleLogout}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span className="hidden sm:inline">تسجيل خروج</span>

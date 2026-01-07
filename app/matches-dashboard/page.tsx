@@ -5,6 +5,7 @@ import DashboardLayout from '@/components/matches-dashboard/DashboardLayout'
 import { getMatches, getMyMatches } from '@/services/matches'
 import { motion } from 'framer-motion'
 import { Calendar, Users, Trophy, Clock } from 'lucide-react'
+import Link from 'next/link'
 
 export default function MatchesDashboardPage() {
   const [stats, setStats] = useState({
@@ -128,38 +129,44 @@ export default function MatchesDashboardPage() {
             إجراءات سريعة
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a
+            <Link
               href="/matches-dashboard/matches"
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer"
+              className="p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100 transition-all cursor-pointer group shadow-sm hover:shadow-md"
             >
-              <Calendar className="w-8 h-8 text-blue-600 mb-2" />
-              <h3 className="font-semibold text-gray-900 mb-1">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-lg">
                 تصفح المباريات
               </h3>
               <p className="text-sm text-gray-600">
                 استعرض جميع المباريات المتاحة
               </p>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/matches-dashboard/create"
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all cursor-pointer"
+              className="p-6 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 transition-all cursor-pointer group shadow-sm hover:shadow-md"
             >
-              <Users className="w-8 h-8 text-green-600 mb-2" />
-              <h3 className="font-semibold text-gray-900 mb-1">إنشاء مباراة</h3>
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-lg">إنشاء مباراة</h3>
               <p className="text-sm text-gray-600">
                 أنشئ مباراة جديدة وادعُ اللاعبين
               </p>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/matches-dashboard/teams"
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all cursor-pointer"
+              className="p-6 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100 transition-all cursor-pointer group shadow-sm hover:shadow-md"
             >
-              <Trophy className="w-8 h-8 text-purple-600 mb-2" />
-              <h3 className="font-semibold text-gray-900 mb-1">إدارة الفرق</h3>
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-lg">إدارة الفرق</h3>
               <p className="text-sm text-gray-600">أدِر فرقك وأعضاء الفريق</p>
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

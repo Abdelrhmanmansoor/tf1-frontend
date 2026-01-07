@@ -84,8 +84,8 @@ export default function MatchChatPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => router.back()}
-                className="text-blue-600 hover:text-blue-700"
+                onClick={() => router.push(`/matches-dashboard/match/${params.id}`)}
+                className="text-blue-600 hover:text-blue-700 transition-colors font-medium"
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
