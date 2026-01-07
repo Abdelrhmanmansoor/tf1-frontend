@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
-import { createMatch, type CreateMatchData } from '@/services/matches'
+import { createMatch, getRegionsData, type CreateMatchData } from '@/services/matches'
 import {
   Plus,
   ArrowLeft,
@@ -20,6 +20,8 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 export default function CreateMatchPage() {
   const { language } = useLanguage()
@@ -27,30 +29,36 @@ export default function CreateMatchPage() {
 
   const [formData, setFormData] = useState<CreateMatchData>({
     name: '',
-    sport: 'football',
-    region: 'الرياض',
+    sport: '',
+    region: '',
     city: '',
     neighborhood: '',
     date: '',
     time: '',
-    level: 'beginner',
+    level: '',
     maxPlayers: 10,
     venue: '',
   })
 
   const [loading, setLoading] = useState(false)
+  const [regionsData, setRegionsData] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const regions = [
-    { name: 'الرياض', nameEn: 'Riyadh', cities: ['الرياض', 'العليا', 'النخيل'] },
-    { name: 'جدة', nameEn: 'Jeddah', cities: ['جدة', 'الروضة', 'البلد'] },
-    { name: 'مكة المكرمة', nameEn: 'Makkah', cities: ['مكة', 'العزيزية'] },
-    { name: 'المدينة المنورة', nameEn: 'Madinah', cities: ['المدينة'] },
-    { name: 'الدمام', nameEn: 'Dammam', cities: ['الدمام', 'الخبر', 'الظهران'] },
-  ]
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const data = await getRegionsData()
+        setRegionsData(data)
+      } catch (error) {
+        console.error('Error fetching regions:', error)
+        toast.error('فشل تحميل بيانات المناطق')
+      }
+    }
+    fetchRegions()
+  }, [])
 
-  const selectedRegion = regions.find((r) => r.name === formData.region)
+  const selectedRegion = regionsData?.regions?.find((r: any) => r.name === formData.region)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,12 +85,16 @@ export default function CreateMatchPage() {
     setLoading(true)
 
     try {
-      await createMatch(formData)
-      setSuccess(true)
-
-      setTimeout(() => {
-        router.push('/matches/dashboard')
-      }, 1500)
+      const result = await createMatch(formData)
+      if (result.success) {
+        setSuccess(true)
+        toast.success(language === 'ar' ? 'تم إنشاء المباراة بنجاح!' : 'Match created successfully!')
+        setTimeout(() => {
+          router.push('/matches/dashboard')
+        }, 1500)
+      } else {
+        throw new Error(result.message || (language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match'))
+      }
     } catch (err: any) {
       const errorMsg =
         err.response?.data?.message ||
@@ -197,7 +209,8 @@ export default function CreateMatchPage() {
                   className="w-full px-3 py-2 border rounded-lg bg-white"
                   required
                 >
-                  {regions.map((region) => (
+                  <option value="">{language === 'ar' ? 'اختر المنطقة' : 'Select Region'}</option>
+                  {regionsData?.regions?.map((region: any) => (
                     <option key={region.name} value={region.name}>
                       {language === 'ar' ? region.name : region.nameEn}
                     </option>
@@ -220,7 +233,15 @@ export default function CreateMatchPage() {
                   <option value="">
                     {language === 'ar' ? 'اختر المدينة' : 'Select City'}
                   </option>
-                  {selectedRegion?.cities.map((city) => (
+                  <option value="">{language === 'ar' ? 'اختر المدينة' : 'Select City'}</option>
+                  {selectedRegion?.cities?.map((city: any) => (
+                    <option key={city.name || city} value={city.name || city}>
+                      {city.name || city}
+                    </option>
+                  ))}
+                  {!selectedRegion && formData.region && (
+                    <option value="" disabled>{language === 'ar' ? 'لا توجد مدن متاحة' : 'No cities available'}</option>
+                  )}
                     <option key={city} value={city}>
                       {city}
                     </option>
@@ -322,10 +343,12 @@ export default function CreateMatchPage() {
                 className="w-full px-3 py-2 border rounded-lg bg-white"
                 required
               >
-                <option value="football">{language === 'ar' ? 'كرة القدم' : 'Football'}</option>
-                <option value="basketball">{language === 'ar' ? 'كرة السلة' : 'Basketball'}</option>
-                <option value="volleyball">{language === 'ar' ? 'كرة الطائرة' : 'Volleyball'}</option>
-                <option value="tennis">{language === 'ar' ? 'التنس' : 'Tennis'}</option>
+                <option value="">{language === 'ar' ? 'اختر الرياضة' : 'Select Sport'}</option>
+                {regionsData?.sports?.map((sport: any) => (
+                  <option key={sport.value} value={sport.value}>
+                    {language === 'ar' ? sport.label : sport.labelEn}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -342,9 +365,12 @@ export default function CreateMatchPage() {
                 className="w-full px-3 py-2 border rounded-lg bg-white"
                 required
               >
-                <option value="beginner">{language === 'ar' ? 'مبتدئ' : 'Beginner'}</option>
-                <option value="intermediate">{language === 'ar' ? 'متوسط' : 'Intermediate'}</option>
-                <option value="advanced">{language === 'ar' ? 'متقدم' : 'Advanced'}</option>
+                <option value="">{language === 'ar' ? 'اختر المستوى' : 'Select Level'}</option>
+                {regionsData?.levels?.map((level: any) => (
+                  <option key={level.value} value={level.value}>
+                    {language === 'ar' ? level.label : level.labelEn}
+                  </option>
+                ))}
               </select>
             </div>
 

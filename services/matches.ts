@@ -103,7 +103,7 @@ export interface RegionsData {
 export const getRegionsData = async (): Promise<RegionsData> => {
   try {
     // Try to get complete data from new endpoint first
-    const completeResponse = await api.get('/matches/locations/complete')
+    const completeResponse = await api.get('/matches/api/locations/complete')
     if (completeResponse.data?.success && completeResponse.data?.regions) {
       return {
         regions: completeResponse.data.regions.map((r: any) => ({

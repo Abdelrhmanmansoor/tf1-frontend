@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
-import { getMatches, getMyMatches } from '@/services/matches'
+import { getMatches, getMyMatches, matchesGetMe } from '@/services/matches'
 import API_CONFIG from '@/config/api'
+import Image from 'next/image'
 import {
   Calendar,
   Users,
@@ -85,6 +86,14 @@ export default function MatchesDashboardPage() {
     
     const fetchStats = async () => {
       try {
+        // Fetch user data to get profile picture
+        try {
+          const userData = await matchesGetMe()
+          setCurrentUser(userData)
+        } catch (err) {
+          console.error('Error fetching user:', err)
+        }
+
         const [allMatches, myMatchesData] = await Promise.all([
           getMatches({ limit: 1 }),
           getMyMatches(),
@@ -175,15 +184,30 @@ export default function MatchesDashboardPage() {
 
             <div className="flex items-center gap-3">
               {currentUser && (
-                <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-2 shadow-sm">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white font-bold">
-                    {currentUser.name?.charAt(0) || <UserIcon className="w-5 h-5" />}
-                  </div>
+                <Link href="/matches/dashboard/profile" className="flex items-center gap-3 bg-white rounded-xl px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
+                  {currentUser.profilePicture ? (
+                    <Image
+                      src={currentUser.profilePicture}
+                      alt={currentUser.name || 'Profile'}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white font-bold">
+                      {currentUser.firstName?.[0] || currentUser.name?.charAt(0) || <UserIcon className="w-5 h-5" />}
+                      {currentUser.lastName?.[0] || ''}
+                    </div>
+                  )}
                   <div className="text-right hidden sm:block">
-                    <p className="text-sm font-medium text-gray-900">{currentUser.name || 'مستخدم'}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {currentUser.firstName && currentUser.lastName
+                        ? `${currentUser.firstName} ${currentUser.lastName}`
+                        : currentUser.name || 'مستخدم'}
+                    </p>
                     <p className="text-xs text-gray-500">{currentUser.email}</p>
                   </div>
-                </div>
+                </Link>
               )}
               
               <Button
