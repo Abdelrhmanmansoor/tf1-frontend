@@ -4,6 +4,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* HubSpot Chat Widget - Position on left side */
+@layer utilities {
+  /* Force HubSpot widget to appear on left side */
+  #hubspot-messages-iframe-container {
+    left: 0 !important;
+    right: auto !important;
+  }
+  
+  /* For RTL layout, adjust position */
+  [dir="rtl"] #hubspot-messages-iframe-container {
+    left: 0 !important;
+    right: auto !important;
+  }
+  
+  /* Ensure widget is visible and properly positioned */
+  .hs-messages-widget-open #hubspot-messages-iframe-container,
+  .hs-messages-widget-open #hubspot-conversations-inline-parent {
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -94,6 +94,14 @@ export default function RootLayout({
             __html: JSON.stringify(structuredData),
           }}
         />
+        {/* HubSpot Chat Widget */}
+        <script
+          type="text/javascript"
+          id="hs-script-loader"
+          async
+          defer
+          src="//js-eu1.hs-scripts.com/147558499.js"
+        />
       </head>
       <body className="font-sans">
         {/* Suppress InstallTrigger warning - this is from browser extensions, not our code */}
@@ -139,6 +147,39 @@ export default function RootLayout({
                 <SmoothScrollProvider>{children}</SmoothScrollProvider>
                 <ScrollToTop />
                 <Toaster richColors position="top-center" />
+                {/* HubSpot Chat Widget - CSS override for left positioning */}
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      /* HubSpot Chat Widget - Force left side positioning */
+                      #hubspot-messages-iframe-container,
+                      #hubspot-conversations-inline-parent {
+                        left: 0 !important;
+                        right: auto !important;
+                      }
+                      
+                      /* For RTL pages, keep it on the left */
+                      [dir="rtl"] #hubspot-messages-iframe-container,
+                      [dir="rtl"] #hubspot-conversations-inline-parent {
+                        left: 0 !important;
+                        right: auto !important;
+                      }
+                      
+                      /* Widget button positioning */
+                      #hubspot-messages-iframe-container iframe,
+                      #hubspot-conversations-inline-parent iframe {
+                        left: 0 !important;
+                        right: auto !important;
+                      }
+                      
+                      /* HubSpot widget container adjustments */
+                      .hubspot-messages-widget-container {
+                        left: 0 !important;
+                        right: auto !important;
+                      }
+                    `,
+                  }}
+                />
               </SocketProvider>
             </AuthProvider>
           </LanguageProvider>
