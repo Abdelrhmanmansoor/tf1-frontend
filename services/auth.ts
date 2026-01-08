@@ -147,7 +147,14 @@ class AuthService {
   async getProfile(): Promise<User> {
     try {
       const response = await api.get('/auth/me')
-      return response.data.user
+      const u = response.data.user
+      if (u?.avatar) {
+        const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+        if (!/^https?:\/\//.test(u.avatar)) {
+          u.avatar = (u.avatar.startsWith('/') ? origin + u.avatar : origin + '/' + u.avatar)
+        }
+      }
+      return u
     } catch (error) {
       throw this.handleError(error)
     }
@@ -172,7 +179,14 @@ class AuthService {
    */
   private saveUser(user: User): void {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(user))
+      const u = { ...user } as any
+      if (u?.avatar) {
+        const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+        if (!/^https?:\/\//.test(u.avatar)) {
+          u.avatar = (u.avatar.startsWith('/') ? origin + u.avatar : origin + '/' + u.avatar)
+        }
+      }
+      localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(u))
     }
   }
 

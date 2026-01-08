@@ -234,7 +234,7 @@ export const createMatch = async (data: CreateMatchData): Promise<Match> => {
   
   console.log('Creating match with payload:', payload)
   
-  const response = await api.post('/matches/api/matches', payload)
+  const response = await api.post('/matches/api/matches', payload, { withCredentials: false })
   const backendMatch = response.data?.data?.match || response.data?.match
   return mapBackendMatchToFrontend(backendMatch)
 }
