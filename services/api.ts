@@ -7,6 +7,8 @@ const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
   withCredentials: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-CSRF-Token',
   headers: {
     'Content-Type': 'application/json',
   },

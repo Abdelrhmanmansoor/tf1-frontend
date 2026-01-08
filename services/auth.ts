@@ -50,7 +50,10 @@ class AuthService {
           throw new Error('First name and last name are required for this role')
         }
       }
-      
+      // Fetch CSRF token before submitting
+      try {
+        await api.get('/auth/csrf-token')
+      } catch {}
       const response = await api.post('/auth/register', userData)
       return response.data
     } catch (error) {
@@ -67,6 +70,10 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
+      // Fetch CSRF token before submitting
+      try {
+        await api.get('/auth/csrf-token')
+      } catch {}
       const response = await api.post('/auth/login', { email, password })
       const { accessToken, user } = response.data
       
