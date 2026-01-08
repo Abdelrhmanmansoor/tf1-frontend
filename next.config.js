@@ -86,6 +86,18 @@ const nextConfig = {
   },
   // Disable powered-by header
   poweredByHeader: false,
+  // Suppress Vercel feedback warnings in production
+  ...(process.env.NODE_ENV === 'production' && {
+    devIndicators: {
+      buildActivity: false,
+      buildActivityPosition: 'bottom-right',
+    },
+  }),
+  // Error handling
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
 }
 
 module.exports = nextConfig

@@ -7,6 +7,7 @@ import { SocketProvider } from '@/contexts/socket-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
 import { Toaster } from 'sonner'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 export const metadata: Metadata = {
   title: 'TF1 Jobs - منصة التوظيف الرياضية الرائدة في السعودية',
@@ -95,16 +96,53 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans">
+        {/* Suppress InstallTrigger warning - this is from browser extensions, not our code */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+                
+                // Suppress InstallTrigger deprecation warning (from browser extensions)
+                try {
+                  if (window.InstallTrigger !== undefined) {
+                    Object.defineProperty(window, 'InstallTrigger', {
+                      value: undefined,
+                      writable: false,
+                      configurable: false
+                    });
+                  }
+                } catch(e) {
+                  // Ignore if cannot suppress
+                }
+                
+                // Suppress Vercel partitioned cookie warnings
+                const originalWarn = console.warn;
+                console.warn = function(...args) {
+                  const message = args.join(' ');
+                  if (message.includes('Partitioned cookie') || 
+                      message.includes('vercel.live') ||
+                      message.includes('InstallTrigger')) {
+                    return; // Suppress these warnings
+                  }
+                  originalWarn.apply(console, args);
+                };
+              })();
+            `,
+          }}
+        />
         {/* <MSWProvider /> */}
-        <LanguageProvider>
-          <AuthProvider>
-            <SocketProvider>
-              <SmoothScrollProvider>{children}</SmoothScrollProvider>
-              <ScrollToTop />
-              <Toaster richColors position="top-center" />
-            </SocketProvider>
-          </AuthProvider>
-        </LanguageProvider>
+        <ErrorBoundary>
+          <LanguageProvider>
+            <AuthProvider>
+              <SocketProvider>
+                <SmoothScrollProvider>{children}</SmoothScrollProvider>
+                <ScrollToTop />
+                <Toaster richColors position="top-center" />
+              </SocketProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )
