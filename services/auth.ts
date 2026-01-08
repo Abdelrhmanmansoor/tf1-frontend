@@ -93,17 +93,13 @@ class AuthService {
         }
       }
       
-      // Prepare headers - axios should automatically include XSRF-TOKEN from cookie
-      // But we explicitly set it if we have it from manual fetch
       const headers: Record<string, string> = {}
       if (csrfToken) {
         headers['X-CSRF-Token'] = csrfToken
-        headers['X-XSRF-TOKEN'] = csrfToken // Alternative header name
       }
       
       const response = await api.post('/auth/register', userData, {
         headers: Object.keys(headers).length > 0 ? headers : undefined,
-        withCredentials: true, // Ensure cookies are sent
       })
       return response.data
     } catch (error) {
