@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -102,8 +102,14 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchCSRFToken = async () => {
       try {
+        // Get API base URL - handle both absolute and relative URLs
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1'
+        const csrfUrl = apiBaseUrl.startsWith('http') 
+          ? `${apiBaseUrl}/auth/csrf-token`
+          : `${apiBaseUrl}/auth/csrf-token`
+        
         // Try to get CSRF token using the API service which handles cookies properly
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/v1/auth/csrf-token`, {
+        const response = await fetch(csrfUrl, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -163,9 +169,15 @@ export default function RegisterPage() {
     const { buildingNumber, additionalNumber, zipCode } = formValues as any
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/club/verify-address`, {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1'
+      const verifyUrl = apiBaseUrl.startsWith('http')
+        ? `${apiBaseUrl.replace('/api/v1', '')}/api/v1/club/verify-address`
+        : `${apiBaseUrl}/club/verify-address`
+      
+      const response = await fetch(verifyUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ buildingNumber, additionalNumber, zipCode })
       })
       
