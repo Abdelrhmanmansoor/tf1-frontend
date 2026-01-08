@@ -106,7 +106,15 @@ class PlayerService {
       const response = await api.get<ProfileResponse>(
         `${this.BASE_PATH}/profile/me`
       )
-      return response.data.profile
+      const p = response.data.profile
+      const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+      if (p?.avatar && !/^https?:\/\//.test(p.avatar)) {
+        p.avatar = p.avatar.startsWith('/') ? origin + p.avatar : origin + '/' + p.avatar
+      }
+      if (p?.bannerImage && !/^https?:\/\//.test(p.bannerImage)) {
+        p.bannerImage = p.bannerImage.startsWith('/') ? origin + p.bannerImage : origin + '/' + p.bannerImage
+      }
+      return p
     } catch (error) {
       throw this.handleError(error)
     }
@@ -121,7 +129,15 @@ class PlayerService {
       const response = await api.get<ProfileResponse>(
         `${this.BASE_PATH}/profile/${id}`
       )
-      return response.data.profile
+      const p = response.data.profile
+      const origin = API_CONFIG.BASE_URL.replace(/\/api\/v\d+$/, '')
+      if (p?.avatar && !/^https?:\/\//.test(p.avatar)) {
+        p.avatar = p.avatar.startsWith('/') ? origin + p.avatar : origin + '/' + p.avatar
+      }
+      if (p?.bannerImage && !/^https?:\/\//.test(p.bannerImage)) {
+        p.bannerImage = p.bannerImage.startsWith('/') ? origin + p.bannerImage : origin + '/' + p.bannerImage
+      }
+      return p
     } catch (error) {
       throw this.handleError(error)
     }

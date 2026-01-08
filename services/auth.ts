@@ -50,11 +50,17 @@ class AuthService {
           throw new Error('First name and last name are required for this role')
         }
       }
-      // Fetch CSRF token before submitting
+      let csrfToken: string | undefined
       try {
-        await api.get('/auth/csrf-token')
+        const t = await api.get('/auth/csrf-token')
+        csrfToken =
+          t.data?.data?.csrfToken ||
+          t.data?.token ||
+          (t.headers as any)?.['x-csrf-token']
       } catch {}
-      const response = await api.post('/auth/register', userData)
+      const response = await api.post('/auth/register', userData, {
+        headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
+      })
       return response.data
     } catch (error) {
       const err = this.handleError(error)
@@ -70,11 +76,17 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      // Fetch CSRF token before submitting
+      let csrfToken: string | undefined
       try {
-        await api.get('/auth/csrf-token')
+        const t = await api.get('/auth/csrf-token')
+        csrfToken =
+          t.data?.data?.csrfToken ||
+          t.data?.token ||
+          (t.headers as any)?.['x-csrf-token']
       } catch {}
-      const response = await api.post('/auth/login', { email, password })
+      const response = await api.post('/auth/login', { email, password }, {
+        headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
+      })
       const { accessToken, user } = response.data
       
       if (!accessToken || !user) {
