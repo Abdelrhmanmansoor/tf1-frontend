@@ -85,8 +85,17 @@ function LoginContent() {
         return
       }
 
-      // Use the role from the response directly
-      const roleRoute = getDashboardRoute(response.user.role)
+      // Use the role from the response directly - handle all roles properly
+      let roleRoute = '/dashboard'
+      
+      if (response.user.role === 'applicant') {
+        roleRoute = '/dashboard/applicant'
+      } else if (response.user.role === 'job-publisher') {
+        roleRoute = '/dashboard/job-publisher'
+      } else {
+        roleRoute = getDashboardRoute(response.user.role)
+      }
+      
       // Use window.location for a fresh state on dashboard load
       window.location.href = roleRoute
 

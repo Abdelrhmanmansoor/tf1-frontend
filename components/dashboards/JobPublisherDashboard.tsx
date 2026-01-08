@@ -79,17 +79,46 @@ export default function JobPublisherDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
-      const response = await api.get('/job-publisher/dashboard')
+      // Use the new job-publisher endpoint with /stats
+      const response = await api.get('/job-publisher/dashboard/stats')
       if (response.data.success) {
-        setStats(response.data.data.stats)
-        setRecentJobs(response.data.data.recentJobs || [])
-        setRecentApplications(response.data.data.recentApplications || [])
+        // Map the new API response structure
+        const data = response.data.data
+        setStats({
+          totalJobs: data.jobs?.total || 0,
+          activeJobs: data.jobs?.active || 0,
+          draftJobs: data.jobs?.draft || 0,
+          closedJobs: data.jobs?.closed || 0,
+          totalApplications: data.applications?.total || 0,
+          newApplications: data.applications?.new || 0,
+          underReviewApplications: data.applications?.under_review || 0,
+        })
+        // Fetch recent jobs and applications separately if needed
+        fetchRecentData()
       }
     } catch (error: any) {
       console.error('Error fetching dashboard data:', error)
       toast.error(language === 'ar' ? 'فشل تحميل البيانات' : 'Failed to load data')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchRecentData = async () => {
+    try {
+      // Fetch recent jobs
+      const jobsRes = await api.get('/jobs/my-jobs?limit=5&sort=-createdAt')
+      if (jobsRes.data.success) {
+        setRecentJobs(jobsRes.data.data.jobs || [])
+      }
+      
+      // Fetch recent applications
+      const appsRes = await api.get('/job-publisher/applications?limit=5&sort=-createdAt')
+      if (appsRes.data.success) {
+        setRecentApplications(appsRes.data.data.applications || [])
+      }
+    } catch (error: any) {
+      console.error('Error fetching recent data:', error)
     }
   }
 

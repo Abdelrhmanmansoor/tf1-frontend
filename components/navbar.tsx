@@ -254,17 +254,31 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           <LanguageSelector />
 
           {user && effectiveRole && (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href={effectiveRole === 'applicant' ? '/dashboard/applicant' : getDashboardRoute(effectiveRole as any)}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
-                >
-                  {roleLabels[effectiveRole] || t('login')}
-                </Button>
-              </Link>
-            </motion.div>
+            <>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href={effectiveRole === 'applicant' ? '/dashboard/applicant' : getDashboardRoute(effectiveRole as any)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
+                  >
+                    {roleLabels[effectiveRole] || t('dashboard')}
+                  </Button>
+                </Link>
+              </motion.div>
+              
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/register">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
+                  >
+                    {t('register')}
+                  </Button>
+                </Link>
+              </motion.div>
+            </>
           )}
 
           {!user && (
