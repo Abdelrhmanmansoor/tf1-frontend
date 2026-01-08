@@ -98,6 +98,36 @@ export default function RegisterPage() {
   const selectedRole = watch('role')
   const formValues = watch()
 
+  // Fetch CSRF token on mount to ensure it's available
+  useEffect(() => {
+    const fetchCSRFToken = async () => {
+      try {
+        // Try to get CSRF token using the API service which handles cookies properly
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/v1/auth/csrf-token`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          // Token is automatically set in cookie by backend via Set-Cookie header
+          // The axios instance will automatically read it from cookie when making requests
+          console.log('CSRF token fetched successfully')
+        } else {
+          console.warn('Failed to fetch CSRF token:', response.statusText)
+        }
+      } catch (error) {
+        console.warn('Failed to fetch CSRF token on mount:', error)
+        // Continue anyway - auth service will try again during registration
+      }
+    }
+    
+    fetchCSRFToken()
+  }, [])
+
   // Steps Logic
   const needsExtraStep = selectedRole === 'club'
   const totalSteps = needsExtraStep ? 3 : 2

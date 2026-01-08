@@ -50,16 +50,60 @@ class AuthService {
           throw new Error('First name and last name are required for this role')
         }
       }
+      
+      // Get CSRF token from multiple sources
       let csrfToken: string | undefined
-      try {
-        const t = await api.get('/auth/csrf-token')
-        csrfToken =
-          t.data?.data?.csrfToken ||
-          t.data?.token ||
-          (t.headers as any)?.['x-csrf-token']
-      } catch {}
+      
+      // 1. Try to get from cookie first (most reliable)
+      if (typeof document !== 'undefined') {
+        const cookies = document.cookie.split(';')
+        for (const cookie of cookies) {
+          const [name, value] = cookie.trim().split('=')
+          if (name === 'XSRF-TOKEN') {
+            csrfToken = decodeURIComponent(value)
+            break
+          }
+        }
+      }
+      
+      // 2. If not in cookie, fetch from endpoint
+      if (!csrfToken) {
+        try {
+          const t = await api.get('/auth/csrf-token')
+          csrfToken =
+            t.data?.data?.csrfToken ||
+            t.data?.data?.token ||
+            t.data?.token ||
+            (t.headers as any)?.['x-csrf-token']
+          
+          // Also try to get from cookie after the request
+          if (typeof document !== 'undefined' && !csrfToken) {
+            const cookies = document.cookie.split(';')
+            for (const cookie of cookies) {
+              const [name, value] = cookie.trim().split('=')
+              if (name === 'XSRF-TOKEN') {
+                csrfToken = decodeURIComponent(value)
+                break
+              }
+            }
+          }
+        } catch (csrfError) {
+          console.warn('Failed to fetch CSRF token:', csrfError)
+          // Continue anyway - backend might skip CSRF for some routes
+        }
+      }
+      
+      // Prepare headers - axios should automatically include XSRF-TOKEN from cookie
+      // But we explicitly set it if we have it from manual fetch
+      const headers: Record<string, string> = {}
+      if (csrfToken) {
+        headers['X-CSRF-Token'] = csrfToken
+        headers['X-XSRF-TOKEN'] = csrfToken // Alternative header name
+      }
+      
       const response = await api.post('/auth/register', userData, {
-        headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
+        headers: Object.keys(headers).length > 0 ? headers : undefined,
+        withCredentials: true, // Ensure cookies are sent
       })
       return response.data
     } catch (error) {
