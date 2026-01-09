@@ -1,8 +1,7 @@
 'use client';
 
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import CVBuilder from '@/components/cv-builder/cv-builder';
@@ -14,70 +13,9 @@ import { Toaster } from 'react-hot-toast';
 function CVBuilderPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isLoading } = useAuth();
   const { language } = useLanguage();
-  const [mounted, setMounted] = useState(false);
 
   const cvId = searchParams?.get('id') || undefined;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Redirect to login if not authenticated
-  if (mounted && !isLoading && !user) {
-    return (
-      <>
-        <Navbar activeMode="application" activePage="cv-builder" />
-        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              {language === 'ar' ? 'يرجى تسجيل الدخول' : 'Please Log In'}
-            </h1>
-            <p className="text-gray-600 mb-8">
-              {language === 'ar'
-                ? 'تحتاج إلى تسجيل الدخول لاستخدام مُنشئ السيرة الذاتية'
-                : 'You need to log in to use the CV Builder'}
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <Link
-                href="/login"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                {language === 'ar' ? 'تسجيل الدخول' : 'Log In'}
-              </Link>
-              <Link
-                href="/register"
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-              >
-                {language === 'ar' ? 'إنشاء حساب' : 'Create Account'}
-              </Link>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
-  if (!mounted || isLoading) {
-    return (
-      <>
-        <Navbar activeMode="application" activePage="cv-builder" />
-        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-            <p className="mt-4 text-gray-600">
-              {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
-            </p>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
 
   return (
     <>
@@ -106,11 +44,9 @@ function CVBuilderPageContent() {
 
         {/* CV Builder Component */}
         <div className="max-w-7xl mx-auto px-6 py-8">
-          {mounted && user?.id && (
-            <Suspense fallback={<LoadingFallback language={language} />}>
-              <CVBuilder cvId={cvId} userId={user.id} />
-            </Suspense>
-          )}
+          <Suspense fallback={<LoadingFallback language={language} />}>
+            <CVBuilder cvId={cvId} userId="guest" />
+          </Suspense>
         </div>
 
         {/* Features Section */}
