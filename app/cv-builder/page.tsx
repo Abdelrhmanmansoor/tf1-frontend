@@ -1,41 +1,29 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import CVBuilder from '@/components/cv-builder/cv-builder';
-import { useAuth } from '@/contexts/auth-context';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function CVBuilderPage() {
+/**
+ * This page redirects to the integrated CV Builder at /jobs/cv-builder
+ * The actual CV Builder implementation is at /app/jobs/cv-builder/page.tsx
+ * which includes proper layout integration with navbar, footer, and platform styling
+ */
+export default function CVBuilderRedirect() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { user, isLoading } = useAuth();
-  const [userId, setUserId] = useState<string | null>(null);
-
-  const cvId = searchParams?.get('id') || undefined;
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/auth/login?redirect=/cv-builder');
-    } else if (user?.id) {
-      setUserId(user.id);
-    }
-  }, [user, isLoading, router]);
-
-  if (isLoading) {
-    return <div className="loading-page">Loading...</div>;
-  }
-
-  if (!user) {
-    return <div className="error-page">Please log in to access CV Builder</div>;
-  }
-
-  if (!userId) {
-    return <div className="loading-page">Initializing...</div>;
-  }
+    // Redirect to the integrated CV Builder
+    router.replace('/jobs/cv-builder');
+  }, [router]);
 
   return (
-    <Suspense fallback={<div className="loading-page">Loading CV...</div>}>
-      <CVBuilder cvId={cvId} userId={userId} />
-    </Suspense>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+        <p className="mt-4 text-gray-600">Redirecting to CV Builder...</p>
+      </div>
+    </div>
   );
 }

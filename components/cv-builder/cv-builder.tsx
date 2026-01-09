@@ -112,7 +112,7 @@ export default function CVBuilder({ cvId, userId }: CVBuilderProps) {
         const created = await cvService.createCV(dataToSave, selectedTemplate);
         // URL should update to include the new CV ID
         if (created?.id) {
-          window.history.replaceState({}, '', `/cv-builder/${created.id}`);
+          window.history.replaceState({}, '', `/jobs/cv-builder?id=${created.id}`);
         }
       }
     } catch (error) {
