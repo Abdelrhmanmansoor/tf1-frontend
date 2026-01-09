@@ -212,4 +212,62 @@ export class CVService {
     // Simple mock - in production use a library like html2pdf or jsPDF
     return new Blob([html], { type: 'text/html' });
   }
+
+  /**
+   * Generate PDF from CV using backend service
+   */
+  async generatePDFFromBackend(cvId: string, templateId?: string): Promise<Blob> {
+    try {
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(this.token && { Authorization: `Bearer ${this.token}` }),
+      };
+
+      const response = await fetch(`${API_BASE_URL}/cv/${cvId}/pdf`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate PDF from CV data (without saving first)
+   */
+  async generatePDFDirect(cvData: CVData, templateId: string = 'professional-classic'): Promise<Blob> {
+    try {
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(this.token && { Authorization: `Bearer ${this.token}` }),
+      };
+
+      const response = await fetch(`${API_BASE_URL}/cv/generate-pdf`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ 
+          data: cvData, 
+          templateId,
+          options: { format: 'A4' }
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to generate PDF');
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      throw error;
+    }
+  }
 }

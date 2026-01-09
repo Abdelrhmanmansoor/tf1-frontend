@@ -31,7 +31,8 @@ import {
   MessageCircle,
   X,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  AlertTriangle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAIAssistant } from '@/services/ai-assistant/useAIAssistant';
@@ -62,8 +63,45 @@ export default function CVBuilderMain({ initialCvId }: CVBuilderMainProps) {
   const [chatInput, setChatInput] = useState('');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showIncompleteWarning, setShowIncompleteWarning] = useState(false);
 
   const cvService = useMemo(() => new CVService(), []);
+
+  // Calculate missing required fields
+  const getMissingFields = useCallback((): string[] => {
+    const missing: string[] = [];
+    
+    // Personal Info - Required
+    if (!cvData.personalInfo?.fullName?.trim()) {
+      missing.push(isArabic ? 'الاسم الكامل' : 'Full Name');
+    }
+    if (!cvData.personalInfo?.email?.trim()) {
+      missing.push(isArabic ? 'البريد الإلكتروني' : 'Email');
+    }
+    if (!cvData.personalInfo?.phone?.trim()) {
+      missing.push(isArabic ? 'رقم الهاتف' : 'Phone Number');
+    }
+    
+    // Professional Summary - Required
+    if (!cvData.personalInfo?.summary?.trim()) {
+      missing.push(isArabic ? 'الملخص المهني' : 'Professional Summary');
+    }
+    
+    // Experience - At least one
+    if (!cvData.experience || cvData.experience.length === 0) {
+      missing.push(isArabic ? 'الخبرات العملية' : 'Work Experience');
+    }
+    
+    // Skills - At least 3
+    if (!cvData.skills || cvData.skills.length < 3) {
+      missing.push(isArabic ? 'المهارات (3 على الأقل)' : 'Skills (at least 3)');
+    }
+    
+    return missing;
+  }, [cvData, isArabic]);
+
+  const missingFields = getMissingFields();
+  const isDataComplete = missingFields.length === 0;
 
   // Load existing CV if ID is provided
   useEffect(() => {
@@ -283,6 +321,16 @@ export default function CVBuilderMain({ initialCvId }: CVBuilderMainProps) {
         {/* Save Status */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
+            {/* Incomplete Data Warning Button */}
+            {!isDataComplete && (
+              <button
+                onClick={() => setShowIncompleteWarning(!showIncompleteWarning)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                {isArabic ? 'بيانات ناقصة' : 'Incomplete Data'}
+              </button>
+            )}
             {hasUnsavedChanges && (
               <span className="text-sm text-amber-600 flex items-center gap-1">
                 <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
@@ -308,6 +356,34 @@ export default function CVBuilderMain({ initialCvId }: CVBuilderMainProps) {
             {isArabic ? 'حفظ' : 'Save'}
           </button>
         </div>
+
+        {/* Incomplete Data Warning Panel */}
+        {showIncompleteWarning && !isDataComplete && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-amber-800 mb-2">
+                  {isArabic ? '⚠️ الرجاء إكمال البيانات الناقصة قبل الحفظ' : '⚠️ Please complete missing data before saving'}
+                </h3>
+                <ul className="space-y-1 text-sm text-amber-700">
+                  {missingFields.map((field, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                      {field}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <button
+                onClick={() => setShowIncompleteWarning(false)}
+                className="text-amber-500 hover:text-amber-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Step Content */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 md:p-8">

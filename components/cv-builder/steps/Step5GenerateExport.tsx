@@ -93,20 +93,68 @@ export default function Step5GenerateExport({
       // First save the CV
       await onSave();
       
-      // Generate PDF (mock implementation - would call backend)
-      const element = document.getElementById('cv-preview-for-export');
-      if (element) {
-        // In production, call backend PDF generation endpoint
-        toast.success(isArabic ? 'جاري إنشاء PDF...' : 'Generating PDF...');
-        
-        // Simulate PDF generation
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        toast.success(isArabic ? 'تم تحميل السيرة الذاتية بنجاح!' : 'CV downloaded successfully!');
+      toast.loading(isArabic ? 'جاري إنشاء PDF...' : 'Generating PDF...', { id: 'pdf-export' });
+      
+      // Call backend PDF generation endpoint
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+      
+      // If we have a cvId, use it to generate PDF from saved CV
+      if (cvId) {
+        const response = await fetch(`${apiBaseUrl}/cv/${cvId}/pdf`, {
+          method: 'GET',
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate PDF');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cv-${cvData.personalInfo.fullName || 'resume'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        // Generate PDF directly from data without saving
+        const response = await fetch(`${apiBaseUrl}/cv/generate-pdf`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          body: JSON.stringify({
+            data: cvData,
+            templateId: selectedTemplate,
+            options: { format: 'A4' }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate PDF');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cv-${cvData.personalInfo.fullName || 'resume'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       }
+      
+      toast.success(isArabic ? 'تم تحميل السيرة الذاتية بنجاح!' : 'CV downloaded successfully!', { id: 'pdf-export' });
     } catch (error) {
       console.error('Export error:', error);
-      toast.error(isArabic ? 'فشل التصدير' : 'Export failed');
+      toast.error(isArabic ? 'فشل التصدير' : 'Export failed', { id: 'pdf-export' });
     } finally {
       setIsExporting(false);
     }

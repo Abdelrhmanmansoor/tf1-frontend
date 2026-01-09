@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/auth-context'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { jobPublisherService } from '@/services/job-publisher.service'
+import toast from 'react-hot-toast'
 import {
   X,
   Calendar,
@@ -124,9 +126,11 @@ const AddJobModal = ({ isOpen, onClose, onJobCreated }: AddJobModalProps) => {
         isDraft,
       }
 
-      const response = { success: true, message: 'Job created (mock)' }
+      const response = await jobPublisherService.createJob(jobData)
 
       if (response.success) {
+        toast.success(language === 'ar' ? response.messageAr || 'تم إنشاء الوظيفة بنجاح' : response.message || 'Job created successfully')
+        
         // Reset form
         setFormData({
           title: '',
@@ -148,14 +152,14 @@ const AddJobModal = ({ isOpen, onClose, onJobCreated }: AddJobModalProps) => {
 
         onClose()
       } else {
-        throw new Error(response.message || 'Failed to create job')
+        throw new Error(response.error || 'Failed to create job')
       }
     } catch (error: any) {
       console.error('Failed to create job:', error)
-      setError(
-        error.message ||
-          (language === 'ar' ? 'فشل في إنشاء الوظيفة' : 'Failed to create job')
-      )
+      const errorMessage = error.message ||
+        (language === 'ar' ? 'فشل في إنشاء الوظيفة' : 'Failed to create job')
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
