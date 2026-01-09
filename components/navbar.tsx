@@ -56,7 +56,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
 
   const navItems: NavItem[] = [
     { id: 'home', label: t('home') },
-    { id: 'jobs', label: t('jobs') },
     { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' },
     { id: 'matches', label: language === 'ar' ? 'مركز المباريات' : 'Matches Center', href: '/matches/dashboard' },
     { id: 'about', label: t('about') },
@@ -101,45 +100,17 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           </motion.div>
         </div>
 
-        {/* Centered Navigation */}
-        <nav className="hidden lg:flex items-center">
-          <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
-            {/* Primary Items - Visible on all large screens */}
-            {navItems.slice(0, 3).map((item) => (
-              <Link
-                key={item.id}
-                href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
-                onClick={() => setActiveTab(item.id)}
-                className={`relative px-3 xl:px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
-                  activeTab === item.id
-                    ? 'text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                {activeTab === item.id && (
-                  <motion.div
-                    layoutId="activeBackground"
-                    className={`absolute inset-0 rounded-full ${
-                      activeMode === 'application'
-                        ? 'bg-gradient-to-r from-blue-600 to-blue-500'
-                        : 'bg-gradient-to-r from-green-500 to-green-600'
-                    }`}
-                    initial={false}
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{item.label}</span>
-              </Link>
-            ))}
-
-            {/* Secondary Items - Visible only on Extra Large screens (xl) */}
-            <div className="hidden xl:flex items-center">
-              {navItems.slice(3, 5).map((item) => (
+        {/* Centered Navigation - Only visible for logged-in users */}
+        {user && (
+          <nav className="hidden lg:flex items-center">
+            <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
+              {/* Primary Items - Visible on all large screens */}
+              {navItems.slice(0, 3).map((item) => (
                 <Link
                   key={item.id}
                   href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
                   onClick={() => setActiveTab(item.id)}
-                  className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  className={`relative px-3 xl:px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                     activeTab === item.id
                       ? 'text-white shadow-md'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
@@ -147,7 +118,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                 >
                   {activeTab === item.id && (
                     <motion.div
-                      layoutId="activeBackground-secondary"
+                      layoutId="activeBackground"
                       className={`absolute inset-0 rounded-full ${
                         activeMode === 'application'
                           ? 'bg-gradient-to-r from-blue-600 to-blue-500'
@@ -160,48 +131,99 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                   <span className="relative z-10">{item.label}</span>
                 </Link>
               ))}
-            </div>
 
-            {/* More Dropdown - Logic adjusted for screen sizes */}
-            <div className="relative lg:block">
-              <button
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-                className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 flex items-center gap-1 ${
-                  // Check if any item in the "More" menu is active
-                  // On lg (hidden xl): items 3+ are in menu
-                  // On xl: items 5+ are in menu
-                  (navItems.slice(5).some(i => i.id === activeTab) || 
-                   (navItems.slice(3, 5).some(i => i.id === activeTab) && typeof window !== 'undefined' && window.innerWidth < 1280)) // Approximation, better handled by CSS
-                    ? 'text-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-                aria-expanded={moreMenuOpen}
-                aria-label={t('more') || 'More'}
-              >
-                {/* Active background logic for More button is complex due to responsive split, simplified here */}
-                <span className="relative z-10 flex items-center gap-1">
-                  {t('more') || 'More'}
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      moreMenuOpen ? 'rotate-180' : ''
+              {/* Secondary Items - Visible only on Extra Large screens (xl) */}
+              <div className="hidden xl:flex items-center">
+                {navItems.slice(3, 5).map((item) => (
+                  <Link
+                    key={item.id}
+                    href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                      activeTab === item.id
+                        ? 'text-white shadow-md'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                     }`}
-                  />
-                </span>
-              </button>
-
-              <AnimatePresence>
-                {moreMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full rtl:right-0 ltr:left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 py-1"
-                    style={{ minWidth: '12rem' }}
                   >
-                    {/* Items 3 and 4: Visible in menu ONLY on lg (hidden on xl) */}
-                    <div className="xl:hidden">
-                      {navItems.slice(3, 5).map((item) => (
+                    {activeTab === item.id && (
+                      <motion.div
+                        layoutId="activeBackground-secondary"
+                        className={`absolute inset-0 rounded-full ${
+                          activeMode === 'application'
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-500'
+                            : 'bg-gradient-to-r from-green-500 to-green-600'
+                        }`}
+                        initial={false}
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* More Dropdown - Logic adjusted for screen sizes */}
+              <div className="relative lg:block">
+                <button
+                  onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                  className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 flex items-center gap-1 ${
+                    // Check if any item in the "More" menu is active
+                    // On lg (hidden xl): items 3+ are in menu
+                    // On xl: items 5+ are in menu
+                    (navItems.slice(5).some(i => i.id === activeTab) || 
+                     (navItems.slice(3, 5).some(i => i.id === activeTab) && typeof window !== 'undefined' && window.innerWidth < 1280)) // Approximation, better handled by CSS
+                      ? 'text-white shadow-md'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  }`}
+                  aria-expanded={moreMenuOpen}
+                  aria-label={t('more') || 'More'}
+                >
+                  {/* Active background logic for More button is complex due to responsive split, simplified here */}
+                  <span className="relative z-10 flex items-center gap-1">
+                    {t('more') || 'More'}
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        moreMenuOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {moreMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full rtl:right-0 ltr:left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 py-1"
+                      style={{ minWidth: '12rem' }}
+                    >
+                      {/* Items 3 and 4: Visible in menu ONLY on lg (hidden on xl) */}
+                      <div className="xl:hidden">
+                        {navItems.slice(3, 5).map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
+                            onClick={() => {
+                              setActiveTab(item.id)
+                              setMoreMenuOpen(false)
+                            }}
+                            className={`block px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
+                              activeTab === item.id
+                                ? activeMode === 'application'
+                                  ? 'text-blue-600 font-semibold bg-blue-50'
+                                  : 'text-green-600 font-semibold bg-green-50'
+                                : 'text-gray-700'
+                            }`}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+
+                      {/* Items 5+: Always visible in menu */}
+                      {navItems.slice(5).map((item) => (
                         <Link
                           key={item.id}
                           href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
@@ -220,34 +242,13 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                           {item.label}
                         </Link>
                       ))}
-                    </div>
-
-                    {/* Items 5+: Always visible in menu */}
-                    {navItems.slice(5).map((item) => (
-                      <Link
-                        key={item.id}
-                        href={item.href || (item.id === 'home' ? '/' : `/${item.id}`)}
-                        onClick={() => {
-                          setActiveTab(item.id)
-                          setMoreMenuOpen(false)
-                        }}
-                        className={`block px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
-                          activeTab === item.id
-                            ? activeMode === 'application'
-                              ? 'text-blue-600 font-semibold bg-blue-50'
-                              : 'text-green-600 font-semibold bg-green-50'
-                            : 'text-gray-700'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        )}
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">

@@ -1,0 +1,131 @@
+/* Template Selector Styles */
+
+.template-selector {
+  padding: 20px;
+}
+
+.template-selector h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #333;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.template-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.template-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.15);
+  transform: translateY(-8px);
+}
+
+.template-card.selected {
+  border-color: #007bff;
+  background: linear-gradient(to bottom, #f0f7ff, white);
+}
+
+.template-preview {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #f5f5f5, #f9f9f9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.template-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #999;
+  text-align: center;
+}
+
+.placeholder .icon {
+  font-size: 56px;
+}
+
+.template-info {
+  padding: 16px;
+}
+
+.template-info h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.template-info p {
+  margin: 0 0 12px 0;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.category {
+  display: inline-block;
+  background: linear-gradient(135deg, #f0f0f0, #f5f5f5);
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.selected-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+@media (max-width: 768px) {
+  .template-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .template-preview {
+    height: 140px;
+  }
+
+  .template-selector h2 {
+    font-size: 20px;
+  }
+}

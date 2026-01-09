@@ -191,11 +191,15 @@ export default function BrowseJobsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             {language === 'ar' ? 'تصفح الوظائف' : 'Browse Jobs'}
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-8">
             {language === 'ar'
               ? 'اكتشف أحدث الفرص الوظيفية في المجال الرياضي'
               : 'Discover the latest career opportunities in the sports industry'}
           </p>
+          
+          <div className="mb-12">
+            <PartnersMarquee />
+          </div>
         </div>
 
         {/* Search and Filters */}

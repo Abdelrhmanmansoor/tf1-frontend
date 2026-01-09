@@ -280,7 +280,7 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
 
             {/* View All Link */}
             <Link 
-              href="/jobs"
+              href="/browse-jobs"
               className="flex items-center gap-1 text-cyan-300 hover:text-cyan-200 text-sm font-medium shrink-0 group"
             >
               <span>{language === 'ar' ? 'عرض الكل' : 'View All'}</span>

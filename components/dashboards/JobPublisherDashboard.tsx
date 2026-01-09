@@ -72,13 +72,17 @@ interface Application {
   createdAt: string
 }
 
-export default function JobPublisherDashboard() {
+export default function JobPublisherDashboard({ defaultTab = 'overview' }: { defaultTab?: string }) {
   const { language } = useLanguage()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [recentJobs, setRecentJobs] = useState<Job[]>([])
   const [recentApplications, setRecentApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'applications' | 'messages' | 'notifications' | 'profile'>('overview')
+  const [activeTab, setActiveTab] = useState(defaultTab)
+
+  useEffect(() => {
+    setActiveTab(defaultTab)
+  }, [defaultTab])
 
   useEffect(() => {
     fetchDashboardData()
@@ -249,91 +253,111 @@ export default function JobPublisherDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"
               >
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الوظائف' : 'Total Jobs'}</p>
-                    <Briefcase className="w-5 h-5 text-purple-600" />
+                <Link href="/dashboard/job-publisher/jobs" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الوظائف' : 'Total Jobs'}</p>
+                      <Briefcase className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <p className="text-3xl font-bold text-gray-900">{stats.totalJobs}</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{stats.totalJobs}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'نشطة' : 'Active'}</p>
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+                <Link href="/dashboard/job-publisher/jobs?status=active" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'نشطة' : 'Active'}</p>
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-3xl font-bold text-green-600">{stats.activeJobs}</p>
                   </div>
-                  <p className="text-3xl font-bold text-green-600">{stats.activeJobs}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'مسودة' : 'Draft'}</p>
-                    <FileText className="w-5 h-5 text-gray-500" />
+                <Link href="/dashboard/job-publisher/jobs?status=draft" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مسودة' : 'Draft'}</p>
+                      <FileText className="w-5 h-5 text-gray-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-gray-600">{stats.draftJobs}</p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-600">{stats.draftJobs}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'مغلقة' : 'Closed'}</p>
-                    <XCircle className="w-5 h-5 text-red-500" />
+                <Link href="/dashboard/job-publisher/jobs?status=closed" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مغلقة' : 'Closed'}</p>
+                      <XCircle className="w-5 h-5 text-red-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-red-600">{stats.closedJobs}</p>
                   </div>
-                  <p className="text-3xl font-bold text-red-600">{stats.closedJobs}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الطلبات' : 'Total Apps'}</p>
-                    <FileText className="w-5 h-5 text-blue-600" />
+                <Link href="/dashboard/job-publisher/applications" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الطلبات' : 'Total Apps'}</p>
+                      <FileText className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <p className="text-3xl font-bold text-blue-600">{stats.totalApplications}</p>
                   </div>
-                  <p className="text-3xl font-bold text-blue-600">{stats.totalApplications}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'جديدة' : 'New'}</p>
-                    <Clock className="w-5 h-5 text-yellow-500" />
+                <Link href="/dashboard/job-publisher/applications?status=new" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'جديدة' : 'New'}</p>
+                      <Clock className="w-5 h-5 text-yellow-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-yellow-600">{stats.newApplications}</p>
                   </div>
-                  <p className="text-3xl font-bold text-yellow-600">{stats.newApplications}</p>
-                </div>
+                </Link>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-gray-600">{language === 'ar' ? 'قيد المراجعة' : 'Review'}</p>
-                    <Eye className="w-5 h-5 text-purple-500" />
+                <Link href="/dashboard/job-publisher/applications?status=under_review" className="block h-full">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'قيد المراجعة' : 'Review'}</p>
+                      <Eye className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-purple-600">{stats.underReviewApplications}</p>
                   </div>
-                  <p className="text-3xl font-bold text-purple-600">{stats.underReviewApplications}</p>
+                </Link>
 
                 {stats.interviewedApplications !== undefined && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviewed'}</p>
-                      <Users className="w-5 h-5 text-indigo-500" />
+                  <Link href="/dashboard/job-publisher/applications?status=interviewed" className="block h-full">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviewed'}</p>
+                        <Users className="w-5 h-5 text-indigo-500" />
+                      </div>
+                      <p className="text-3xl font-bold text-indigo-600">{stats.interviewedApplications}</p>
                     </div>
-                    <p className="text-3xl font-bold text-indigo-600">{stats.interviewedApplications}</p>
-                  </div>
+                  </Link>
                 )}
 
                 {stats.offeredApplications !== undefined && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'عروض' : 'Offered'}</p>
-                      <TrendingUp className="w-5 h-5 text-teal-500" />
+                  <Link href="/dashboard/job-publisher/applications?status=offered" className="block h-full">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-gray-600">{language === 'ar' ? 'عروض' : 'Offered'}</p>
+                        <TrendingUp className="w-5 h-5 text-teal-500" />
+                      </div>
+                      <p className="text-3xl font-bold text-teal-600">{stats.offeredApplications}</p>
                     </div>
-                    <p className="text-3xl font-bold text-teal-600">{stats.offeredApplications}</p>
-                  </div>
+                  </Link>
                 )}
 
                 {stats.hiredApplications !== undefined && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'تم التوظيف' : 'Hired'}</p>
-                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                  <Link href="/dashboard/job-publisher/applications?status=hired" className="block h-full">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-gray-600">{language === 'ar' ? 'تم التوظيف' : 'Hired'}</p>
+                        <CheckCircle className="w-5 h-5 text-emerald-500" />
+                      </div>
+                      <p className="text-3xl font-bold text-emerald-600">{stats.hiredApplications}</p>
                     </div>
-                    <p className="text-3xl font-bold text-emerald-600">{stats.hiredApplications}</p>
-                  </div>
+                  </Link>
                 )}
-                </div>
               </motion.div>
             )}
 
@@ -474,34 +498,14 @@ export default function JobPublisherDashboard() {
         {/* Jobs Tab */}
         {activeTab === 'jobs' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {language === 'ar' ? 'جميع الوظائف' : 'All Jobs'}
-              </h2>
-              <Link href="/dashboard/job-publisher/jobs">
-                <Button className="w-full">
-                  {language === 'ar' ? 'عرض جميع الوظائف' : 'View All Jobs'}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
+            <JobsList />
           </div>
         )}
 
         {/* Applications Tab */}
         {activeTab === 'applications' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {language === 'ar' ? 'جميع الطلبات' : 'All Applications'}
-              </h2>
-              <Link href="/dashboard/job-publisher/applications">
-                <Button className="w-full">
-                  {language === 'ar' ? 'عرض جميع الطلبات' : 'View All Applications'}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
+            <ApplicationsList />
           </div>
         )}
 

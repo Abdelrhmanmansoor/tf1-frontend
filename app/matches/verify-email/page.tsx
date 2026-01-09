@@ -66,17 +66,25 @@ function VerifyEmailContent() {
         
         // ترجمة رسائل الخطأ
         if (language === 'ar') {
-          if (errorMsg.includes('invalid') || errorMsg.includes('expired')) {
-            setMessage('رابط التحقق غير صالح أو منتهي الصلاحية. يرجى طلب رابط جديد.')
+          if (errorMsg.includes('invalid') || errorMsg.includes('expired') || errorMsg.includes('Token not found')) {
+            setMessage('رابط التحقق غير صالح أو تم استخدامه مسبقاً. إذا قمت بتأكيد حسابك، يرجى تسجيل الدخول.')
+            setStatus('error') // Or create a new status 'warning' if needed
           } else {
             setMessage('فشل التحقق. يرجى المحاولة مرة أخرى.')
           }
         } else {
-          setMessage(errorMsg || 'Verification failed. Please try again.')
+          if (errorMsg.includes('invalid') || errorMsg.includes('expired')) {
+            setMessage('Invalid or expired verification link. If you have already verified your account, please log in.')
+          } else {
+            setMessage('Verification failed. Please try again.')
+          }
         }
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Show login button if verification might have already happened
+  const showLoginButton = message.includes('مسبقاً') || message.includes('already verified') || message.includes('log in');
 
   const handleResendVerification = async () => {
     if (!email) {
@@ -167,37 +175,58 @@ function VerifyEmailContent() {
             <p className="text-red-600 mb-6">{message}</p>
             
             {/* نموذج إعادة إرسال رابط التحقق */}
-            {!resendSuccess && (
-              <div className="space-y-4 mb-6">
-                <p className="text-sm text-gray-600">
-                  {language === 'ar' 
-                    ? 'أدخل بريدك الإلكتروني لإرسال رابط تحقق جديد:'
-                    : 'Enter your email to receive a new verification link:'}
-                </p>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={language === 'ar' ? 'البريد الإلكتروني' : 'Email address'}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  dir="ltr"
-                />
-                <Button
-                  onClick={handleResendVerification}
-                  disabled={resending}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  {resending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {language === 'ar' ? 'جاري الإرسال...' : 'Sending...'}
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="w-4 h-4 mr-2" />
-                      {language === 'ar' ? 'إعادة إرسال رابط التحقق' : 'Resend Verification Email'}
-                    </>
-                  )}
+            {showLoginButton ? (
+              <Button
+                onClick={() => router.push('/matches/login')}
+                className="w-full bg-blue-600 hover:bg-blue-700 mb-4"
+              >
+                {language === 'ar' ? 'تسجيل الدخول' : 'Login'}
+              </Button>
+            ) : (
+              !resendSuccess && (
+                <div className="space-y-4 mb-6">
+                  <p className="text-sm text-gray-600">
+                    {language === 'ar' 
+                      ? 'أدخل بريدك الإلكتروني لإرسال رابط تحقق جديد:'
+                      : 'Enter your email to receive a new verification link:'}
+                  </p>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={language === 'ar' ? 'البريد الإلكتروني' : 'Email address'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    dir="ltr"
+                  />
+                  <Button
+                    onClick={handleResendVerification}
+                    disabled={resending}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    {resending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {language === 'ar' ? 'جاري الإرسال...' : 'Sending...'}
+                      </>
+                    ) : (
+                      language === 'ar' ? 'إرسال رابط جديد' : 'Send New Link'
+                    )}
+                  </Button>
+                </div>
+              )
+            )}
+            
+            {resendSuccess && (
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200 mb-6">
+                <p className="text-green-800 text-sm">{message}</p>
+              </div>
+            )}
+            
+            <Link href="/">
+              <Button variant="outline" className="w-full">
+                {language === 'ar' ? 'العودة للرئيسية' : 'Back to Home'}
+              </Button>
+            </Link>
                 </Button>
               </div>
             )}
