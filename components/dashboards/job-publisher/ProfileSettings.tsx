@@ -147,8 +147,16 @@ export default function ProfileSettings() {
         </h3>
         <div className="flex items-center gap-6">
           <div className="relative w-24 h-24 bg-white rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
-            {/* Logo display removed - use companyName instead */}
-            <Building className="w-8 h-8 text-gray-400" />
+            {formData.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src={formData.logo} 
+                alt="Company Logo" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Building className="w-8 h-8 text-gray-400" />
+            )}
             {uploadingLogo && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <Loader2 className="w-6 h-6 text-white animate-spin" />

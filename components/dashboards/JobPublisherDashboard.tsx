@@ -29,6 +29,8 @@ import { toast } from 'sonner'
 import ProfileSettings from './job-publisher/ProfileSettings'
 import MessagingCenter from './job-publisher/MessagingCenter'
 import NotificationsCenter from './job-publisher/NotificationsCenter'
+import JobsList from './job-publisher/JobsList'
+import ApplicationsList from './job-publisher/ApplicationsList'
 
 interface DashboardStats {
   totalJobs: number
