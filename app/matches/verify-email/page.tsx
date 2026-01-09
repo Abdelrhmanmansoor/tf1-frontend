@@ -227,8 +227,6 @@ function VerifyEmailContent() {
                 {language === 'ar' ? 'العودة للرئيسية' : 'Back to Home'}
               </Button>
             </Link>
-            </div>
-            )}
 
             {/* رسالة نجاح إعادة الإرسال */}
             {resendSuccess && (
