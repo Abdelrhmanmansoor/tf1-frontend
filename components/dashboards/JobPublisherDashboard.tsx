@@ -486,10 +486,6 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
           </div>
         )}
 
-        {/* Jobs Tab */}
-        {activeTab === 'jobs' && (
-          <div className="space-y-6">
-
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="space-y-6">

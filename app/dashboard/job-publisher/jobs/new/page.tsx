@@ -117,7 +117,7 @@ export default function CreateJobPage() {
         description: formData.description,
         descriptionAr: formData.descriptionAr || formData.description,
         sport: formData.sport,
-        jobType: formData.jobType, // API expects 'permanent', 'seasonal' etc, but here we mapped to 'full_time' etc. Let's adjust if needed.
+        // jobType: formData.jobType, // Removed to avoid duplicate key
         // Actually jobType in backend enum might be different. 
         // Based on previous files, backend expects 'permanent', 'seasonal' for jobType, and 'full_time' for employmentType.
         // Let's assume 'jobType' in form maps to 'employmentType' in backend for now, or we need both.

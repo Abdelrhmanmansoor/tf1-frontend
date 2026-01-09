@@ -45,11 +45,9 @@ export default function CreateMatchPage() {
 
     try {
       const result = await createMatch(formData)
-      if (result.success) {
+      if (result) {
         toast.success('تم إنشاء المباراة بنجاح!')
         router.push('/matches-dashboard/my-matches')
-      } else {
-        throw new Error(result.message || 'فشل إنشاء المباراة')
       }
     } catch (error: any) {
       console.error('Create match error:', error)

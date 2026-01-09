@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useLanguage } from '@/contexts/language-context'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
@@ -45,12 +46,21 @@ interface Message {
 
 export default function MessagingCenter() {
   const { language } = useLanguage()
+  const searchParams = useSearchParams() // Add this
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+
+  // Add this effect to handle initial conversation from URL
+  useEffect(() => {
+    const conversationId = searchParams.get('conversationId')
+    if (conversationId) {
+      setSelectedConversation(conversationId)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     fetchConversations()

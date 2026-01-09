@@ -59,6 +59,7 @@ const ApplicationDetailPage = () => {
   const [application, setApplication] = useState<Application | null>(null)
   const [loading, setLoading] = useState(true)
   const [statusLoading, setStatusLoading] = useState(false)
+  const [messageLoading, setMessageLoading] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [notes, setNotes] = useState<string>('')
   
@@ -142,10 +143,27 @@ const ApplicationDetailPage = () => {
     }
   }
 
-  const handleMessageClick = () => {
-    // Navigate to messaging with this applicant selected (if possible)
-    // Or just go to messaging center
-    router.push('/dashboard/job-publisher/messages')
+  const handleMessageClick = async () => {
+    if (!application) return
+    
+    try {
+      setMessageLoading(true)
+      // Create or get existing conversation
+      const response = await api.post('/messages/conversations', {
+        participantIds: [application.applicantId._id],
+        type: 'direct'
+      })
+      
+      if (response.data.success) {
+        const conversationId = response.data.conversation._id
+        router.push(`/dashboard/job-publisher?defaultTab=messages&conversationId=${conversationId}`)
+      }
+    } catch (error) {
+      console.error('Error starting conversation:', error)
+      toast.error(language === 'ar' ? 'فشل بدء المحادثة' : 'Failed to start conversation')
+    } finally {
+      setMessageLoading(false)
+    }
   }
 
   if (loading) {
@@ -295,9 +313,14 @@ const ApplicationDetailPage = () => {
                   </h2>
                   <Button 
                     onClick={handleMessageClick}
+                    disabled={messageLoading}
                     className="bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg transition-all"
                   >
-                    <MessageCircle className="w-4 h-4 mr-2" />
+                    {messageLoading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                    )}
                     {language === 'ar' ? 'فتح المحادثة' : 'Open Chat'}
                   </Button>
                 </div>

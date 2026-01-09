@@ -20,6 +20,7 @@ import {
   Search,
   Filter,
 } from 'lucide-react'
+import PartnersMarquee from '@/components/PartnersMarquee'
 
 interface Job {
   _id: string

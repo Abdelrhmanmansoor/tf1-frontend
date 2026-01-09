@@ -254,7 +254,7 @@ export default function JobDetailsPage() {
       "value": job._id
     },
     "datePosted": job.createdAt,
-    "validThrough": job.deadline,
+    "validThrough": job.applicationDeadline,
     "employmentType": job.employmentType,
     "hiringOrganization": {
       "@type": "Organization",
@@ -280,9 +280,9 @@ export default function JobDetailsPage() {
         "unitText": "MONTH"
       }
     } : undefined,
-    "workHours": job.workHours,
-    "qualifications": job.requirements?.join(", "),
-    "skills": job.skills?.join(", ")
+    "workHours": job.workSchedule,
+    "qualifications": job.requirements?.description,
+    "skills": job.requirements?.skills?.join(", ")
   } : null
 
   return (

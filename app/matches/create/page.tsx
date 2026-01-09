@@ -86,14 +86,12 @@ export default function CreateMatchPage() {
 
     try {
       const result = await createMatch(formData)
-      if (result.success) {
+      if (result) {
         setSuccess(true)
         toast.success(language === 'ar' ? 'تم إنشاء المباراة بنجاح!' : 'Match created successfully!')
         setTimeout(() => {
           router.push('/matches/dashboard')
         }, 1500)
-      } else {
-        throw new Error(result.message || (language === 'ar' ? 'فشل إنشاء المباراة' : 'Failed to create match'))
       }
     } catch (err: any) {
       const errorMsg =

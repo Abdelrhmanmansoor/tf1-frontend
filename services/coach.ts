@@ -4,6 +4,7 @@
 // This service handles all coach-related API calls
 
 import api from './api'
+import API_CONFIG from '@/config/api'
 import type {
   CoachProfile,
   CreateCoachProfileData,

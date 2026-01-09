@@ -11,7 +11,7 @@ import Image from 'next/image'
 import { X, ChevronDown, Shield } from 'lucide-react'
 import { JobTicker } from './job-ticker'
 import { getDashboardRoute } from '@/utils/role-routes'
-// import NotificationBell from '@/components/notifications/NotificationBell'
+import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
   activeMode: 'application' | 'recruitment'

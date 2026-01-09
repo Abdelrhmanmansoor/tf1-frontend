@@ -71,7 +71,7 @@ export function RecentJobs() {
       try {
         setLoading(true)
         const response = await fetch(
-          'https://tf1-backend.onrender.com/api/v1/search/jobs/recent?limit=3'
+          `${process.env.NEXT_PUBLIC_API_URL}/search/jobs/recent?limit=3`
         )
 
         if (!response.ok) {

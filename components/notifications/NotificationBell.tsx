@@ -9,10 +9,13 @@ import notificationService, { JobNotification } from '@/services/notifications'
 import { Bell, CheckCircle, XCircle, Briefcase, FileText, X } from 'lucide-react'
 import Link from 'next/link'
 
+import { useRouter } from 'next/navigation'
+
 export default function NotificationBell() {
   const { language } = useLanguage()
   const { user } = useAuth()
   const socketContext = useSocket()
+  const router = useRouter()
   
   const [notifications, setNotifications] = useState<JobNotification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
@@ -75,6 +78,35 @@ export default function NotificationBell() {
         n._id === id ? { ...n, read: true, isRead: true } : n
       ))
       setUnreadCount(prev => Math.max(0, prev - 1))
+    }
+  }
+
+  const handleNotificationClick = async (notification: JobNotification) => {
+    // Mark as read
+    if (!notification.read && !notification.isRead) {
+      const success = await notificationService.markAsRead(notification._id)
+      if (success) {
+        setNotifications(prev => prev.map(n => 
+          n._id === notification._id ? { ...n, read: true, isRead: true } : n
+        ))
+        setUnreadCount(prev => Math.max(0, prev - 1))
+      }
+    }
+
+    setIsOpen(false)
+
+    // Navigate based on type and data
+    const userRole = (user as any)?.role
+    
+    if (notification.applicationId) {
+      if (userRole === 'job-publisher' || userRole === 'club') {
+        router.push(`/dashboard/job-publisher/applications/${notification.applicationId}`)
+      } else {
+        // Applicant view
+        router.push(`/dashboard/applicant/applications`)
+      }
+    } else if (notification.jobId) {
+      router.push(`/jobs/${notification.jobId}`)
     }
   }
 
@@ -146,7 +178,8 @@ export default function NotificationBell() {
                     {notifications.map(notification => (
                       <div
                         key={notification._id}
-                        className={`p-3 hover:bg-gray-50 transition-colors ${
+                        onClick={() => handleNotificationClick(notification)}
+                        className={`p-3 hover:bg-gray-50 transition-colors cursor-pointer ${
                           !notification.read && !notification.isRead ? 'bg-blue-50/50' : ''
                         }`}
                       >

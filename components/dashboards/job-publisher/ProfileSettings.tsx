@@ -23,6 +23,7 @@ export default function ProfileSettings() {
     representativeTitle: '',
     phone: '',
     email: '',
+    logo: '',
   })
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function ProfileSettings() {
           representativeTitle: data.representativeTitle || '',
           phone: data.phone || '',
           email: data.email || '',
+          logo: data.logo || '',
         })
       }
     } catch (error: any) {

@@ -79,7 +79,7 @@ export default function ProfilePage() {
         setUser((prev) => prev ? { ...prev, profilePicture: result.profilePicture } : null)
         toast.success('تم رفع الصورة الشخصية بنجاح!')
       } else {
-        throw new Error(result.message || 'فشل رفع الصورة')
+        throw new Error('فشل رفع الصورة')
       }
     } catch (error: any) {
       console.error('Upload error:', error)
@@ -98,9 +98,9 @@ export default function ProfilePage() {
       const result = await updateProfile(formData)
       if (result.success) {
         setUser(result.user)
-        toast.success('تم تحديث الملف الشخصي بنجاح!')
+        toast.success('تم حفظ التغييرات بنجاح!')
       } else {
-        throw new Error(result.message || 'فشل تحديث الملف الشخصي')
+        throw new Error('فشل تحديث الملف الشخصي')
       }
     } catch (error: any) {
       console.error('Update error:', error)

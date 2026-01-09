@@ -250,6 +250,51 @@ class AuthService {
   }
 
   /**
+   * Validate token with backend
+   * @returns Promise<boolean>
+   */
+  async validateToken(): Promise<boolean> {
+    try {
+      if (!this.isAuthenticated()) {
+        return false
+      }
+      await this.getProfile()
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
+  /**
+   * Request password reset (Forgot Password)
+   * @param email - User email
+   * @returns Promise with response
+   */
+  async forgotPassword(email: string): Promise<any> {
+    try {
+      const response = await api.post('/auth/forgot-password', { email })
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Reset password with token
+   * @param token - Reset token
+   * @param password - New password
+   * @returns Promise with response
+   */
+  async resetPassword(token: string, password: string): Promise<any> {
+    try {
+      const response = await api.post('/auth/reset-password', { token, password })
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
    * Handle API errors consistently
    * @param error - Axios error object
    * @returns Error object with message

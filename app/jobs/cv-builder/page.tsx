@@ -60,7 +60,7 @@ export default function CVBuilderPage() {
     );
   }
 
-  if (!mounted || isLoading) {
+  if (!mounted || loading) {
     return (
       <>
         <Navbar activeMode="application" activePage="cv-builder" />

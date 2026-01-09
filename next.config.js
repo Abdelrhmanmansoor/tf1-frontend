@@ -86,13 +86,11 @@ const nextConfig = {
   },
   // Disable powered-by header
   poweredByHeader: false,
-  // Suppress Vercel feedback warnings in production
-  ...(process.env.NODE_ENV === 'production' && {
-    devIndicators: {
-      buildActivity: false,
-      buildActivityPosition: 'bottom-right',
-    },
-  }),
+  // Dev indicators configuration
+  devIndicators: {
+    buildActivity: false,
+    position: 'bottom-right',
+  },
   // Error handling
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

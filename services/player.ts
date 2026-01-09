@@ -3,6 +3,7 @@
 // This service handles all player-related API calls
 
 import api from './api'
+import API_CONFIG from '@/config/api'
 import type {
   PlayerProfile,
   CreatePlayerProfileData,

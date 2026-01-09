@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
 import { Loader2, ShieldAlert } from 'lucide-react'
 
-type UserRole = 'sports-administrator' | 'team' | 'player' | 'coach' | 'club' | 'specialist' | 'administrator' | 'age-group-supervisor' | 'sports-director' | 'executive-director' | 'secretary' | 'applicant'
+import { UserRole } from '@/types/auth'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
