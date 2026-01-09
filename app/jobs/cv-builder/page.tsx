@@ -106,9 +106,11 @@ export default function CVBuilderPage() {
 
         {/* CV Builder Component */}
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <Suspense fallback={<LoadingFallback language={language} />}>
-            {user?.id && <CVBuilder cvId={cvId} userId={user.id} />}
-          </Suspense>
+          {mounted && user?.id && (
+            <Suspense fallback={<LoadingFallback language={language} />}>
+              <CVBuilder cvId={cvId} userId={user.id} />
+            </Suspense>
+          )}
         </div>
 
         {/* Features Section */}
