@@ -524,5 +524,5 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
         )}
       </main>
     </div>
-  )
+  );
 }

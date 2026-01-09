@@ -435,7 +435,6 @@ function FeatureCard({ title, description }: { title: string; description: strin
           )}
         </div>
       </div>
-      </div>
       <Footer />
     </div>
   );
