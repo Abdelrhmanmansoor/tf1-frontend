@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
-export default function CVBuilderPage() {
+function CVBuilderPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoading } = useAuth();
@@ -219,5 +219,22 @@ function FeatureCard({ title, description }: { title: string; description: strin
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600">{description}</p>
     </div>
+  );
+}
+
+export default function CVBuilderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    }>
+      <CVBuilderPageContent />
+    </Suspense>
   );
 }
