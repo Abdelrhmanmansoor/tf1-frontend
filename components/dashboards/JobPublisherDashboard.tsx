@@ -26,6 +26,9 @@ import {
   Search
 } from 'lucide-react'
 import { toast } from 'sonner'
+import ProfileSettings from './job-publisher/ProfileSettings'
+import MessagingCenter from './job-publisher/MessagingCenter'
+import NotificationsCenter from './job-publisher/NotificationsCenter'
 
 interface DashboardStats {
   totalJobs: number
@@ -35,6 +38,11 @@ interface DashboardStats {
   totalApplications: number
   newApplications: number
   underReviewApplications: number
+  interviewedApplications?: number
+  offeredApplications?: number
+  acceptedApplications?: number
+  rejectedApplications?: number
+  hiredApplications?: number
 }
 
 interface Job {
@@ -70,7 +78,7 @@ export default function JobPublisherDashboard() {
   const [recentJobs, setRecentJobs] = useState<Job[]>([])
   const [recentApplications, setRecentApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'applications'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'applications' | 'messages' | 'notifications' | 'profile'>('overview')
 
   useEffect(() => {
     fetchDashboardData()
@@ -92,6 +100,11 @@ export default function JobPublisherDashboard() {
           totalApplications: data.applications?.total || 0,
           newApplications: data.applications?.new || 0,
           underReviewApplications: data.applications?.under_review || 0,
+          interviewedApplications: data.applications?.interviewed || 0,
+          offeredApplications: data.applications?.offered || 0,
+          acceptedApplications: data.applications?.accepted || 0,
+          rejectedApplications: data.applications?.rejected || 0,
+          hiredApplications: data.applications?.hired || 0,
         })
         // Fetch recent jobs and applications separately if needed
         fetchRecentData()
@@ -196,11 +209,14 @@ export default function JobPublisherDashboard() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 border-b border-gray-200">
+          <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
             {[
               { id: 'overview', label: language === 'ar' ? 'نظرة عامة' : 'Overview', icon: BarChart3 },
               { id: 'jobs', label: language === 'ar' ? 'الوظائف' : 'Jobs', icon: Briefcase },
               { id: 'applications', label: language === 'ar' ? 'الطلبات' : 'Applications', icon: FileText },
+              { id: 'messages', label: language === 'ar' ? 'الرسائل' : 'Messages', icon: Users },
+              { id: 'notifications', label: language === 'ar' ? 'الإشعارات' : 'Notifications', icon: Clock },
+              { id: 'profile', label: language === 'ar' ? 'الملف الشخصي' : 'Profile', icon: Building },
             ].map((tab) => {
               const Icon = tab.icon
               return (
@@ -287,6 +303,36 @@ export default function JobPublisherDashboard() {
                     <Eye className="w-5 h-5 text-purple-500" />
                   </div>
                   <p className="text-3xl font-bold text-purple-600">{stats.underReviewApplications}</p>
+
+                {stats.interviewedApplications !== undefined && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviewed'}</p>
+                      <Users className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-indigo-600">{stats.interviewedApplications}</p>
+                  </div>
+                )}
+
+                {stats.offeredApplications !== undefined && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'عروض' : 'Offered'}</p>
+                      <TrendingUp className="w-5 h-5 text-teal-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-teal-600">{stats.offeredApplications}</p>
+                  </div>
+                )}
+
+                {stats.hiredApplications !== undefined && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'تم التوظيف' : 'Hired'}</p>
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                    </div>
+                    <p className="text-3xl font-bold text-emerald-600">{stats.hiredApplications}</p>
+                  </div>
+                )}
                 </div>
               </motion.div>
             )}
@@ -417,6 +463,17 @@ export default function JobPublisherDashboard() {
         {/* Jobs Tab */}
         {activeTab === 'jobs' && (
           <div className="space-y-6">
+
+        {/* Profile Tab */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            <ProfileSettings />
+          </div>
+        )}
+
+        {/* Jobs Tab */}
+        {activeTab === 'jobs' && (
+          <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 {language === 'ar' ? 'جميع الوظائف' : 'All Jobs'}
@@ -445,6 +502,20 @@ export default function JobPublisherDashboard() {
                 </Button>
               </Link>
             </div>
+          </div>
+        )}
+
+        {/* Messages Tab */}
+        {activeTab === 'messages' && (
+          <div className="space-y-6">
+            <MessagingCenter />
+          </div>
+        )}
+
+        {/* Notifications Tab */}
+        {activeTab === 'notifications' && (
+          <div className="space-y-6">
+            <NotificationsCenter />
           </div>
         )}
       </main>
