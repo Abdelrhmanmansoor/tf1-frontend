@@ -38,6 +38,7 @@ import { ArabicSwitcher } from './arabic-switcher'
 import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
 import { PartnersMarquee } from './partners-marquee'
+import TrustedPartners from '@/components/sections/TrustedPartners'
 import { StatsSection } from './stats-section'
 import { JobsTickerBar } from './landing/JobsTickerBar'
 import { useLanguage } from '@/contexts/language-context'
@@ -852,8 +853,8 @@ export function LandingPage() {
         </section>
       )}
 
-      {/* Partners Marquee Section */}
-      <PartnersMarquee />
+      {/* Partners Marquee Section - Replaced with TrustedPartners grid */}
+      <TrustedPartners />
 
       {/* Target Categories Section */}
       <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-white via-blue-50/30 to-white">

@@ -1,128 +1,174 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
-import CVBuilder from '@/components/cv-builder/cv-builder';
+import CVBuilderMain from '@/components/cv-builder/CVBuilderMain';
 import { useLanguage } from '@/contexts/language-context';
+import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles, FileText, Download, Shield, Zap, Globe } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
 function CVBuilderPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
+  const { user, isLoading: authLoading } = useAuth();
 
   const cvId = searchParams?.get('id') || undefined;
+
+  // Auth guard - redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push(`/auth/login?redirect=/jobs/cv-builder${cvId ? `?id=${cvId}` : ''}`);
+    }
+  }, [user, authLoading, router, cvId]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return <LoadingFallback language={language} />;
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return <LoadingFallback language={language} message={language === 'ar' ? 'جاري التحقق من الهوية...' : 'Verifying authentication...'} />;
+  }
 
   return (
     <>
       <Navbar activeMode="application" activePage="cv-builder" />
-      <main className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-8 px-6">
+      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 mb-4 hover:opacity-80 transition"
+              className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition-colors"
             >
               <ArrowLeft size={20} />
               <span>{language === 'ar' ? 'الرجوع' : 'Back'}</span>
             </button>
-            <h1 className="text-4xl font-bold mb-2">
-              {language === 'ar' ? '🎯 منشئ السيرة الذاتية' : '🎯 CV Builder'}
-            </h1>
-            <p className="text-blue-100">
-              {language === 'ar'
-                ? 'أنشئ وحرّر سيرتك الذاتية باحترافية باستخدام نماذج احترافية'
-                : 'Create and edit your professional CV using professional templates'}
-            </p>
+            
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                    <FileText className="w-8 h-8" />
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
+                    {language === 'ar' ? 'منشئ السيرة الذاتية' : 'CV Builder'}
+                  </h1>
+                </div>
+                <p className="text-lg text-white/90 max-w-2xl">
+                  {language === 'ar'
+                    ? 'أنشئ سيرتك الذاتية الاحترافية في دقائق مع تحسينات الذكاء الاصطناعي وقوالب مخصصة للرياضيين'
+                    : 'Create your professional CV in minutes with AI-powered enhancements and sports-focused templates'}
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                  <Sparkles className="w-5 h-5 text-yellow-300" />
+                  <span className="text-sm font-medium">
+                    {language === 'ar' ? 'مدعوم بالذكاء الاصطناعي' : 'AI-Powered'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* CV Builder Component */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <Suspense fallback={<LoadingFallback language={language} />}>
-            <CVBuilder cvId={cvId} userId="guest" />
-          </Suspense>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <CVBuilderMain cvId={cvId} />
         </div>
 
         {/* Features Section */}
-        <div className="bg-white py-12 px-6 border-t border-gray-200">
+        <div className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-100">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
-              {language === 'ar' ? 'المميزات' : 'Features'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                {language === 'ar' ? 'لماذا تختار منشئ السيرة الذاتية لدينا؟' : 'Why Choose Our CV Builder?'}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {language === 'ar'
+                  ? 'أدوات متقدمة مصممة خصيصاً للرياضيين والمحترفين في المجال الرياضي'
+                  : 'Advanced tools designed specifically for athletes and sports professionals'}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <FeatureCard
-                title={language === 'ar' ? '9 نماذج احترافية' : '9 Professional Templates'}
-                description={language === 'ar' ? 'اختر من بين 9 تصاميم احترافية' : 'Choose from 9 professional designs'}
+                icon={<Sparkles className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'تحسين بالذكاء الاصطناعي' : 'AI Enhancement'}
+                description={language === 'ar' 
+                  ? 'حسّن كل قسم بنقرة واحدة باستخدام الذكاء الاصطناعي' 
+                  : 'Improve every section with one click using AI'}
               />
               <FeatureCard
-                title={language === 'ar' ? 'استيراد من ملفات' : 'Import from Files'}
+                icon={<FileText className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'قوالب رياضية متخصصة' : 'Sports-Focused Templates'}
                 description={language === 'ar'
-                  ? 'استورد من JSON و YAML و LinkedIn'
-                  : 'Import from JSON, YAML, and LinkedIn'}
+                  ? '6 قوالب احترافية مصممة للرياضيين'
+                  : '6 professional templates designed for athletes'}
               />
               <FeatureCard
-                title={language === 'ar' ? 'تصدير سهل' : 'Easy Export'}
+                icon={<Download className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'تصدير متعدد الصيغ' : 'Multi-Format Export'}
                 description={language === 'ar'
-                  ? 'صدّر إلى PDF و HTML و JSON'
-                  : 'Export to PDF, HTML, and JSON'}
+                  ? 'صدّر إلى PDF، HTML، أو JSON بسهولة'
+                  : 'Export to PDF, HTML, or JSON easily'}
               />
               <FeatureCard
-                title={language === 'ar' ? 'حفظ تلقائي' : 'Auto Save'}
+                icon={<Shield className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'فحص ATS' : 'ATS Check'}
                 description={language === 'ar'
-                  ? 'يتم حفظ التغييرات تلقائياً كل 3 ثوان'
-                  : 'Changes are saved automatically every 3 seconds'}
+                  ? 'تأكد من توافق سيرتك مع أنظمة التوظيف'
+                  : 'Ensure your CV is ATS-compatible'}
               />
               <FeatureCard
-                title={language === 'ar' ? 'معاينة مباشرة' : 'Live Preview'}
+                icon={<Zap className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'حفظ تلقائي' : 'Auto-Save'}
                 description={language === 'ar'
-                  ? 'شاهد التغييرات بشكل فوري'
-                  : 'See changes in real-time'}
+                  ? 'لا تقلق من فقدان عملك - حفظ تلقائي كل 30 ثانية'
+                  : "Never lose your work - auto-saves every 30 seconds"}
               />
               <FeatureCard
-                title={language === 'ar' ? 'مشاركة عامة' : 'Public Sharing'}
+                icon={<Globe className="w-6 h-6 text-primary" />}
+                title={language === 'ar' ? 'دعم ثنائي اللغة' : 'Bilingual Support'}
                 description={language === 'ar'
-                  ? 'شارك سيرتك الذاتية بروابط عامة'
-                  : 'Share your CV with public links'}
+                  ? 'إنشاء سيرة ذاتية بالعربية أو الإنجليزية'
+                  : 'Create CV in Arabic or English'}
               />
             </div>
           </div>
         </div>
 
         {/* Support Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 py-12 px-6">
+        <div className="bg-gradient-to-r from-primary/5 to-primary/10 py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
               {language === 'ar' ? 'هل تحتاج إلى مساعدة؟' : 'Need Help?'}
             </h2>
-            <p className="text-gray-600 mb-8">
+            <p className="text-gray-600 mb-8 max-w-xl mx-auto">
               {language === 'ar'
-                ? 'اطّلع على دليل الاستخدام الشامل أو اتصل بفريق الدعم'
-                : 'Check our comprehensive guide or contact support'}
+                ? 'فريقنا مستعد لمساعدتك في إنشاء السيرة الذاتية المثالية'
+                : 'Our team is ready to help you create the perfect CV'}
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link
                 href="/help-center"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 {language === 'ar' ? 'مركز المساعدة' : 'Help Center'}
               </Link>
               <Link
                 href="/contact"
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                className="px-6 py-3 bg-white text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 {language === 'ar' ? 'اتصل بنا' : 'Contact Us'}
-              </Link>
-              <Link
-                href="/faq"
-                className="px-6 py-3 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition"
-              >
-                {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
               </Link>
             </div>
           </div>
@@ -134,26 +180,33 @@ function CVBuilderPageContent() {
   );
 }
 
-function LoadingFallback({ language }: { language: string }) {
+function LoadingFallback({ language, message }: { language: string; message?: string }) {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="text-center">
         <div className="inline-flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary"></div>
         </div>
         <p className="mt-4 text-gray-600">
-          {language === 'ar' ? 'جاري تحميل الواجهة...' : 'Loading CV Builder...'}
+          {message || (language === 'ar' ? 'جاري تحميل منشئ السيرة الذاتية...' : 'Loading CV Builder...')}
         </p>
       </div>
     </div>
   );
 }
 
-function FeatureCard({ title, description }: { title: string; description: string }) {
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200 hover:border-blue-400 transition">
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group">
+      <div className="flex items-start gap-4">
+        <div className="p-3 bg-primary/5 rounded-lg group-hover:bg-primary/10 transition-colors">
+          {icon}
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
+          <p className="text-gray-600 text-sm">{description}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -161,10 +214,10 @@ function FeatureCard({ title, description }: { title: string; description: strin
 export default function CVBuilderPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <div className="inline-flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary"></div>
           </div>
           <p className="mt-4 text-gray-600">جاري التحميل...</p>
         </div>
