@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CVData } from '@/types/cv';
 import { CVService } from '@/services/cv.service';
+import { useLanguage } from '@/contexts/language-context';
 import CVEditor from './cv-editor';
 import CVPreview from './cv-preview';
 import TemplateSelector from './template-selector';
@@ -15,6 +16,7 @@ interface CVBuilderProps {
 }
 
 export default function CVBuilder({ cvId, userId }: CVBuilderProps) {
+  const { language } = useLanguage();
   const [cv, setCV] = useState<CVData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('awesome-cv');
   const [isLoading, setIsLoading] = useState(false);
@@ -148,7 +150,24 @@ export default function CVBuilder({ cvId, userId }: CVBuilderProps) {
   }
 
   if (!cv) {
-    return <div className="cv-builder error">Failed to load CV</div>;
+    return (
+      <div className="cv-builder">
+        <div className="cv-builder-header">
+          <h1>{language === 'ar' ? 'منشئ السيرة الذاتية' : 'CV Builder'}</h1>
+          <button 
+            className="btn btn-primary"
+            onClick={() => initializeNewCV()}
+          >
+            {language === 'ar' ? '+ إنشاء جديد' : '+ Create New'}
+          </button>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-gray-600">
+            {language === 'ar' ? 'لم يتم تحميل السيرة الذاتية' : 'Failed to load CV'}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

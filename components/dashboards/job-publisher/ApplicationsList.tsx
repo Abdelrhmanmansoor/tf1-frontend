@@ -93,7 +93,7 @@ export default function ApplicationsList() {
 
   const updateStatus = async (id: string, newStatus: string) => {
     try {
-      await api.patch(`/applications/${id}/status`, { status: newStatus })
+      await api.put(`/job-publisher/applications/${id}/status`, { status: newStatus })
       toast.success(language === 'ar' ? 'تم تحديث الحالة' : 'Status updated')
       fetchApplications()
     } catch (error) {

@@ -252,6 +252,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
+          {user && <NotificationBell />}
           <LanguageSelector />
 
           {user && effectiveRole && (
