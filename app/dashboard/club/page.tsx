@@ -1,17 +1,72 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { Loader2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/language-context'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import ClubDashboard from '@/components/dashboards/ClubDashboard'
+import authService from '@/services/auth'
+
+function ClubDashboardContent() {
+  const { language } = useLanguage()
+  const router = useRouter()
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const userRole = authService.getUserRole()
+    console.log('[ClubDashboard] User role:', userRole)
+
+    if (userRole === 'club') {
+      setIsAuthorized(true)
+    } else if (userRole) {
+      console.log('[ClubDashboard] Unauthorized role, redirecting to correct dashboard')
+      router.push('/dashboard')
+    } else {
+      console.log('[ClubDashboard] No role found, redirecting to login')
+      router.push('/login')
+    }
+  }, [router])
+
+  if (isAuthorized === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            className="inline-block mb-4"
+          >
+            <Loader2 className="w-12 h-12 text-blue-600" />
+          </motion.div>
+          <p className="text-gray-600 text-lg">
+            {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+          </p>
+        </motion.div>
+      </div>
+    )
+  }
+
+  return <ClubDashboard />
+}
 
 export default function ClubDashboardPage() {
   const { language } = useLanguage()
 
   return (
-    <div
-      className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
-      <ClubDashboard />
-    </div>
+    <ProtectedRoute allowedRoles={['club']}>
+      <div
+        className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+        dir={language === 'ar' ? 'rtl' : 'ltr'}
+      >
+        <ClubDashboardContent />
+      </div>
+    </ProtectedRoute>
   )
 }

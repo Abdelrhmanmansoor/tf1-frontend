@@ -60,14 +60,10 @@ export default function ProtectedRoute({
     // Check role-based access first (fast check)
     const userRole = user.role as UserRole
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
-      // User doesn't have permission - redirect to their dashboard (ONLY ONCE)
+      // User doesn't have permission - redirect to their dashboard
       const correctDashboard = fallbackPath || ROLE_DASHBOARDS[userRole] || '/dashboard'
-      
-      // Prevent infinite redirect loop - only redirect if not already on correct dashboard
-      if (pathname !== correctDashboard) {
-        setAuthError('access_denied')
-        router.push(correctDashboard)
-      }
+      setAuthError('access_denied')
+      router.push(correctDashboard)
       return
     }
 
