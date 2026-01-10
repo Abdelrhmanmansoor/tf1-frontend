@@ -30,10 +30,20 @@ function DashboardContent() {
 
     if (userRole) {
       setCurrentRole(userRole)
-      // Redirect specific roles directly to their dashboards
+      // Redirect all roles directly to their specific dashboards
       const redirectMap: Record<string, string> = {
+        'player': '/dashboard/player',
+        'coach': '/dashboard/coach',
+        'club': '/dashboard/club',
+        'specialist': '/dashboard/specialist',
+        'administrator': '/dashboard/administrator',
+        'age-group-supervisor': '/dashboard/age-group-supervisor',
+        'sports-director': '/dashboard/sports-director',
+        'executive-director': '/dashboard/executive-director',
+        'secretary': '/dashboard/secretary',
         'sports-administrator': '/dashboard/sports-admin',
         'team': '/dashboard/team',
+        'leader': '/platform-control',
         'applicant': '/dashboard/applicant',
         'job-publisher': '/dashboard/job-publisher'
       }
@@ -43,8 +53,9 @@ function DashboardContent() {
         return
       }
     } else {
-      // Fallback to player if no role found
-      setCurrentRole('player')
+      // Fallback to login if no role found
+      window.location.href = '/login?reason=no_role'
+      return
     }
 
     setIsLoading(false)

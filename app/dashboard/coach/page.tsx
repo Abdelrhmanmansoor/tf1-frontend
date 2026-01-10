@@ -60,7 +60,7 @@ export default function CoachDashboardPage() {
   const { language } = useLanguage()
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={['coach']}>
       <div
         className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
         dir={language === 'ar' ? 'rtl' : 'ltr'}

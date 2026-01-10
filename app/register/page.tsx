@@ -318,6 +318,13 @@ export default function RegisterPage() {
   }
 
   // --- Constants ---
+  // الأدوار الرئيسية (الباحث عن وظيفة والناشر) - مميزة ومنفصلة
+  const primaryRoles = [
+    { value: 'applicant', icon: 'briefcase', label: language === 'ar' ? 'باحث عن وظيفة' : 'Job Seeker', description: language === 'ar' ? 'ابحث عن فرص عمل في المجال الرياضي' : 'Find sports career opportunities', gradient: 'from-emerald-500 to-teal-600' },
+    { value: 'job-publisher', icon: 'publish', label: language === 'ar' ? 'ناشر وظائف' : 'Job Publisher', description: language === 'ar' ? 'انشر فرص عمل وابحث عن الكفاءات' : 'Post jobs and find talent', gradient: 'from-purple-500 to-indigo-600' },
+  ]
+  
+  // الأدوار الأخرى (رياضية ومهنية)
   const roles = [
     { value: 'player', icon: 'sports', label: language === 'ar' ? 'لاعب' : 'Player' },
     { value: 'coach', icon: 'coach', label: language === 'ar' ? 'مدرب' : 'Coach' },
@@ -328,8 +335,6 @@ export default function RegisterPage() {
     { value: 'sports-director', icon: 'director', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
     { value: 'executive-director', icon: 'executive', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
     { value: 'secretary', icon: 'secretary', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
-    { value: 'applicant', icon: 'briefcase', label: language === 'ar' ? 'باحث عن وظيفة' : 'Job Seeker' },
-    { value: 'job-publisher', icon: 'publish', label: language === 'ar' ? 'ناشر وظائف' : 'Job Publisher' },
   ]
   const organizationTypes = [
     { value: 'club', label: language === 'ar' ? 'نادي' : 'Club' },
@@ -465,6 +470,77 @@ export default function RegisterPage() {
             {step === 1 && !success && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{language === 'ar' ? 'اختر دورك' : 'Select Your Role'}</h2>
+                
+                {/* الأدوار الرئيسية المميزة - الباحث عن وظيفة والناشر */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-semibold text-gray-500 mb-3 text-center flex items-center justify-center gap-2">
+                    <span className="w-8 h-px bg-gray-300"></span>
+                    {language === 'ar' ? '✨ الأدوار الرئيسية' : '✨ Featured Roles'}
+                    <span className="w-8 h-px bg-gray-300"></span>
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {primaryRoles.map((role: any) => {
+                      const getIcon = (iconType: string) => {
+                        const icons: Record<string, any> = {
+                          briefcase: <Briefcase className="w-8 h-8" />,
+                          publish: <FileText className="w-8 h-8" />,
+                        }
+                        return icons[iconType] || <User className="w-8 h-8" />
+                      }
+                      return (
+                        <motion.button
+                          key={role.value}
+                          type="button"
+                          onClick={() => setValue('role', role.value)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`relative p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 overflow-hidden ${
+                            selectedRole === role.value 
+                              ? `border-transparent bg-gradient-to-br ${role.gradient} text-white shadow-lg ring-4 ring-offset-2 ${role.value === 'applicant' ? 'ring-emerald-200' : 'ring-purple-200'}` 
+                              : 'border-gray-200 hover:border-gray-300 bg-white hover:shadow-md'
+                          }`}
+                        >
+                          {selectedRole === role.value && (
+                            <motion.div 
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-2 right-2 w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
+                            >
+                              <CheckCircle2 className="w-4 h-4 text-white" />
+                            </motion.div>
+                          )}
+                          <div className={`p-3 rounded-xl ${selectedRole === role.value ? 'bg-white/20' : 'bg-gradient-to-br ' + role.gradient}`}>
+                            <span className={selectedRole === role.value ? 'text-white' : 'text-white'}>
+                              {getIcon(role.icon)}
+                            </span>
+                          </div>
+                          <div className="text-center">
+                            <span className={`text-sm font-bold block ${selectedRole === role.value ? 'text-white' : 'text-gray-800'}`}>
+                              {role.label}
+                            </span>
+                            <span className={`text-xs mt-1 block ${selectedRole === role.value ? 'text-white/80' : 'text-gray-500'}`}>
+                              {role.description}
+                            </span>
+                          </div>
+                        </motion.button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* فاصل */}
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-4 bg-white text-gray-500 font-medium">
+                      {language === 'ar' ? 'أو اختر دور آخر' : 'Or select another role'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* الأدوار الأخرى */}
                 <div className="grid grid-cols-3 gap-3">
                   {roles.map((role: any) => {
                     const getIcon = (iconType: string) => {
@@ -478,8 +554,6 @@ export default function RegisterPage() {
                         director: <BarChart3 className="w-6 h-6" />,
                         executive: <FileText className="w-6 h-6" />,
                         secretary: <FileText className="w-6 h-6" />,
-                        briefcase: <Briefcase className="w-6 h-6" />,
-                        publish: <FileText className="w-6 h-6" />,
                       }
                       return icons[iconType] || <User className="w-6 h-6" />
                     }

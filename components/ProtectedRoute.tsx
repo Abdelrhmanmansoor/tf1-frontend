@@ -26,6 +26,7 @@ const ROLE_DASHBOARDS: Record<string, string> = {
   secretary: '/dashboard/secretary',
   'sports-administrator': '/dashboard/sports-admin',
   team: '/dashboard/team',
+  leader: '/platform-control',
   applicant: '/dashboard/applicant',
   'job-publisher': '/dashboard/job-publisher',
 }

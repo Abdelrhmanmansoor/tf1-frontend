@@ -2,9 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query';
 import sportsAdminService from '@/services/sportsAdmin';
-import { Users, Briefcase, FileText, Activity, AlertCircle } from 'lucide-react';
+import { Users, Briefcase, FileText, Activity, AlertCircle, Loader2 } from 'lucide-react';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function SportsAdminDashboard() {
+function SportsAdminDashboardContent() {
     const { data: dashboardData, isLoading, error } = useQuery({
         queryKey: ['sports-admin-dashboard'],
         queryFn: sportsAdminService.getDashboard
@@ -107,5 +108,13 @@ export default function SportsAdminDashboard() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SportsAdminDashboard() {
+    return (
+        <ProtectedRoute allowedRoles={['sports-administrator']}>
+            <SportsAdminDashboardContent />
+        </ProtectedRoute>
     );
 }
