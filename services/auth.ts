@@ -236,7 +236,7 @@ class AuthService {
    * Save user data to local storage
    * @param user - User object
    */
-  private saveUser(user: User): void {
+  saveUser(user: User): void {
     if (typeof window !== 'undefined') {
       const u = { ...user } as any
       if (u?.avatar) {

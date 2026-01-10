@@ -15,18 +15,42 @@ function CoachDashboardContent() {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
 
   useEffect(() => {
-    const userRole = authService.getUserRole()
-    console.log('[CoachDashboard] User role:', userRole)
+    // CRITICAL FIX: Get role from API first to ensure accuracy
+    const checkRole = async () => {
+      try {
+        // Try to get from API first (most accurate)
+        const user = await authService.getProfile()
+        if (user && user.role) {
+          console.log('[CoachDashboard] User role from API:', user.role)
+          
+          if (user.role === 'coach') {
+            setIsAuthorized(true)
+          } else {
+            console.log('[CoachDashboard] Unauthorized role, redirecting to correct dashboard')
+            router.push('/dashboard')
+          }
+          return
+        }
+      } catch (apiError) {
+        console.warn('[CoachDashboard] Failed to get user from API, falling back to localStorage:', apiError)
+      }
+      
+      // Fallback to localStorage if API fails
+      const userRole = authService.getUserRole()
+      console.log('[CoachDashboard] User role from localStorage (fallback):', userRole)
 
-    if (userRole === 'coach') {
-      setIsAuthorized(true)
-    } else if (userRole) {
-      console.log('[CoachDashboard] Unauthorized role, redirecting to correct dashboard')
-      router.push('/dashboard')
-    } else {
-      console.log('[CoachDashboard] No role found, redirecting to login')
-      router.push('/login')
+      if (userRole === 'coach') {
+        setIsAuthorized(true)
+      } else if (userRole) {
+        console.log('[CoachDashboard] Unauthorized role, redirecting to correct dashboard')
+        router.push('/dashboard')
+      } else {
+        console.log('[CoachDashboard] No role found, redirecting to login')
+        router.push('/login')
+      }
     }
+    
+    checkRole()
   }, [router])
 
   if (isAuthorized === null) {

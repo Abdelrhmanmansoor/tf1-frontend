@@ -70,10 +70,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return !!updatedUser
         }
         
-        // Update user with fresh data from backend
-        const freshUser = authService.getCurrentUser()
-        if (freshUser) {
-          setUser(freshUser)
+        // CRITICAL FIX: Get fresh user data from API instead of localStorage
+        try {
+          const freshUser = await authService.getProfile()
+          if (freshUser) {
+            setUser(freshUser)
+            // Update localStorage with fresh data from API
+            authService.saveUser(freshUser)
+          }
+        } catch (profileError) {
+          console.warn('[AUTH] Failed to get fresh profile, using cached data:', profileError)
+          // Fallback to cached data if API fails
+          const cachedUser = authService.getCurrentUser()
+          if (cachedUser) {
+            setUser(cachedUser)
+          }
         }
         return true
       } catch (validationError: any) {

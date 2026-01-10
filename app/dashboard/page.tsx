@@ -24,41 +24,83 @@ function DashboardContent() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Get user's role from localStorage
-    const userRole = authService.getUserRole()
-    console.log('[Dashboard] User role from localStorage:', userRole)
-
-    if (userRole) {
-      setCurrentRole(userRole)
-      // Redirect all roles directly to their specific dashboards
-      const redirectMap: Record<string, string> = {
-        'player': '/dashboard/player',
-        'coach': '/dashboard/coach',
-        'club': '/dashboard/club',
-        'specialist': '/dashboard/specialist',
-        'administrator': '/dashboard/administrator',
-        'age-group-supervisor': '/dashboard/age-group-supervisor',
-        'sports-director': '/dashboard/sports-director',
-        'executive-director': '/dashboard/executive-director',
-        'secretary': '/dashboard/secretary',
-        'sports-administrator': '/dashboard/sports-admin',
-        'team': '/dashboard/team',
-        'leader': '/platform-control',
-        'applicant': '/dashboard/applicant',
-        'job-publisher': '/dashboard/job-publisher'
+    // CRITICAL FIX: Get user's role from API first to ensure accuracy
+    // localStorage might have incorrect role data
+    const fetchUserRole = async () => {
+      try {
+        // First try to get from API (most accurate)
+        const user = await authService.getProfile()
+        if (user && user.role) {
+          console.log('[Dashboard] User role from API:', user.role)
+          setCurrentRole(user.role)
+          
+          // Redirect all roles directly to their specific dashboards
+          const redirectMap: Record<string, string> = {
+            'player': '/dashboard/player',
+            'coach': '/dashboard/coach',
+            'club': '/dashboard/club',
+            'specialist': '/dashboard/specialist',
+            'administrator': '/dashboard/administrator',
+            'age-group-supervisor': '/dashboard/age-group-supervisor',
+            'sports-director': '/dashboard/sports-director',
+            'executive-director': '/dashboard/executive-director',
+            'secretary': '/dashboard/secretary',
+            'sports-administrator': '/dashboard/sports-admin',
+            'team': '/dashboard/team',
+            'leader': '/platform-control',
+            'applicant': '/dashboard/applicant',
+            'job-publisher': '/dashboard/job-publisher'
+          }
+          
+          if (redirectMap[user.role]) {
+            window.location.href = redirectMap[user.role]
+            return
+          }
+          setIsLoading(false)
+          return
+        }
+      } catch (apiError) {
+        console.warn('[Dashboard] Failed to get user from API, falling back to localStorage:', apiError)
       }
       
-      if (redirectMap[userRole]) {
-        window.location.href = redirectMap[userRole]
+      // Fallback to localStorage if API fails
+      const userRole = authService.getUserRole()
+      console.log('[Dashboard] User role from localStorage (fallback):', userRole)
+
+      if (userRole) {
+        setCurrentRole(userRole)
+        // Redirect all roles directly to their specific dashboards
+        const redirectMap: Record<string, string> = {
+          'player': '/dashboard/player',
+          'coach': '/dashboard/coach',
+          'club': '/dashboard/club',
+          'specialist': '/dashboard/specialist',
+          'administrator': '/dashboard/administrator',
+          'age-group-supervisor': '/dashboard/age-group-supervisor',
+          'sports-director': '/dashboard/sports-director',
+          'executive-director': '/dashboard/executive-director',
+          'secretary': '/dashboard/secretary',
+          'sports-administrator': '/dashboard/sports-admin',
+          'team': '/dashboard/team',
+          'leader': '/platform-control',
+          'applicant': '/dashboard/applicant',
+          'job-publisher': '/dashboard/job-publisher'
+        }
+        
+        if (redirectMap[userRole]) {
+          window.location.href = redirectMap[userRole]
+          return
+        }
+      } else {
+        // Fallback to login if no role found
+        window.location.href = '/login?reason=no_role'
         return
       }
-    } else {
-      // Fallback to login if no role found
-      window.location.href = '/login?reason=no_role'
-      return
-    }
 
-    setIsLoading(false)
+      setIsLoading(false)
+    }
+    
+    fetchUserRole()
   }, [])
 
   // Show loading while fetching role

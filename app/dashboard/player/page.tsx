@@ -15,18 +15,42 @@ function PlayerDashboardContent() {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
 
   useEffect(() => {
-    const userRole = authService.getUserRole()
-    console.log('[PlayerDashboard] User role:', userRole)
+    // CRITICAL FIX: Get role from API first to ensure accuracy
+    const checkRole = async () => {
+      try {
+        // Try to get from API first (most accurate)
+        const user = await authService.getProfile()
+        if (user && user.role) {
+          console.log('[PlayerDashboard] User role from API:', user.role)
+          
+          if (user.role === 'player') {
+            setIsAuthorized(true)
+          } else {
+            console.log('[PlayerDashboard] Unauthorized role, redirecting to correct dashboard')
+            router.push('/dashboard')
+          }
+          return
+        }
+      } catch (apiError) {
+        console.warn('[PlayerDashboard] Failed to get user from API, falling back to localStorage:', apiError)
+      }
+      
+      // Fallback to localStorage if API fails
+      const userRole = authService.getUserRole()
+      console.log('[PlayerDashboard] User role from localStorage (fallback):', userRole)
 
-    if (userRole === 'player') {
-      setIsAuthorized(true)
-    } else if (userRole) {
-      console.log('[PlayerDashboard] Unauthorized role, redirecting to correct dashboard')
-      router.push('/dashboard')
-    } else {
-      console.log('[PlayerDashboard] No role found, redirecting to login')
-      router.push('/login')
+      if (userRole === 'player') {
+        setIsAuthorized(true)
+      } else if (userRole) {
+        console.log('[PlayerDashboard] Unauthorized role, redirecting to correct dashboard')
+        router.push('/dashboard')
+      } else {
+        console.log('[PlayerDashboard] No role found, redirecting to login')
+        router.push('/login')
+      }
     }
+    
+    checkRole()
   }, [router])
 
   if (isAuthorized === null) {

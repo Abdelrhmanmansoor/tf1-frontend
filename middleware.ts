@@ -193,12 +193,9 @@ export function middleware(request: NextRequest) {
       return response
     }
 
-    // Get role from token and check access (only for regular dashboard)
-    let role = getRoleFromToken(token)
-    const uiRole = request.cookies.get('sportx_ui_role')?.value
-    if (uiRole) {
-      role = uiRole
-    }
+    // CRITICAL FIX: Get role ONLY from JWT token (source of truth)
+    // Do NOT use sportx_ui_role cookie as it may contain incorrect data
+    const role = getRoleFromToken(token)
     if (
       role &&
       pathname !== '/dashboard' &&

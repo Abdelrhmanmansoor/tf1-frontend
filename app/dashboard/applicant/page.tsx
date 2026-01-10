@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import ProtectedRoute from '@/components/ProtectedRoute'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
 import { motion } from 'framer-motion'
@@ -465,6 +464,6 @@ export default function ApplicantDashboardPage() {
           )}
         </main>
       </div>
-    </ProtectedRoute>
+    </div>
   )
 }
