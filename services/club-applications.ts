@@ -1,4 +1,5 @@
 import api from './api'
+import API_CONFIG from '@/config/api'
 
 export interface ApplicationFile {
   _id: string
@@ -42,7 +43,7 @@ const clubApplicationsService = {
   // Get all applications for club's jobs
   async getClubApplications(page = 1, limit = 20): Promise<ApplicationsListResponse> {
     try {
-      const response = await api.get('/club/applications', {
+      const response = await api.get('/clubs/applications', {
         params: { page, limit },
       })
       return response.data.data
@@ -55,7 +56,7 @@ const clubApplicationsService = {
   // Get applications for specific job
   async getJobApplications(jobId: string, page = 1, limit = 20): Promise<ApplicationsListResponse> {
     try {
-      const response = await api.get(`/club/jobs/${jobId}/applications`, {
+      const response = await api.get(`/clubs/jobs/${jobId}/applications`, {
         params: { page, limit },
       })
       return response.data.data
@@ -68,7 +69,7 @@ const clubApplicationsService = {
   // Get single application details
   async getApplicationDetails(applicationId: string): Promise<ApplicationData> {
     try {
-      const response = await api.get(`/club/applications/${applicationId}`)
+      const response = await api.get(`/clubs/applications/${applicationId}`)
       return response.data.data
     } catch (error) {
       console.error('Error fetching application details:', error)
@@ -79,15 +80,10 @@ const clubApplicationsService = {
   // Download resume using the new endpoint
   async downloadResume(applicationId: string): Promise<Blob> {
     try {
-      const response = await fetch(`/api/v1/clubs/applications/${applicationId}/resume/download`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
+      const response = await api.get(`/clubs/applications/${applicationId}/resume/download`, {
+        responseType: 'blob',
       })
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      return await response.blob()
+      return response.data
     } catch (error) {
       console.error('Error downloading resume:', error)
       throw error
@@ -97,7 +93,8 @@ const clubApplicationsService = {
   // View resume using the new endpoint
   async viewResume(applicationId: string): Promise<void> {
     try {
-      window.open(`/api/v1/clubs/applications/${applicationId}/resume/view`, '_blank')
+      const url = `${API_CONFIG.BASE_URL}/clubs/applications/${applicationId}/resume/view`
+      window.open(url, '_blank')
     } catch (error) {
       console.error('Error viewing resume:', error)
       throw error
@@ -107,29 +104,12 @@ const clubApplicationsService = {
   // Check if resume exists
   async checkResumeExists(applicationId: string): Promise<{ exists: boolean; resume?: any; message?: string }> {
     try {
-      const response = await fetch(`/api/v1/clubs/applications/${applicationId}/resume/info`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-      })
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      const response = await api.get(`/clubs/applications/${applicationId}/resume/info`)
+      const data = response.data
+      if (data.fileExists || data.exists) {
+        return { exists: true, resume: data.resume || data.data }
       }
-      
-      const data = await response.json()
-      
-      if (data.fileExists) {
-        return {
-          exists: true,
-          resume: data.resume
-        }
-      } else {
-        return {
-          exists: false,
-          message: 'الملف غير موجود على السيرفر'
-        }
-      }
+      return { exists: false, message: data.message || 'الملف غير موجود على السيرفر' }
     } catch (error) {
       console.error('Error checking resume:', error)
       return { exists: false }
@@ -143,7 +123,7 @@ const clubApplicationsService = {
     rejectionReason?: string
   ): Promise<ApplicationData> {
     try {
-      const response = await api.put(`/club/applications/${applicationId}/status`, {
+      const response = await api.put(`/clubs/applications/${applicationId}/status`, {
         status,
         rejectionReason,
       })
@@ -157,7 +137,7 @@ const clubApplicationsService = {
   // Add admin notes
   async addAdminNotes(applicationId: string, notes: string): Promise<ApplicationData> {
     try {
-      const response = await api.put(`/club/applications/${applicationId}/notes`, {
+      const response = await api.put(`/clubs/applications/${applicationId}/notes`, {
         adminNotes: notes,
       })
       return response.data.data
@@ -171,7 +151,7 @@ const clubApplicationsService = {
   async exportApplications(jobId?: string): Promise<Blob> {
     try {
       const params = jobId ? { jobId } : {}
-      const response = await api.get('/club/applications/export', {
+      const response = await api.get('/clubs/applications/export', {
         params,
         responseType: 'blob',
       })
