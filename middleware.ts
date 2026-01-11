@@ -108,7 +108,7 @@ function applySecurityHeaders(response: NextResponse) {
   )
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Check if website is suspended pending client delivery acceptance

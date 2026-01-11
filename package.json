@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "api:smoke": "node ./scripts/api-smoke.mjs",
     "test:security": "vitest run --runInBand",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
