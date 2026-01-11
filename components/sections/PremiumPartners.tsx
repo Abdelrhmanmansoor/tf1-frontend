@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useLanguage } from '@/contexts/language-context'
 import Image from 'next/image'
 
 interface Partner {
@@ -53,60 +52,29 @@ const allPartners: Partner[] = [
 ]
 
 export default function PremiumPartners() {
-  const { language } = useLanguage()
-
   const firstRowPartners = useMemo(() => allPartners.slice(0, 20), [])
   const secondRowPartners = useMemo(() => allPartners.slice(20), [])
 
   return (
-    <section className="py-16 sm:py-20 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <p className="text-center text-xs sm:text-sm font-medium tracking-[0.2em] text-gray-400 uppercase">
-          {language === 'ar' ? 'نعمل مع أفضل المؤسسات الرياضية' : 'We work with top sports organizations'}
-        </p>
-      </div>
-
+    <section dir="ltr" className="py-12 sm:py-16 bg-white overflow-hidden">
       <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 z-10 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 z-10 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 z-10 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 z-10 bg-gradient-to-l from-white to-transparent pointer-events-none" />
 
-        <div className="flex overflow-hidden mb-8">
-          <div className="flex animate-marquee">
-            {[...firstRowPartners, ...firstRowPartners].map((partner, index) => (
+        <div className="marquee-container mb-6">
+          <div className="marquee-track">
+            {[...firstRowPartners, ...firstRowPartners, ...firstRowPartners].map((partner, index) => (
               <div
                 key={`row1-${index}`}
-                className="flex-shrink-0 mx-6 sm:mx-10"
+                className="marquee-item"
               >
-                <div className="relative w-24 h-12 sm:w-32 sm:h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <div className="logo-wrapper">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 640px) 96px, 128px"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = '/logo.png'
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex animate-marquee" aria-hidden="true">
-            {[...firstRowPartners, ...firstRowPartners].map((partner, index) => (
-              <div
-                key={`row1-dup-${index}`}
-                className="flex-shrink-0 mx-6 sm:mx-10"
-              >
-                <div className="relative w-24 h-12 sm:w-32 sm:h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 640px) 96px, 128px"
+                    sizes="(max-width: 640px) 80px, 120px"
                     loading="lazy"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
@@ -119,43 +87,20 @@ export default function PremiumPartners() {
           </div>
         </div>
 
-        <div className="flex overflow-hidden">
-          <div className="flex animate-marquee-reverse">
-            {[...secondRowPartners, ...secondRowPartners].map((partner, index) => (
+        <div className="marquee-container marquee-reverse">
+          <div className="marquee-track">
+            {[...secondRowPartners, ...secondRowPartners, ...secondRowPartners, ...secondRowPartners].map((partner, index) => (
               <div
                 key={`row2-${index}`}
-                className="flex-shrink-0 mx-6 sm:mx-10"
+                className="marquee-item"
               >
-                <div className="relative w-24 h-12 sm:w-32 sm:h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <div className="logo-wrapper">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 640px) 96px, 128px"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = '/logo.png'
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex animate-marquee-reverse" aria-hidden="true">
-            {[...secondRowPartners, ...secondRowPartners].map((partner, index) => (
-              <div
-                key={`row2-dup-${index}`}
-                className="flex-shrink-0 mx-6 sm:mx-10"
-              >
-                <div className="relative w-24 h-12 sm:w-32 sm:h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 640px) 96px, 128px"
+                    sizes="(max-width: 640px) 80px, 120px"
                     loading="lazy"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
@@ -170,31 +115,96 @@ export default function PremiumPartners() {
       </div>
 
       <style jsx>{`
-        @keyframes marquee {
+        .marquee-container {
+          display: flex;
+          overflow: hidden;
+          width: 100%;
+        }
+        
+        .marquee-track {
+          display: flex;
+          gap: 3rem;
+          animation: scroll 60s linear infinite;
+          will-change: transform;
+        }
+        
+        .marquee-reverse .marquee-track {
+          animation: scroll-reverse 65s linear infinite;
+        }
+        
+        .marquee-item {
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .logo-wrapper {
+          position: relative;
+          width: 100px;
+          height: 50px;
+          filter: grayscale(100%);
+          opacity: 0.5;
+          transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .logo-wrapper:hover {
+          filter: grayscale(0%);
+          opacity: 1;
+        }
+        
+        @media (min-width: 640px) {
+          .marquee-track {
+            gap: 4rem;
+          }
+          .logo-wrapper {
+            width: 120px;
+            height: 60px;
+          }
+        }
+        
+        @keyframes scroll {
           0% {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-100%);
+            transform: translateX(calc(-100px * 20 - 3rem * 20));
           }
         }
-        @keyframes marquee-reverse {
+        
+        @keyframes scroll-reverse {
           0% {
-            transform: translateX(-100%);
+            transform: translateX(calc(-100px * 20 - 3rem * 20));
           }
           100% {
             transform: translateX(0);
           }
         }
-        .animate-marquee {
-          animation: marquee 40s linear infinite;
+        
+        @media (min-width: 640px) {
+          @keyframes scroll {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(calc(-120px * 20 - 4rem * 20));
+            }
+          }
+          
+          @keyframes scroll-reverse {
+            0% {
+              transform: translateX(calc(-120px * 20 - 4rem * 20));
+            }
+            100% {
+              transform: translateX(0);
+            }
+          }
         }
-        .animate-marquee-reverse {
-          animation: marquee-reverse 45s linear infinite;
-        }
-        .animate-marquee:hover,
-        .animate-marquee-reverse:hover {
-          animation-play-state: paused;
+        
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-track {
+            animation: none;
+          }
         }
       `}</style>
     </section>
