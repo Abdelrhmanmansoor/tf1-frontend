@@ -40,37 +40,17 @@ export default function MatchesLoginPage() {
   const [resendingEmail, setResendingEmail] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
 
-  // Auto-login bridge from main platform
+  // Remove token-bridging: matches auth must be explicit to avoid scope leakage
   useEffect(() => {
-    const checkAutoLogin = () => {
-      // If user is logged in to main platform but we are on matches login page
-      if (user && typeof window !== 'undefined') {
-        const mainToken = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-        const matchesToken = localStorage.getItem('matches_token')
-        
-        // If we have main token but no matches token (or they match), we can auto-login/bridge
-        if (mainToken && !matchesToken) {
-          // Set the main token as matches token (backend middleware handles bridging)
-          localStorage.setItem('matches_token', mainToken)
-          
-          // Set matches_user from current user data to avoid redirect loop
-          if (user) {
-            const minimalUserData = {
-              id: user.id,
-              name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.email,
-              email: user.email,
-            }
-            localStorage.setItem('matches_user', JSON.stringify(minimalUserData))
-          }
-          
-          // Redirect
-          const redirectUrl = searchParams.get('redirect') || '/matches/dashboard'
-          router.push(redirectUrl)
-        }
-      }
+    if (!user) return
+    // If user is logged in main app, gently prompt to continue with matches login
+    const redirectUrl = searchParams.get('redirect') || '/matches/dashboard'
+    const hasMatchesSession = typeof window !== 'undefined' && !!localStorage.getItem('matches_token')
+    if (!hasMatchesSession) {
+      console.info('[matches-login] Main session detected; user must sign in for matches to obtain scoped token')
+    } else {
+      router.push(redirectUrl)
     }
-    
-    checkAutoLogin()
   }, [user, searchParams, router])
 
   const handleSubmit = async (e: React.FormEvent) => {

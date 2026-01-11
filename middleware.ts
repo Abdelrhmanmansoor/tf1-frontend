@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { jwtVerify } from 'jose'
 
 const PUBLIC_ROUTES = [
   '/',
@@ -22,8 +23,6 @@ const PUBLIC_ROUTES = [
   '/matches/login',
   '/matches/register',
   '/matches/verify-email',
-  '/sys-admin-secure-panel',
-  '/platform-control',
 ]
 
 const DASHBOARD_ROUTES = ['/dashboard']
@@ -47,19 +46,13 @@ const ROLE_ROUTE_MAP: Record<string, string[]> = {
   secretary: ['/dashboard/secretary', '/dashboard/notifications'],
   'sports-administrator': ['/dashboard/sports-admin', '/dashboard/notifications'],
   team: ['/dashboard/team', '/dashboard/notifications'],
-  leader: ['/platform-control', '/dashboard/notifications'],
+  leader: ['/dashboard/leader', '/platform-control', '/dashboard/notifications'],
   applicant: ['/dashboard/applicant', '/dashboard/notifications'],
   'job-publisher': ['/dashboard/job-publisher', '/dashboard/notifications'],
 }
 
 function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(
-    (route) =>
-      pathname === route ||
-      pathname.startsWith('/api/') ||
-      pathname.startsWith('/_next/') ||
-      pathname.includes('.')
-  )
+  return PUBLIC_ROUTES.some((route) => pathname === route)
 }
 
 function isDashboardRoute(pathname: string): boolean {
@@ -70,37 +63,49 @@ function isMatchesDashboardRoute(pathname: string): boolean {
   return MATCHES_DASHBOARD_ROUTES.some((route) => pathname.startsWith(route))
 }
 
-function parseJWT(token: string): any {
-  try {
-    const base64Url = token.split('.')[1]
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    )
-    return JSON.parse(jsonPayload)
-  } catch {
+async function verifyJwt(token: string, secretEnv: string): Promise<any | null> {
+  const secret = process.env[secretEnv]
+  if (!secret) {
+    console.warn(`[middleware] Missing ${secretEnv}, rejecting token`)
     return null
   }
-}
-
-function isTokenExpired(token: string): boolean {
-  const payload = parseJWT(token)
-  if (!payload || !payload.exp) return false
-  const currentTime = Math.floor(Date.now() / 1000)
-  return payload.exp < currentTime
-}
-
-function getRoleFromToken(token: string): string | null {
-  const payload = parseJWT(token)
-  return payload?.role || null
+  try {
+    const verified = await jwtVerify(token, new TextEncoder().encode(secret), {
+      issuer: 'sportsplatform-api',
+    })
+    return verified.payload
+  } catch (err) {
+    console.warn(`[middleware] JWT verification failed: ${String(err)}`)
+    return null
+  }
 }
 
 function canAccessRoute(role: string, pathname: string): boolean {
   const allowedRoutes = ROLE_ROUTE_MAP[role] || []
   return allowedRoutes.some((route) => pathname.startsWith(route))
+}
+
+function applySecurityHeaders(response: NextResponse) {
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()')
+  response.headers.set(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'", 
+      "script-src 'self' 'unsafe-inline' https://js.hs-scripts.com", 
+      "style-src 'self' 'unsafe-inline'", 
+      "img-src 'self' data: https://tf1-backend.onrender.com", 
+      "connect-src 'self' https://tf1-backend.onrender.com wss:", 
+      "font-src 'self' data:",
+      "frame-ancestors 'self'",
+      "form-action 'self'",
+      "base-uri 'self'",
+      'upgrade-insecure-requests',
+    ].join('; ')
+  )
 }
 
 export function middleware(request: NextRequest) {
@@ -118,21 +123,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  // Skip auth check for public routes
-  if (isPublicRoute(pathname)) {
-    return NextResponse.next()
+  // Skip auth check for public routes and framework assets
+  if (
+    isPublicRoute(pathname) ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/') ||
+    pathname.match(/\.(png|jpg|jpeg|gif|svg|ico|webp)$/)
+  ) {
+    const res = NextResponse.next()
+    applySecurityHeaders(res)
+    return res
   }
 
   // For matches dashboard routes, check matches_token
   if (isMatchesDashboardRoute(pathname)) {
-    let token = request.cookies.get('matches_token')?.value
-
-    // Fallback: Check sportx_access_token (for backward compatibility during transition)
-    // TODO: Remove this fallback after backend migration is complete (Target: Q1 2026)
-    // This temporary fallback allows gradual migration without breaking existing users
-    if (!token) {
-      token = request.cookies.get('sportx_access_token')?.value
-    }
+    const token = request.cookies.get('matches_token')?.value
 
     // No token found - redirect to matches login
     if (!token) {
@@ -142,34 +147,27 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Check if token is expired
-    if (isTokenExpired(token)) {
+    // Verify matches token signature and expiry
+    const payload = await verifyJwt(token, 'MATCHES_JWT_SECRET')
+    if (!payload) {
       const loginUrl = new URL('/matches/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      loginUrl.searchParams.set('reason', 'session_expired')
+      loginUrl.searchParams.set('reason', 'invalid_session')
 
       // Clear the expired cookie
       const response = NextResponse.redirect(loginUrl)
       response.cookies.delete('matches_token')
-      response.cookies.delete('sportx_access_token')
       return response
     }
 
-    return NextResponse.next()
+    const res = NextResponse.next()
+    applySecurityHeaders(res)
+    return res
   }
 
   // For dashboard routes, check authentication via cookie or header
   if (isDashboardRoute(pathname)) {
-    // Try to get token from cookie first (more secure)
-    let token = request.cookies.get('sportx_access_token')?.value
-
-    // Fallback: Check Authorization header
-    if (!token) {
-      const authHeader = request.headers.get('authorization')
-      if (authHeader?.startsWith('Bearer ')) {
-        token = authHeader.substring(7)
-      }
-    }
+    const token = request.cookies.get('sportx_access_token')?.value
 
     // No token found - redirect to appropriate login
     if (!token) {
@@ -180,12 +178,13 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Check if token is expired
-    if (isTokenExpired(token)) {
-      // For regular dashboard
+    // Verify main access token
+    const payload = await verifyJwt(token, 'JWT_ACCESS_SECRET')
+    if (!payload) {
+      // For regular dashboard invalid/expired session
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      loginUrl.searchParams.set('reason', 'session_expired')
+      loginUrl.searchParams.set('reason', 'invalid_session')
 
       // Clear the expired cookie
       const response = NextResponse.redirect(loginUrl)
@@ -193,9 +192,7 @@ export function middleware(request: NextRequest) {
       return response
     }
 
-    // CRITICAL FIX: Get role ONLY from JWT token (source of truth)
-    // Do NOT use sportx_ui_role cookie as it may contain incorrect data
-    const role = getRoleFromToken(token)
+    const role = (payload as any)?.role || null
     if (
       role &&
       pathname !== '/dashboard' &&
@@ -209,7 +206,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  const res = NextResponse.next()
+  applySecurityHeaders(res)
+  return res
 }
 
 export const config = {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import ownerClient from '@/services/ownerApiClient';
+import ownerClient, { setOwnerSecret } from '@/services/ownerApiClient';
 import { Shield, Lock, Activity, Users, FileText, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -14,39 +14,26 @@ export default function PlatformControlPage() {
     const verifyKey = useCallback(async (secret: string) => {
         setLoading(true);
         try {
-            // Temporarily store to test the request
-            sessionStorage.setItem('tf1_owner_key', secret);
-
-            // We assume there's a stats endpoint or we just check if we can connect
-            // For now, we'll try to fetch stats. If backend not ready, we might simulate.
-            // But per instructions, valid key -> access. 
-            // Let's assume hitting /stats or similar validation.
-            // If 401, catch will trigger.
-
+            setOwnerSecret(secret);
             const response = await ownerClient.get('/stats');
             setStats(response.data);
             setIsAuthenticated(true);
             toast.success('Access Granted');
         } catch (error: any) {
             console.error('Owner auth failed', error);
-            sessionStorage.removeItem('tf1_owner_key');
+            setOwnerSecret(null);
             setIsAuthenticated(false);
-            // Only show error if we were manually submitting
             if (key) toast.error('Invalid Master Key');
         } finally {
             setLoading(false);
         }
     }, [key]);
 
-    // Check session on mount
+    // Clear any persisted key usage; require explicit entry each session
     useEffect(() => {
-        const storedKey = sessionStorage.getItem('tf1_owner_key');
-        if (storedKey) {
-            verifyKey(storedKey);
-        } else {
-            setLoading(false);
-        }
-    }, [verifyKey]);
+        setOwnerSecret(null);
+        setLoading(false);
+    }, []);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,7 +42,7 @@ export default function PlatformControlPage() {
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem('tf1_owner_key');
+        setOwnerSecret(null);
         setIsAuthenticated(false);
         setKey('');
         setStats(null);

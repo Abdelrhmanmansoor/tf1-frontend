@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 const BLOG_POSTS = [
   {
@@ -113,6 +114,12 @@ ARAMCO, the Public Investment Fund, and various government agencies are driving 
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const rl = rateLimit(`blog:${ip}`, { limit: 60, windowMs: 60_000 })
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': rl.retryAfter.toString() } })
+    }
+
     return NextResponse.json(
       { posts: BLOG_POSTS },
       { status: 200 }
