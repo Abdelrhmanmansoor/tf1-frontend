@@ -90,6 +90,10 @@ class AuthService {
         } catch (csrfError) {
           console.warn('Failed to fetch CSRF token:', csrfError)
           // Continue anyway - backend might skip CSRF for some routes
+            try {
+              const local = await api.get('/api/csrf')
+              csrfToken = local.data?.csrfToken
+            } catch {}
         }
       }
       
@@ -127,7 +131,7 @@ class AuthService {
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
       })
-      const { accessToken, user } = response.data
+        const { accessToken, user } = response.data
       
       if (!accessToken || !user) {
         throw new Error('Invalid response from server')

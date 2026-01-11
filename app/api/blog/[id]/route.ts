@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { rateLimit } from '@/lib/rate-limit'
 
 const BLOG_POSTS: Record<string, any> = {
   'future-jobs-2030': {
@@ -111,13 +113,26 @@ ARAMCO, the Public Investment Fund, and various government agencies are driving 
   },
 }
 
+const paramsSchema = z.object({ id: z.string().min(1) })
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+  const rl = rateLimit(`blog-id:${ip}`, { limit: 60, windowMs: 60_000 })
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': rl.retryAfter.toString() } })
+  }
+
   try {
-    const { id } = await params
-    const post = BLOG_POSTS[id]
+    const resolved = await params
+    const parsed = paramsSchema.safeParse(resolved)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid post id' }, { status: 400 })
+    }
+
+    const post = BLOG_POSTS[parsed.data.id]
 
     if (post) {
       return NextResponse.json(

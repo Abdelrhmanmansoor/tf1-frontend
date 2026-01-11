@@ -59,6 +59,15 @@ function isTokenExpired(token: string): boolean {
   }
 }
 
+function getCsrfFromCookie(): string | null {
+  if (typeof document === 'undefined') return null
+  const match = document.cookie
+    .split(';')
+    .map((c) => c.trim().split('='))
+    .find(([name]) => name === 'XSRF-TOKEN')
+  return match ? decodeURIComponent(match[1]) : null
+}
+
 // Request Interceptor
 api.interceptors.request.use(
   (config) => {
@@ -78,10 +87,18 @@ api.interceptors.request.use(
       if (token) {
         if (isTokenExpired(token)) {
           // Token is expired, let the response interceptor handle the 401 or refresh logic
-          // But we can proactively clear if we know it's dead and we don't have refresh token logic
-          // For now, allow it to fail to 401 so we handle cleanup centrally
         }
         config.headers.Authorization = `Bearer ${token}`
+      }
+
+      // Attach CSRF token for unsafe methods if present
+      const method = (config.method || 'get').toLowerCase()
+      const unsafe = ['post', 'put', 'patch', 'delete'].includes(method)
+      if (unsafe && !config.headers['X-CSRF-Token']) {
+        const csrf = getCsrfFromCookie()
+        if (csrf) {
+          config.headers['X-CSRF-Token'] = csrf
+        }
       }
     }
     return config
