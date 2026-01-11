@@ -33,17 +33,19 @@ export default function NotificationsCenter() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'application_status_change' | 'interview_scheduled' | 'message_received'>('all')
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     fetchNotifications()
-  }, [filter])
+  }, [filter, typeFilter])
 
   const fetchNotifications = async () => {
     try {
       setLoading(true)
-      const response = await api.get('/notifications', {
-        params: { isRead: filter === 'unread' ? false : 'all' },
+      const endpoint = typeFilter === 'all' ? '/notifications' : `/notifications/by-type/${typeFilter}`
+      const response = await api.get(endpoint, {
+        params: { isRead: filter === 'unread' ? false : 'all', limit: 30 },
       })
       if (response.data.success) {
         setNotifications(response.data.notifications)
@@ -177,6 +179,24 @@ export default function NotificationsCenter() {
           >
             {language === 'ar' ? 'غير مقروءة' : 'Unread'} ({unreadCount})
           </Button>
+          <div className="flex gap-2 ml-4">
+            {[
+              { id: 'all', labelAr: 'كل الأنواع', labelEn: 'All types' },
+              { id: 'application_status_change', labelAr: 'تحديثات الطلب', labelEn: 'Application updates' },
+              { id: 'interview_scheduled', labelAr: 'المقابلات', labelEn: 'Interviews' },
+              { id: 'message_received', labelAr: 'الرسائل', labelEn: 'Messages' },
+            ].map((type) => (
+              <Button
+                key={type.id}
+                variant={typeFilter === type.id ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTypeFilter(type.id as any)}
+                className={typeFilter === type.id ? 'bg-amber-500 hover:bg-amber-600 text-white' : ''}
+              >
+                {language === 'ar' ? type.labelAr : type.labelEn}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 

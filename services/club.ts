@@ -1260,11 +1260,21 @@ class ClubService {
    */
   async getDashboardStats(): Promise<DashboardStats> {
     try {
+      // CRITICAL FIX: Increase timeout for dashboard stats as it may take longer
+      // Use 60 seconds instead of default 30 seconds for this specific endpoint
       const response = await api.get<StatsResponse>(
-        `${this.BASE_PATH}/dashboard/stats`
+        `${this.BASE_PATH}/dashboard/stats`,
+        {
+          timeout: 60000 // 60 seconds timeout for dashboard stats
+        }
       )
       return response.data.stats
     } catch (error) {
+      // Handle timeout specifically
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        console.error('[ClubService] Dashboard stats timeout - backend may be slow')
+        throw new Error('تحميل البيانات يستغرق وقتاً أطول من المعتاد. يرجى المحاولة مرة أخرى.')
+      }
       throw this.handleError(error)
     }
   }

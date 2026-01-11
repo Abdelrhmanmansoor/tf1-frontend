@@ -10,6 +10,7 @@ import { Toaster } from 'sonner'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.tf1one.com'),
   title: 'TF1 Jobs - منصة التوظيف الرياضية الرائدة في السعودية',
   description: 'منصة التوظيف الرياضية المعتمدة رسمياً - سجل تجاري 7037626640. ابحث عن وظائف في القطاع الرياضي من أفضل الشركات والمؤسسات.',
   keywords: 'وظائف رياضية, توظيف السعودية, منصة وظائف, سجل تجاري 7037626640, وظائف أندية, توظيف رياضي',

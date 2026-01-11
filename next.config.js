@@ -1,7 +1,10 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  outputFileTracingRoot: path.join(__dirname),
   images: {
     remotePatterns: [
       {
@@ -86,11 +89,6 @@ const nextConfig = {
   },
   // Disable powered-by header
   poweredByHeader: false,
-  // Dev indicators configuration
-  devIndicators: {
-    buildActivity: false,
-    position: 'bottom-right',
-  },
   // Error handling
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

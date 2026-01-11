@@ -62,6 +62,7 @@ const ApplicationDetailPage = () => {
   const [messageLoading, setMessageLoading] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [notes, setNotes] = useState<string>('')
+  const [conversationId, setConversationId] = useState<string>('')
   
   // Interview fields
   const [interviewDate, setInterviewDate] = useState('')
@@ -83,7 +84,11 @@ const ApplicationDetailPage = () => {
       setLoading(true)
       const response = await api.get(`/job-publisher/applications/${applicationId}`)
       if (response.data.success) {
-        setApplication(response.data.data.application || response.data.data)
+        const appData = response.data.data.application || response.data.data
+        setApplication(appData)
+        if (response.data.data.conversation?.id) {
+          setConversationId(response.data.data.conversation.id)
+        }
       }
     } catch (err: any) {
       console.error('Error fetching application:', err)
@@ -117,22 +122,38 @@ const ApplicationDetailPage = () => {
 
     try {
       setStatusLoading(true)
-      await api.put(`/job-publisher/applications/${application._id}/status`, {
+      const res = await api.put(`/job-publisher/applications/${application._id}/status`, {
         status: newStatus,
-        notes,
+        message: notes,
         interviewDate: newStatus === 'interviewed' ? `${interviewDate}T${interviewTime}` : undefined,
         interviewLocation: newStatus === 'interviewed' ? interviewLocation : undefined
       })
-      
+
+      if (res.data?.conversationId) {
+        setConversationId(res.data.conversationId)
+      }
       setApplication(prev => prev ? { ...prev, status: newStatus } : null)
       setSelectedStatus(newStatus)
       toast.success(language === 'ar' ? 'تم تحديث الحالة بنجاح' : 'Status updated successfully')
-      
-      // If status is interviewed, suggest messaging
+
+      // Auto schedule interview details if available and conversation exists
+      if (newStatus === 'interviewed' && (interviewDate || interviewTime) && (res.data?.conversationId || conversationId)) {
+        const convId = res.data?.conversationId || conversationId
+        try {
+          await api.put(`/messages/conversation/${convId}/schedule-interview`, {
+            scheduledDate: interviewDate,
+            scheduledTime: interviewTime,
+            location: interviewLocation,
+          })
+        } catch (scheduleErr) {
+          console.error('Schedule sync failed', scheduleErr)
+        }
+      }
+
       if (newStatus === 'interviewed') {
-        toast.info(language === 'ar' 
-          ? 'يمكنك الآن مراسلة المتقدم عبر نظام الرسائل' 
-          : 'You can now message the applicant via messaging system')
+        toast.info(language === 'ar'
+          ? 'تم إشعار المتقدم. يمكنك متابعة المحادثة الآن.'
+          : 'Applicant notified. Continue the conversation now.')
       }
     } catch (err: any) {
       console.error('Error updating status:', err)
@@ -148,15 +169,21 @@ const ApplicationDetailPage = () => {
     
     try {
       setMessageLoading(true)
-      // Create or get existing conversation
-      const response = await api.post('/messages/conversations', {
-        participantIds: [application.applicantId._id],
-        type: 'direct'
-      })
-      
-      if (response.data.success) {
-        const conversationId = response.data.conversation._id
+      if (conversationId) {
         router.push(`/dashboard/job-publisher?defaultTab=messages&conversationId=${conversationId}`)
+        return
+      }
+
+      const response = await api.post(`/messages/conversation/${application._id}`, {
+        subject: language === 'ar' ? 'محادثة طلب وظيفة' : 'Job application conversation'
+      })
+
+      if (response.data.success) {
+        const convId = response.data.conversation?._id || response.data.conversation?.id
+        if (convId) {
+          setConversationId(convId)
+          router.push(`/dashboard/job-publisher?defaultTab=messages&conversationId=${convId}`)
+        }
       }
     } catch (error) {
       console.error('Error starting conversation:', error)

@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { 
   Search, 
-  Filter, 
   Eye, 
   CheckCircle, 
   XCircle, 
@@ -75,8 +74,7 @@ export default function ApplicationsList() {
         url += `&jobId=${jobId}`
       }
 
-      // Add search if implemented in backend
-      // if (searchTerm) url += `&search=${searchTerm}`
+      if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`
 
       const response = await api.get(url)
       if (response.data.success) {
@@ -136,7 +134,7 @@ export default function ApplicationsList() {
         </div>
         
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto">
-          {['all', 'new', 'under_review', 'interviewed', 'offered', 'hired', 'rejected'].map((status) => (
+          {['all', 'new', 'under_review', 'interviewed', 'offered', 'accepted', 'hired', 'rejected'].map((status) => (
             <Button
               key={status}
               variant={statusFilter === status ? 'default' : 'outline'}

@@ -121,14 +121,32 @@ const ClubDashboard = () => {
           return
         }
 
-        // If 500 error, show helpful message
-        if (err.status === 500) {
+        // CRITICAL FIX: Handle timeout errors specifically
+        if (
+          err.code === 'ECONNABORTED' ||
+          err.message?.includes('timeout') ||
+          err.message?.includes('timeout of') ||
+          err.message?.includes('يستغرق وقتاً أطول')
+        ) {
           setError(
-            'Server error loading dashboard. Backend needs fixing: ' +
-              (err.message || 'Unknown error')
+            language === 'ar'
+              ? 'الخادم يستغرق وقتاً طويلاً للاستجابة. يرجى المحاولة مرة أخرى أو تحديث الصفحة.'
+              : 'Server is taking too long to respond. Please try again or refresh the page.'
+          )
+        } else if (err.status === 500) {
+          // If 500 error, show helpful message
+          setError(
+            language === 'ar'
+              ? 'خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.'
+              : 'Server error loading dashboard. Please try again later.'
           )
         } else {
-          setError(err.message || 'Failed to load dashboard data')
+          setError(
+            err.message ||
+              (language === 'ar'
+                ? 'فشل تحميل بيانات لوحة التحكم'
+                : 'Failed to load dashboard data')
+          )
         }
       } finally {
         setLoading(false)
@@ -158,6 +176,11 @@ const ClubDashboard = () => {
             {language === 'ar'
               ? 'جاري تحميل لوحة التحكم...'
               : 'Loading Dashboard...'}
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            {language === 'ar'
+              ? 'قد يستغرق الأمر بضع ثوانٍ...'
+              : 'This may take a few seconds...'}
           </p>
         </motion.div>
       </div>

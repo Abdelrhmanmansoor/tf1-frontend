@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/language-context'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
 import { toast } from 'sonner'
-import { MessageCircle, Send, Clock, User, Briefcase, Loader2 } from 'lucide-react'
+import { MessageCircle, Send, Clock, User, Loader2 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ar, enUS } from 'date-fns/locale'
 
@@ -53,6 +53,7 @@ export default function MessagingCenter() {
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string>('')
 
   // Add this effect to handle initial conversation from URL
   useEffect(() => {
@@ -91,6 +92,9 @@ export default function MessagingCenter() {
       const response = await api.get(`/messages/conversation/${conversationId}`)
       if (response.data.success) {
         setMessages(response.data.messages || [])
+        if (response.data.currentUserId) {
+          setCurrentUserId(response.data.currentUserId)
+        }
       }
     } catch (error: any) {
       console.error('Error fetching messages:', error)
@@ -203,7 +207,7 @@ export default function MessagingCenter() {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg) => {
-                  const isOwn = msg.senderId._id === 'current-user' // Replace with actual user ID check
+                  const isOwn = currentUserId && msg.senderId?._id === currentUserId
                   return (
                     <div key={msg._id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                       <div

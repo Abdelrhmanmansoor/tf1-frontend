@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useLanguage } from '@/contexts/language-context'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -22,8 +22,11 @@ import {
   BarChart3,
   Calendar,
   Building,
-  Filter,
-  Search
+  Bell,
+  Activity,
+  Flame,
+  LineChart,
+  ShieldCheck
 } from 'lucide-react'
 import { toast } from 'sonner'
 import ProfileSettings from './job-publisher/ProfileSettings'
@@ -31,6 +34,7 @@ import MessagingCenter from './job-publisher/MessagingCenter'
 import NotificationsCenter from './job-publisher/NotificationsCenter'
 import JobsList from './job-publisher/JobsList'
 import ApplicationsList from './job-publisher/ApplicationsList'
+import NotificationBell from './NotificationBell'
 
 interface DashboardStats {
   totalJobs: number
@@ -74,11 +78,21 @@ interface Application {
   createdAt: string
 }
 
+interface NotificationItem {
+  _id: string
+  title: string
+  description: string
+  createdAt: string
+  isRead?: boolean
+  type?: string
+}
+
 export default function JobPublisherDashboard({ defaultTab = 'overview' }: { defaultTab?: string }) {
   const { language } = useLanguage()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [recentJobs, setRecentJobs] = useState<Job[]>([])
   const [recentApplications, setRecentApplications] = useState<Application[]>([])
+  const [recentNotifications, setRecentNotifications] = useState<NotificationItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState(defaultTab)
 
@@ -96,8 +110,12 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
       // Use the new job-publisher endpoint with /stats
       const response = await api.get('/job-publisher/dashboard/stats')
       if (response.data.success) {
-        // Map the new API response structure
-        const data = response.data.data
+        // Map the new API response structure (support both data.statistics and statistics roots)
+        const data = response.data.data?.statistics || response.data.statistics || response.data.data
+        if (!data) {
+          setStats(null)
+          return
+        }
         setStats({
           totalJobs: data.jobs?.total || 0,
           activeJobs: data.jobs?.active || 0,
@@ -136,6 +154,14 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
       if (appsRes.data.success) {
         setRecentApplications(appsRes.data.data.applications || [])
       }
+
+      // Fetch lightweight notifications snapshot for activity stream
+      const notifRes = await api.get('/notifications', {
+        params: { limit: 6, sort: '-createdAt', isRead: 'all' }
+      })
+      if (notifRes.data.success) {
+        setRecentNotifications(notifRes.data.notifications || [])
+      }
     } catch (error: any) {
       console.error('Error fetching recent data:', error)
     }
@@ -171,6 +197,30 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
     })
   }
 
+  const funnelData = useMemo(() => {
+    if (!stats) return []
+    const total = stats.totalApplications || 0
+    const entries: Array<{ key: string; label: string; value: number; tone: string }> = [
+      { key: 'new', label: language === 'ar' ? 'جديدة' : 'New', value: stats.newApplications, tone: 'bg-blue-100 text-blue-700' },
+      { key: 'under_review', label: language === 'ar' ? 'قيد المراجعة' : 'Review', value: stats.underReviewApplications, tone: 'bg-yellow-100 text-yellow-700' },
+      { key: 'interviewed', label: language === 'ar' ? 'مقابلات' : 'Interviewed', value: stats.interviewedApplications || 0, tone: 'bg-purple-100 text-purple-700' },
+      { key: 'offered', label: language === 'ar' ? 'عروض' : 'Offered', value: stats.offeredApplications || 0, tone: 'bg-teal-100 text-teal-700' },
+      { key: 'accepted', label: language === 'ar' ? 'مقبول' : 'Accepted', value: stats.acceptedApplications || 0, tone: 'bg-emerald-100 text-emerald-700' },
+      { key: 'rejected', label: language === 'ar' ? 'مرفوض' : 'Rejected', value: stats.rejectedApplications || 0, tone: 'bg-red-100 text-red-700' },
+    ]
+
+    return entries.map((entry) => ({
+      ...entry,
+      percent: total > 0 ? Math.round((entry.value / total) * 100) : 0,
+    }))
+  }, [stats, language])
+
+  const acceptanceRate = useMemo(() => {
+    if (!stats || !stats.totalApplications) return 0
+    const accepted = (stats.acceptedApplications || 0) + (stats.hiredApplications || 0)
+    return Math.round((accepted / stats.totalApplications) * 100)
+  }, [stats])
+
   const isRtl = language === 'ar'
 
   if (loading) {
@@ -189,16 +239,28 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
+            <div className="space-y-1">
               <h1 className="text-3xl font-bold text-gray-900">
                 {language === 'ar' ? 'لوحة تحكم ناشر الوظائف' : 'Job Publisher Dashboard'}
               </h1>
-              <p className="text-gray-600 mt-2">
-                {language === 'ar' ? 'إدارة الوظائف والطلبات' : 'Manage jobs and applications'}
+              <p className="text-gray-600 mt-1">
+                {language === 'ar' ? 'مؤشرات حية، أداء الوظائف، ومركز الإشعارات الذكي' : 'Live KPIs, job performance, and smart notifications'}
               </p>
+              <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-50 text-green-700">
+                  <ShieldCheck className="w-3 h-3" />
+                  {language === 'ar' ? 'متوافق مع الـ API الحالي' : 'Aligned with existing API'}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">
+                  <Activity className="w-3 h-3" />
+                  {language === 'ar' ? 'إحصاءات لحظية' : 'Live insights'}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
+
+            <div className="flex items-center gap-3 self-start lg:self-auto">
+              <NotificationBell userRole="club" />
               <Link href="/dashboard/job-publisher/jobs/new">
                 <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
                   <Plus className="w-4 h-4 mr-2" />
@@ -248,6 +310,44 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
+            {/* Quick actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-purple-100 text-purple-700">
+                  <BarChart3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">{language === 'ar' ? 'مؤشرات الأداء' : 'Performance KPIs'}</p>
+                  <p className="font-semibold text-gray-900">{language === 'ar' ? 'تقرير فوري' : 'Realtime snapshot'}</p>
+                </div>
+                <Link href="/dashboard/job-publisher/applications" className="ml-auto">
+                  <Button variant="ghost" size="sm">{language === 'ar' ? 'عرض' : 'Open'}</Button>
+                </Link>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-blue-100 text-blue-700">
+                  <LineChart className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">{language === 'ar' ? 'نشر سريع' : 'Quick publish'}</p>
+                  <p className="font-semibold text-gray-900">{language === 'ar' ? 'ابدأ وظيفة جديدة' : 'Launch a new job'}</p>
+                </div>
+                <Link href="/dashboard/job-publisher/jobs/new" className="ml-auto">
+                  <Button variant="outline" size="sm">{language === 'ar' ? 'جديدة' : 'New'}</Button>
+                </Link>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-amber-100 text-amber-700">
+                  <Flame className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">{language === 'ar' ? 'الإشعارات' : 'Notifications'}</p>
+                  <p className="font-semibold text-gray-900">{language === 'ar' ? 'حالة الوقت الحقيقي' : 'Real-time inbox'}</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setActiveTab('notifications')}>{language === 'ar' ? 'المركز' : 'Center'}</Button>
+              </div>
+            </div>
+
             {/* Statistics Cards */}
             {stats && (
               <motion.div
@@ -483,6 +583,118 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                 </div>
               </motion.div>
             </div>
+
+            {/* Application funnel + performance */}
+            {stats && (
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-gray-500">{language === 'ar' ? 'مسار الطلبات' : 'Application funnel'}</p>
+                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'تقدّم المرشحين' : 'Candidate progress'}</p>
+                    </div>
+                    <Activity className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div className="space-y-3">
+                    {funnelData.map((stage) => (
+                      <div key={stage.key} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>{stage.label}</span>
+                          <span className="font-semibold text-gray-900">{stage.value} · {stage.percent}%</span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${stage.tone}`}
+                            style={{ width: `${Math.min(stage.percent, 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-gray-500">{language === 'ar' ? 'معدل التحويل' : 'Conversion'}</p>
+                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'قبول/توظيف' : 'Acceptance & hires'}</p>
+                    </div>
+                    <LineChart className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">{language === 'ar' ? 'معدل النجاح الإجمالي' : 'Overall success rate'}</p>
+                        <p className="text-3xl font-bold text-emerald-600">{acceptanceRate}%</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">{language === 'ar' ? 'إجمالي الطلبات' : 'Total applications'}</p>
+                        <p className="text-lg font-semibold text-gray-900">{stats.totalApplications}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                        <p className="text-gray-600">{language === 'ar' ? 'مقبول' : 'Accepted'}</p>
+                        <p className="text-lg font-semibold text-emerald-700">{stats.acceptedApplications || 0}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+                        <p className="text-gray-600">{language === 'ar' ? 'مرفوض' : 'Rejected'}</p>
+                        <p className="text-lg font-semibold text-red-700">{stats.rejectedApplications || 0}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                        <p className="text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviews'}</p>
+                        <p className="text-lg font-semibold text-indigo-700">{stats.interviewedApplications || 0}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-teal-50 border border-teal-100">
+                        <p className="text-gray-600">{language === 'ar' ? 'عروض' : 'Offers'}</p>
+                        <p className="text-lg font-semibold text-teal-700">{stats.offeredApplications || 0}</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-gray-500">{language === 'ar' ? 'نبض النشاط' : 'Activity pulse'}</p>
+                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'إشعارات ورسائل' : 'Notifications & messages'}</p>
+                    </div>
+                    <Bell className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div className="space-y-3">
+                    {recentNotifications.length === 0 ? (
+                      <p className="text-sm text-gray-500">{language === 'ar' ? 'لا نشاط حديث' : 'No recent activity'}</p>
+                    ) : (
+                      recentNotifications.map((notif) => (
+                        <div key={notif._id} className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:border-purple-200 transition-colors">
+                          <span className={`mt-1 w-2 h-2 rounded-full ${notif.isRead ? 'bg-gray-300' : 'bg-purple-500'}`}></span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 line-clamp-1">{notif.title}</p>
+                            <p className="text-xs text-gray-600 line-clamp-2">{notif.description}</p>
+                            <p className="text-xs text-gray-400 mt-1">{formatDate(notif.createdAt)}</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('notifications')} className="w-full">
+                      {language === 'ar' ? 'فتح مركز الإشعارات' : 'Open notification center'}
+                    </Button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
           </div>
         )}
 
