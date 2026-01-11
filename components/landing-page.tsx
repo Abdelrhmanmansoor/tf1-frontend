@@ -684,6 +684,9 @@ export function LandingPage() {
         </div>
       </motion.section>
 
+      {/* Partners Marquee - Under Hero */}
+      <PremiumPartners />
+
       {/* Trust & Verification Badges Section */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -852,9 +855,6 @@ export function LandingPage() {
           </div>
         </section>
       )}
-
-      {/* Partners Premium Section */}
-      <PremiumPartners />
 
       {/* Target Categories Section */}
       <section className="py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-white via-blue-50/30 to-white">
