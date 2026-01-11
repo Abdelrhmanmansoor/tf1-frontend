@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit } from '@/lib/rate-limit'
+import { z } from 'zod'
 
 const BLOG_POSTS = [
   {
@@ -112,6 +113,8 @@ ARAMCO, the Public Investment Fund, and various government agencies are driving 
   },
 ]
 
+const querySchema = z.object({ search: z.string().max(200).optional() })
+
 export async function GET(request: NextRequest) {
   try {
     const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
@@ -120,8 +123,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': rl.retryAfter.toString() } })
     }
 
+    const url = new URL(request.url)
+    const parsed = querySchema.safeParse({ search: url.searchParams.get('search') || undefined })
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid query' }, { status: 400 })
+    }
+
+    const term = parsed.data.search?.toLowerCase().trim()
+    const posts = term
+      ? BLOG_POSTS.filter((p) =>
+          [p.title, p.titleAr, p.excerpt, p.excerptAr].some((field) => field.toLowerCase().includes(term))
+        )
+      : BLOG_POSTS
+
     return NextResponse.json(
-      { posts: BLOG_POSTS },
+      { posts },
       { status: 200 }
     )
   } catch (error) {
