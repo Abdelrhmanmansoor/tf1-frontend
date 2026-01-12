@@ -100,9 +100,8 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           </motion.div>
         </div>
 
-        {/* Centered Navigation - Only visible for logged-in users */}
-        {user && (
-          <nav className="hidden lg:flex items-center">
+        {/* Centered Navigation - Visible for all users */}
+        <nav className="hidden lg:flex items-center">
             <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
               {/* Primary Items - Visible on all large screens */}
               {navItems.slice(0, 3).map((item) => (
@@ -248,7 +247,6 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
               </div>
             </div>
           </nav>
-        )}
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
