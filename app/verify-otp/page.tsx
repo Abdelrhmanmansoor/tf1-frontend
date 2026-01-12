@@ -2,10 +2,12 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLanguage } from '@/contexts/language-context'
+import { authService } from '@/services/auth'
 import Link from 'next/link'
 import {
   ArrowLeft,
@@ -15,6 +17,8 @@ import {
   Shield,
   Zap,
   Clock,
+  MessageSquare,
+  Mail,
 } from 'lucide-react'
 
 interface FireworkParticle {
@@ -40,13 +44,25 @@ interface DigitalRain {
 
 export default function VerifyOTPPage() {
   const { language } = useLanguage()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
+  // Get params from URL
+  const phoneParam = searchParams.get('phone') || ''
+  const emailParam = searchParams.get('email') || ''
+  const typeParam = searchParams.get('type') || 'registration'
+  const channelParam = searchParams.get('channel') || 'sms'
+  const redirectParam = searchParams.get('redirect') || '/login'
+  
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(120) // 2 minutes
+  const [error, setError] = useState('')
+  const [timeLeft, setTimeLeft] = useState(300) // 5 minutes (matches backend)
   const [fireworks, setFireworks] = useState<FireworkParticle[]>([])
   const [digitalRain, setDigitalRain] = useState<DigitalRain[]>([])
   const [resendCooldown, setResendCooldown] = useState(0)
+  const [attemptsRemaining, setAttemptsRemaining] = useState(5)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   // Subtle particle effect
@@ -176,41 +192,86 @@ export default function VerifyOTPPage() {
 
   const handleVerifyOtp = async (otpToVerify = otp) => {
     setIsLoading(true)
+    setError('')
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const otpCode = otpToVerify.join('')
+      const result = await authService.verifyOTP(
+        phoneParam || undefined,
+        otpCode,
+        typeParam,
+        emailParam || undefined
+      )
 
-    setIsLoading(false)
-    setIsSuccess(true)
+      if (result.success) {
+        setIsSuccess(true)
 
-    // Create multiple fireworks
-    setTimeout(
-      () => createFirework(window.innerWidth * 0.2, window.innerHeight * 0.3),
-      200
-    )
-    setTimeout(
-      () => createFirework(window.innerWidth * 0.8, window.innerHeight * 0.4),
-      400
-    )
-    setTimeout(
-      () => createFirework(window.innerWidth * 0.5, window.innerHeight * 0.2),
-      600
-    )
-    setTimeout(
-      () => createFirework(window.innerWidth * 0.3, window.innerHeight * 0.6),
-      800
-    )
-    setTimeout(
-      () => createFirework(window.innerWidth * 0.7, window.innerHeight * 0.7),
-      1000
-    )
+        // Create multiple fireworks
+        setTimeout(
+          () => createFirework(window.innerWidth * 0.2, window.innerHeight * 0.3),
+          200
+        )
+        setTimeout(
+          () => createFirework(window.innerWidth * 0.8, window.innerHeight * 0.4),
+          400
+        )
+        setTimeout(
+          () => createFirework(window.innerWidth * 0.5, window.innerHeight * 0.2),
+          600
+        )
+        setTimeout(
+          () => createFirework(window.innerWidth * 0.3, window.innerHeight * 0.6),
+          800
+        )
+        setTimeout(
+          () => createFirework(window.innerWidth * 0.7, window.innerHeight * 0.7),
+          1000
+        )
+
+        // Redirect after success animation
+        setTimeout(() => {
+          router.push(redirectParam)
+        }, 3000)
+      } else {
+        setError(language === 'ar' ? result.messageAr : result.message)
+        if (result.attemptsRemaining !== undefined) {
+          setAttemptsRemaining(result.attemptsRemaining)
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || (language === 'ar' ? 'فشل التحقق من الرمز' : 'OTP verification failed'))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleResendOtp = async () => {
-    setResendCooldown(30)
-    setTimeLeft(120)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    if (resendCooldown > 0) return
+    
+    setError('')
+    
+    try {
+      const result = await authService.sendOTP(
+        phoneParam || undefined,
+        typeParam,
+        channelParam,
+        emailParam || undefined
+      )
+
+      if (result.success) {
+        setResendCooldown(60)
+        setTimeLeft(result.expiresIn || 300)
+        setOtp(['', '', '', '', '', ''])
+        inputRefs.current[0]?.focus()
+      } else {
+        if (result.waitTime) {
+          setResendCooldown(result.waitTime)
+        }
+        setError(language === 'ar' ? result.messageAr : result.message)
+      }
+    } catch (err: any) {
+      setError(err.message || (language === 'ar' ? 'فشل إعادة إرسال الرمز' : 'Failed to resend OTP'))
+    }
   }
 
   const formatTime = (seconds: number) => {

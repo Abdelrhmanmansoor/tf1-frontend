@@ -167,10 +167,13 @@ export async function middleware(request: NextRequest) {
 
   // For dashboard routes, check authentication via cookie or header
   if (isDashboardRoute(pathname)) {
-    const token = request.cookies.get('sportx_access_token')?.value
+    // Check both cookie names - backend sets 'accessToken', legacy/client uses 'sportx_access_token'
+    const token = request.cookies.get('accessToken')?.value || 
+                  request.cookies.get('sportx_access_token')?.value
 
     // No token found - redirect to appropriate login
     if (!token) {
+      console.log('[middleware] No auth token found for dashboard route:', pathname)
       // For regular dashboard, redirect to regular login
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
@@ -186,8 +189,9 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', 'invalid_session')
 
-      // Clear the expired cookie
+      // Clear the expired cookies (both potential names)
       const response = NextResponse.redirect(loginUrl)
+      response.cookies.delete('accessToken')
       response.cookies.delete('sportx_access_token')
       return response
     }

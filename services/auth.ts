@@ -153,10 +153,33 @@ class AuthService {
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
       })
-      const { user } = response.data
+      const { user, accessToken, refreshToken } = response.data
 
       if (!user) {
         throw new Error('Invalid response from server')
+      }
+
+      // CRITICAL: Set cookies client-side to ensure middleware can read them
+      // Backend sets HttpOnly cookies but they may not work cross-origin
+      // This ensures the frontend middleware has access to the token
+      if (typeof document !== 'undefined' && accessToken) {
+        const isProduction = window.location.protocol === 'https:'
+        const secure = isProduction ? '; Secure' : ''
+        const sameSite = isProduction ? '; SameSite=Strict' : '; SameSite=Lax'
+        
+        // Set both cookie names for compatibility
+        // 'accessToken' matches backend, 'sportx_access_token' is legacy
+        const maxAge = 15 * 60 // 15 minutes in seconds (matches backend ACCESS_TOKEN_MAX_AGE)
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
+        document.cookie = `sportx_access_token=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
+        
+        console.log('[AUTH] Access token cookie set successfully')
+        
+        // Also set refresh token cookie if available
+        if (refreshToken) {
+          const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days in seconds
+          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
+        }
       }
 
       this.saveUser(user)
@@ -200,6 +223,9 @@ class AuthService {
       }
 
       performLogout()
+      // Clear all auth-related cookies (both names for compatibility)
+      document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      document.cookie = `refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `sportx_ui_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
@@ -325,6 +351,121 @@ class AuthService {
   async resetPassword(token: string, password: string): Promise<any> {
     try {
       const response = await api.post('/auth/reset-password', { token, password })
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  // ==================== OTP VERIFICATION METHODS ====================
+
+  /**
+   * Send OTP for phone/email verification
+   * @param phone - Phone number in international format (e.g., +966XXXXXXXXX)
+   * @param type - OTP type: 'registration', 'password-reset', 'phone-verification', 'login'
+   * @param channel - Delivery channel: 'sms', 'whatsapp', 'email'
+   * @param email - Email address (optional, for email channel)
+   * @returns Promise with send result
+   */
+  async sendOTP(phone?: string, type: string = 'registration', channel: string = 'sms', email?: string): Promise<any> {
+    try {
+      // Get CSRF token
+      let csrfToken: string | undefined
+      try {
+        const t = await api.get('/auth/csrf-token')
+        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
+      } catch (csrfError) {
+        console.warn('Failed to fetch CSRF token for sendOTP:', csrfError)
+      }
+
+      const response = await api.post('/auth/send-otp', 
+        { phone, email, type, channel },
+        { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
+      )
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Verify OTP code
+   * @param phone - Phone number that received the OTP
+   * @param otp - OTP code entered by user
+   * @param type - OTP type: 'registration', 'password-reset', etc.
+   * @param email - Email address (optional)
+   * @returns Promise with verification result
+   */
+  async verifyOTP(phone: string | undefined, otp: string, type: string = 'registration', email?: string): Promise<any> {
+    try {
+      // Get CSRF token
+      let csrfToken: string | undefined
+      try {
+        const t = await api.get('/auth/csrf-token')
+        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
+      } catch (csrfError) {
+        console.warn('Failed to fetch CSRF token for verifyOTP:', csrfError)
+      }
+
+      const response = await api.post('/auth/verify-otp',
+        { phone, email, otp, type },
+        { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
+      )
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Request password reset via phone OTP
+   * @param phone - Phone number in international format
+   * @param channel - 'sms' or 'whatsapp'
+   * @returns Promise with response
+   */
+  async forgotPasswordOTP(phone: string, channel: string = 'sms'): Promise<any> {
+    try {
+      // Get CSRF token
+      let csrfToken: string | undefined
+      try {
+        const t = await api.get('/auth/csrf-token')
+        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
+      } catch (csrfError) {
+        console.warn('Failed to fetch CSRF token for forgotPasswordOTP:', csrfError)
+      }
+
+      const response = await api.post('/auth/forgot-password-otp',
+        { phone, channel },
+        { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
+      )
+      return response.data
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
+  /**
+   * Reset password using phone OTP
+   * @param phone - Phone number
+   * @param otp - OTP code
+   * @param newPassword - New password
+   * @returns Promise with response
+   */
+  async resetPasswordOTP(phone: string, otp: string, newPassword: string): Promise<any> {
+    try {
+      // Get CSRF token
+      let csrfToken: string | undefined
+      try {
+        const t = await api.get('/auth/csrf-token')
+        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
+      } catch (csrfError) {
+        console.warn('Failed to fetch CSRF token for resetPasswordOTP:', csrfError)
+      }
+
+      const response = await api.post('/auth/reset-password-otp',
+        { phone, otp, newPassword },
+        { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
+      )
       return response.data
     } catch (error) {
       throw this.handleError(error)
