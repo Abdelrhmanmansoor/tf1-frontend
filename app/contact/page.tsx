@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import Link from 'next/link'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import {
   Phone,
   Mail,
@@ -211,12 +213,14 @@ export default function ContactPage() {
   ]
 
   return (
-    <div
-      className={`min-h-screen bg-white relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
+    <>
+      <Navbar activeMode="application" activePage="contact" />
+      <div
+        className={`min-h-screen bg-white relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+        dir={language === 'ar' ? 'rtl' : 'ltr'}
+      >
 
-      {/* Hero Section */}
+        {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden">
@@ -540,6 +544,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   )
 }

@@ -5,6 +5,8 @@ import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import Link from 'next/link'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import {
   Users,
   Heart,
@@ -266,12 +268,14 @@ export default function AboutPage() {
 
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
+    <>
+      <Navbar activeMode="application" activePage="about" />
+      <div
+        className={`min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+        dir={language === 'ar' ? 'rtl' : 'ltr'}
+      >
 
-      {/* Floating Navigation Dots */}
+        {/* Floating Navigation Dots */}
       <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:flex flex-col gap-3">
         {sections.map((section, index) => (
           <motion.div
@@ -848,6 +852,8 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   )
 }

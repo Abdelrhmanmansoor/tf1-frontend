@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 import { ArrowLeft, Sparkles, FileText, Download, Shield, Zap, Globe } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 
 function CVBuilderPageContent() {
   const router = useRouter();
@@ -36,6 +38,7 @@ function CVBuilderPageContent() {
 
   return (
     <>
+      <Navbar activeMode="application" activePage="cv-builder" />
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         {/* Hero Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-10 px-4 sm:px-6 lg:px-8">
@@ -171,6 +174,7 @@ function CVBuilderPageContent() {
           </div>
         </div>
       </main>
+      <Footer />
       <Toaster position="top-center" />
     </>
   );

@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import Link from 'next/link'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
 import {
   Search,
   Users,
@@ -202,12 +204,14 @@ export default function FeaturesPage() {
   ]
 
   return (
-    <div
-      className={`min-h-screen bg-white ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
-    >
+    <>
+      <Navbar activeMode="application" activePage="features" />
+      <div
+        className={`min-h-screen bg-white ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
+        dir={language === 'ar' ? 'rtl' : 'ltr'}
+      >
 
-      {/* Hero Section */}
+        {/* Hero Section */}
       <section className="py-20 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -510,6 +514,8 @@ export default function FeaturesPage() {
           </motion.div>
         </motion.div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   )
 }
