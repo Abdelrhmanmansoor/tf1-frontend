@@ -26,12 +26,13 @@ export async function getSessionFromCookie(options?: {
   const cookieName = options?.cookieName || 'sportx_access_token'
   const secretEnv = options?.secretEnv || 'JWT_ACCESS_SECRET'
   const issuer = options?.issuer || 'sportsplatform-api'
-  const token = cookies().get(cookieName)?.value
+  const cookieStore = await cookies()
+  const token = cookieStore.get(cookieName)?.value
   if (!token) return null
   return verifyToken(token, secretEnv, issuer)
 }
 
-export function getCurrentPathname(): string {
-  const h = headers()
+export async function getCurrentPathname(): Promise<string> {
+  const h = await headers()
   return h.get('x-invoke-path') || h.get('x-pathname') || h.get('referer')?.split('//').pop()?.split('?')[0] || '/'
 }

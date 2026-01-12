@@ -56,8 +56,8 @@ export function AdminHeader({ onToggleSidebar, isSidebarCollapsed }: AdminHeader
     logout()
   }
 
-  const userInitials = user?.name
-    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+  const userInitials = user
+    ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase()
     : 'AD'
 
   return (
@@ -187,7 +187,7 @@ export function AdminHeader({ onToggleSidebar, isSidebarCollapsed }: AdminHeader
                   </AvatarFallback>
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
-                  <span className="text-sm font-medium">{user?.name || 'Admin'}</span>
+                  <span className="text-sm font-medium">{user ? `${user.firstName} ${user.lastName}` : 'Admin'}</span>
                   <span className="text-xs text-muted-foreground">
                     {isRTL ? 'مدير النظام' : 'System Admin'}
                   </span>
@@ -198,7 +198,7 @@ export function AdminHeader({ onToggleSidebar, isSidebarCollapsed }: AdminHeader
             <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-56">
               <DropdownMenuLabel>
                 <div className="flex flex-col">
-                  <span className="font-medium">{user?.name || 'Admin'}</span>
+                  <span className="font-medium">{user ? `${user.firstName} ${user.lastName}` : 'Admin'}</span>
                   <span className="text-xs text-muted-foreground">{user?.email || 'admin@tf1jobs.com'}</span>
                 </div>
               </DropdownMenuLabel>

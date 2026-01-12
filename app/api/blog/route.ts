@@ -117,7 +117,7 @@ const querySchema = z.object({ search: z.string().max(200).optional() })
 
 export async function GET(request: NextRequest) {
   try {
-    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const ip = (request as any).ip || request.headers.get('x-forwarded-for') || 'unknown'
     const rl = rateLimit(`blog:${ip}`, { limit: 60, windowMs: 60_000 })
     if (!rl.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': rl.retryAfter.toString() } })

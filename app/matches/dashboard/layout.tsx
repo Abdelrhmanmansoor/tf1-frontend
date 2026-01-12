@@ -6,7 +6,8 @@ import { jwtVerify } from 'jose'
 const encoder = new TextEncoder()
 
 async function getVerifiedMatchesSession() {
-    const token = cookies().get('matches_token')?.value
+    const cookieStore = await cookies()
+    const token = cookieStore.get('matches_token')?.value
     const secret = process.env.MATCHES_JWT_SECRET
     if (!token || !secret) return null
     try {

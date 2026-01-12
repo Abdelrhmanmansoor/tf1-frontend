@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 const encoder = new TextEncoder()
 
 async function getSession() {
-    const token = cookies().get('sportx_access_token')?.value
+    const cookieStore = await cookies()
+    const token = cookieStore.get('sportx_access_token')?.value
     const secret = process.env.JWT_ACCESS_SECRET
     if (!token || !secret) return null
     try {

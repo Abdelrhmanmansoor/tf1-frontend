@@ -15,7 +15,7 @@ function CVBuilderPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const cvId = searchParams?.get('id') || undefined;
 

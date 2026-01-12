@@ -4,7 +4,6 @@
 
 import api from './api'
 import API_CONFIG from '@/config/api'
-import { jwtDecode } from 'jwt-decode'
 import { User, LoginResponse, UserRole } from '@/types/auth'
 
 interface RegisterData {
@@ -131,13 +130,12 @@ class AuthService {
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
       })
-        const { accessToken, user } = response.data
-      
-      if (!accessToken || !user) {
+      const { user } = response.data
+
+      if (!user) {
         throw new Error('Invalid response from server')
       }
-      
-      this.saveToken(accessToken)
+
       this.saveUser(user)
       return response.data
     } catch (error: any) {
@@ -151,13 +149,34 @@ class AuthService {
    */
   logout(): void {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem(API_CONFIG.TOKEN_KEY)
       localStorage.removeItem(API_CONFIG.USER_KEY)
       // Clear matches related keys
       localStorage.removeItem('matches_token')
       localStorage.removeItem('matches_user')
       
-      // Clear cookie - Ensure correct path and domain handling
+      // Attempt server-side logout to clear HttpOnly cookies
+      const performLogout = async () => {
+        try {
+          let csrfToken: string | undefined
+          try {
+            const t = await api.get('/auth/csrf-token')
+            csrfToken =
+              t.data?.data?.csrfToken ||
+              t.data?.token ||
+              (t.headers as any)?.['x-csrf-token']
+          } catch (csrfError) {
+            console.warn('CSRF fetch failed during logout, proceeding best-effort', csrfError)
+          }
+
+          await api.post('/auth/logout', undefined, {
+            headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
+          })
+        } catch (logoutError) {
+          console.warn('Server logout failed, client cleanup only', logoutError)
+        }
+      }
+
+      performLogout()
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `sportx_ui_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
@@ -227,15 +246,6 @@ class AuthService {
    * Save token to local storage and cookie
    * @param token - JWT access token
    */
-  private saveToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(API_CONFIG.TOKEN_KEY, token)
-      // Set cookie for middleware support - secure in production
-      const secure = window.location.protocol === 'https:' ? '; Secure' : ''
-      document.cookie = `${API_CONFIG.TOKEN_KEY}=${token}; path=/; max-age=${7 * 24 * 60 * 60}${secure}; SameSite=Strict`
-    }
-  }
-
   /**
    * Save user data to local storage
    * @param user - User object
@@ -337,17 +347,9 @@ class AuthService {
    */
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false
-    
-    const token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-    if (!token) return false
-    
-    try {
-      const decoded: any = jwtDecode(token)
-      const currentTime = Date.now() / 1000
-      return decoded.exp > currentTime
-    } catch (e) {
-      return false
-    }
+
+    // With HttpOnly cookies we cannot inspect the token; rely on cached user presence
+    return !!localStorage.getItem(API_CONFIG.USER_KEY)
   }
 
   /**

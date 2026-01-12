@@ -31,7 +31,7 @@ async function requireAuth(req: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+  const ip = (request as any).ip || request.headers.get('x-forwarded-for') || 'unknown'
   const rl = rateLimit(`contracts:${ip}`, { limit: 10, windowMs: 60_000 })
   if (!rl.allowed) {
     return NextResponse.json({ success: false, error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': rl.retryAfter.toString() } })

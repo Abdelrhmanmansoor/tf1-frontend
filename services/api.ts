@@ -40,25 +40,6 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = []
 }
 
-// Safer token parsing function (Fallback if jwt-decode isn't used here to avoid circular dep)
-function isTokenExpired(token: string): boolean {
-  try {
-    const base64Url = token.split('.')[1]
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    )
-    const payload = JSON.parse(jsonPayload)
-    const currentTime = Math.floor(Date.now() / 1000)
-    return payload.exp && payload.exp < currentTime
-  } catch (error) {
-    return true // Assume expired if invalid
-  }
-}
-
 function getCsrfFromCookie(): string | null {
   if (typeof document === 'undefined') return null
   const match = document.cookie
@@ -72,25 +53,6 @@ function getCsrfFromCookie(): string | null {
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      // Try matches_token first for matches routes, then fall back to main token
-      const url = config.url || ''
-      const isMatchesRoute = url.includes('/matches')
-      
-      let token = localStorage.getItem(API_CONFIG.TOKEN_KEY)
-      const matchesToken = localStorage.getItem('matches_token')
-      
-      // For matches routes, prefer matches_token if available
-      if (isMatchesRoute && matchesToken) {
-        token = matchesToken
-      }
-
-      if (token) {
-        if (isTokenExpired(token)) {
-          // Token is expired, let the response interceptor handle the 401 or refresh logic
-        }
-        config.headers.Authorization = `Bearer ${token}`
-      }
-
       // Attach CSRF token for unsafe methods if present
       const method = (config.method || 'get').toLowerCase()
       const unsafe = ['post', 'put', 'patch', 'delete'].includes(method)
@@ -138,15 +100,8 @@ api.interceptors.response.use(
 
         if (!isAuthPage && !isRedirecting) {
 
-          // If we had a refresh token flow, we would do it here.
-          // Since we don't seem to have one in the current architecture, we logout.
-
           isRedirecting = true
-
-          // Clear session
-          localStorage.removeItem(API_CONFIG.TOKEN_KEY)
           localStorage.removeItem(API_CONFIG.USER_KEY)
-          document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
 
           // Redirect
           const redirectUrl = encodeURIComponent(currentPath)

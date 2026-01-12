@@ -1271,7 +1271,7 @@ class ClubService {
       return response.data.stats
     } catch (error) {
       // Handle timeout specifically
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      if ((error as any).code === 'ECONNABORTED' || (error as any).message?.includes('timeout')) {
         console.error('[ClubService] Dashboard stats timeout - backend may be slow')
         throw new Error('تحميل البيانات يستغرق وقتاً أطول من المعتاد. يرجى المحاولة مرة أخرى.')
       }
