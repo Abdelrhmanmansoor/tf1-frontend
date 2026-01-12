@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
 import { Mail, Lock, Phone, Eye, EyeOff, Loader2, ArrowRight, User, Building, Calendar, FileText, Home, Info, CircleCheck, ShieldCheck, CircleHelp, MapPin, AlertTriangle, CheckCircle2, XCircle, Briefcase, TrendingUp, Users, BarChart3 } from 'lucide-react'
 import { toast } from 'sonner'
+import API_CONFIG from '@/config/api'
 
 // Schema Definitions
 const commonShape = {
@@ -103,11 +104,8 @@ export default function RegisterPage() {
   useEffect(() => {
     const fetchCSRFToken = async () => {
       try {
-        // Get API base URL - handle both absolute and relative URLs
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1'
-        const csrfUrl = apiBaseUrl.startsWith('http') 
-          ? `${apiBaseUrl}/auth/csrf-token`
-          : `${apiBaseUrl}/auth/csrf-token`
+        // Use API_CONFIG.BASE_URL to ensure we always hit the backend
+        const csrfUrl = `${API_CONFIG.BASE_URL}/auth/csrf-token`
         
         // Try to get CSRF token using the API service which handles cookies properly
         const response = await fetch(csrfUrl, {
@@ -170,10 +168,8 @@ export default function RegisterPage() {
     const { buildingNumber, additionalNumber, zipCode } = formValues as any
 
     try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1'
-      const verifyUrl = apiBaseUrl.startsWith('http')
-        ? `${apiBaseUrl.replace('/api/v1', '')}/api/v1/club/verify-address`
-        : `${apiBaseUrl}/club/verify-address`
+      // Use API_CONFIG.BASE_URL to ensure we always hit the backend
+      const verifyUrl = `${API_CONFIG.BASE_URL}/club/verify-address`
       
       const response = await fetch(verifyUrl, {
         method: 'POST',
