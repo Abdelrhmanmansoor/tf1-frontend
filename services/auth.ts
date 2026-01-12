@@ -119,14 +119,37 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
+      // Always fetch a fresh CSRF token before login to avoid "token already used" errors
       let csrfToken: string | undefined
       try {
-        const t = await api.get('/auth/csrf-token')
+        // Force a new token by requesting from server
+        const t = await api.get('/auth/csrf-token', {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         csrfToken =
           t.data?.data?.csrfToken ||
+          t.data?.csrfToken ||
           t.data?.token ||
           (t.headers as any)?.['x-csrf-token']
-      } catch {}
+        
+        // If not in response, try to get from cookie that was just set
+        if (!csrfToken && typeof document !== 'undefined') {
+          const cookies = document.cookie.split(';')
+          for (const cookie of cookies) {
+            const [name, value] = cookie.trim().split('=')
+            if (name === 'XSRF-TOKEN') {
+              csrfToken = decodeURIComponent(value)
+              break
+            }
+          }
+        }
+      } catch (csrfError) {
+        console.warn('Failed to fetch CSRF token for login:', csrfError)
+      }
+      
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
       })

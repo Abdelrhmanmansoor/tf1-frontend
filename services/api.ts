@@ -74,10 +74,37 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean; _csrfRetry?: boolean }
     const url = originalRequest?.url || ''
 
-    // Prevent infinite loops
+    // Handle CSRF token errors (403 with CSRF codes)
+    const errorCode = (error.response?.data as any)?.code
+    const isCsrfError = error.response?.status === 403 && 
+      ['CSRF_TOKEN_INVALID', 'CSRF_TOKEN_REUSED', 'CSRF_TOKEN_MISSING'].includes(errorCode)
+    
+    if (isCsrfError && !originalRequest._csrfRetry) {
+      originalRequest._csrfRetry = true
+      
+      try {
+        // Fetch a fresh CSRF token
+        const csrfResponse = await api.get('/auth/csrf-token')
+        const newToken = 
+          csrfResponse.data?.data?.csrfToken ||
+          csrfResponse.data?.csrfToken ||
+          csrfResponse.data?.token ||
+          (csrfResponse.headers as any)?.['x-csrf-token'] ||
+          getCsrfFromCookie()
+        
+        if (newToken && originalRequest.headers) {
+          originalRequest.headers['X-CSRF-Token'] = newToken
+          return api(originalRequest)
+        }
+      } catch (csrfError) {
+        console.warn('Failed to refresh CSRF token:', csrfError)
+      }
+    }
+
+    // Prevent infinite loops for auth endpoints
     if (url.includes('/auth/login') || url.includes('/auth/refresh')) {
       return Promise.reject(error)
     }
