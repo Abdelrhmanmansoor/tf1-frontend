@@ -6,8 +6,6 @@ import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import {
   Search,
@@ -208,7 +206,6 @@ export default function FeaturesPage() {
       className={`min-h-screen bg-white ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="features" />
 
       {/* Hero Section */}
       <section className="py-20 lg:py-32 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
@@ -513,8 +510,6 @@ export default function FeaturesPage() {
           </motion.div>
         </motion.div>
       </section>
-
-      <Footer />
     </div>
   )
 }

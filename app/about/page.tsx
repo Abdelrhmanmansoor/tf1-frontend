@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import {
   Users,
@@ -272,7 +270,6 @@ export default function AboutPage() {
       className={`min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="about" />
 
       {/* Floating Navigation Dots */}
       <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 hidden lg:flex flex-col gap-3">
@@ -851,8 +848,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

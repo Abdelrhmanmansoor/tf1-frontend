@@ -5,8 +5,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import {
   Phone,
@@ -217,7 +215,6 @@ export default function ContactPage() {
       className={`min-h-screen bg-white relative ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="contact" />
 
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
@@ -543,9 +540,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-
-      <Footer />
     </div>
   )
 }

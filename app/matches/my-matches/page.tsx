@@ -5,8 +5,6 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getMyMatches, leaveMatch, type Match } from '@/services/matches'
@@ -129,7 +127,6 @@ export default function MyMatchesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar activeMode="application" activePage="matches" />
 
       {/* Header */}
       <section className="py-12 bg-gradient-to-r from-blue-600 via-cyan-600 to-green-600">
@@ -311,8 +308,6 @@ export default function MyMatchesPage() {
           )}
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

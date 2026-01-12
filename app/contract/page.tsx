@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   CheckCircle,
@@ -137,7 +135,6 @@ export default function ContractPage() {
       className={`min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="recruitment" />
 
       <section className="py-12 sm:py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
@@ -439,8 +436,6 @@ export default function ContractPage() {
           )}
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { ChevronDown, Search, MessageCircle, Mail, Phone } from 'lucide-react'
 import Link from 'next/link'
 
@@ -240,7 +238,6 @@ export default function FAQPage() {
       className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="faq" />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-green-600">
@@ -401,8 +398,6 @@ export default function FAQPage() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

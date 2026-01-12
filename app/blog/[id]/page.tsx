@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import { Loader2, ArrowLeft, Share2, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -46,7 +44,6 @@ export default function BlogPostPage() {
   if (error || !article) {
     return (
       <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar activeMode="application" activePage="blog" />
         <div className="max-w-4xl mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             {language === 'ar' ? 'المقالة غير موجودة' : 'Article not found'}
@@ -55,7 +52,6 @@ export default function BlogPostPage() {
             {language === 'ar' ? 'العودة للمدونة' : 'Back to blog'}
           </Link>
         </div>
-        <Footer />
       </div>
     )
   }
@@ -65,7 +61,6 @@ export default function BlogPostPage() {
 
   return (
     <div className="min-h-screen bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar activeMode="application" activePage="blog" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
@@ -161,8 +156,6 @@ export default function BlogPostPage() {
           </Button>
         </div>
       </div>
-
-      <Footer />
     </div>
   )
 }

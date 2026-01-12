@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { RecentJobs } from '@/components/recent-jobs'
 import Link from 'next/link'
 import {
@@ -233,7 +231,6 @@ export default function JobsPage() {
       className={`min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 relative overflow-hidden ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="jobs" />
       {/* Background Effects */}
       <div className="fixed inset-0 z-0 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
         {/* Magic Orbs */}
@@ -778,10 +775,6 @@ export default function JobsPage() {
         </section>
       </div>
 
-      {/* Footer Section */}
-      <div className="relative z-20">
-        <Footer />
-      </div>
     </div>
   )
 }

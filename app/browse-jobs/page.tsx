@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import {
@@ -184,7 +182,6 @@ export default function BrowseJobsPage() {
       className={`min-h-screen bg-gray-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="jobs" />
 
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Header */}
@@ -375,7 +372,6 @@ export default function BrowseJobsPage() {
           </div>
         )}
       </div>
-      <Footer />
     </div>
   )
 }

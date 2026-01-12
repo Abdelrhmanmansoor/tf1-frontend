@@ -13,13 +13,39 @@ export default function Error({
   reset: () => void
 }) {
   useEffect(() => {
-    // Log error to console for debugging
-    console.error('Application error:', error)
-    
-    // Optionally log to error tracking service
+    // Enhanced error logging
+    const errorInfo = {
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+      timestamp: new Date().toISOString(),
+      url: typeof window !== 'undefined' ? window.location.href : 'N/A',
+      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'N/A',
+    }
+
+    // Log to console with full details
+    console.error('❌ Application Error:', {
+      ...errorInfo,
+      error: error,
+    })
+
+    // Log to error tracking service in production
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
       // You can add error tracking here (e.g., Sentry)
-      // Sentry.captureException(error)
+      // Sentry.captureException(error, { extra: errorInfo })
+      
+      // Optional: Send to custom error tracking endpoint
+      try {
+        fetch('/api/errors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(errorInfo),
+        }).catch(() => {
+          // Silently fail if error tracking endpoint doesn't exist
+        })
+      } catch (e) {
+        // Ignore errors in error tracking
+      }
     }
   }, [error])
 

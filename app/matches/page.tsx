@@ -4,8 +4,6 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/contexts/language-context'
 import { useAuth } from '@/contexts/auth-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import Link from 'next/link'
 import {
   Search,
@@ -56,7 +54,6 @@ export default function MatchesPage() {
       className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-green-50"
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="matches" />
 
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
@@ -241,8 +238,6 @@ export default function MatchesPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

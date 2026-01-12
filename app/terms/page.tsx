@@ -2,8 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/contexts/language-context'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { FileText, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -15,7 +13,6 @@ export default function TermsOfServicePage() {
       className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 ${language === 'ar' ? 'font-arabic' : 'font-english'}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
-      <Navbar activeMode="application" activePage="terms" />
 
       {/* Hero Section */}
       <section className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-green-600">
@@ -343,8 +340,6 @@ export default function TermsOfServicePage() {
           </motion.div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

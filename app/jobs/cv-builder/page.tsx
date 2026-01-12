@@ -2,8 +2,6 @@
 
 import React, { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
 import CVBuilderMain from '@/components/cv-builder/CVBuilderMain';
 import { useLanguage } from '@/contexts/language-context';
 import { useAuth } from '@/contexts/auth-context';
@@ -38,7 +36,6 @@ function CVBuilderPageContent() {
 
   return (
     <>
-      <Navbar activeMode="application" activePage="cv-builder" />
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         {/* Hero Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-10 px-4 sm:px-6 lg:px-8">
@@ -174,7 +171,6 @@ function CVBuilderPageContent() {
           </div>
         </div>
       </main>
-      <Footer />
       <Toaster position="top-center" />
     </>
   );
