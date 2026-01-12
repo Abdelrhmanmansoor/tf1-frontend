@@ -216,7 +216,7 @@ export default function ApplicantApplicationsPage() {
                   ? 'ابدأ بالتقديم على الوظائف المتاحة'
                   : 'Start applying to available jobs'}
               </p>
-              <Link href="/jobs">
+              <Link href="/browse-jobs">
                 <Button className="mt-4 gap-2">
                   <Briefcase className="w-4 h-4" />
                   {language === 'ar' ? 'تصفح الوظائف' : 'Browse Jobs'}

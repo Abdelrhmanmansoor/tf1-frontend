@@ -2,18 +2,18 @@ import React from 'react'
 
 export default function TrustedPartners() {
   const partners = [
-    { name: "نادي الهلال", logo: "/logos/alhilal.png" },
-    { name: "نادي النصر", logo: "/logos/alnassr.png" },
-    { name: "نادي الاتحاد", logo: "/logos/alittihad.png" },
-    { name: "نادي الشباب", logo: "/logos/alshabab.png" },
-    { name: "نادي الرياض", logo: "/logos/riyadhclub.png" },
-    { name: "اللجنة الأولمبية", logo: "/logos/olympic.png" },
-    { name: "الاتحاد العام للرياضة", logo: "/logos/general-sports.png" },
-    { name: "مركز اللياقة السعودية", logo: "/logos/ksa-fitness.png" },
-    { name: "وزارة الرياضة", logo: "/logos/sportministry.png" },
-    { name: "رابطة الدوري السعودي", logo: "/logos/saudi-league.png" },
-    { name: "مركز الأداء الرياضي", logo: "/logos/sport-center.png" },
-    { name: "رؤية 2030", logo: "/logos/vision2030.png" },
+    { name: "نادي الهلال", logo: "/partners/hilal.png" },
+    { name: "نادي النصر", logo: "/partners/nassr.png" },
+    { name: "نادي الشباب", logo: "/partners/shabab.png" },
+    { name: "نادي الأهلي", logo: "/partners/ahli.png" },
+    { name: "نادي القادسية", logo: "/partners/qadisiya.png" },
+    { name: "رابطة الدوري السعودي", logo: "/partners/Roshn Saudi League-01.png" },
+    { name: "الاتحاد السعودي لكرة القدم", logo: "/partners/SAFF-02.png" },
+    { name: "وزارة الموارد البشرية", logo: "/partners/Ministry-of-Labor-and-Social-Development.png" },
+    { name: "وقت اللياقة", logo: "/partners/fitnesstime.png" },
+    { name: "نادي الفتح", logo: "/partners/fateh.png" },
+    { name: "نادي التعاون", logo: "/partners/taawon.png" },
+    { name: "رؤية 2030", logo: "/vision-2030.png" },
   ]
 
   return (

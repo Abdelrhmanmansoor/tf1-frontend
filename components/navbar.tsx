@@ -14,7 +14,7 @@ import { getDashboardRoute } from '@/utils/role-routes'
 import NotificationBell from '@/components/notifications/NotificationBell'
 
 interface NavbarProps {
-  activeMode: 'application' | 'recruitment'
+  activeMode?: 'application' | 'recruitment'
   activePage?: string
 }
 
@@ -24,7 +24,7 @@ interface NavItem {
   href?: string
 }
 
-export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
+export function Navbar({ activeMode = 'application', activePage = 'home' }: NavbarProps) {
   const { t, language } = useLanguage()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(activePage)
@@ -100,11 +100,10 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
           </motion.div>
         </div>
 
-        {/* Centered Navigation - Only visible for logged-in users */}
-        {user && (
-          <nav className="hidden lg:flex items-center">
-            <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
-              {/* Primary Items - Visible on all large screens */}
+        {/* Centered Navigation - Visible for all users */}
+        <nav className="hidden lg:flex items-center">
+          <div className="bg-gray-50 rounded-full p-1 flex items-center gap-1 relative">
+            {/* Primary Items - Visible on all large screens */}
               {navItems.slice(0, 3).map((item) => (
                 <Link
                   key={item.id}
@@ -246,9 +245,8 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-          </nav>
-        )}
+          </div>
+        </nav>
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
@@ -263,7 +261,7 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
                   size="sm"
                   className="hidden sm:block border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 px-3 sm:px-4"
                 >
-                  {roleLabels[effectiveRole] || t('dashboard')}
+                  {t('dashboard')}
                 </Button>
               </Link>
             </motion.div>

@@ -132,7 +132,7 @@ export function JobsAnnouncements() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/jobs'}
+              onClick={() => window.location.href = '/browse-jobs'}
               className="flex-shrink-0 px-4 py-2 bg-white text-blue-600 rounded-lg font-bold text-xs hover:bg-cyan-50 transition-all shadow-lg"
             >
               {language === 'ar' ? 'تقدم' : 'Apply'}

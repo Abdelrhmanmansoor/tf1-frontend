@@ -109,7 +109,7 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
               : 'Live jobs ticker is being set up - coming soon'}
           </span>
           <Link 
-            href="/jobs"
+            href="/browse-jobs"
             className="text-amber-100 hover:text-white text-sm font-medium underline underline-offset-2"
           >
             {language === 'ar' ? 'تصفح الوظائف' : 'Browse Jobs'}
@@ -311,7 +311,7 @@ export const JobsTickerBar: React.FC<JobsTickerBarProps> = ({ className = '' }) 
               </span>
             </div>
             <Link 
-              href="/jobs"
+              href="/browse-jobs"
               className="text-cyan-300 text-xs font-medium"
             >
               {language === 'ar' ? 'المزيد' : 'More'} →

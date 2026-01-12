@@ -94,6 +94,7 @@ const translations = {
     register: 'Register',
     login: 'Login',
     applicant: 'Job Seeker',
+    dashboard: 'Dashboard',
 
     // Switcher
     application: 'Application',

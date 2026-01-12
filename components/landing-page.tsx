@@ -32,8 +32,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-import { Navbar } from './navbar'
-import { Footer } from './footer'
 import { ArabicSwitcher } from './arabic-switcher'
 import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
@@ -842,7 +840,7 @@ export function LandingPage() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-center mt-12 sm:mt-16"
             >
-              <Link href="/jobs">
+              <Link href="/browse-jobs">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white px-8 py-4 text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2"
