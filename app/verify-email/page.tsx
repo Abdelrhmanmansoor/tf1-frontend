@@ -92,7 +92,7 @@ function VerifyEmailContent() {
 
           console.log('[VERIFY] Success! Redirecting...')
 
-          if (data.alreadyVerified === true) {
+          if (data.alreadyVerified === true || data.code === 'ALREADY_VERIFIED') {
             setTimeout(() => router.replace('/login'), 1500)
           } else {
             // Use role from API response (most accurate)
