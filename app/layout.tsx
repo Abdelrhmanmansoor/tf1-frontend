@@ -8,7 +8,7 @@ import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
 import { Toaster } from 'sonner'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import { Navbar } from '@/components/navbar'
+import { GlobalNavbar } from '@/components/global-navbar'
 import { Footer } from '@/components/footer'
 
 export const metadata: Metadata = {
@@ -148,7 +148,7 @@ export default function RootLayout({
             <AuthProvider>
               <SocketProvider>
                 <SmoothScrollProvider>
-                  <Navbar />
+                  <GlobalNavbar />
                   {children}
                   <Footer />
                 </SmoothScrollProvider>

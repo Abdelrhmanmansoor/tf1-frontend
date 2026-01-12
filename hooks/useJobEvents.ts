@@ -33,8 +33,8 @@ export const useJobEvents = (options: UseJobEventsOptions = {}): UseJobEventsRet
     try {
       const result = await jobEventsService.getPublicTickerEvents(maxEvents)
       if (result.success) {
-        const fetchedEvents = result.data
-        if (fetchedEvents.length > 0) {
+        const fetchedEvents = result.data || []
+        if (Array.isArray(fetchedEvents) && fetchedEvents.length > 0) {
           const newFirstId = fetchedEvents[0]?.id
           if (newFirstId !== lastEventIdRef.current) {
             setEvents(fetchedEvents)

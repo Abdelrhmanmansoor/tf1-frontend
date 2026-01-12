@@ -32,11 +32,12 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+import { Navbar } from '@/components/navbar'
 import { ArabicSwitcher } from './arabic-switcher'
 import { EnglishSwitcher } from './english-switcher'
 import { RecentJobs } from './recent-jobs'
 import { PartnersMarquee } from './partners-marquee'
-import PremiumPartners from '@/components/sections/PremiumPartners'
+import TrustedPartners from '@/components/sections/TrustedPartners'
 import { StatsSection } from './stats-section'
 import { JobsTickerBar } from './landing/JobsTickerBar'
 import { useLanguage } from '@/contexts/language-context'
@@ -683,7 +684,7 @@ export function LandingPage() {
       </motion.section>
 
       {/* Partners Marquee - Under Hero */}
-      <PremiumPartners />
+      <TrustedPartners />
 
       {/* Trust & Verification Badges Section */}
       <motion.section
