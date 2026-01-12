@@ -440,15 +440,25 @@ export default function RegisterPage() {
 
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
         <div className="flex items-center justify-center gap-3 mb-2">
-          <Mail className="w-6 h-6 text-blue-600" />
+          {verificationMethod === 'email' ? (
+            <Mail className="w-6 h-6 text-blue-600" />
+          ) : (
+            <Phone className="w-6 h-6 text-blue-600" />
+          )}
           <span className="font-semibold text-blue-900">
             {language === 'ar' ? 'تأكيد الحساب' : 'Account Verification'}
           </span>
         </div>
         <p className="text-sm text-blue-700">
-          {language === 'ar'
-            ? `تم إرسال رابط التفعيل إلى ${emailForSuccess}. يرجى التحقق من بريدك.`
-            : `Verification link sent to ${emailForSuccess}. Please check your email.`}
+          {verificationMethod === 'email' ? (
+            language === 'ar'
+              ? `تم إرسال رابط التفعيل إلى ${emailForSuccess}. يرجى التحقق من بريدك.`
+              : `Verification link sent to ${emailForSuccess}. Please check your email.`
+          ) : (
+            language === 'ar'
+              ? `سيتم إرسال رمز التحقق إلى هاتفك عبر ${verificationMethod === 'sms' ? 'الرسائل القصيرة' : 'واتساب'}. يرجى الانتظار...`
+              : `OTP will be sent to your phone via ${verificationMethod.toUpperCase()}. Please wait...`
+          )}
         </p>
       </div>
 
