@@ -219,10 +219,6 @@ class AuthService {
       
       const { user, accessToken, refreshToken } = response.data
 
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.ts:220',message:'Login response received',data:{hasUser:!!user,hasAccessToken:!!accessToken,hasRefreshToken:!!refreshToken,userEmail:user?.email,userRole:user?.role},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'E'})}).catch(()=>{});
-      // #endregion
-
       if (!user) {
         throw new Error('Invalid response from server')
       }
@@ -233,37 +229,12 @@ class AuthService {
         csrfManager.updateToken(newToken)
       }
 
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.ts:232',message:'Before setting cookies',data:{documentCookies:typeof document !== 'undefined' ? document.cookie : 'SSR',accessTokenFromResponse:accessToken ? accessToken.substring(0,20)+'...' : null},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-
-      // CRITICAL FIX: Set client-accessible cookies for Authorization header
-      // Backend also sets httpOnly cookies for additional security layer
-      // Both are needed: httpOnly for security, client-accessible for axios interceptor
-      if (typeof document !== 'undefined' && accessToken) {
-        const isProduction = window.location.protocol === 'https:'
-        const secure = isProduction ? '; Secure' : ''
-        const sameSite = isProduction ? '; SameSite=Strict' : '; SameSite=Lax'
-        
-        const maxAge = 15 * 60 // 15 minutes in seconds
-        
-        // Set BOTH cookie names for compatibility with middleware and interceptor
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
-        document.cookie = `sportx_access_token=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
-        
-        if (refreshToken) {
-          const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days
-          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
-        }
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.ts:251',message:'Cookies set client-side',data:{cookiesSet:true,documentCookiesAfter:document.cookie,cookieNames:document.cookie.split(';').map(c=>c.trim().split('=')[0]).join(',')},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
-        
-        console.log('[AUTH] ✅ Cookies set client-side for Authorization header')
-      }
+      // IMPORTANT: Do NOT set cookies client-side!
+      // The backend sets httpOnly cookies via Set-Cookie header which are automatically handled by the browser.
+      // These cookies are secure (httpOnly, Secure in production, SameSite) and inaccessible to JavaScript.
+      // The axios client is configured with { withCredentials: true } so cookies are automatically sent with requests.
       
-      console.log('[AUTH] ✅ Login successful - tokens stored in cookies')
+      console.log('[AUTH] ✅ Login successful - backend has set httpOnly cookies')
       console.log('[AUTH] User:', user.email, 'Role:', user.role)
 
       // Save user to localStorage for quick access (but tokens are in httpOnly cookies)
