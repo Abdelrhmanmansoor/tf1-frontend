@@ -230,6 +230,7 @@ class AuthService {
       }
 
       // CRITICAL: Set cookies client-side to ensure middleware can read them
+      // AND wait a tiny bit to ensure they're written before any redirect happens
       if (typeof document !== 'undefined' && accessToken) {
         const isProduction = window.location.protocol === 'https:'
         const secure = isProduction ? '; Secure' : ''
@@ -243,9 +244,19 @@ class AuthService {
           const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days in seconds
           document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
         }
+        
+        console.log('[AUTH] ✅ Cookies set client-side:', {
+          accessToken: accessToken.substring(0, 20) + '...',
+          cookieNames: ['accessToken', 'sportx_access_token'],
+          cookiesNow: document.cookie.split(';').map(c => c.trim().split('=')[0]).join(', ')
+        })
       }
 
       this.saveUser(user)
+      
+      // Small delay to ensure cookies are fully written before redirect
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       return response.data
     } catch (error: any) {
       throw this.handleError(error)

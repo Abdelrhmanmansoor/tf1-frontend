@@ -133,10 +133,44 @@ async function fetchCsrfToken(): Promise<string | null> {
   return csrfFetchPromise
 }
 
-// Request Interceptor - Attach CSRF token to unsafe methods
+// Helper to get access token from cookie
+function getAccessTokenFromCookie(): string | null {
+  if (typeof document === 'undefined') return null
+  
+  const cookies = document.cookie.split(';')
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split('=')
+    // Check both cookie names for compatibility
+    if ((name === 'accessToken' || name === 'sportx_access_token') && value) {
+      return decodeURIComponent(value)
+    }
+  }
+  return null
+}
+
+// Request Interceptor - Attach Authorization header and CSRF token
 api.interceptors.request.use(
   async (config) => {
     if (typeof window !== 'undefined') {
+      // CRITICAL: Attach Authorization Bearer token to ALL requests (except login/register)
+      const isAuthEndpoint = config.url?.includes('/auth/login') || 
+                            config.url?.includes('/auth/register') ||
+                            config.url?.includes('/auth/csrf-token')
+      
+      if (!isAuthEndpoint) {
+        const accessToken = getAccessTokenFromCookie()
+        
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`
+          console.log(`[AUTH] ✓ Authorization header attached to ${config.method?.toUpperCase()} ${config.url}`)
+        } else {
+          // Only log warning for protected endpoints
+          if (!config.url?.includes('/auth/')) {
+            console.warn(`[AUTH] ⚠️  No access token found for ${config.method?.toUpperCase()} ${config.url}`)
+          }
+        }
+      }
+      
       const method = (config.method || 'get').toLowerCase()
       const unsafe = ['post', 'put', 'patch', 'delete'].includes(method)
       
