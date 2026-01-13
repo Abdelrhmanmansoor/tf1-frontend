@@ -78,45 +78,36 @@ class CSRFManager {
         }
       })
       
-      console.log('[CSRF] Response received:', {
-        data: response.data,
-        headers: response.headers
-      })
-      
       const token = 
         response.data?.data?.csrfToken ||
         response.data?.data?.token ||
         response.data?.csrfToken ||
-        response.data?.token ||
-        (response.headers as any)?.['x-csrf-token']
-      
-      // Also try cookie as fallback
-      if (!token && typeof document !== 'undefined') {
-        const cookieToken = this.getTokenFromCookie()
-        console.log('[CSRF] Token not in response, trying cookie:', cookieToken ? 'found' : 'not found')
-        if (cookieToken) {
-          this.cachedToken = cookieToken
-          this.lastFetchTime = Date.now()
-          return cookieToken
-        }
-      }
+        response.data?.token
 
       if (token) {
-        console.log('[CSRF] Token obtained successfully:', token.substring(0, 10) + '...')
+        console.log('[CSRF] Token obtained successfully:', token.substring(0, 15) + '...')
         this.cachedToken = token
         this.lastFetchTime = Date.now()
+        
+        // Also save to localStorage for persistence
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('csrf_token', token)
+        }
       } else {
-        console.warn('[CSRF] No token found in response or cookie!')
+        console.warn('[CSRF] No token found in response!')
       }
 
       return token || null
     } catch (error) {
       console.warn('[CSRF] Failed to fetch token:', error)
       
-      // Try to get from cookie as last resort
-      const cookieToken = this.getTokenFromCookie()
-      if (cookieToken) {
-        return cookieToken
+      // Try localStorage as fallback
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem('csrf_token')
+        if (stored) {
+          this.cachedToken = stored
+          return stored
+        }
       }
       
       return null

@@ -40,13 +40,43 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = []
 }
 
-function getCsrfFromCookie(): string | null {
-  if (typeof document === 'undefined') return null
-  const match = document.cookie
-    .split(';')
-    .map((c) => c.trim().split('='))
-    .find(([name]) => name === 'XSRF-TOKEN')
-  return match ? decodeURIComponent(match[1]) : null
+// CSRF Token storage in memory (works with cross-origin)
+let csrfTokenCache: string | null = null
+
+function getCsrfToken(): string | null {
+  // First check memory cache
+  if (csrfTokenCache) {
+    return csrfTokenCache
+  }
+  
+  // Then try localStorage (persists across page refreshes)
+  if (typeof localStorage !== 'undefined') {
+    const stored = localStorage.getItem('csrf_token')
+    if (stored) {
+      csrfTokenCache = stored
+      return stored
+    }
+  }
+  
+  // Finally try cookie (may not work in cross-origin)
+  if (typeof document !== 'undefined') {
+    const match = document.cookie
+      .split(';')
+      .map((c) => c.trim().split('='))
+      .find(([name]) => name === 'XSRF-TOKEN')
+    if (match && match[1]) {
+      return decodeURIComponent(match[1])
+    }
+  }
+  
+  return null
+}
+
+function setCsrfToken(token: string): void {
+  csrfTokenCache = token
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('csrf_token', token)
+  }
 }
 
 // Request Interceptor - Attach CSRF token to unsafe methods
@@ -58,9 +88,9 @@ api.interceptors.request.use(
       
       // Attach CSRF token for unsafe methods if not already set
       if (unsafe && !config.headers['X-CSRF-Token']) {
-        let csrf = getCsrfFromCookie()
+        let csrf = getCsrfToken()
         
-        // If no CSRF token in cookie, fetch it before sending the request
+        // If no CSRF token, fetch it before sending the request
         if (!csrf) {
           try {
             console.log('[API] No CSRF token found, fetching...')
@@ -75,13 +105,12 @@ api.interceptors.request.use(
               csrfResponse.data?.data?.csrfToken ||
               csrfResponse.data?.data?.token ||
               csrfResponse.data?.csrfToken ||
-              csrfResponse.data?.token ||
-              (csrfResponse.headers as any)?.['x-csrf-token'] ||
-              getCsrfFromCookie()
+              csrfResponse.data?.token
             
             if (token) {
               csrf = token
-              console.log('[API] CSRF token fetched successfully')
+              setCsrfToken(token)
+              console.log('[API] CSRF token fetched and cached successfully')
             }
           } catch (error) {
             console.warn('[API] Failed to fetch CSRF token in interceptor:', error)
@@ -90,6 +119,7 @@ api.interceptors.request.use(
         
         if (csrf) {
           config.headers['X-CSRF-Token'] = csrf
+          console.log('[API] CSRF token attached to request:', csrf.substring(0, 15) + '...')
         } else {
           console.warn('[API] No CSRF token available for request', config.url)
         }
@@ -107,9 +137,8 @@ api.interceptors.response.use(
   (response) => {
     // Update CSRF token from response headers if present
     const newCsrfToken = response.headers?.['x-csrf-token']
-    if (newCsrfToken && typeof document !== 'undefined') {
-      // The server sets the cookie, but we can also store it for immediate use
-      // This helps when the next request happens before the cookie is readable
+    if (newCsrfToken) {
+      setCsrfToken(newCsrfToken)
     }
     return response
   },
@@ -124,8 +153,15 @@ api.interceptors.response.use(
     
     if (isCsrfError && !originalRequest._csrfRetry) {
       originalRequest._csrfRetry = true
+      console.log('[API] CSRF error detected, fetching new token and retrying...')
       
       try {
+        // Clear old token
+        csrfTokenCache = null
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem('csrf_token')
+        }
+        
         // Fetch a fresh CSRF token
         const csrfResponse = await api.get('/auth/csrf-token', {
           headers: {
@@ -137,12 +173,12 @@ api.interceptors.response.use(
           csrfResponse.data?.data?.csrfToken ||
           csrfResponse.data?.data?.token ||
           csrfResponse.data?.csrfToken ||
-          csrfResponse.data?.token ||
-          (csrfResponse.headers as any)?.['x-csrf-token'] ||
-          getCsrfFromCookie()
+          csrfResponse.data?.token
         
         if (newToken && originalRequest.headers) {
+          setCsrfToken(newToken)
           originalRequest.headers['X-CSRF-Token'] = newToken
+          console.log('[API] Retrying request with new CSRF token')
           return api(originalRequest)
         }
       } catch (csrfError) {
