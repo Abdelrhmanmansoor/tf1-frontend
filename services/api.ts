@@ -79,6 +79,53 @@ function setCsrfToken(token: string): void {
   }
 }
 
+// Flag to prevent concurrent CSRF token fetches
+let isFetchingCsrf = false
+let csrfFetchPromise: Promise<string | null> | null = null
+
+// Helper function to fetch CSRF token (with concurrency protection)
+async function fetchCsrfToken(): Promise<string | null> {
+  // If already fetching, wait for that promise
+  if (isFetchingCsrf && csrfFetchPromise) {
+    return csrfFetchPromise
+  }
+
+  isFetchingCsrf = true
+  csrfFetchPromise = (async () => {
+    try {
+      console.log('[API] Fetching CSRF token...')
+      const csrfResponse = await axios.get(`${API_CONFIG.BASE_URL}/auth/csrf-token`, {
+        withCredentials: true,
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      })
+      
+      const token = 
+        csrfResponse.data?.data?.csrfToken ||
+        csrfResponse.data?.data?.token ||
+        csrfResponse.data?.csrfToken ||
+        csrfResponse.data?.token
+      
+      if (token) {
+        setCsrfToken(token)
+        console.log('[API] CSRF token fetched and cached successfully')
+        return token
+      }
+      return null
+    } catch (error) {
+      console.warn('[API] Failed to fetch CSRF token:', error)
+      return null
+    } finally {
+      isFetchingCsrf = false
+      csrfFetchPromise = null
+    }
+  })()
+
+  return csrfFetchPromise
+}
+
 // Request Interceptor - Attach CSRF token to unsafe methods
 api.interceptors.request.use(
   async (config) => {
@@ -92,29 +139,7 @@ api.interceptors.request.use(
         
         // If no CSRF token, fetch it before sending the request
         if (!csrf) {
-          try {
-            console.log('[API] No CSRF token found, fetching...')
-            const csrfResponse = await api.get('/auth/csrf-token', {
-              headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
-              }
-            })
-            
-            const token = 
-              csrfResponse.data?.data?.csrfToken ||
-              csrfResponse.data?.data?.token ||
-              csrfResponse.data?.csrfToken ||
-              csrfResponse.data?.token
-            
-            if (token) {
-              csrf = token
-              setCsrfToken(token)
-              console.log('[API] CSRF token fetched and cached successfully')
-            }
-          } catch (error) {
-            console.warn('[API] Failed to fetch CSRF token in interceptor:', error)
-          }
+          csrf = await fetchCsrfToken()
         }
         
         if (csrf) {
@@ -163,20 +188,9 @@ api.interceptors.response.use(
         }
         
         // Fetch a fresh CSRF token
-        const csrfResponse = await api.get('/auth/csrf-token', {
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        })
-        const newToken = 
-          csrfResponse.data?.data?.csrfToken ||
-          csrfResponse.data?.data?.token ||
-          csrfResponse.data?.csrfToken ||
-          csrfResponse.data?.token
+        const newToken = await fetchCsrfToken()
         
         if (newToken && originalRequest.headers) {
-          setCsrfToken(newToken)
           originalRequest.headers['X-CSRF-Token'] = newToken
           console.log('[API] Retrying request with new CSRF token')
           return api(originalRequest)
@@ -232,5 +246,15 @@ api.interceptors.response.use(
   }
 )
 
-export default api
+// Export helper to initialize CSRF token (call this on app startup)
+export const initializeCsrfToken = async (): Promise<void> => {
+  if (typeof window === 'undefined') return
+  
+  // Only fetch if we don't have a valid token
+  const existing = getCsrfToken()
+  if (!existing) {
+    await fetchCsrfToken()
+  }
+}
 
+export default api

@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { SocketProvider } from '@/contexts/socket-context'
 import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
+import { CsrfInitializer } from '@/components/CsrfInitializer'
 import { Toaster } from 'sonner'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
@@ -142,6 +143,7 @@ export default function RootLayout({
         />
         {/* <MSWProvider /> */}
         <ErrorBoundary>
+          <CsrfInitializer />
           <LanguageProvider>
             <AuthProvider>
               <SocketProvider>
