@@ -229,15 +229,35 @@ class AuthService {
         csrfManager.updateToken(newToken)
       }
 
-      // IMPORTANT: Do NOT set cookies client-side!
-      // The backend sets httpOnly cookies via Set-Cookie header which are automatically handled by the browser.
-      // These cookies are secure (httpOnly, Secure in production, SameSite) and inaccessible to JavaScript.
-      // The axios client is configured with { withCredentials: true } so cookies are automatically sent with requests.
+      // CRITICAL FIX: Set client-accessible cookies for Authorization header
+      // Backend also sets httpOnly cookies for additional security layer
+      // Both are needed: httpOnly for security, client-accessible for axios interceptor
+      if (typeof document !== 'undefined' && accessToken) {
+        const isProduction = window.location.protocol === 'https:'
+        const secure = isProduction ? '; Secure' : ''
+        const sameSite = isProduction ? '; SameSite=None' : '; SameSite=Lax'
+        
+        const maxAge = 15 * 60 // 15 minutes in seconds
+        
+        // Set BOTH cookie names for compatibility with middleware and interceptor
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
+        document.cookie = `sportx_access_token=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
+        
+        if (refreshToken) {
+          const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days
+          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
+        }
+        
+        console.log('[AUTH] ✅ Cookies set client-side for Authorization header:', {
+          accessToken: accessToken.substring(0, 20) + '...',
+          cookieNames: document.cookie.split(';').map(c => c.trim().split('=')[0]).join(', ')
+        })
+      }
       
-      console.log('[AUTH] ✅ Login successful - backend has set httpOnly cookies')
+      console.log('[AUTH] ✅ Login successful - tokens stored in cookies')
       console.log('[AUTH] User:', user.email, 'Role:', user.role)
 
-      // Save user to localStorage for quick access (but tokens are in httpOnly cookies)
+      // Save user to localStorage for quick access
       this.saveUser(user)
       
       // Small delay to ensure cookies are fully written before redirect
