@@ -1,6 +1,6 @@
 // Authentication Service
 // This service handles all authentication-related API calls
-// Refactored for Type Safety & Security
+// Refactored for Type Safety & Security with robust CSRF handling
 
 import api from './api'
 import API_CONFIG from '@/config/api'
@@ -30,6 +30,126 @@ interface RegisterData {
   position?: string
 }
 
+/**
+ * CSRF Token Manager
+ * Handles fetching, caching, and refreshing CSRF tokens
+ */
+class CSRFManager {
+  private cachedToken: string | null = null
+  private tokenFetchPromise: Promise<string | null> | null = null
+  private lastFetchTime: number = 0
+  private readonly TOKEN_TTL_MS = 50 * 60 * 1000 // 50 minutes (less than server's 1 hour)
+
+  /**
+   * Get a fresh CSRF token, fetching from server if needed
+   * Uses caching to avoid unnecessary network requests
+   */
+  async getToken(forceRefresh = false): Promise<string | null> {
+    const now = Date.now()
+    
+    // Return cached token if still valid and not forcing refresh
+    if (!forceRefresh && this.cachedToken && (now - this.lastFetchTime) < this.TOKEN_TTL_MS) {
+      return this.cachedToken
+    }
+
+    // If a fetch is already in progress, wait for it
+    if (this.tokenFetchPromise) {
+      return this.tokenFetchPromise
+    }
+
+    // Start a new fetch
+    this.tokenFetchPromise = this.fetchToken()
+    
+    try {
+      const token = await this.tokenFetchPromise
+      return token
+    } finally {
+      this.tokenFetchPromise = null
+    }
+  }
+
+  private async fetchToken(): Promise<string | null> {
+    try {
+      const response = await api.get('/auth/csrf-token', {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      })
+      
+      const token = 
+        response.data?.data?.csrfToken ||
+        response.data?.data?.token ||
+        response.data?.csrfToken ||
+        response.data?.token ||
+        (response.headers as any)?.['x-csrf-token']
+      
+      // Also try cookie as fallback
+      if (!token && typeof document !== 'undefined') {
+        const cookieToken = this.getTokenFromCookie()
+        if (cookieToken) {
+          this.cachedToken = cookieToken
+          this.lastFetchTime = Date.now()
+          return cookieToken
+        }
+      }
+
+      if (token) {
+        this.cachedToken = token
+        this.lastFetchTime = Date.now()
+      }
+
+      return token || null
+    } catch (error) {
+      console.warn('[CSRF] Failed to fetch token:', error)
+      
+      // Try to get from cookie as last resort
+      const cookieToken = this.getTokenFromCookie()
+      if (cookieToken) {
+        return cookieToken
+      }
+      
+      return null
+    }
+  }
+
+  /**
+   * Get CSRF token from cookie
+   */
+  getTokenFromCookie(): string | null {
+    if (typeof document === 'undefined') return null
+    
+    const cookies = document.cookie.split(';')
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=')
+      if (name === 'XSRF-TOKEN' && value) {
+        return decodeURIComponent(value)
+      }
+    }
+    return null
+  }
+
+  /**
+   * Update cached token (called after receiving new token in response)
+   */
+  updateToken(token: string): void {
+    if (token) {
+      this.cachedToken = token
+      this.lastFetchTime = Date.now()
+    }
+  }
+
+  /**
+   * Clear cached token (called on logout or errors)
+   */
+  clearToken(): void {
+    this.cachedToken = null
+    this.lastFetchTime = 0
+  }
+}
+
+const csrfManager = new CSRFManager()
+
 class AuthService {
   /**
    * Register a new user
@@ -50,51 +170,8 @@ class AuthService {
         }
       }
       
-      // Get CSRF token from multiple sources
-      let csrfToken: string | undefined
-      
-      // 1. Try to get from cookie first (most reliable)
-      if (typeof document !== 'undefined') {
-        const cookies = document.cookie.split(';')
-        for (const cookie of cookies) {
-          const [name, value] = cookie.trim().split('=')
-          if (name === 'XSRF-TOKEN') {
-            csrfToken = decodeURIComponent(value)
-            break
-          }
-        }
-      }
-      
-      // 2. If not in cookie, fetch from endpoint
-      if (!csrfToken) {
-        try {
-          const t = await api.get('/auth/csrf-token')
-          csrfToken =
-            t.data?.data?.csrfToken ||
-            t.data?.data?.token ||
-            t.data?.token ||
-            (t.headers as any)?.['x-csrf-token']
-          
-          // Also try to get from cookie after the request
-          if (typeof document !== 'undefined' && !csrfToken) {
-            const cookies = document.cookie.split(';')
-            for (const cookie of cookies) {
-              const [name, value] = cookie.trim().split('=')
-              if (name === 'XSRF-TOKEN') {
-                csrfToken = decodeURIComponent(value)
-                break
-              }
-            }
-          }
-        } catch (csrfError) {
-          console.warn('Failed to fetch CSRF token:', csrfError)
-          // Continue anyway - backend might skip CSRF for some routes
-            try {
-              const local = await api.get('/api/csrf')
-              csrfToken = local.data?.csrfToken
-            } catch {}
-        }
-      }
+      // Get fresh CSRF token (force refresh to avoid stale token issues)
+      const csrfToken = await csrfManager.getToken(true)
       
       const headers: Record<string, string> = {}
       if (csrfToken) {
@@ -104,6 +181,13 @@ class AuthService {
       const response = await api.post('/auth/register', userData, {
         headers: Object.keys(headers).length > 0 ? headers : undefined,
       })
+      
+      // Update CSRF token from response if present
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) {
+        csrfManager.updateToken(newToken)
+      }
+      
       return response.data
     } catch (error) {
       const err = this.handleError(error)
@@ -119,63 +203,35 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      // Always fetch a fresh CSRF token before login to avoid "token already used" errors
-      let csrfToken: string | undefined
-      try {
-        // Force a new token by requesting from server
-        const t = await api.get('/auth/csrf-token', {
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        })
-        csrfToken =
-          t.data?.data?.csrfToken ||
-          t.data?.csrfToken ||
-          t.data?.token ||
-          (t.headers as any)?.['x-csrf-token']
-        
-        // If not in response, try to get from cookie that was just set
-        if (!csrfToken && typeof document !== 'undefined') {
-          const cookies = document.cookie.split(';')
-          for (const cookie of cookies) {
-            const [name, value] = cookie.trim().split('=')
-            if (name === 'XSRF-TOKEN') {
-              csrfToken = decodeURIComponent(value)
-              break
-            }
-          }
-        }
-      } catch (csrfError) {
-        console.warn('Failed to fetch CSRF token for login:', csrfError)
-      }
+      // Always get a FRESH token before login (force refresh)
+      const csrfToken = await csrfManager.getToken(true)
       
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
       })
+      
       const { user, accessToken, refreshToken } = response.data
 
       if (!user) {
         throw new Error('Invalid response from server')
       }
 
+      // Update CSRF token from response
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) {
+        csrfManager.updateToken(newToken)
+      }
+
       // CRITICAL: Set cookies client-side to ensure middleware can read them
-      // Backend sets HttpOnly cookies but they may not work cross-origin
-      // This ensures the frontend middleware has access to the token
       if (typeof document !== 'undefined' && accessToken) {
         const isProduction = window.location.protocol === 'https:'
         const secure = isProduction ? '; Secure' : ''
         const sameSite = isProduction ? '; SameSite=Strict' : '; SameSite=Lax'
         
-        // Set both cookie names for compatibility
-        // 'accessToken' matches backend, 'sportx_access_token' is legacy
-        const maxAge = 15 * 60 // 15 minutes in seconds (matches backend ACCESS_TOKEN_MAX_AGE)
+        const maxAge = 15 * 60 // 15 minutes in seconds
         document.cookie = `accessToken=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
         document.cookie = `sportx_access_token=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
         
-        console.log('[AUTH] Access token cookie set successfully')
-        
-        // Also set refresh token cookie if available
         if (refreshToken) {
           const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days in seconds
           document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
@@ -185,7 +241,6 @@ class AuthService {
       this.saveUser(user)
       return response.data
     } catch (error: any) {
-      // Re-throw with better error handling
       throw this.handleError(error)
     }
   }
@@ -200,19 +255,13 @@ class AuthService {
       localStorage.removeItem('matches_token')
       localStorage.removeItem('matches_user')
       
+      // Clear CSRF cache
+      csrfManager.clearToken()
+      
       // Attempt server-side logout to clear HttpOnly cookies
       const performLogout = async () => {
         try {
-          let csrfToken: string | undefined
-          try {
-            const t = await api.get('/auth/csrf-token')
-            csrfToken =
-              t.data?.data?.csrfToken ||
-              t.data?.token ||
-              (t.headers as any)?.['x-csrf-token']
-          } catch (csrfError) {
-            console.warn('CSRF fetch failed during logout, proceeding best-effort', csrfError)
-          }
+          const csrfToken = await csrfManager.getToken(true)
 
           await api.post('/auth/logout', undefined, {
             headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
@@ -369,19 +418,17 @@ class AuthService {
    */
   async sendOTP(phone?: string, type: string = 'registration', channel: string = 'sms', email?: string): Promise<any> {
     try {
-      // Get CSRF token
-      let csrfToken: string | undefined
-      try {
-        const t = await api.get('/auth/csrf-token')
-        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
-      } catch (csrfError) {
-        console.warn('Failed to fetch CSRF token for sendOTP:', csrfError)
-      }
+      const csrfToken = await csrfManager.getToken(true)
 
       const response = await api.post('/auth/send-otp', 
         { phone, email, type, channel },
         { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
       )
+      
+      // Update token from response
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) csrfManager.updateToken(newToken)
+      
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -398,19 +445,17 @@ class AuthService {
    */
   async verifyOTP(phone: string | undefined, otp: string, type: string = 'registration', email?: string): Promise<any> {
     try {
-      // Get CSRF token
-      let csrfToken: string | undefined
-      try {
-        const t = await api.get('/auth/csrf-token')
-        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
-      } catch (csrfError) {
-        console.warn('Failed to fetch CSRF token for verifyOTP:', csrfError)
-      }
+      const csrfToken = await csrfManager.getToken(true)
 
       const response = await api.post('/auth/verify-otp',
         { phone, email, otp, type },
         { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
       )
+      
+      // Update token from response
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) csrfManager.updateToken(newToken)
+      
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -425,19 +470,17 @@ class AuthService {
    */
   async forgotPasswordOTP(phone: string, channel: string = 'sms'): Promise<any> {
     try {
-      // Get CSRF token
-      let csrfToken: string | undefined
-      try {
-        const t = await api.get('/auth/csrf-token')
-        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
-      } catch (csrfError) {
-        console.warn('Failed to fetch CSRF token for forgotPasswordOTP:', csrfError)
-      }
+      const csrfToken = await csrfManager.getToken(true)
 
       const response = await api.post('/auth/forgot-password-otp',
         { phone, channel },
         { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
       )
+      
+      // Update token from response
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) csrfManager.updateToken(newToken)
+      
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -453,19 +496,17 @@ class AuthService {
    */
   async resetPasswordOTP(phone: string, otp: string, newPassword: string): Promise<any> {
     try {
-      // Get CSRF token
-      let csrfToken: string | undefined
-      try {
-        const t = await api.get('/auth/csrf-token')
-        csrfToken = t.data?.data?.csrfToken || t.data?.csrfToken || t.data?.token
-      } catch (csrfError) {
-        console.warn('Failed to fetch CSRF token for resetPasswordOTP:', csrfError)
-      }
+      const csrfToken = await csrfManager.getToken(true)
 
       const response = await api.post('/auth/reset-password-otp',
         { phone, otp, newPassword },
         { headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined }
       )
+      
+      // Update token from response
+      const newToken = (response.headers as any)?.['x-csrf-token']
+      if (newToken) csrfManager.updateToken(newToken)
+      
       return response.data
     } catch (error) {
       throw this.handleError(error)

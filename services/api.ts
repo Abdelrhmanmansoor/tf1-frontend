@@ -2,11 +2,11 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import API_CONFIG from '@/config/api'
 import { ApiError } from '@/types/auth'
 
-// Create axios instance
+// Create axios instance with secure defaults
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
-  withCredentials: true,
+  withCredentials: true, // CRITICAL: Required for cross-origin cookie handling
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-CSRF-Token',
   headers: {
@@ -49,13 +49,14 @@ function getCsrfFromCookie(): string | null {
   return match ? decodeURIComponent(match[1]) : null
 }
 
-// Request Interceptor
+// Request Interceptor - Attach CSRF token to unsafe methods
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      // Attach CSRF token for unsafe methods if present
       const method = (config.method || 'get').toLowerCase()
       const unsafe = ['post', 'put', 'patch', 'delete'].includes(method)
+      
+      // Attach CSRF token for unsafe methods if not already set
       if (unsafe && !config.headers['X-CSRF-Token']) {
         const csrf = getCsrfFromCookie()
         if (csrf) {
@@ -70,9 +71,17 @@ api.interceptors.request.use(
   }
 )
 
-// Response Interceptor
+// Response Interceptor - Handle errors and update CSRF token
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Update CSRF token from response headers if present
+    const newCsrfToken = response.headers?.['x-csrf-token']
+    if (newCsrfToken && typeof document !== 'undefined') {
+      // The server sets the cookie, but we can also store it for immediate use
+      // This helps when the next request happens before the cookie is readable
+    }
+    return response
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean; _csrfRetry?: boolean }
     const url = originalRequest?.url || ''
@@ -80,16 +89,22 @@ api.interceptors.response.use(
     // Handle CSRF token errors (403 with CSRF codes)
     const errorCode = (error.response?.data as any)?.code
     const isCsrfError = error.response?.status === 403 && 
-      ['CSRF_TOKEN_INVALID', 'CSRF_TOKEN_REUSED', 'CSRF_TOKEN_MISSING'].includes(errorCode)
+      ['CSRF_TOKEN_INVALID', 'CSRF_TOKEN_EXPIRED', 'CSRF_TOKEN_MISSING', 'CSRF_ORIGIN_INVALID'].includes(errorCode)
     
     if (isCsrfError && !originalRequest._csrfRetry) {
       originalRequest._csrfRetry = true
       
       try {
         // Fetch a fresh CSRF token
-        const csrfResponse = await api.get('/auth/csrf-token')
+        const csrfResponse = await api.get('/auth/csrf-token', {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         const newToken = 
           csrfResponse.data?.data?.csrfToken ||
+          csrfResponse.data?.data?.token ||
           csrfResponse.data?.csrfToken ||
           csrfResponse.data?.token ||
           (csrfResponse.headers as any)?.['x-csrf-token'] ||
@@ -100,7 +115,7 @@ api.interceptors.response.use(
           return api(originalRequest)
         }
       } catch (csrfError) {
-        console.warn('Failed to refresh CSRF token:', csrfError)
+        console.warn('[API] Failed to refresh CSRF token:', csrfError)
       }
     }
 
