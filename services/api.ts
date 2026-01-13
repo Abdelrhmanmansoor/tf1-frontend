@@ -51,16 +51,47 @@ function getCsrfFromCookie(): string | null {
 
 // Request Interceptor - Attach CSRF token to unsafe methods
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     if (typeof window !== 'undefined') {
       const method = (config.method || 'get').toLowerCase()
       const unsafe = ['post', 'put', 'patch', 'delete'].includes(method)
       
       // Attach CSRF token for unsafe methods if not already set
       if (unsafe && !config.headers['X-CSRF-Token']) {
-        const csrf = getCsrfFromCookie()
+        let csrf = getCsrfFromCookie()
+        
+        // If no CSRF token in cookie, fetch it before sending the request
+        if (!csrf) {
+          try {
+            console.log('[API] No CSRF token found, fetching...')
+            const csrfResponse = await api.get('/auth/csrf-token', {
+              headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+              }
+            })
+            
+            const token = 
+              csrfResponse.data?.data?.csrfToken ||
+              csrfResponse.data?.data?.token ||
+              csrfResponse.data?.csrfToken ||
+              csrfResponse.data?.token ||
+              (csrfResponse.headers as any)?.['x-csrf-token'] ||
+              getCsrfFromCookie()
+            
+            if (token) {
+              csrf = token
+              console.log('[API] CSRF token fetched successfully')
+            }
+          } catch (error) {
+            console.warn('[API] Failed to fetch CSRF token in interceptor:', error)
+          }
+        }
+        
         if (csrf) {
           config.headers['X-CSRF-Token'] = csrf
+        } else {
+          console.warn('[API] No CSRF token available for request', config.url)
         }
       }
     }

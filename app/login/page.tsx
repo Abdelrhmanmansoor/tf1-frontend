@@ -16,6 +16,7 @@ import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle, Loader2, Home } from 'luci
 import Image from 'next/image'
 import { getDashboardRoute } from '@/utils/role-routes'
 import { toast } from 'sonner' // Assuming sonner is installed as per package.json
+import API_CONFIG from '@/config/api'
 
 // Zod Schema for Validation
 const loginSchema = z.object({
@@ -48,6 +49,39 @@ function LoginContent() {
       password: '',
     },
   })
+
+  // Fetch CSRF token on mount to ensure it's available
+  useEffect(() => {
+    const fetchCSRFToken = async () => {
+      try {
+        // Use API_CONFIG.BASE_URL to ensure we always hit the backend
+        const csrfUrl = `${API_CONFIG.BASE_URL}/auth/csrf-token`
+        
+        // Try to get CSRF token using fetch with credentials
+        const response = await fetch(csrfUrl, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          // Token is automatically set in cookie by backend via Set-Cookie header
+          // The axios instance will automatically read it from cookie when making requests
+          console.log('[LOGIN] CSRF token fetched successfully')
+        } else {
+          console.warn('[LOGIN] Failed to fetch CSRF token:', response.statusText)
+        }
+      } catch (error) {
+        console.warn('[LOGIN] Failed to fetch CSRF token on mount:', error)
+        // Continue anyway - auth service will try again during login
+      }
+    }
+    
+    fetchCSRFToken()
+  }, [])
 
   // Check for registration success param
   useEffect(() => {
