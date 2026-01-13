@@ -64,15 +64,28 @@ function isMatchesDashboardRoute(pathname: string): boolean {
 }
 
 async function verifyJwt(token: string, secretEnv: string): Promise<any | null> {
+  // CRITICAL FIX: Handle missing JWT secret gracefully
   const secret = process.env[secretEnv]
+  
   if (!secret) {
-    console.warn(`[middleware] Missing ${secretEnv}, rejecting token`)
+    console.error(`[middleware] CRITICAL: ${secretEnv} is not set in environment variables!`)
+    console.error(`[middleware] Please add ${secretEnv} to your Vercel environment variables`)
+    console.error(`[middleware] Current env keys available:`, Object.keys(process.env).filter(k => k.includes('JWT') || k.includes('SECRET')).join(', ') || 'NONE')
+    
+    // In development, provide helpful message
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`[middleware] Add this to your .env.local file:`)
+      console.error(`[middleware] ${secretEnv}=your-secret-key-here`)
+    }
+    
     return null
   }
+  
   try {
     const verified = await jwtVerify(token, new TextEncoder().encode(secret), {
       issuer: 'sportsplatform-api',
     })
+    console.log(`[middleware] ✅ Token verified successfully for user:`, (verified.payload as any)?.userId)
     return verified.payload
   } catch (err) {
     console.warn(`[middleware] JWT verification failed: ${String(err)}`)
@@ -165,25 +178,39 @@ export async function middleware(request: NextRequest) {
     return res
   }
 
-  // For dashboard routes, check authentication via cookie or header
+  // For dashboard routes, check authentication via cookie
   if (isDashboardRoute(pathname)) {
-    // Check both cookie names - backend sets 'accessToken', legacy/client uses 'sportx_access_token'
-    const token = request.cookies.get('accessToken')?.value || 
-                  request.cookies.get('sportx_access_token')?.value
+    // CRITICAL: Check both cookie names - backend sets 'accessToken', legacy/client uses 'sportx_access_token'
+    const accessToken = request.cookies.get('accessToken')?.value
+    const legacyToken = request.cookies.get('sportx_access_token')?.value
+    const token = accessToken || legacyToken
 
-    // No token found - redirect to appropriate login
+    // Debug: Log all cookies for troubleshooting
+    const allCookies = request.cookies.getAll().map(c => c.name).join(', ')
+    console.log('[middleware] Dashboard route:', pathname)
+    console.log('[middleware] Available cookies:', allCookies || 'NONE')
+    console.log('[middleware] accessToken:', accessToken ? 'EXISTS' : 'MISSING')
+    console.log('[middleware] sportx_access_token:', legacyToken ? 'EXISTS' : 'MISSING')
+
+    // No token found - redirect to login
     if (!token) {
-      console.log('[middleware] No auth token found for dashboard route:', pathname)
-      // For regular dashboard, redirect to regular login
+      console.warn('[middleware] ❌ No auth token found for dashboard route:', pathname)
+      console.warn('[middleware] User must login to access this page')
+      
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', 'no_session')
       return NextResponse.redirect(loginUrl)
     }
 
+    console.log('[middleware] ✓ Token found, verifying...')
+    
     // Verify main access token
     const payload = await verifyJwt(token, 'JWT_ACCESS_SECRET')
+    
     if (!payload) {
+      console.warn('[middleware] ❌ Token verification failed - invalid or expired')
+      
       // For regular dashboard invalid/expired session
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
@@ -196,18 +223,28 @@ export async function middleware(request: NextRequest) {
       return response
     }
 
+    console.log('[middleware] ✅ Token verified successfully')
+    
+    // Check role-based access
     const role = (payload as any)?.role || null
+    console.log('[middleware] User role:', role)
+    
     if (
       role &&
       pathname !== '/dashboard' &&
       pathname !== '/dashboard/notifications'
     ) {
       if (!canAccessRoute(role, pathname)) {
+        console.warn('[middleware] ⚠️  User role', role, 'cannot access', pathname)
+        
         // Redirect to user's correct dashboard
         const correctDashboard = ROLE_ROUTE_MAP[role]?.[0] || '/dashboard'
+        console.log('[middleware] Redirecting to correct dashboard:', correctDashboard)
         return NextResponse.redirect(new URL(correctDashboard, request.url))
       }
     }
+    
+    console.log('[middleware] ✅ Access granted to', pathname)
   }
 
   const res = NextResponse.next()
