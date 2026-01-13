@@ -70,11 +70,17 @@ class CSRFManager {
 
   private async fetchToken(): Promise<string | null> {
     try {
+      console.log('[CSRF] Fetching new token from server...')
       const response = await api.get('/auth/csrf-token', {
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         }
+      })
+      
+      console.log('[CSRF] Response received:', {
+        data: response.data,
+        headers: response.headers
       })
       
       const token = 
@@ -87,6 +93,7 @@ class CSRFManager {
       // Also try cookie as fallback
       if (!token && typeof document !== 'undefined') {
         const cookieToken = this.getTokenFromCookie()
+        console.log('[CSRF] Token not in response, trying cookie:', cookieToken ? 'found' : 'not found')
         if (cookieToken) {
           this.cachedToken = cookieToken
           this.lastFetchTime = Date.now()
@@ -95,8 +102,11 @@ class CSRFManager {
       }
 
       if (token) {
+        console.log('[CSRF] Token obtained successfully:', token.substring(0, 10) + '...')
         this.cachedToken = token
         this.lastFetchTime = Date.now()
+      } else {
+        console.warn('[CSRF] No token found in response or cookie!')
       }
 
       return token || null
@@ -204,7 +214,13 @@ class AuthService {
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
       // Always get a FRESH token before login (force refresh)
+      console.log('[AUTH] Starting login, fetching CSRF token...')
       const csrfToken = await csrfManager.getToken(true)
+      console.log('[AUTH] CSRF token for login:', csrfToken ? csrfToken.substring(0, 10) + '...' : 'NULL')
+      
+      if (!csrfToken) {
+        console.error('[AUTH] WARNING: No CSRF token available for login!')
+      }
       
       const response = await api.post('/auth/login', { email, password }, {
         headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : undefined,
