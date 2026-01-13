@@ -229,29 +229,15 @@ class AuthService {
         csrfManager.updateToken(newToken)
       }
 
-      // CRITICAL: Set cookies client-side to ensure middleware can read them
-      // AND wait a tiny bit to ensure they're written before any redirect happens
-      if (typeof document !== 'undefined' && accessToken) {
-        const isProduction = window.location.protocol === 'https:'
-        const secure = isProduction ? '; Secure' : ''
-        const sameSite = isProduction ? '; SameSite=Strict' : '; SameSite=Lax'
-        
-        const maxAge = 15 * 60 // 15 minutes in seconds
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
-        document.cookie = `sportx_access_token=${accessToken}; path=/; max-age=${maxAge}${secure}${sameSite}`
-        
-        if (refreshToken) {
-          const refreshMaxAge = 7 * 24 * 60 * 60 // 7 days in seconds
-          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${refreshMaxAge}${secure}${sameSite}`
-        }
-        
-        console.log('[AUTH] ✅ Cookies set client-side:', {
-          accessToken: accessToken.substring(0, 20) + '...',
-          cookieNames: ['accessToken', 'sportx_access_token'],
-          cookiesNow: document.cookie.split(';').map(c => c.trim().split('=')[0]).join(', ')
-        })
-      }
+      // IMPORTANT: Do NOT set cookies client-side!
+      // The backend sets httpOnly cookies via Set-Cookie header which are automatically handled by the browser.
+      // These cookies are secure (httpOnly, Secure in production, SameSite) and inaccessible to JavaScript.
+      // The axios client is configured with { withCredentials: true } so cookies are automatically sent with requests.
+      
+      console.log('[AUTH] ✅ Login successful - backend has set httpOnly cookies')
+      console.log('[AUTH] User:', user.email, 'Role:', user.role)
 
+      // Save user to localStorage for quick access (but tokens are in httpOnly cookies)
       this.saveUser(user)
       
       // Small delay to ensure cookies are fully written before redirect
@@ -290,9 +276,14 @@ class AuthService {
       }
 
       performLogout()
-      // Clear all auth-related cookies (both names for compatibility)
+      
+      // Note: HttpOnly cookies can only be cleared by the server via Set-Cookie with past expiry
+      // The backend /auth/logout endpoint does this automatically.
+      // We clear any non-httpOnly cookies here as a precaution:
       document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      document.cookie = `access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+      document.cookie = `refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `${API_CONFIG.TOKEN_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `matches_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
       document.cookie = `sportx_ui_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
