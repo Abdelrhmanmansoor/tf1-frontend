@@ -66,29 +66,72 @@ function isMatchesDashboardRoute(pathname: string): boolean {
 async function verifyJwt(token: string, secretEnv: string): Promise<any | null> {
   // CRITICAL FIX: Handle missing JWT secret gracefully
   const secret = process.env[secretEnv]
+  const hasSecret = !!secret
   
-  if (!secret) {
-    console.error(`[middleware] CRITICAL: ${secretEnv} is not set in environment variables!`)
-    console.error(`[middleware] Please add ${secretEnv} to your Vercel environment variables`)
-    console.error(`[middleware] Current env keys available:`, Object.keys(process.env).filter(k => k.includes('JWT') || k.includes('SECRET')).join(', ') || 'NONE')
+  // Runtime logging: Only log boolean existence, NEVER the actual value
+  console.log(`[middleware] ${secretEnv} exists:`, hasSecret)
+  
+  if (!hasSecret) {
+    console.error(`[middleware] ❌ CRITICAL: ${secretEnv} is not set in environment variables!`)
+    console.error(`[middleware] This will cause all authenticated requests to fail.`)
+    console.error(`[middleware] Available JWT-related env keys:`, 
+      Object.keys(process.env)
+        .filter(k => k.includes('JWT') || k.includes('SECRET'))
+        .join(', ') || 'NONE FOUND'
+    )
     
-    // In development, provide helpful message
+    // Environment-specific error handling
     if (process.env.NODE_ENV === 'development') {
+      // Development: Throw error with instructions
+      console.error(`[middleware] 🔧 DEVELOPMENT MODE - Fix required:`)
       console.error(`[middleware] Add this to your .env.local file:`)
       console.error(`[middleware] ${secretEnv}=your-secret-key-here`)
+      console.error(`[middleware] Get the value from your backend .env file`)
+      
+      // Still return null to trigger redirect with proper reason
+      return null
+    } else {
+      // Production: Log error but handle gracefully
+      console.error(`[middleware] 🚨 PRODUCTION ERROR - Environment misconfigured`)
+      console.error(`[middleware] Add ${secretEnv} to Vercel Environment Variables:`)
+      console.error(`[middleware] 1. Go to: Vercel Dashboard → Settings → Environment Variables`)
+      console.error(`[middleware] 2. Add: ${secretEnv}`)
+      console.error(`[middleware] 3. Set for: Production, Preview, Development`)
+      console.error(`[middleware] 4. Redeploy the application`)
+      
+      return null
     }
-    
-    return null
   }
+  
+  // Secret exists, proceed with verification
+  console.log(`[middleware] ✓ ${secretEnv} is configured, verifying token...`)
   
   try {
     const verified = await jwtVerify(token, new TextEncoder().encode(secret), {
       issuer: 'sportsplatform-api',
     })
-    console.log(`[middleware] ✅ Token verified successfully for user:`, (verified.payload as any)?.userId)
+    
+    const userId = (verified.payload as any)?.userId
+    const role = (verified.payload as any)?.role
+    
+    console.log(`[middleware] ✅ Token verified successfully`)
+    console.log(`[middleware] User ID:`, userId)
+    console.log(`[middleware] Role:`, role)
+    
     return verified.payload
   } catch (err) {
-    console.warn(`[middleware] JWT verification failed: ${String(err)}`)
+    const errorMessage = String(err)
+    console.warn(`[middleware] ❌ JWT verification failed:`, errorMessage)
+    
+    // Provide specific error feedback
+    if (errorMessage.includes('expired')) {
+      console.warn(`[middleware] Token has expired - user needs to re-login`)
+    } else if (errorMessage.includes('signature')) {
+      console.warn(`[middleware] Invalid signature - JWT_ACCESS_SECRET might not match backend`)
+    } else if (errorMessage.includes('issuer')) {
+      console.warn(`[middleware] Invalid issuer - expected: sportsplatform-api`)
+    }
+    
     return null
   }
 }
@@ -209,14 +252,23 @@ export async function middleware(request: NextRequest) {
     const payload = await verifyJwt(token, 'JWT_ACCESS_SECRET')
     
     if (!payload) {
-      console.warn('[middleware] ❌ Token verification failed - invalid or expired')
+      console.warn('[middleware] ❌ Token verification failed - invalid, expired, or misconfigured')
       
-      // For regular dashboard invalid/expired session
+      // Check if JWT_ACCESS_SECRET is missing (misconfiguration)
+      const hasSecret = !!process.env.JWT_ACCESS_SECRET
+      const reason = hasSecret ? 'invalid_session' : 'misconfigured_env'
+      
+      if (!hasSecret) {
+        console.error('[middleware] ⚠️  Redirecting with reason=misconfigured_env')
+        console.error('[middleware] This indicates a server configuration issue, not a user auth issue')
+      }
+      
+      // Redirect to login with appropriate reason
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
-      loginUrl.searchParams.set('reason', 'invalid_session')
+      loginUrl.searchParams.set('reason', reason)
 
-      // Clear the expired cookies (both potential names)
+      // Clear the expired/invalid cookies (both potential names)
       const response = NextResponse.redirect(loginUrl)
       response.cookies.delete('accessToken')
       response.cookies.delete('sportx_access_token')
