@@ -160,26 +160,14 @@ api.interceptors.request.use(
       if (!isAuthEndpoint) {
         const accessToken = getAccessTokenFromCookie()
         
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api.ts:161',message:'Interceptor checking token',data:{url:config.url,method:config.method,hasToken:!!accessToken,tokenPreview:accessToken?accessToken.substring(0,20)+'...':null,allCookies:typeof document!=='undefined'?document.cookie:'SSR'},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
-        
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`
           console.log(`[AUTH] ✓ Authorization header attached to ${config.method?.toUpperCase()} ${config.url}`)
-          
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api.ts:165',message:'Authorization header set',data:{url:config.url,authHeader:config.headers.Authorization?'Bearer ...':null},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'B'})}).catch(()=>{});
-          // #endregion
         } else {
           // Only log warning for protected endpoints
           if (!config.url?.includes('/auth/')) {
             console.warn(`[AUTH] ⚠️  No access token found for ${config.method?.toUpperCase()} ${config.url}`)
           }
-          
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/1f061ec0-9e14-464c-a604-2209e83b01ad',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api.ts:174',message:'No token found in interceptor',data:{url:config.url,method:config.method},timestamp:Date.now(),sessionId:'debug-session',runId:'auth-debug',hypothesisId:'B'})}).catch(()=>{});
-          // #endregion
         }
       }
       
