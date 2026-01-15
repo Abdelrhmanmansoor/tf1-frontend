@@ -59,17 +59,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const timeoutPromise = new Promise<boolean>((resolve) => {
           setTimeout(() => resolve(true), 3000) // 3 second timeout
         })
-        
+
         // Race: if validation takes too long, trust local state
         const isValid = await Promise.race([validationPromise, timeoutPromise])
-        
+
         if (isValid === false) {
           // If validation fails explicitly (locked out, token revoked), clear user
           const updatedUser = authService.getCurrentUser()
           setUser(updatedUser) // might be null now
           return !!updatedUser
         }
-        
+
         // CRITICAL FIX: Get fresh user data from API instead of localStorage
         try {
           const freshUser = await authService.getProfile()
@@ -115,7 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     initAuth()
-  }, [validateSession])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Run only once on mount
 
   // Re-validate session on route changes within dashboard
   useEffect(() => {
