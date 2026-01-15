@@ -67,19 +67,19 @@ async function verifyJwt(token: string, secretEnv: string): Promise<any | null> 
   // CRITICAL FIX: Handle missing JWT secret gracefully
   const secret = process.env[secretEnv]
   const hasSecret = !!secret
-  
+
   // Runtime logging: Only log boolean existence, NEVER the actual value
   console.log(`[middleware] ${secretEnv} exists:`, hasSecret)
-  
+
   if (!hasSecret) {
     console.error(`[middleware] ❌ CRITICAL: ${secretEnv} is not set in environment variables!`)
     console.error(`[middleware] This will cause all authenticated requests to fail.`)
-    console.error(`[middleware] Available JWT-related env keys:`, 
+    console.error(`[middleware] Available JWT-related env keys:`,
       Object.keys(process.env)
         .filter(k => k.includes('JWT') || k.includes('SECRET'))
         .join(', ') || 'NONE FOUND'
     )
-    
+
     // Environment-specific error handling
     if (process.env.NODE_ENV === 'development') {
       // Development: Throw error with instructions
@@ -87,7 +87,7 @@ async function verifyJwt(token: string, secretEnv: string): Promise<any | null> 
       console.error(`[middleware] Add this to your .env.local file:`)
       console.error(`[middleware] ${secretEnv}=your-secret-key-here`)
       console.error(`[middleware] Get the value from your backend .env file`)
-      
+
       // Still return null to trigger redirect with proper reason
       return null
     } else {
@@ -98,31 +98,31 @@ async function verifyJwt(token: string, secretEnv: string): Promise<any | null> 
       console.error(`[middleware] 2. Add: ${secretEnv}`)
       console.error(`[middleware] 3. Set for: Production, Preview, Development`)
       console.error(`[middleware] 4. Redeploy the application`)
-      
+
       return null
     }
   }
-  
+
   // Secret exists, proceed with verification
   console.log(`[middleware] ✓ ${secretEnv} is configured, verifying token...`)
-  
+
   try {
     const verified = await jwtVerify(token, new TextEncoder().encode(secret), {
       issuer: 'sportsplatform-api',
     })
-    
+
     const userId = (verified.payload as any)?.userId
     const role = (verified.payload as any)?.role
-    
+
     console.log(`[middleware] ✅ Token verified successfully`)
     console.log(`[middleware] User ID:`, userId)
     console.log(`[middleware] Role:`, role)
-    
+
     return verified.payload
   } catch (err) {
     const errorMessage = String(err)
     console.warn(`[middleware] ❌ JWT verification failed:`, errorMessage)
-    
+
     // Provide specific error feedback
     if (errorMessage.includes('expired')) {
       console.warn(`[middleware] Token has expired - user needs to re-login`)
@@ -131,7 +131,7 @@ async function verifyJwt(token: string, secretEnv: string): Promise<any | null> 
     } else if (errorMessage.includes('issuer')) {
       console.warn(`[middleware] Invalid issuer - expected: sportsplatform-api`)
     }
-    
+
     return null
   }
 }
@@ -150,12 +150,12 @@ function applySecurityHeaders(response: NextResponse) {
   response.headers.set(
     'Content-Security-Policy',
     [
-      "default-src 'self'", 
-      "script-src 'self' 'unsafe-inline' https://js.hs-scripts.com", 
-      "style-src 'self' 'unsafe-inline'", 
-      "img-src 'self' data: https://tf1-backend.onrender.com", 
-      "connect-src 'self' https://tf1-backend.onrender.com wss:", 
-      "font-src 'self' data:",
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.hs-scripts.com https://js-eu1.hs-scripts.com https://vercel.live",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: https: blob:",
+      "connect-src 'self' https://tf1-backend.onrender.com wss: https://vitals.vercel-insights.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
       "frame-ancestors 'self'",
       "form-action 'self'",
       "base-uri 'self'",
@@ -239,7 +239,7 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       console.warn('[middleware] ❌ No auth token found for dashboard route:', pathname)
       console.warn('[middleware] User must login to access this page')
-      
+
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', 'no_session')
@@ -247,40 +247,56 @@ export async function middleware(request: NextRequest) {
     }
 
     console.log('[middleware] ✓ Token found, verifying...')
-    
+
     // Verify main access token
     const payload = await verifyJwt(token, 'JWT_ACCESS_SECRET')
-    
+
     if (!payload) {
       console.warn('[middleware] ❌ Token verification failed - invalid, expired, or misconfigured')
-      
+
       // Check if JWT_ACCESS_SECRET is missing (misconfiguration)
       const hasSecret = !!process.env.JWT_ACCESS_SECRET
-      const reason = hasSecret ? 'invalid_session' : 'misconfigured_env'
-      
+
+      // إذا كان السر مفقود، هذه مشكلة في الإعداد وليست مشكلة المستخدم
       if (!hasSecret) {
-        console.error('[middleware] ⚠️  Redirecting with reason=misconfigured_env')
-        console.error('[middleware] This indicates a server configuration issue, not a user auth issue')
+        console.error('[middleware] 🚨 CRITICAL: JWT_ACCESS_SECRET is not configured!')
+        console.error('[middleware] This is a SERVER CONFIGURATION issue, not a user authentication issue')
+        console.error('[middleware] User should NOT be logged out - this is a server-side problem')
+
+        // في الإنتاج، نعرض صفحة خطأ بدلاً من تسجيل الخروج القسري
+        if (process.env.NODE_ENV === 'production') {
+          console.error('[middleware] Redirecting to error page instead of forcing logout')
+          return NextResponse.redirect(new URL('/error?code=server_misconfigured', request.url))
+        } else {
+          // في التطوير، نعرض رسالة واضحة
+          console.error('[middleware] 🔧 DEVELOPMENT MODE - Fix required:')
+          console.error('[middleware] Add JWT_ACCESS_SECRET to your .env.local file')
+          console.error('[middleware] Get the value from your backend .env file')
+        }
       }
-      
+
+      const reason = hasSecret ? 'invalid_session' : 'misconfigured_env'
+
       // Redirect to login with appropriate reason
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       loginUrl.searchParams.set('reason', reason)
 
-      // Clear the expired/invalid cookies (both potential names)
+      // فقط احذف الـ Cookies إذا كانت المشكلة في التوكن نفسه وليس في إعدادات السيرفر
       const response = NextResponse.redirect(loginUrl)
-      response.cookies.delete('accessToken')
-      response.cookies.delete('sportx_access_token')
+      if (hasSecret) {
+        response.cookies.delete('accessToken')
+        response.cookies.delete('sportx_access_token')
+      }
       return response
     }
 
     console.log('[middleware] ✅ Token verified successfully')
-    
+
     // Check role-based access
     const role = (payload as any)?.role || null
     console.log('[middleware] User role:', role)
-    
+
     if (
       role &&
       pathname !== '/dashboard' &&
@@ -288,14 +304,14 @@ export async function middleware(request: NextRequest) {
     ) {
       if (!canAccessRoute(role, pathname)) {
         console.warn('[middleware] ⚠️  User role', role, 'cannot access', pathname)
-        
+
         // Redirect to user's correct dashboard
         const correctDashboard = ROLE_ROUTE_MAP[role]?.[0] || '/dashboard'
         console.log('[middleware] Redirecting to correct dashboard:', correctDashboard)
         return NextResponse.redirect(new URL(correctDashboard, request.url))
       }
     }
-    
+
     console.log('[middleware] ✅ Access granted to', pathname)
   }
 
