@@ -70,17 +70,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return !!updatedUser
         }
 
-        // CRITICAL FIX: Get fresh user data from API instead of localStorage
+        // CRITICAL FIX: Get fresh user data from API with shorter timeout
         try {
-          const freshUser = await authService.getProfile()
+          const profilePromise = authService.getProfile()
+          const profileTimeout = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Profile fetch timeout')), 5000) // 5 second timeout
+          })
+
+          const freshUser = await Promise.race([profilePromise, profileTimeout]) as User
           if (freshUser) {
             setUser(freshUser)
             // Update localStorage with fresh data from API
             authService.saveUser(freshUser)
           }
         } catch (profileError) {
-          console.warn('[AUTH] Failed to get fresh profile, using cached data:', profileError)
-          // Fallback to cached data if API fails
+          console.warn('[AUTH] Failed to get fresh profile, using cached data')
+          // Fallback to cached data if API fails - DON'T spam console
           const cachedUser = authService.getCurrentUser()
           if (cachedUser) {
             setUser(cachedUser)
