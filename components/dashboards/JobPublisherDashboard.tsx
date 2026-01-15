@@ -35,6 +35,9 @@ import NotificationsCenter from './job-publisher/NotificationsCenter'
 import JobsList from './job-publisher/JobsList'
 import ApplicationsList from './job-publisher/ApplicationsList'
 import NotificationBell from './NotificationBell'
+import InterviewsList from './job-publisher/InterviewsList'
+import AutomationRulesList from './job-publisher/AutomationRulesList'
+import SubscriptionDashboard from './job-publisher/SubscriptionDashboard'
 
 interface DashboardStats {
   totalJobs: number
@@ -225,9 +228,9 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center" dir={isRtl ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir={isRtl ? 'rtl' : 'ltr'}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">{language === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
         </div>
       </div>
@@ -235,66 +238,52 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50" dir={isRtl ? 'rtl' : 'ltr'}>
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-bold text-gray-900">
-                {language === 'ar' ? 'لوحة تحكم ناشر الوظائف' : 'Job Publisher Dashboard'}
+    <div className="min-h-screen bg-gray-50" dir={isRtl ? 'rtl' : 'ltr'}>
+      {/* Header - Clean professional design */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {language === 'ar' ? 'لوحة التحكم' : 'Dashboard'}
               </h1>
-              <p className="text-gray-600 mt-1">
-                {language === 'ar' ? 'مؤشرات حية، أداء الوظائف، ومركز الإشعارات الذكي' : 'Live KPIs, job performance, and smart notifications'}
+              <p className="text-sm text-gray-500 mt-0.5">
+                {language === 'ar' ? 'إدارة الوظائف والمقابلات' : 'Manage jobs and interviews'}
               </p>
-              <div className="flex flex-wrap gap-2 text-xs text-gray-500">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-50 text-green-700">
-                  <ShieldCheck className="w-3 h-3" />
-                  {language === 'ar' ? 'متوافق مع الـ API الحالي' : 'Aligned with existing API'}
-                </span>
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">
-                  <Activity className="w-3 h-3" />
-                  {language === 'ar' ? 'إحصاءات لحظية' : 'Live insights'}
-                </span>
-              </div>
             </div>
 
-            <div className="flex items-center gap-3 self-start lg:self-auto">
+            <div className="flex items-center gap-3">
               <NotificationBell userRole="club" />
               <Link href="/dashboard/job-publisher/jobs/new">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   <Plus className="w-4 h-4 mr-2" />
-                  {language === 'ar' ? 'إضافة وظيفة جديدة' : 'Post New Job'}
-                </Button>
-              </Link>
-              <Link href="/dashboard/job-publisher/jobs">
-                <Button variant="outline" className="border-gray-200 hover:bg-gray-50">
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  {language === 'ar' ? 'جميع الوظائف' : 'All Jobs'}
+                  {language === 'ar' ? 'وظيفة جديدة' : 'New Job'}
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
+          {/* Tabs - LinkedIn style */}
+          <div className="flex gap-6 mt-4 border-b border-gray-200">
             {[
               { id: 'overview', label: language === 'ar' ? 'نظرة عامة' : 'Overview', icon: BarChart3 },
               { id: 'jobs', label: language === 'ar' ? 'الوظائف' : 'Jobs', icon: Briefcase },
               { id: 'applications', label: language === 'ar' ? 'الطلبات' : 'Applications', icon: FileText },
+              { id: 'interviews', label: language === 'ar' ? 'المقابلات' : 'Interviews', icon: Calendar },
               { id: 'messages', label: language === 'ar' ? 'الرسائل' : 'Messages', icon: Users },
-              { id: 'notifications', label: language === 'ar' ? 'الإشعارات' : 'Notifications', icon: Clock },
-              { id: 'profile', label: language === 'ar' ? 'الملف الشخصي' : 'Profile', icon: Building },
+              { id: 'automation', label: language === 'ar' ? 'الأتمتة' : 'Automation', icon: Activity },
+              { id: 'subscription', label: language === 'ar' ? 'الباقة' : 'Subscription', icon: TrendingUp },
+              { id: 'profile', label: language === 'ar' ? 'الإعدادات' : 'Settings', icon: Building },
             ].map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 border-b-2 ${
+                  className={`pb-3 text-sm font-medium transition-colors flex items-center gap-2 border-b-2 -mb-px ${
                     activeTab === tab.id
-                      ? 'text-purple-600 border-purple-600'
-                      : 'text-gray-500 border-transparent hover:text-gray-700'
+                      ? 'text-blue-600 border-blue-600'
+                      : 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -348,22 +337,62 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
               </div>
             </div>
 
-            {/* Statistics Cards */}
+            {/* Statistics Cards - Clean professional design */}
             {stats && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4"
-              >
-                <Link href="/dashboard/job-publisher/jobs" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الوظائف' : 'Total Jobs'}</p>
-                      <Briefcase className="w-5 h-5 text-purple-600" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">{language === 'ar' ? 'الوظائف' : 'Jobs'}</p>
+                      <p className="text-2xl font-semibold text-gray-900">{stats.totalJobs}</p>
+                      <p className="text-xs text-gray-500 mt-1">{stats.activeJobs} {language === 'ar' ? 'نشطة' : 'active'}</p>
                     </div>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalJobs}</p>
+                    <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <Briefcase className="w-6 h-6 text-blue-600" />
+                    </div>
                   </div>
-                </Link>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">{language === 'ar' ? 'الطلبات' : 'Applications'}</p>
+                      <p className="text-2xl font-semibold text-gray-900">{stats.totalApplications}</p>
+                      <p className="text-xs text-gray-500 mt-1">{stats.newApplications} {language === 'ar' ? 'جديدة' : 'new'}</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">{language === 'ar' ? 'المقابلات' : 'Interviews'}</p>
+                      <p className="text-2xl font-semibold text-gray-900">{stats.interviewedApplications || 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">{language === 'ar' ? 'مجدولة' : 'scheduled'}</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <Calendar className="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">{language === 'ar' ? 'التوظيفات' : 'Hired'}</p>
+                      <p className="text-2xl font-semibold text-gray-900">{stats.hiredApplications || 0}</p>
+                      <p className="text-xs text-green-600 mt-1">{acceptanceRate}% {language === 'ar' ? 'معدل النجاح' : 'success rate'}</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
                 <Link href="/dashboard/job-publisher/jobs?status=active" className="block h-full">
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
@@ -465,11 +494,8 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Recent Jobs */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-              >
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+              
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     {language === 'ar' ? 'آخر الوظائف' : 'Recent Jobs'}
@@ -523,14 +549,11 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
 
               {/* Recent Applications */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-              >
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+              
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     {language === 'ar' ? 'آخر الطلبات' : 'Recent Applications'}
@@ -581,17 +604,13 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             </div>
 
-            {/* Application funnel + performance */}
+            {/* Application funnel - Clean design */}
             {stats && (
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                >
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <p className="text-sm text-gray-500">{language === 'ar' ? 'مسار الطلبات' : 'Application funnel'}</p>
@@ -732,7 +751,180 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
             <NotificationsCenter />
           </div>
         )}
-      </main>
-    </div>
-  );
-}
+
+        {/* Interviews Tab - NEW */}
+        {activeTab === 'interviews' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                {language === 'ar' ? 'المقابلات المجدولة' : 'Scheduled Interviews'}
+              </h2>
+              <div className="text-center py-12">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 mb-4">
+                  {language === 'ar' ? 'لا توجد مقابلات مجدولة' : 'No interviews scheduled yet'}
+                </p>
+                <p className="text-sm text-gray-400 mb-4">
+                  {language === 'ar' ? 'عند تحريك طلب إلى مرحلة "مقابلة"، سيمكنك جدولة المقابلة هنا' : 'When you move an application to "Interview" stage, you can schedule it here'}
+                </p>
+                <Button variant="outline" onClick={() => setActiveTab('applications')}>
+                  {language === 'ar' ? 'عرض الطلبات' : 'View Applications'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Automation Tab - NEW */}
+        {activeTab === 'automation' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {language === 'ar' ? 'قواعد الأتمتة' : 'Automation Rules'}
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {language === 'ar' ? 'أتمت سير عمل التوظيف الخاص بك' : 'Automate your recruitment workflow'}
+                  </p>
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Plus className="w-4 h-4 mr-2" />
+                  {language === 'ar' ? 'قاعدة جديدة' : 'New Rule'}
+                </Button>
+              </div>
+              
+              <div className="text-center py-12">
+                <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 mb-2">
+                  {language === 'ar' ? 'لا توجد قواعد أتمتة بعد' : 'No automation rules yet'}
+                </p>
+                <p className="text-sm text-gray-400 max-w-md mx-auto">
+                  {language === 'ar' 
+                    ? 'أنشئ قواعد لإرسال إشعارات تلقائية، جدولة مقابلات، وإرسال رسائل عند تغيير حالة الطلب'
+                    : 'Create rules to automatically send notifications, schedule interviews, and send messages when application status changes'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Subscription Tab - NEW */}
+        {activeTab === 'subscription' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                {language === 'ar' ? 'باقتي الحالية' : 'Current Plan'}
+              </h2>
+              
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-blue-700 font-medium mb-1">{language === 'ar' ? 'الباقة الحالية' : 'Current Plan'}</p>
+                    <h3 className="text-3xl font-bold text-blue-900">Free</h3>
+                    <p className="text-sm text-blue-700 mt-2">
+                      {language === 'ar' ? '5 مقابلات شهرياً' : '5 interviews per month'}
+                    </p>
+                  </div>
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    {language === 'ar' ? 'ترقية الباقة' : 'Upgrade Plan'}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Basic Plan */}
+                <div className="border border-gray-200 rounded-lg p-5">
+                  <h4 className="font-semibold text-gray-900 mb-2">Basic</h4>
+                  <p className="text-2xl font-bold text-gray-900 mb-4">299 <span className="text-sm font-normal text-gray-500">{language === 'ar' ? 'ريال/شهر' : 'SAR/month'}</span></p>
+                  <ul className="space-y-2 text-sm text-gray-600 mb-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      20 {language === 'ar' ? 'مقابلة/شهر' : 'interviews/month'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'أتمتة المقابلات' : 'Interview automation'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? '5 قواعد أتمتة' : '5 automation rules'}
+                    </li>
+                  </ul>
+                  <Button variant="outline" className="w-full">{language === 'ar' ? 'اختيار' : 'Select'}</Button>
+                </div>
+
+                {/* Pro Plan */}
+                <div className="border-2 border-blue-600 rounded-lg p-5 relative">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                      {language === 'ar' ? 'الأكثر شعبية' : 'Most Popular'}
+                    </span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Pro</h4>
+                  <p className="text-2xl font-bold text-gray-900 mb-4">999 <span className="text-sm font-normal text-gray-500">{language === 'ar' ? 'ريال/شهر' : 'SAR/month'}</span></p>
+                  <ul className="space-y-2 text-sm text-gray-600 mb-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      100 {language === 'ar' ? 'مقابلة/شهر' : 'interviews/month'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? '50 قاعدة أتمتة' : '50 automation rules'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'تحليلات متقدمة' : 'Advanced analytics'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'إشعارات SMS' : 'SMS notifications'}
+                    </li>
+                  </ul>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">{language === 'ar' ? 'ترقية' : 'Upgrade'}</Button>
+                </div>
+
+                {/* Enterprise Plan */}
+                <div className="border border-gray-200 rounded-lg p-5">
+                  <h4 className="font-semibold text-gray-900 mb-2">Enterprise</h4>
+                  <p className="text-2xl font-bold text-gray-900 mb-4">{language === 'ar' ? 'مخصص' : 'Custom'}</p>
+                  <ul className="space-y-2 text-sm text-gray-600 mb-4">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'مقابلات غير محدودة' : 'Unlimited interviews'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'أتمتة متقدمة' : 'Advanced automation'}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      {language === 'ar' ? 'مدير حساب مخصص' : 'Dedicated manager'}
+                    </li>
+                  </ul>
+                  <Button variant="outline" className="w-full">{language === 'ar' ? 'اتصل بنا' : 'Contact Sales'}</Button>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Stats Grid */}
+            {stats && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <p className="text-xs text-gray-500 mb-1">{language === 'ar' ? 'نشطة' : 'Active'}</p>
+                  <p className="text-xl font-semibold text-green-600">{stats.activeJobs}</p>
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <p className="text-xs text-gray-500 mb-1">{language === 'ar' ? 'قيد المراجعة' : 'In Review'}</p>
+                  <p className="text-xl font-semibold text-yellow-600">{stats.underReviewApplications}</p>
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <p className="text-xs text-gray-500 mb-1">{language === 'ar' ? 'عروض' : 'Offered'}</p>
+                  <p className="text-xl font-semibold text-blue-600">{stats.offeredApplications || 0}</p>
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <p className="text-xs text-gray-500 mb-1">{language === 'ar' ? 'مرفوضة' : 'Rejected'}</p>
+                  <p className="text-xl font-semibold text-red-600">{stats.rejectedApplications || 0}</p>
+                </div>
+              </div>
+            )}
