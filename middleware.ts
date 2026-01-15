@@ -154,7 +154,7 @@ function applySecurityHeaders(response: NextResponse) {
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.hs-scripts.com https://js-eu1.hs-scripts.com https://js-eu1.usemessages.com https://js-eu1.hs-banner.com https://js-eu1.hs-analytics.net https://js-eu1.hscollectedforms.net https://vercel.live",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://tf1-backend.onrender.com wss: https://vitals.vercel-insights.com",
+      "connect-src 'self' https://tf1-backend.onrender.com wss: https://vitals.vercel-insights.com https://api-eu1.hubspot.com https://forms-eu1.hscollectedforms.net",
       "font-src 'self' data: https://fonts.gstatic.com",
       "frame-src 'self' https://vercel.live",
       "frame-ancestors 'self'",
