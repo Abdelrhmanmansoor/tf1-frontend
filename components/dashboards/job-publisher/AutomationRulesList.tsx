@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Activity, Zap, Plus, MoreVertical, ToggleLeft, ToggleRight } from 'lucide-react'
 import { toast } from 'sonner'
 import api from '@/services/api'
+import CreateAutomationModal from './CreateAutomationModal'
 
 interface AutomationRule {
   _id: string
@@ -24,6 +25,7 @@ export default function AutomationRulesList() {
   const { language } = useLanguage()
   const [rules, setRules] = useState<AutomationRule[]>([])
   const [loading, setLoading] = useState(true)
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
     fetchRules()
@@ -68,6 +70,12 @@ export default function AutomationRulesList() {
 
   return (
     <div className="space-y-6">
+      <CreateAutomationModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={fetchRules}
+      />
+
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">
@@ -78,7 +86,7 @@ export default function AutomationRulesList() {
           </p>
         </div>
 
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowCreateModal(true)}>
           <Plus className="w-4 h-4 mr-2" />
           {language === 'ar' ? 'قاعدة جديدة' : 'New Rule'}
         </Button>
@@ -95,7 +103,7 @@ export default function AutomationRulesList() {
               ? 'أنشئ قواعد لإرسال إشعارات تلقائية عند تغيير حالة الطلب'
               : 'Create rules to automatically send notifications when application status changes'}
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowCreateModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
             {language === 'ar' ? 'إنشاء أول قاعدة' : 'Create First Rule'}
           </Button>
