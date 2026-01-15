@@ -485,8 +485,8 @@ export default function CreateJobPage() {
             <section className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
               <p className="text-sm text-gray-500">
                 {language === "ar"
-                  ? "سيتم حفظ كل وظيفة في نفس API المستخدم للواجهة العامة. تحقق من البيانات قبل النشر."
-                  : "Jobs are posted to the same public jobs API. Review details before publishing."}
+                  ? "تحقق من البيانات قبل النشر."
+                  : "Review details before publishing."}
               </p>
               <div className="flex items-center gap-3">
                 <Button onClick={() => handleSubmit(true)} variant="outline" className="border-gray-300" disabled={isSubmitting}>
