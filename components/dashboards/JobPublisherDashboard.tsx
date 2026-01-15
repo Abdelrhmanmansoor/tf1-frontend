@@ -6,11 +6,11 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import api from '@/services/api'
-import { 
-  Briefcase, 
-  FileText, 
-  Users, 
-  Plus, 
+import {
+  Briefcase,
+  FileText,
+  Users,
+  Plus,
   TrendingUp,
   Clock,
   CheckCircle,
@@ -151,7 +151,7 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
       if (jobsRes.data.success) {
         setRecentJobs(jobsRes.data.data.jobs || [])
       }
-      
+
       // Fetch recent applications
       const appsRes = await api.get('/job-publisher/applications?limit=5&sort=-createdAt')
       if (appsRes.data.success) {
@@ -280,11 +280,10 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`pb-3 text-sm font-medium transition-colors flex items-center gap-2 border-b-2 -mb-px ${
-                    activeTab === tab.id
+                  className={`pb-3 text-sm font-medium transition-colors flex items-center gap-2 border-b-2 -mb-px ${activeTab === tab.id
                       ? 'text-blue-600 border-blue-600'
                       : 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   {tab.label}
@@ -397,7 +396,7 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Recent Jobs */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-              
+
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     {language === 'ar' ? 'آخر الوظائف' : 'Recent Jobs'}
@@ -455,7 +454,7 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
 
               {/* Recent Applications */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-              
+
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     {language === 'ar' ? 'آخر الطلبات' : 'Recent Applications'}
@@ -663,7 +662,7 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
               <h2 className="text-lg font-semibold text-gray-900 mb-6">
                 {language === 'ar' ? 'باقتي الحالية' : 'Current Plan'}
               </h2>
-              
+
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 mb-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -777,3 +776,8 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
             )}
           </div>
         )}
+      </main>
+    </div>
+  )
+}
+
