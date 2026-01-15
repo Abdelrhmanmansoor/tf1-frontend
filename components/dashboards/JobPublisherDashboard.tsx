@@ -26,9 +26,11 @@ import {
   Activity,
   Flame,
   LineChart,
-  ShieldCheck
+  ShieldCheck,
+  LogOut
 } from 'lucide-react'
 import { toast } from 'sonner'
+import authService from '@/services/auth'
 import ProfileSettings from './job-publisher/ProfileSettings'
 import MessagingCenter from './job-publisher/MessagingCenter'
 import NotificationsCenter from './job-publisher/NotificationsCenter'
@@ -226,6 +228,10 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
 
   const isRtl = language === 'ar'
 
+  const handleLogout = () => {
+    authService.logout()
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -254,6 +260,15 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
 
             <div className="flex items-center gap-3">
               <NotificationBell userRole="club" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-red-600 hover:border-red-600"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {language === 'ar' ? 'تسجيل الخروج' : 'Logout'}
+              </Button>
               <Link href="/dashboard/job-publisher/jobs/new">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   <Plus className="w-4 h-4 mr-2" />
