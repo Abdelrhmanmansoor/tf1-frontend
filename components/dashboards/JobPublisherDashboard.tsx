@@ -753,61 +753,10 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
         )}
 
         {/* Interviews Tab - NEW */}
-        {activeTab === 'interviews' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                {language === 'ar' ? 'المقابلات المجدولة' : 'Scheduled Interviews'}
-              </h2>
-              <div className="text-center py-12">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 mb-4">
-                  {language === 'ar' ? 'لا توجد مقابلات مجدولة' : 'No interviews scheduled yet'}
-                </p>
-                <p className="text-sm text-gray-400 mb-4">
-                  {language === 'ar' ? 'عند تحريك طلب إلى مرحلة "مقابلة"، سيمكنك جدولة المقابلة هنا' : 'When you move an application to "Interview" stage, you can schedule it here'}
-                </p>
-                <Button variant="outline" onClick={() => setActiveTab('applications')}>
-                  {language === 'ar' ? 'عرض الطلبات' : 'View Applications'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === 'interviews' && <InterviewsList />}
 
         {/* Automation Tab - NEW */}
-        {activeTab === 'automation' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {language === 'ar' ? 'قواعد الأتمتة' : 'Automation Rules'}
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {language === 'ar' ? 'أتمت سير عمل التوظيف الخاص بك' : 'Automate your recruitment workflow'}
-                  </p>
-                </div>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {language === 'ar' ? 'قاعدة جديدة' : 'New Rule'}
-                </Button>
-              </div>
-              
-              <div className="text-center py-12">
-                <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 mb-2">
-                  {language === 'ar' ? 'لا توجد قواعد أتمتة بعد' : 'No automation rules yet'}
-                </p>
-                <p className="text-sm text-gray-400 max-w-md mx-auto">
-                  {language === 'ar' 
-                    ? 'أنشئ قواعد لإرسال إشعارات تلقائية، جدولة مقابلات، وإرسال رسائل عند تغيير حالة الطلب'
-                    : 'Create rules to automatically send notifications, schedule interviews, and send messages when application status changes'}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === 'automation' && <AutomationRulesList />}
 
         {/* Subscription Tab - NEW */}
         {activeTab === 'subscription' && (
