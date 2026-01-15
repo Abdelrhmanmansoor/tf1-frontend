@@ -394,104 +394,6 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
               </div>
             )}
 
-                <Link href="/dashboard/job-publisher/jobs?status=active" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'نشطة' : 'Active'}</p>
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    </div>
-                    <p className="text-3xl font-bold text-green-600">{stats.activeJobs}</p>
-                  </div>
-                </Link>
-
-                <Link href="/dashboard/job-publisher/jobs?status=draft" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مسودة' : 'Draft'}</p>
-                      <FileText className="w-5 h-5 text-gray-500" />
-                    </div>
-                    <p className="text-3xl font-bold text-gray-600">{stats.draftJobs}</p>
-                  </div>
-                </Link>
-
-                <Link href="/dashboard/job-publisher/jobs?status=closed" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'مغلقة' : 'Closed'}</p>
-                      <XCircle className="w-5 h-5 text-red-500" />
-                    </div>
-                    <p className="text-3xl font-bold text-red-600">{stats.closedJobs}</p>
-                  </div>
-                </Link>
-
-                <Link href="/dashboard/job-publisher/applications" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'إجمالي الطلبات' : 'Total Apps'}</p>
-                      <FileText className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <p className="text-3xl font-bold text-blue-600">{stats.totalApplications}</p>
-                  </div>
-                </Link>
-
-                <Link href="/dashboard/job-publisher/applications?status=new" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'جديدة' : 'New'}</p>
-                      <Clock className="w-5 h-5 text-yellow-500" />
-                    </div>
-                    <p className="text-3xl font-bold text-yellow-600">{stats.newApplications}</p>
-                  </div>
-                </Link>
-
-                <Link href="/dashboard/job-publisher/applications?status=under_review" className="block h-full">
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-gray-600">{language === 'ar' ? 'قيد المراجعة' : 'Review'}</p>
-                      <Eye className="w-5 h-5 text-purple-500" />
-                    </div>
-                    <p className="text-3xl font-bold text-purple-600">{stats.underReviewApplications}</p>
-                  </div>
-                </Link>
-
-                {stats.interviewedApplications !== undefined && (
-                  <Link href="/dashboard/job-publisher/applications?status=interviewed" className="block h-full">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviewed'}</p>
-                        <Users className="w-5 h-5 text-indigo-500" />
-                      </div>
-                      <p className="text-3xl font-bold text-indigo-600">{stats.interviewedApplications}</p>
-                    </div>
-                  </Link>
-                )}
-
-                {stats.offeredApplications !== undefined && (
-                  <Link href="/dashboard/job-publisher/applications?status=offered" className="block h-full">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm text-gray-600">{language === 'ar' ? 'عروض' : 'Offered'}</p>
-                        <TrendingUp className="w-5 h-5 text-teal-500" />
-                      </div>
-                      <p className="text-3xl font-bold text-teal-600">{stats.offeredApplications}</p>
-                    </div>
-                  </Link>
-                )}
-
-                {stats.hiredApplications !== undefined && (
-                  <Link href="/dashboard/job-publisher/applications?status=hired" className="block h-full">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm text-gray-600">{language === 'ar' ? 'تم التوظيف' : 'Hired'}</p>
-                        <CheckCircle className="w-5 h-5 text-emerald-500" />
-                      </div>
-                      <p className="text-3xl font-bold text-emerald-600">{stats.hiredApplications}</p>
-                    </div>
-                  </Link>
-                )}
-              </motion.div>
-            )}
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Recent Jobs */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -610,108 +512,104 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
             {/* Application funnel - Clean design */}
             {stats && (
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500">{language === 'ar' ? 'مسار الطلبات' : 'Application funnel'}</p>
-                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'تقدّم المرشحين' : 'Candidate progress'}</p>
-                    </div>
-                    <Activity className="w-5 h-5 text-purple-600" />
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-sm text-gray-500">{language === 'ar' ? 'مسار الطلبات' : 'Application funnel'}</p>
+                    <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'تقدّم المرشحين' : 'Candidate progress'}</p>
                   </div>
-                  <div className="space-y-3">
-                    {funnelData.map((stage) => (
-                      <div key={stage.key} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>{stage.label}</span>
-                          <span className="font-semibold text-gray-900">{stage.value} · {stage.percent}%</span>
-                        </div>
-                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${stage.tone}`}
-                            style={{ width: `${Math.min(stage.percent, 100)}%` }}
-                          ></div>
-                        </div>
+                  <Activity className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="space-y-3">
+                  {funnelData.map((stage) => (
+                    <div key={stage.key} className="space-y-1">
+                      <div className="flex items-center justify-between text-sm text-gray-600">
+                        <span>{stage.label}</span>
+                        <span className="font-semibold text-gray-900">{stage.value} · {stage.percent}%</span>
                       </div>
-                    ))}
-                  </div>
-                </motion.div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${stage.tone}`}
+                          style={{ width: `${Math.min(stage.percent, 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                >
-                  <div className="flex items-center justify-between mb-4">
+            {/* Conversion Stats */}
+            {stats && (
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-sm text-gray-500">{language === 'ar' ? 'معدل التحويل' : 'Conversion'}</p>
+                    <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'قبول/توظيف' : 'Acceptance & hires'}</p>
+                  </div>
+                  <LineChart className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">{language === 'ar' ? 'معدل التحويل' : 'Conversion'}</p>
-                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'قبول/توظيف' : 'Acceptance & hires'}</p>
+                      <p className="text-sm text-gray-600">{language === 'ar' ? 'معدل النجاح الإجمالي' : 'Overall success rate'}</p>
+                      <p className="text-3xl font-bold text-emerald-600">{acceptanceRate}%</p>
                     </div>
-                    <LineChart className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600">{language === 'ar' ? 'معدل النجاح الإجمالي' : 'Overall success rate'}</p>
-                        <p className="text-3xl font-bold text-emerald-600">{acceptanceRate}%</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-500">{language === 'ar' ? 'إجمالي الطلبات' : 'Total applications'}</p>
-                        <p className="text-lg font-semibold text-gray-900">{stats.totalApplications}</p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
-                        <p className="text-gray-600">{language === 'ar' ? 'مقبول' : 'Accepted'}</p>
-                        <p className="text-lg font-semibold text-emerald-700">{stats.acceptedApplications || 0}</p>
-                      </div>
-                      <div className="p-3 rounded-lg bg-red-50 border border-red-100">
-                        <p className="text-gray-600">{language === 'ar' ? 'مرفوض' : 'Rejected'}</p>
-                        <p className="text-lg font-semibold text-red-700">{stats.rejectedApplications || 0}</p>
-                      </div>
-                      <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-100">
-                        <p className="text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviews'}</p>
-                        <p className="text-lg font-semibold text-indigo-700">{stats.interviewedApplications || 0}</p>
-                      </div>
-                      <div className="p-3 rounded-lg bg-teal-50 border border-teal-100">
-                        <p className="text-gray-600">{language === 'ar' ? 'عروض' : 'Offers'}</p>
-                        <p className="text-lg font-semibold text-teal-700">{stats.offeredApplications || 0}</p>
-                      </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500">{language === 'ar' ? 'إجمالي الطلبات' : 'Total applications'}</p>
+                      <p className="text-lg font-semibold text-gray-900">{stats.totalApplications}</p>
                     </div>
                   </div>
-                </motion.div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                      <p className="text-gray-600">{language === 'ar' ? 'مقبول' : 'Accepted'}</p>
+                      <p className="text-lg font-semibold text-emerald-700">{stats.acceptedApplications || 0}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+                      <p className="text-gray-600">{language === 'ar' ? 'مرفوض' : 'Rejected'}</p>
+                      <p className="text-lg font-semibold text-red-700">{stats.rejectedApplications || 0}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                      <p className="text-gray-600">{language === 'ar' ? 'مقابلات' : 'Interviews'}</p>
+                      <p className="text-lg font-semibold text-indigo-700">{stats.interviewedApplications || 0}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-teal-50 border border-teal-100">
+                      <p className="text-gray-600">{language === 'ar' ? 'عروض' : 'Offers'}</p>
+                      <p className="text-lg font-semibold text-teal-700">{stats.offeredApplications || 0}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500">{language === 'ar' ? 'نبض النشاط' : 'Activity pulse'}</p>
-                      <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'إشعارات ورسائل' : 'Notifications & messages'}</p>
-                    </div>
-                    <Bell className="w-5 h-5 text-amber-600" />
+            {/* Activity Pulse */}
+            {stats && (
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-sm text-gray-500">{language === 'ar' ? 'نبض النشاط' : 'Activity pulse'}</p>
+                    <p className="text-xl font-semibold text-gray-900">{language === 'ar' ? 'إشعارات ورسائل' : 'Notifications & messages'}</p>
                   </div>
-                  <div className="space-y-3">
-                    {recentNotifications.length === 0 ? (
-                      <p className="text-sm text-gray-500">{language === 'ar' ? 'لا نشاط حديث' : 'No recent activity'}</p>
-                    ) : (
-                      recentNotifications.map((notif) => (
-                        <div key={notif._id} className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:border-purple-200 transition-colors">
-                          <span className={`mt-1 w-2 h-2 rounded-full ${notif.isRead ? 'bg-gray-300' : 'bg-purple-500'}`}></span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 line-clamp-1">{notif.title}</p>
-                            <p className="text-xs text-gray-600 line-clamp-2">{notif.description}</p>
-                            <p className="text-xs text-gray-400 mt-1">{formatDate(notif.createdAt)}</p>
-                          </div>
+                  <Bell className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="space-y-3">
+                  {recentNotifications.length === 0 ? (
+                    <p className="text-sm text-gray-500">{language === 'ar' ? 'لا نشاط حديث' : 'No recent activity'}</p>
+                  ) : (
+                    recentNotifications.map((notif) => (
+                      <div key={notif._id} className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:border-purple-200 transition-colors">
+                        <span className={`mt-1 w-2 h-2 rounded-full ${notif.isRead ? 'bg-gray-300' : 'bg-purple-500'}`}></span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 line-clamp-1">{notif.title}</p>
+                          <p className="text-xs text-gray-600 line-clamp-2">{notif.description}</p>
+                          <p className="text-xs text-gray-400 mt-1">{formatDate(notif.createdAt)}</p>
                         </div>
-                      ))
-                    )}
-                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('notifications')} className="w-full">
-                      {language === 'ar' ? 'فتح مركز الإشعارات' : 'Open notification center'}
-                    </Button>
-                  </div>
-                </motion.div>
+                      </div>
+                    ))
+                  )}
+                  <Button variant="ghost" size="sm" onClick={() => setActiveTab('notifications')} className="w-full">
+                    {language === 'ar' ? 'فتح مركز الإشعارات' : 'Open notification center'}
+                  </Button>
+                </div>
               </div>
             )}
           </div>
@@ -854,7 +752,7 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                   <Button variant="outline" className="w-full">{language === 'ar' ? 'اتصل بنا' : 'Contact Sales'}</Button>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Quick Stats Grid */}
             {stats && (
@@ -877,3 +775,5 @@ export default function JobPublisherDashboard({ defaultTab = 'overview' }: { def
                 </div>
               </div>
             )}
+          </div>
+        )}
