@@ -1,101 +1,61 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ErrorPage() {
     const searchParams = useSearchParams()
     const code = searchParams?.get('code') || 'unknown'
 
-    const errorMessages: Record<string, {
-        ar: string
-        en: string
-        details_ar: string
-        details_en: string
-        action_ar?: string
-        action_en?: string
-    }> = {
-        server_misconfigured: {
-            ar: 'خطأ في إعدادات السيرفر',
-            en: 'Server Configuration Error',
-            details_ar: 'نعتذر، يوجد خطأ في إعدادات السيرفر. فريق الدعم تم إخطاره تلقائياً وسيتم حل المشكلة قريباً.',
-            details_en: 'Sorry, there is a server configuration error. The support team has been notified automatically and will resolve this issue soon.',
-            action_ar: 'يرجى المحاولة مرة أخرى بعد بضع دقائق',
-            action_en: 'Please try again in a few minutes'
-        },
-        unknown: {
-            ar: 'حدث خطأ غير متوقع',
-            en: 'An Unexpected Error Occurred',
-            details_ar: 'نعتذر عن هذا الإزعاج. يرجى المحاولة مرة أخرى.',
-            details_en: 'We apologize for the inconvenience. Please try again.',
-        }
-    }
-
-    const error = errorMessages[code] || errorMessages.unknown
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 px-4">
-            <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 text-center border border-gray-200 dark:border-gray-700">
-                {/* Icon */}
-                <div className="mb-6 flex justify-center">
-                    <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                        <AlertTriangle className="w-12 h-12 text-red-600 dark:text-red-400" />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4" dir="rtl">
+            <div className="max-w-lg w-full">
+                {/* Logo/Icon Area */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 mb-6">
+                        <svg className="w-10 h-10 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
                     </div>
-                </div>
 
-                {/* Title */}
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                    {error.ar}
-                </h1>
-                <h2 className="text-xl text-gray-700 dark:text-gray-300 mb-6">
-                    {error.en}
-                </h2>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                        نعمل على حل المشكلة
+                    </h1>
 
-                {/* Details */}
-                <div className="mb-6 space-y-2">
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        {error.details_ar}
+                    <p className="text-lg text-gray-600 mb-2">
+                        We're working on fixing this issue
                     </p>
-                    <p className="text-gray-500 dark:text-gray-500 text-sm leading-relaxed">
-                        {error.details_en}
+
+                    <p className="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">
+                        نواجه مشكلة تقنية مؤقتة في الخادم. فريقنا يعمل على حلها الآن.
                     </p>
                 </div>
 
-                {/* Action Message */}
-                {error.action_ar && (
-                    <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <p className="text-blue-800 dark:text-blue-300 text-sm font-medium mb-1">
-                            {error.action_ar}
-                        </p>
-                        <p className="text-blue-600 dark:text-blue-400 text-xs">
-                            {error.action_en}
-                        </p>
-                    </div>
-                )}
-
-                {/* Error Code */}
-                <div className="mb-6 text-xs text-gray-400 dark:text-gray-600 font-mono">
-                    Error Code: {code.toUpperCase()}
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {/* Action Buttons */}
+                <div className="space-y-3 mb-8">
                     <Link
                         href="/"
-                        className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                        className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
                     >
-                        <Home className="w-4 h-4" />
-                        <span>العودة للرئيسية / Home</span>
+                        العودة للصفحة الرئيسية
                     </Link>
 
                     <button
                         onClick={() => window.location.reload()}
-                        className="inline-flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg transition-colors font-medium"
+                        className="block w-full text-center bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-300 transition-colors duration-200"
                     >
-                        <RefreshCw className="w-4 h-4" />
-                        <span>إعادة المحاولة / Retry</span>
+                        إعادة المحاولة
                     </button>
+                </div>
+
+                {/* Additional Info */}
+                <div className="text-center">
+                    <p className="text-xs text-gray-400 mb-2">
+                        إذا استمرت المشكلة، يرجى التواصل مع الدعم الفني
+                    </p>
+                    <p className="text-xs text-gray-400 font-mono">
+                        Error Code: {code.toUpperCase()}
+                    </p>
                 </div>
             </div>
         </div>
