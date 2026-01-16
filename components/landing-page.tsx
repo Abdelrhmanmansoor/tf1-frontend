@@ -1391,8 +1391,7 @@ export function LandingPage() {
           </div>
         </div>
       </motion.section> */}
-
-      {/* Live Status Section - Simplified & Premium */}
+      {/* Live Status Section - HIDDEN TEMPORARILY
       <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -1499,6 +1498,7 @@ export function LandingPage() {
           </motion.div>
         </div>
       </section>
+      */}
 
       <Footer />
     </div>
