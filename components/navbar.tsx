@@ -56,8 +56,8 @@ export function Navbar({ activeMode, activePage = 'home' }: NavbarProps) {
 
   const navItems: NavItem[] = [
     { id: 'home', label: t('home') },
-    { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' },
-    { id: 'matches', label: language === 'ar' ? 'مركز المباريات' : 'Matches Center', href: '/matches/dashboard' },
+    // { id: 'cv-builder', label: t('cvBuilder'), href: '/jobs/cv-builder' }, // HIDDEN
+    // { id: 'matches', label: language === 'ar' ? 'مركز المباريات' : 'Matches Center', href: '/matches/dashboard' },
     { id: 'about', label: t('about') },
     { id: 'features', label: t('features') },
     { id: 'blog', label: t('blog') },
