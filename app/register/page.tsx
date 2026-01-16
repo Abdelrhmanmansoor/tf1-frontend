@@ -356,16 +356,16 @@ export default function RegisterPage() {
   ]
   
   // الأدوار الأخرى (رياضية ومهنية)
-  const roles = [
-    { value: 'player', icon: 'sports', label: language === 'ar' ? 'لاعب' : 'Player' },
-    { value: 'coach', icon: 'coach', label: language === 'ar' ? 'مدرب' : 'Coach' },
-    { value: 'club', icon: 'stadium', label: language === 'ar' ? 'نادي' : 'Club' },
-    { value: 'specialist', icon: 'fitness', label: language === 'ar' ? 'متخصص' : 'Specialist' },
-    { value: 'sports-administrator', icon: 'admin', label: language === 'ar' ? 'إداري رياضي' : 'Sports Administrator' },
-    { value: 'age-group-supervisor', icon: 'supervisor', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
-    { value: 'sports-director', icon: 'director', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
-    { value: 'executive-director', icon: 'executive', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
-    { value: 'secretary', icon: 'secretary', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
+  const roles: any[] = [ // HIDDEN TEMPORARILY
+    // { value: 'player', icon: 'sports', label: language === 'ar' ? 'لاعب' : 'Player' },
+    // { value: 'coach', icon: 'coach', label: language === 'ar' ? 'مدرب' : 'Coach' },
+    // { value: 'club', icon: 'stadium', label: language === 'ar' ? 'نادي' : 'Club' },
+    // { value: 'specialist', icon: 'fitness', label: language === 'ar' ? 'متخصص' : 'Specialist' },
+    // { value: 'sports-administrator', icon: 'admin', label: language === 'ar' ? 'إداري رياضي' : 'Sports Administrator' },
+    // { value: 'age-group-supervisor', icon: 'supervisor', label: language === 'ar' ? 'مشرف فئات' : 'Age Supervisor' },
+    // { value: 'sports-director', icon: 'director', label: language === 'ar' ? 'مدير رياضي' : 'Sports Director' },
+    // { value: 'executive-director', icon: 'executive', label: language === 'ar' ? 'مدير تنفيذي' : 'Executive' },
+    // { value: 'secretary', icon: 'secretary', label: language === 'ar' ? 'سكرتير' : 'Secretary' },
   ]
   const organizationTypes = [
     { value: 'club', label: language === 'ar' ? 'نادي' : 'Club' },
@@ -569,7 +569,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* فاصل */}
+                {/* فاصل */}{/* HIDDEN - Other Roles Section
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-200"></div>
@@ -614,6 +614,7 @@ export default function RegisterPage() {
                   })}
                 </div>
                 
+                */}
                 <div className="mt-6">
                   {selectedRole === 'club' && renderClubInfo()}
                 </div>
