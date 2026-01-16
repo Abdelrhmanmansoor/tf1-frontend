@@ -1305,7 +1305,7 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Our Achievements Section - HIDDEN TEMPORARILY
+      {/* Our Achievements Section - HIDDEN */ false && (
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -1390,8 +1390,8 @@ export function LandingPage() {
             ))}
           </div>
         </div>
-      </motion.section> */}
-      {/* Live Status Section - HIDDEN TEMPORARILY
+      </motion.section>)}
+      {/* Live Status Section - HIDDEN */ false && (
       <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -1497,8 +1497,7 @@ export function LandingPage() {
             </div>
           </motion.div>
         </div>
-      </section>
-      */}
+      </section>)}
 
       <Footer />
     </div>
