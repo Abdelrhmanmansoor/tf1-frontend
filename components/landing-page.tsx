@@ -795,7 +795,7 @@ export function LandingPage() {
       </motion.section>
 
       {/* Stats Section */}
-      <StatsSection />
+      {/* <StatsSection /> - Hidden temporarily */}
 
       {/* TF1 Job Center Section - Relocated */}
       {mode === 'application' && (
@@ -1305,7 +1305,7 @@ export function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Our Achievements Section */}
+      {/* Our Achievements Section - HIDDEN TEMPORARILY
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -1390,7 +1390,7 @@ export function LandingPage() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </motion.section> */}
 
       {/* Live Status Section - Simplified & Premium */}
       <section className="py-16 lg:py-24 px-4 sm:px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
