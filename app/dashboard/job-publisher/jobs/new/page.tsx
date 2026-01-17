@@ -12,13 +12,11 @@ import { toast } from "sonner"
 import {
   ArrowLeft,
   Briefcase,
-  Calendar,
   CheckCircle,
   Clock,
   DollarSign,
   FileText,
   Loader2,
-  MapPin,
   MapPinned,
   Trophy,
   Users,
@@ -34,19 +32,21 @@ export default function CreateJobPage() {
     description: "",
     descriptionAr: "",
     sport: "",
-    jobType: "permanent",
-    employmentType: "full_time",
     category: "other",
+    employmentType: "full-time",
+    experienceLevel: "",
     city: "",
+    cityAr: "",
     country: "Saudi Arabia",
+    countryAr: "المملكة العربية السعودية",
+    isRemote: false,
     requirementsText: "",
+    responsibilitiesText: "",
     skillsText: "",
-    meetingDate: "",
-    meetingTime: "",
-    meetingLocation: "",
-    expectedStartDate: "",
+    benefitsText: "",
+    minExperienceYears: "",
+    maxExperienceYears: "",
     applicationDeadline: "",
-    numberOfPositions: "1",
     salaryMin: "",
     salaryMax: "",
     salaryCurrency: "SAR",
@@ -64,29 +64,29 @@ export default function CreateJobPage() {
     { value: "other", labelAr: "أخرى", labelEn: "Other" },
   ]
 
-  const jobTypeOptions = [
-    { value: "permanent", labelAr: "دوام دائم", labelEn: "Permanent" },
-    { value: "seasonal", labelAr: "موسمي", labelEn: "Seasonal" },
-    { value: "temporary", labelAr: "مؤقت", labelEn: "Temporary" },
+  const categoryOptions = [
+    { value: "coach", labelAr: "مدرب", labelEn: "Coach" },
+    { value: "trainer", labelAr: "مدرب لياقة", labelEn: "Fitness Trainer" },
+    { value: "physiotherapist", labelAr: "أخصائي علاج طبيعي", labelEn: "Physiotherapist" },
+    { value: "nutritionist", labelAr: "أخصائي تغذية", labelEn: "Nutritionist" },
+    { value: "manager", labelAr: "مدير", labelEn: "Manager" },
+    { value: "admin", labelAr: "إداري", labelEn: "Admin" },
+    { value: "other", labelAr: "أخرى", labelEn: "Other" },
   ]
 
   const employmentTypeOptions = [
-    { value: "full_time", labelAr: "دوام كامل", labelEn: "Full Time" },
-    { value: "part_time", labelAr: "دوام جزئي", labelEn: "Part Time" },
+    { value: "full-time", labelAr: "دوام كامل", labelEn: "Full Time" },
+    { value: "part-time", labelAr: "دوام جزئي", labelEn: "Part Time" },
     { value: "contract", labelAr: "عقد مؤقت", labelEn: "Contract" },
+    { value: "temporary", labelAr: "مؤقت", labelEn: "Temporary" },
     { value: "internship", labelAr: "تدريب", labelEn: "Internship" },
-    { value: "freelance", labelAr: "عمل حر", labelEn: "Freelance" },
   ]
 
-  const locationOptions = [
-    { value: "riyadh", labelAr: "الرياض", labelEn: "Riyadh" },
-    { value: "jeddah", labelAr: "جدة", labelEn: "Jeddah" },
-    { value: "dammam", labelAr: "الدمام", labelEn: "Dammam" },
-    { value: "mecca", labelAr: "مكة", labelEn: "Mecca" },
-    { value: "medina", labelAr: "المدينة", labelEn: "Medina" },
-    { value: "khobar", labelAr: "الخبر", labelEn: "Khobar" },
-    { value: "abha", labelAr: "أبها", labelEn: "Abha" },
-    { value: "remote", labelAr: "عن بعد", labelEn: "Remote" },
+  const experienceLevelOptions = [
+    { value: "entry", labelAr: "مبتدئ", labelEn: "Entry Level" },
+    { value: "intermediate", labelAr: "متوسط", labelEn: "Intermediate" },
+    { value: "senior", labelAr: "خبير", labelEn: "Senior" },
+    { value: "expert", labelAr: "خبير متقدم", labelEn: "Expert" },
   ]
 
   const handleInputChange = (field: string, value: string) => {
@@ -94,12 +94,44 @@ export default function CreateJobPage() {
   }
 
   const handleSubmit = async (isDraft = false) => {
-    const basicValid = formData.title && formData.description && formData.sport && formData.city && formData.country
+    // Validate required fields
+    const basicValid = formData.title && formData.description && formData.sport && formData.category &&
+                       formData.employmentType && formData.experienceLevel && formData.city
     if (!basicValid) {
       toast.error(
         language === "ar"
-          ? "يرجى تعبئة الحقول الأساسية (المسمى، الوصف، المدينة، نوع الوظيفة)"
-          : "Please fill title, description, city, and job type"
+          ? "يرجى تعبئة الحقول المطلوبة (المسمى، الوصف، الرياضة، التصنيف، نوع العمل، المستوى، المدينة)"
+          : "Please fill required fields (title, description, sport, category, employment type, experience level, city)"
+      )
+      return
+    }
+
+    // Validate description length (backend requires min 50 chars)
+    if (formData.description.length < 50) {
+      toast.error(
+        language === "ar"
+          ? "الوصف يجب أن يكون 50 حرفاً على الأقل"
+          : "Description must be at least 50 characters"
+      )
+      return
+    }
+
+    // Validate requirements
+    if (!formData.requirementsText || formData.requirementsText.trim().length === 0) {
+      toast.error(
+        language === "ar"
+          ? "يرجى إدخال متطلبات الوظيفة"
+          : "Please enter job requirements"
+      )
+      return
+    }
+
+    // Validate responsibilities
+    if (!formData.responsibilitiesText || formData.responsibilitiesText.trim().length === 0) {
+      toast.error(
+        language === "ar"
+          ? "يرجى إدخال مسؤوليات الوظيفة"
+          : "Please enter job responsibilities"
       )
       return
     }
@@ -115,41 +147,86 @@ export default function CreateJobPage() {
     setIsSubmitting(true)
 
     try {
+      // Parse comma-separated lists into arrays
+      const requirements = formData.requirementsText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
+
+      const responsibilities = formData.responsibilitiesText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
+
       const skills = formData.skillsText
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean)
 
-      const payload = {
+      const benefits = formData.benefitsText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
+
+      // Build payload matching backend Joi schema
+      const payload: any = {
         title: formData.title,
         titleAr: formData.titleAr || formData.title,
         description: formData.description,
         descriptionAr: formData.descriptionAr || formData.description,
         sport: formData.sport,
-        jobType: formData.jobType,
         category: formData.category,
         employmentType: formData.employmentType,
-        numberOfPositions: Number(formData.numberOfPositions) || 1,
-        city: formData.city,
-        country: formData.country,
-        requirements: {
-          description: formData.requirementsText || formData.description,
-          skills,
+        experienceLevel: formData.experienceLevel,
+
+        location: {
+          city: formData.city,
+          cityAr: formData.cityAr || formData.city,
+          country: formData.country,
+          countryAr: formData.countryAr,
+          isRemote: formData.isRemote,
         },
-        meetingDate: formData.meetingDate || undefined,
-        meetingTime: formData.meetingTime || undefined,
-        meetingLocation: formData.meetingLocation || undefined,
-        expectedStartDate: formData.expectedStartDate || undefined,
-        applicationDeadline: formData.applicationDeadline || undefined,
-        salary: {
-          min: formData.salaryMin ? Number(formData.salaryMin) : undefined,
-          max: formData.salaryMax ? Number(formData.salaryMax) : undefined,
-          currency: formData.salaryCurrency,
-        },
+
+        requirements,
+        responsibilities,
+
         status: isDraft ? "draft" : "active",
       }
 
-      const response = await api.post("/clubs/jobs", payload)
+      // Add optional fields only if they have values
+      if (skills.length > 0) {
+        payload.skills = skills
+      }
+
+      if (benefits.length > 0) {
+        payload.benefits = benefits
+      }
+
+      if (formData.minExperienceYears) {
+        payload.minExperienceYears = Number(formData.minExperienceYears)
+      }
+
+      if (formData.maxExperienceYears) {
+        payload.maxExperienceYears = Number(formData.maxExperienceYears)
+      }
+
+      if (formData.salaryMin) {
+        payload.salaryMin = Number(formData.salaryMin)
+      }
+
+      if (formData.salaryMax) {
+        payload.salaryMax = Number(formData.salaryMax)
+      }
+
+      if (formData.salaryCurrency) {
+        payload.salaryCurrency = formData.salaryCurrency
+      }
+
+      if (formData.applicationDeadline) {
+        payload.applicationDeadline = formData.applicationDeadline
+      }
+
+      const response = await api.post("/api/v1/job-publisher/jobs", payload)
 
       if (response.data.success) {
         toast.success(language === "ar" ? "تم إنشاء الوظيفة بنجاح" : "Job created successfully")
@@ -157,7 +234,26 @@ export default function CreateJobPage() {
       }
     } catch (error: any) {
       console.error("Failed to create job:", error)
-      toast.error(error.response?.data?.messageAr || (language === "ar" ? "فشل إنشاء الوظيفة" : "Failed to create job"))
+
+      // Handle subscription limit errors
+      if (error.response?.status === 403) {
+        toast.error(
+          error.response?.data?.messageAr ||
+          (language === "ar" ? "لقد وصلت للحد الأقصى من الوظائف في باقتك" : "You've reached your job posting limit")
+        )
+      } else if (error.response?.status === 400) {
+        // Validation errors
+        toast.error(
+          error.response?.data?.messageAr ||
+          error.response?.data?.message ||
+          (language === "ar" ? "خطأ في البيانات المدخلة" : "Invalid input data")
+        )
+      } else {
+        toast.error(
+          error.response?.data?.messageAr ||
+          (language === "ar" ? "فشل إنشاء الوظيفة" : "Failed to create job")
+        )
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -278,13 +374,13 @@ export default function CreateJobPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "نوع الوظيفة" : "Job Type"} <span className="text-red-500">*</span></label>
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "التصنيف" : "Category"} <span className="text-red-500">*</span></label>
                   <SelectField
-                    options={jobTypeOptions}
-                    value={formData.jobType}
-                    onChange={(value: string) => handleInputChange("jobType", value)}
-                    placeholder={language === "ar" ? "اختر نوع الوظيفة" : "Select job type"}
-                    icon={Clock}
+                    options={categoryOptions}
+                    value={formData.category}
+                    onChange={(value: string) => handleInputChange("category", value)}
+                    placeholder={language === "ar" ? "اختر التصنيف" : "Select category"}
+                    icon={Briefcase}
                   />
                 </div>
               </div>
@@ -297,15 +393,42 @@ export default function CreateJobPage() {
                     value={formData.employmentType}
                     onChange={(value: string) => handleInputChange("employmentType", value)}
                     placeholder={language === "ar" ? "اختر طبيعة العمل" : "Select employment type"}
-                    icon={Briefcase}
+                    icon={Clock}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "التصنيف" : "Category"}</label>
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "مستوى الخبرة" : "Experience Level"} <span className="text-red-500">*</span></label>
+                  <SelectField
+                    options={experienceLevelOptions}
+                    value={formData.experienceLevel}
+                    onChange={(value: string) => handleInputChange("experienceLevel", value)}
+                    placeholder={language === "ar" ? "اختر مستوى الخبرة" : "Select experience level"}
+                    icon={Users}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الحد الأدنى لسنوات الخبرة" : "Min Experience (Years)"}</label>
                   <Input
-                    placeholder={language === "ar" ? "مثال: مدربين، إداريين" : "e.g. coaches, admin"}
-                    value={formData.category}
-                    onChange={(e) => handleInputChange("category", e.target.value)}
+                    type="number"
+                    min={0}
+                    max={50}
+                    placeholder={language === "ar" ? "مثال: 3" : "e.g. 3"}
+                    value={formData.minExperienceYears}
+                    onChange={(e) => handleInputChange("minExperienceYears", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الحد الأقصى لسنوات الخبرة" : "Max Experience (Years)"}</label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={50}
+                    placeholder={language === "ar" ? "مثال: 10" : "e.g. 10"}
+                    value={formData.maxExperienceYears}
+                    onChange={(e) => handleInputChange("maxExperienceYears", e.target.value)}
                   />
                 </div>
               </div>
@@ -319,15 +442,24 @@ export default function CreateJobPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المدينة" : "City"} <span className="text-red-500">*</span></label>
-                  <SelectField
-                    options={locationOptions}
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المدينة (بالإنجليزية)" : "City (English)"} <span className="text-red-500">*</span></label>
+                  <Input
+                    placeholder={language === "ar" ? "مثال: Riyadh" : "e.g. Riyadh"}
                     value={formData.city}
-                    onChange={(value: string) => handleInputChange("city", value)}
-                    placeholder={language === "ar" ? "اختر المدينة" : "Select city"}
-                    icon={MapPin}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
                   />
                 </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المدينة (بالعربية)" : "City (Arabic)"}</label>
+                  <Input
+                    placeholder={language === "ar" ? "مثال: الرياض" : "e.g. الرياض"}
+                    value={formData.cityAr}
+                    onChange={(e) => handleInputChange("cityAr", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الدولة" : "Country"} <span className="text-red-500">*</span></label>
                   <Input
@@ -335,6 +467,20 @@ export default function CreateJobPage() {
                     value={formData.country}
                     onChange={(e) => handleInputChange("country", e.target.value)}
                   />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    {language === "ar" ? "عمل عن بعد" : "Remote Work"}
+                    <input
+                      type="checkbox"
+                      checked={formData.isRemote}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, isRemote: e.target.checked }))}
+                      className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {language === "ar" ? "ضع علامة إذا كانت الوظيفة عن بعد" : "Check if this is a remote position"}
+                  </p>
                 </div>
               </div>
             </section>
@@ -347,21 +493,48 @@ export default function CreateJobPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "متطلبات الوظيفة" : "Job Requirements"}</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    {language === "ar" ? "متطلبات الوظيفة (كل متطلب في سطر)" : "Job Requirements (one per line)"} <span className="text-red-500">*</span>
+                  </label>
                   <Textarea
-                    placeholder={language === "ar" ? "أدخل متطلبات الوظيفة بالتفصيل" : "Enter detailed requirements"}
+                    placeholder={language === "ar" ? "مثال:\nشهادة بكالوريوس\n5 سنوات خبرة\nرخصة قيادة سارية" : "e.g.\nBachelor's degree\n5+ years experience\nValid driving license"}
                     value={formData.requirementsText}
                     onChange={(e) => handleInputChange("requirementsText", e.target.value)}
+                    rows={6}
+                    className="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {language === "ar" ? "المسؤوليات (كل مسؤولية في سطر)" : "Responsibilities (one per line)"} <span className="text-red-500">*</span>
+                  </label>
+                  <Textarea
+                    placeholder={language === "ar" ? "مثال:\nتدريب الفريق\nإعداد خطط التدريب\nمتابعة الأداء" : "e.g.\nTrain the team\nDevelop training plans\nMonitor performance"}
+                    value={formData.responsibilitiesText}
+                    onChange={(e) => handleInputChange("responsibilitiesText", e.target.value)}
+                    rows={6}
+                    className="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المهارات المطلوبة (مفصولة بفاصلة)" : "Required Skills (comma separated)"}</label>
+                  <Textarea
+                    placeholder={language === "ar" ? "مثال: قيادة فريق، تخطيط تدريبي، تواصل" : "e.g. Team leadership, training plans, communication"}
+                    value={formData.skillsText}
+                    onChange={(e) => handleInputChange("skillsText", e.target.value)}
                     rows={4}
                     className="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المهارات المطلوبة (مفصولة بفاصلة)" : "Required skills (comma separated)"}</label>
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "المزايا (كل ميزة في سطر)" : "Benefits (one per line)"}</label>
                   <Textarea
-                    placeholder={language === "ar" ? "مثال: قيادة فريق، تخطيط تدريبي، تواصل" : "e.g. Team leadership, training plans, communication"}
-                    value={formData.skillsText}
-                    onChange={(e) => handleInputChange("skillsText", e.target.value)}
+                    placeholder={language === "ar" ? "مثال:\nتأمين صحي\nبدل سكن\nبدل مواصلات" : "e.g.\nHealth insurance\nHousing allowance\nTransportation"}
+                    value={formData.benefitsText}
+                    onChange={(e) => handleInputChange("benefitsText", e.target.value)}
                     rows={4}
                     className="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -371,76 +544,29 @@ export default function CreateJobPage() {
 
             <section className="space-y-6">
               <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                <Calendar className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-semibold text-gray-900">{language === "ar" ? "التواريخ والراتب" : "Dates & Salary"}</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "تاريخ البدء المتوقع" : "Expected Start Date"}</label>
-                  <div className="relative">
-                    <Input
-                      type="date"
-                      value={formData.expectedStartDate}
-                      onChange={(e) => handleInputChange("expectedStartDate", e.target.value)}
-                      className="pr-10"
-                    />
-                    <Calendar className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "آخر موعد للتقديم" : "Application Deadline"}</label>
-                  <div className="relative">
-                    <Input
-                      type="date"
-                      value={formData.applicationDeadline}
-                      onChange={(e) => handleInputChange("applicationDeadline", e.target.value)}
-                      className="pr-10"
-                    />
-                    <Calendar className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
-                  </div>
-                </div>
+                <DollarSign className="w-5 h-5 text-green-600" />
+                <h2 className="text-lg font-semibold text-gray-900">{language === "ar" ? "الراتب والمواعيد" : "Salary & Dates"}</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "عدد الشواغر" : "Positions count"}</label>
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الحد الأدنى للراتب" : "Min Salary"}</label>
                   <Input
                     type="number"
-                    min={1}
-                    value={formData.numberOfPositions}
-                    onChange={(e) => handleInputChange("numberOfPositions", e.target.value)}
+                    placeholder="5000"
+                    value={formData.salaryMin}
+                    onChange={(e) => handleInputChange("salaryMin", e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الحد الأدنى للراتب" : "Min Salary"}</label>
-                  <div className="relative">
-                    <DollarSign className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
-                    <Input
-                      type="number"
-                      placeholder="5000"
-                      value={formData.salaryMin}
-                      onChange={(e) => handleInputChange("salaryMin", e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">{language === "ar" ? "الحد الأعلى للراتب" : "Max Salary"}</label>
-                  <div className="relative">
-                    <DollarSign className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
-                    <Input
-                      type="number"
-                      placeholder="15000"
-                      value={formData.salaryMax}
-                      onChange={(e) => handleInputChange("salaryMax", e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
+                  <Input
+                    type="number"
+                    placeholder="15000"
+                    value={formData.salaryMax}
+                    onChange={(e) => handleInputChange("salaryMax", e.target.value)}
+                  />
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">{language === "ar" ? "العملة" : "Currency"}</label>
                   <select
@@ -454,29 +580,14 @@ export default function CreateJobPage() {
                   </select>
                 </div>
               </div>
-            </section>
 
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                <Users className="w-5 h-5 text-indigo-600" />
-                <h2 className="text-lg font-semibold text-gray-900">{language === "ar" ? "تفاصيل المقابلة" : "Interview Details"}</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "تاريخ المقابلة" : "Interview Date"}</label>
-                  <Input type="date" value={formData.meetingDate} onChange={(e) => handleInputChange("meetingDate", e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "وقت المقابلة" : "Interview Time"}</label>
-                  <Input type="time" value={formData.meetingTime} onChange={(e) => handleInputChange("meetingTime", e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "مكان المقابلة / الرابط" : "Interview Location / Link"}</label>
+                  <label className="text-sm font-medium text-gray-700">{language === "ar" ? "آخر موعد للتقديم" : "Application Deadline"}</label>
                   <Input
-                    placeholder={language === "ar" ? "عنوان أو رابط مقابلة" : "Meeting location or link"}
-                    value={formData.meetingLocation}
-                    onChange={(e) => handleInputChange("meetingLocation", e.target.value)}
+                    type="date"
+                    value={formData.applicationDeadline}
+                    onChange={(e) => handleInputChange("applicationDeadline", e.target.value)}
                   />
                 </div>
               </div>

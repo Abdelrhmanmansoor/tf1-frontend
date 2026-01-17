@@ -82,12 +82,12 @@ const ApplicationDetailPage = () => {
   const fetchApplication = async () => {
     try {
       setLoading(true)
-      const response = await api.get(`/job-publisher/applications/${applicationId}`)
+      const response = await api.get(`/api/v1/job-publisher/applications/${applicationId}`)
       if (response.data.success) {
         const appData = response.data.data.application || response.data.data
         setApplication(appData)
-        if (response.data.data.conversation?.id) {
-          setConversationId(response.data.data.conversation.id)
+        if (response.data.data.conversation?.id || response.data.data.conversationId) {
+          setConversationId(response.data.data.conversation?.id || response.data.data.conversationId)
         }
       }
     } catch (err: any) {
@@ -112,52 +112,84 @@ const ApplicationDetailPage = () => {
 
   const handleStatusChange = async (newStatus: string) => {
     if (!application || newStatus === application.status) return
-    
-    // Validation for interview
-    if (newStatus === 'interviewed' && (!interviewDate || !interviewTime)) {
-       // Allow changing to interview without details first, or require them?
-       // User said "opens messaging system only when status is interview"
-       // We'll proceed but warn if details missing? No, let's keep it simple.
+
+    // Validate status value against backend enum
+    const validStatuses = ['new', 'under_review', 'interviewed', 'offered', 'accepted', 'rejected', 'withdrawn', 'hired']
+    if (!validStatuses.includes(newStatus)) {
+      toast.error(language === 'ar' ? 'حالة غير صالحة' : 'Invalid status value')
+      return
+    }
+
+    // Validate message length (backend max 1000 chars)
+    if (notes && notes.length > 1000) {
+      toast.error(language === 'ar' ? 'الملاحظات يجب أن تكون أقل من 1000 حرف' : 'Notes must be less than 1000 characters')
+      return
     }
 
     try {
       setStatusLoading(true)
-      const res = await api.put(`/job-publisher/applications/${application._id}/status`, {
+
+      // Build payload matching backend API (only status and message fields)
+      const payload: any = {
         status: newStatus,
-        message: notes,
-        interviewDate: newStatus === 'interviewed' ? `${interviewDate}T${interviewTime}` : undefined,
-        interviewLocation: newStatus === 'interviewed' ? interviewLocation : undefined
-      })
-
-      if (res.data?.conversationId) {
-        setConversationId(res.data.conversationId)
       }
-      setApplication(prev => prev ? { ...prev, status: newStatus } : null)
-      setSelectedStatus(newStatus)
-      toast.success(language === 'ar' ? 'تم تحديث الحالة بنجاح' : 'Status updated successfully')
 
-      // Auto schedule interview details if available and conversation exists
-      if (newStatus === 'interviewed' && (interviewDate || interviewTime) && (res.data?.conversationId || conversationId)) {
-        const convId = res.data?.conversationId || conversationId
-        try {
-          await api.put(`/messages/conversation/${convId}/schedule-interview`, {
-            scheduledDate: interviewDate,
-            scheduledTime: interviewTime,
-            location: interviewLocation,
-          })
-        } catch (scheduleErr) {
-          console.error('Schedule sync failed', scheduleErr)
+      // Add message only if it has content
+      if (notes && notes.trim()) {
+        payload.message = notes.trim()
+      }
+
+      const res = await api.put(`/api/v1/job-publisher/applications/${application._id}/status`, payload)
+
+      if (res.data?.success) {
+        // Update local state
+        setApplication(prev => prev ? { ...prev, status: newStatus } : null)
+        setSelectedStatus(newStatus)
+
+        // Check if conversation was created
+        if (res.data?.data?.conversationId) {
+          setConversationId(res.data.data.conversationId)
         }
-      }
 
-      if (newStatus === 'interviewed') {
-        toast.info(language === 'ar'
-          ? 'تم إشعار المتقدم. يمكنك متابعة المحادثة الآن.'
-          : 'Applicant notified. Continue the conversation now.')
+        toast.success(
+          res.data?.message ||
+          (language === 'ar' ? 'تم تحديث الحالة بنجاح' : 'Status updated successfully')
+        )
+
+        // Special message for interviewed status
+        if (newStatus === 'interviewed') {
+          toast.info(language === 'ar'
+            ? 'تم إشعار المتقدم. يمكنك متابعة المحادثة الآن.'
+            : 'Applicant notified. You can now start the conversation.')
+        }
+
+        // Refresh application data to get latest info
+        await fetchApplication()
       }
     } catch (err: any) {
       console.error('Error updating status:', err)
-      toast.error(language === 'ar' ? 'خطأ في تحديث الحالة' : 'Error updating status')
+
+      // Handle subscription limit errors (403)
+      if (err.response?.status === 403) {
+        toast.error(
+          err.response?.data?.messageAr ||
+          (language === 'ar' ? 'لقد وصلت للحد الأقصى من إجراءات الطلبات في باقتك' : "You've reached your application action limit")
+        )
+      } else if (err.response?.status === 400) {
+        // Validation errors
+        toast.error(
+          err.response?.data?.messageAr ||
+          err.response?.data?.message ||
+          (language === 'ar' ? 'خطأ في البيانات المدخلة' : 'Invalid input data')
+        )
+      } else {
+        toast.error(
+          err.response?.data?.messageAr ||
+          (language === 'ar' ? 'خطأ في تحديث الحالة' : 'Error updating status')
+        )
+      }
+
+      // Revert to previous status
       setSelectedStatus(application?.status || '')
     } finally {
       setStatusLoading(false)
